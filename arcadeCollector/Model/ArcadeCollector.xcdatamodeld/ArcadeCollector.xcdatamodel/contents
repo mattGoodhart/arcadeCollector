@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="17G14042" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CollectionEntity" representedClassName="CollectionEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Game" inverseName="collection" inverseEntity="Game" syncable="YES"/>
+    </entity>
+    <entity name="Game" representedClassName="Game" syncable="YES" codeGenerationType="class">
+        <attribute name="audioChannels" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="cabinetImageData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="cabinetImageURLString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="cpuStringArray" optional="YES" attributeType="Transformable" customClassName="Array&lt;String&gt;" syncable="YES"/>
+        <attribute name="displayType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="driver" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="emulationStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="flyerImageData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="flyerImageURLString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="functionalCondition" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="genre" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hasBezel" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="hasBoard" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="hasCabinet" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="hasCabinetArt" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="hasCabinetHardware" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="hasControlPanelOverlay" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="hasControls" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="hasMarquee" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="hasMonitorFlag" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="history" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hRefresh" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="inGameImageData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="inGameImageURLString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="inputButtons" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="inputControls" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isBootleg" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="mameNotes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="manual" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="manualURLString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="manufacturer" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="marqueeImageData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="marqueeURLString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="monitorResolutionType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nPlayers" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="orientation" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pcbImageData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="pcbImageURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pcbPhotoURLString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="players" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="resolution" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="romSetName" attributeType="String" syncable="YES"/>
+        <attribute name="shortPlayURLString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="soundDeviceStringArray" optional="YES" attributeType="Transformable" customClassName="Array&lt;String&gt;" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="titleImageData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="titleImageURLString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="vRefresh" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="vTotalLines" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="year" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="youtubeVideoID" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="collection" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CollectionEntity" inverseName="games" inverseEntity="CollectionEntity" syncable="YES"/>
+    </entity>
+    <entity name="UniqueGameCount" representedClassName="UniqueGameCount" syncable="YES" codeGenerationType="class">
+        <attribute name="count" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="CollectionEntity" positionX="-317.27734375" positionY="-19.36328125" width="129.328125" height="75"/>
+        <element name="Game" positionX="-34.20703125" positionY="-125.28125" width="102.18359375" height="825"/>
+        <element name="UniqueGameCount" positionX="-318.09765625" positionY="-121.48828125" width="128" height="60"/>
+    </elements>
+</model>

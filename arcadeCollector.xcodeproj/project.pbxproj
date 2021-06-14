@@ -7,23 +7,53 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E304C2AD264F2E7F00D0597E /* ScrollingData.json in Resources */ = {isa = PBXBuildFile; fileRef = E304C2AC264F2A6400D0597E /* ScrollingData.json */; };
+		E32D434C261F8B160031B1B7 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32D434B261F8B160031B1B7 /* Networking.swift */; };
+		E34B771B260E7F1800EAE50B /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34B771A260E7F1800EAE50B /* AboutViewController.swift */; };
+		E383228D26239BF100A52BD5 /* EditGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E383228C26239BF100A52BD5 /* EditGameViewController.swift */; };
+		E3BFF79C260286FF00EF34C4 /* CollectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3BFF79B260286FF00EF34C4 /* CollectionManager.swift */; };
+		E3C4BBF5262CB5D9000C035E /* ScrollingDataDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3C4BBF4262CB5D9000C035E /* ScrollingDataDecoder.swift */; };
+		E3D124162641C7C200C17F29 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3D124152641C7C200C17F29 /* Extensions.swift */; };
+		E3D1241826437B5100C17F29 /* PopOverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3D1241726437B5100C17F29 /* PopOverViewController.swift */; };
+		E3D90E4B265ABF12005C86E7 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3D90E4A265ABF12005C86E7 /* TabBarController.swift */; };
 		E3E6073F25F04EA1003F1888 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E6073E25F04EA1003F1888 /* AppDelegate.swift */; };
-		E3E6074125F04EA1003F1888 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E6074025F04EA1003F1888 /* ViewController.swift */; };
+		E3E6074125F04EA1003F1888 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E6074025F04EA1003F1888 /* DetailViewController.swift */; };
 		E3E6074425F04EA1003F1888 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E3E6074225F04EA1003F1888 /* Main.storyboard */; };
-		E3E6074725F04EA1003F1888 /* arcadeCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E3E6074525F04EA1003F1888 /* arcadeCollector.xcdatamodeld */; };
+		E3E6074725F04EA1003F1888 /* ArcadeCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E3E6074525F04EA1003F1888 /* ArcadeCollector.xcdatamodeld */; };
 		E3E6074925F04EA2003F1888 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E3E6074825F04EA2003F1888 /* Assets.xcassets */; };
 		E3E6074C25F04EA2003F1888 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E3E6074A25F04EA2003F1888 /* LaunchScreen.storyboard */; };
+		E3E6075625F05C26003F1888 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E6075525F05C26003F1888 /* DataController.swift */; };
+		E3E6075A25F07002003F1888 /* ArcadeDatabaseAPIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E6075925F07002003F1888 /* ArcadeDatabaseAPIResponse.swift */; };
+		E3E6075C25F14A3A003F1888 /* SummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E6075B25F14A3A003F1888 /* SummaryViewController.swift */; };
+		E3E6076425F15293003F1888 /* GameTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E6076325F15293003F1888 /* GameTableCell.swift */; };
+		E3E6076B25F1686E003F1888 /* HardwareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E6076A25F1686E003F1888 /* HardwareViewController.swift */; };
+		E3FB7E2C264AE7C400422DFF /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3FB7E2B264AE7C400422DFF /* TableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E304C2AC264F2A6400D0597E /* ScrollingData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = ScrollingData.json; path = arcadeCollector/Model/ScrollingData.json; sourceTree = SOURCE_ROOT; };
+		E32D434B261F8B160031B1B7 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
+		E34B771A260E7F1800EAE50B /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
+		E383228C26239BF100A52BD5 /* EditGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGameViewController.swift; sourceTree = "<group>"; };
+		E3BFF79B260286FF00EF34C4 /* CollectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionManager.swift; sourceTree = "<group>"; };
+		E3C4BBF4262CB5D9000C035E /* ScrollingDataDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollingDataDecoder.swift; sourceTree = "<group>"; };
+		E3D124152641C7C200C17F29 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		E3D1241726437B5100C17F29 /* PopOverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopOverViewController.swift; sourceTree = "<group>"; };
+		E3D90E4A265ABF12005C86E7 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		E3E6073B25F04EA1003F1888 /* arcadeCollector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = arcadeCollector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3E6073E25F04EA1003F1888 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E3E6074025F04EA1003F1888 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E3E6074025F04EA1003F1888 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		E3E6074325F04EA1003F1888 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		E3E6074625F04EA1003F1888 /* arcadeCollector.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = arcadeCollector.xcdatamodel; sourceTree = "<group>"; };
+		E3E6074625F04EA1003F1888 /* ArcadeCollector.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ArcadeCollector.xcdatamodel; sourceTree = "<group>"; };
 		E3E6074825F04EA2003F1888 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E3E6074B25F04EA2003F1888 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E3E6074D25F04EA2003F1888 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E3E6075525F05C26003F1888 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
+		E3E6075925F07002003F1888 /* ArcadeDatabaseAPIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcadeDatabaseAPIResponse.swift; sourceTree = "<group>"; };
+		E3E6075B25F14A3A003F1888 /* SummaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryViewController.swift; sourceTree = "<group>"; };
+		E3E6076325F15293003F1888 /* GameTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTableCell.swift; sourceTree = "<group>"; };
+		E3E6076A25F1686E003F1888 /* HardwareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareViewController.swift; sourceTree = "<group>"; };
+		E3FB7E2B264AE7C400422DFF /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,6 +67,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E3D90E47265ABBAE005C86E7 /* DataSource */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DataSource;
+			sourceTree = "<group>";
+		};
 		E3E6073225F04EA1003F1888 = {
 			isa = PBXGroup;
 			children = (
@@ -56,15 +93,71 @@
 		E3E6073D25F04EA1003F1888 /* arcadeCollector */ = {
 			isa = PBXGroup;
 			children = (
-				E3E6073E25F04EA1003F1888 /* AppDelegate.swift */,
-				E3E6074025F04EA1003F1888 /* ViewController.swift */,
-				E3E6074225F04EA1003F1888 /* Main.storyboard */,
-				E3E6074825F04EA2003F1888 /* Assets.xcassets */,
-				E3E6074A25F04EA2003F1888 /* LaunchScreen.storyboard */,
+				E3D90E47265ABBAE005C86E7 /* DataSource */,
 				E3E6074D25F04EA2003F1888 /* Info.plist */,
-				E3E6074525F04EA1003F1888 /* arcadeCollector.xcdatamodeld */,
+				E3E6073E25F04EA1003F1888 /* AppDelegate.swift */,
+				E3D124152641C7C200C17F29 /* Extensions.swift */,
+				E3E6076625F152C8003F1888 /* Model */,
+				E3E6076525F152A2003F1888 /* View */,
+				E3E6076725F152E9003F1888 /* Networking */,
+				E3E6076025F1524D003F1888 /* View Controllers */,
+				E3E6075F25F15234003F1888 /* Storyboards */,
+				E3E6074825F04EA2003F1888 /* Assets.xcassets */,
 			);
 			path = arcadeCollector;
+			sourceTree = "<group>";
+		};
+		E3E6075F25F15234003F1888 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				E3E6074225F04EA1003F1888 /* Main.storyboard */,
+				E3E6074A25F04EA2003F1888 /* LaunchScreen.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		E3E6076025F1524D003F1888 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				E3E6075B25F14A3A003F1888 /* SummaryViewController.swift */,
+				E3E6074025F04EA1003F1888 /* DetailViewController.swift */,
+				E3FB7E2B264AE7C400422DFF /* TableViewController.swift */,
+				E3D1241726437B5100C17F29 /* PopOverViewController.swift */,
+				E3E6076A25F1686E003F1888 /* HardwareViewController.swift */,
+				E383228C26239BF100A52BD5 /* EditGameViewController.swift */,
+				E34B771A260E7F1800EAE50B /* AboutViewController.swift */,
+				E3D90E4A265ABF12005C86E7 /* TabBarController.swift */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		E3E6076525F152A2003F1888 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				E3E6076325F15293003F1888 /* GameTableCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		E3E6076625F152C8003F1888 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E3E6075525F05C26003F1888 /* DataController.swift */,
+				E3BFF79B260286FF00EF34C4 /* CollectionManager.swift */,
+				E304C2AC264F2A6400D0597E /* ScrollingData.json */,
+				E3C4BBF4262CB5D9000C035E /* ScrollingDataDecoder.swift */,
+				E3E6074525F04EA1003F1888 /* ArcadeCollector.xcdatamodeld */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		E3E6076725F152E9003F1888 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				E3E6075925F07002003F1888 /* ArcadeDatabaseAPIResponse.swift */,
+				E32D434B261F8B160031B1B7 /* Networking.swift */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -126,6 +219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E3E6074C25F04EA2003F1888 /* LaunchScreen.storyboard in Resources */,
+				E304C2AD264F2E7F00D0597E /* ScrollingData.json in Resources */,
 				E3E6074925F04EA2003F1888 /* Assets.xcassets in Resources */,
 				E3E6074425F04EA1003F1888 /* Main.storyboard in Resources */,
 			);
@@ -138,9 +232,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E3E6074125F04EA1003F1888 /* ViewController.swift in Sources */,
-				E3E6074725F04EA1003F1888 /* arcadeCollector.xcdatamodeld in Sources */,
+				E3E6075625F05C26003F1888 /* DataController.swift in Sources */,
+				E3E6076B25F1686E003F1888 /* HardwareViewController.swift in Sources */,
+				E3D1241826437B5100C17F29 /* PopOverViewController.swift in Sources */,
+				E3BFF79C260286FF00EF34C4 /* CollectionManager.swift in Sources */,
+				E3E6075A25F07002003F1888 /* ArcadeDatabaseAPIResponse.swift in Sources */,
+				E383228D26239BF100A52BD5 /* EditGameViewController.swift in Sources */,
+				E3D90E4B265ABF12005C86E7 /* TabBarController.swift in Sources */,
+				E3E6075C25F14A3A003F1888 /* SummaryViewController.swift in Sources */,
+				E32D434C261F8B160031B1B7 /* Networking.swift in Sources */,
+				E3E6074125F04EA1003F1888 /* DetailViewController.swift in Sources */,
+				E3D124162641C7C200C17F29 /* Extensions.swift in Sources */,
+				E3E6076425F15293003F1888 /* GameTableCell.swift in Sources */,
+				E3FB7E2C264AE7C400422DFF /* TableViewController.swift in Sources */,
+				E3E6074725F04EA1003F1888 /* ArcadeCollector.xcdatamodeld in Sources */,
+				E3C4BBF5262CB5D9000C035E /* ScrollingDataDecoder.swift in Sources */,
 				E3E6073F25F04EA1003F1888 /* AppDelegate.swift in Sources */,
+				E34B771B260E7F1800EAE50B /* AboutViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,13 +448,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		E3E6074525F04EA1003F1888 /* arcadeCollector.xcdatamodeld */ = {
+		E3E6074525F04EA1003F1888 /* ArcadeCollector.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				E3E6074625F04EA1003F1888 /* arcadeCollector.xcdatamodel */,
+				E3E6074625F04EA1003F1888 /* ArcadeCollector.xcdatamodel */,
 			);
-			currentVersion = E3E6074625F04EA1003F1888 /* arcadeCollector.xcdatamodel */;
-			path = arcadeCollector.xcdatamodeld;
+			currentVersion = E3E6074625F04EA1003F1888 /* ArcadeCollector.xcdatamodel */;
+			path = ArcadeCollector.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
