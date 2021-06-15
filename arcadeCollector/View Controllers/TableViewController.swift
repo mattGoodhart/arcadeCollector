@@ -53,6 +53,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var filteredGames : [Game] = []
     var tab: Tab!
     var currentSortMethod: SortMethod = .name
+    var reverseActive : Bool = false
     
     var visibleGamesList: [Game] {
         return isFiltering ? filteredGames : gamesList
@@ -66,8 +67,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return searchController.isActive && !isSearchBarEmpty
     }
     
+    
+    @IBOutlet weak var reverseButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var sortOptions: UISegmentedControl!
+  //  @IBOutlet weak var sortOptions: UISegmentedControl!
     
     //MARK Overrides
     
@@ -76,8 +79,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         tableView.frame = view.frame
         
-        let font = UIFont.systemFont(ofSize: 12)
-        sortOptions.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
+//        let font = UIFont.systemFont(ofSize: 12)
+//        sortOptions.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -87,7 +90,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         searchController.searchBar.placeholder = "Search for Game by Title"
         navigationItem.searchController = searchController
         definesPresentationContext = true
-        sortByName()
+        sortByYear()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -102,33 +105,44 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
-    @IBAction func segmentedControlPressed(_sender: UISegmentedControl){
-        switch sortOptions.selectedSegmentIndex {
-        case 0:
-            sortByName()
-            
-        case 1:
-            sortByYear()
-        
-        default:
-            break;
-        }
-    }
+//    @IBAction func segmentedControlPressed(_sender: UISegmentedControl){
+//        switch sortOptions.selectedSegmentIndex {
+//        case 0:
+//            sortByName()
+//
+//        case 1:
+//            sortByYear()
+//
+//        default:
+//            break;
+//        }
+//    }
 
     
-    func sortByName() {
-        gamesList.sort() {
-            let isGreater = $0.title! < $1.title!
-            return isGreater
-        }
-        tableView.reloadData()
+//    func sortByName() {
+//        gamesList.sort() {
+//            let isGreater = $0.title! < $1.title!
+//            return isGreater
+//        }
+//        tableView.reloadData()
+//    }
+    
+    @IBAction func reverseButtonTapped(_ sender: UIButton) {
+        reverseActive = !reverseActive
+        sortByYear()
     }
     
     func sortByYear() { // I will want to sort by name after this
         gamesList.sort() {
             if $0.year != $1.year {
-                let isGreater = $0.year! < $1.year!
-                return isGreater
+                if !reverseActive {
+                    let isGreater = $0.year! < $1.year!
+                    return isGreater
+                }
+                else {
+                    let isLessThan = $0.year! > $1.year!
+                    return isLessThan
+                }
             }
             else {
                 return $0.title! < $1.title!
@@ -151,7 +165,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         print("Refreshing list")
         gamesList = tab.baseGamesList
-        sortByName()
+        sortByYear()
         tableView.reloadData()
     }
     

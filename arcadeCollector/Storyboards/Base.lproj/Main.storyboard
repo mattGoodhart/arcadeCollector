@@ -441,18 +441,15 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="All Games" id="rQE-Of-WP2"/>
                     <navigationItem key="navigationItem" title="Games" id="gqd-cc-9T1">
-                        <barButtonItem key="leftBarButtonItem" id="6yD-fJ-Hf6">
-                            <segmentedControl key="customView" opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="bar" selectedSegmentIndex="0" id="NjU-wW-Y2I">
-                                <rect key="frame" x="16" y="7" width="296" height="30"/>
+                        <barButtonItem key="leftBarButtonItem" style="plain" id="jab-Au-287">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="dU2-tX-L2G">
+                                <rect key="frame" x="16" y="7" width="83" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <segments>
-                                    <segment title="Name" width="50"/>
-                                    <segment title="Year" width="50"/>
-                                </segments>
+                                <state key="normal" title="Reverse"/>
                                 <connections>
-                                    <action selector="segmentedControlPressedWith_sender:" destination="tzh-ei-Hb8" eventType="valueChanged" id="Fru-pb-d7M"/>
+                                    <action selector="reverseButtonTapped:" destination="tzh-ei-Hb8" eventType="touchUpInside" id="Ex5-c5-NBi"/>
                                 </connections>
-                            </segmentedControl>
+                            </button>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" style="plain" id="TkL-Np-xiC">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="b8w-Ed-RC0">
@@ -463,7 +460,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="sortOptions" destination="NjU-wW-Y2I" id="lJI-ch-Bwd"/>
+                        <outlet property="reverseButton" destination="dU2-tX-L2G" id="5jT-hB-CZy"/>
                         <outlet property="tableView" destination="V05-Ao-i18" id="tng-WY-BIe"/>
                         <segue destination="lxs-nA-Z7j" kind="show" identifier="GamesDetailSegue" id="Iyc-i3-pyh"/>
                     </connections>
@@ -618,7 +615,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="SDz-3a-Eop">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
@@ -641,8 +638,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rT-ia-fkI">
-                                <rect key="frame" x="326" y="50" width="30" height="39"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                <rect key="frame" x="326" y="50" width="30" height="30"/>
                                 <state key="normal" title="X"/>
                                 <connections>
                                     <action selector="dismissButtonTapped:" destination="mxO-mm-E9o" eventType="touchUpInside" id="Kzd-UT-Gzm"/>
