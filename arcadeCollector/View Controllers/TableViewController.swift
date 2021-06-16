@@ -130,7 +130,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBAction func reverseButtonTapped(_ sender: UIButton) {
         reverseActive = !reverseActive
         sortByYear()
+        tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: UITableView.ScrollPosition.top, animated: false)
     }
+    
     
     func sortByYear() { // I will want to sort by name after this
         gamesList.sort() {

@@ -32,6 +32,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         super.viewDidLoad()
      //   self.tabBarController?.tabBar.isHidden = true
         // view.addSubview(webView)
+        
         imageView.translatesAutoresizingMaskIntoConstraints = false
  
         margins = view.layoutMarginsGuide
@@ -41,12 +42,20 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
 //        scrollView.maximumZoomScale = 5.0
 //        //Todo - allow view to translate when zooming
         
-        
         hideAllViews()
         setView()
         
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        imageView.removeAllConstraints()
+        setView()
+       
+        // this aint workin ..  really just want to reset constraints after rotation
+      //  imageView.setNeedsLayout()
+    }
+   
 //    override func viewWillAppear(_ animated: Bool) {
 //        super .viewWillAppear(true)
 //       // self.showAnimate(viewController: self)
@@ -92,7 +101,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             let request = URLRequest(url: webURL)
             webView.load(request)
             
-            
         case "marqueeView": //
             view.backgroundColor = UIColor.black
             imageView.translatesAutoresizingMaskIntoConstraints = true // great.. now rotation is all fucked
@@ -101,14 +109,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             imageView.frame = view.frame
             imageView.isHidden = false
             
-            
-                  // imageView.translatesAutoresizingMaskIntoConstraints = false
-//            imageView.leadingAnchor.constraint(equalTo: margins.leadingAnchor).isActive = true
-//            imageView.trailingAnchor.constraint(equalTo: margins.trailingAnchor).isActive = true
-//            imageView.centerYAnchor.constraint(equalTo: margins.centerYAnchor).isActive = true
-//            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 4.0).isActive = true
-            
-            
         case "flyerView":
             view.backgroundColor = UIColor.black
             imageView.translatesAutoresizingMaskIntoConstraints = true
@@ -116,7 +116,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             imageView.frame = view.frame
             imageView.contentMode = .scaleAspectFit
             imageView.isHidden = false
-           
             
         case "hardwareView":
             view.backgroundColor = UIColor.black
@@ -126,40 +125,83 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             imageView.frame = view.frame
             imageView.isHidden = false
             
-            
         case "gameImageView":
             
             view.backgroundColor = UIColor.black
             
-            //imageView.contentMode = .scaleToFill
+            let centerX =        imageView.centerXAnchor.constraint(equalTo: margins.centerXAnchor)
+            
+            let centerY =           imageView.centerYAnchor.constraint(equalTo: margins.centerYAnchor)
+            
+            let portraitHeightAnchor = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 3.0/4.0)
+            
+            let portraitWidthAnchor = imageView.widthAnchor.constraint(equalTo: margins.widthAnchor)
+            
+            let landscapeHeightAnchor =  imageView.heightAnchor.constraint(equalTo: margins.heightAnchor)
+            
+            let landscapeWidthAnchor = imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 4.0/3.0)
+            
+            imageView.contentMode = .scaleToFill
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            
             imageView.isHidden = false
             imageView.image = image
-    
-            switch orientation { // ToDo: need to update rotational behavior of horizontal / vert
             
+            
+            
+            switch orientation { // ToDo: need to update rotational behavior of horizontal / vert
+                
+                
+                
             case "Horizontal": // Force 4:3 Aspect ratio
                 
-               imageView.contentMode = .scaleToFill
-                imageView.translatesAutoresizingMaskIntoConstraints = false
                 
-               imageView.widthAnchor.constraint(equalTo: margins.widthAnchor).isActive = true
-               imageView.centerXAnchor.constraint(equalTo: margins.centerXAnchor).isActive = true
-               imageView.centerYAnchor.constraint(equalTo: margins.centerYAnchor).isActive = true
-               imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 3.0/4.0).isActive = true
-
+                
+                
+                if UIDevice.current.orientation.isPortrait {
+                    
+                    
+                    centerX.isActive = true
+                    centerY.isActive = true
+                    //     landscapeHeightAnchor.isActive = false
+                    //     landscapeWidthAnchor.isActive = false
+                    portraitWidthAnchor.isActive = true
+                    portraitHeightAnchor.isActive = true
+                    
+                } else {
+                    //
+                    //                centerX.isActive = false
+                    //                centerY.isActive = false
+                    centerX.isActive = true
+                    centerY.isActive = true
+                    //                portraitWidthAnchor.isActive = false
+                    //                portraitHeightAnchor.isActive = false
+                    landscapeHeightAnchor.isActive = true
+                    landscapeWidthAnchor.isActive = true
+                    //
+                }
+                
                 
             case "Vertical": // Force 3:4 Aspect Ratio
                 
-                imageView.translatesAutoresizingMaskIntoConstraints = false
-                imageView.contentMode = .scaleToFill
                 //imageView.topAnchor.constraint(equalTo: margins.topAnchor).isActive = true
                 //imageView.bottomAnchor.constraint(equalTo:
                 //    margins.bottomAnchor).isActive = true
-                imageView.widthAnchor.constraint(equalTo: margins.widthAnchor).isActive = true
-                imageView.centerXAnchor.constraint(equalTo: margins.centerXAnchor).isActive = true
-                imageView.centerYAnchor.constraint(equalTo: margins.centerYAnchor).isActive = true
-                imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 4.0/3.0).isActive = true
-        
+                
+                if UIDevice.current.orientation.isPortrait {
+                    imageView.widthAnchor.constraint(equalTo: margins.widthAnchor).isActive = true
+                    centerX.isActive = true
+                    centerY.isActive = true
+                    imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 4.0/3.0).isActive = true
+                }
+                else {
+                    centerX.isActive = true
+                    centerY.isActive = true
+                    imageView.heightAnchor.constraint(equalTo: margins.heightAnchor).isActive = true
+                    imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 3.0/4.0).isActive = true
+                    
+                    
+                }
             default :
                 imageView.translatesAutoresizingMaskIntoConstraints = true
                 imageView.contentMode = .scaleAspectFit

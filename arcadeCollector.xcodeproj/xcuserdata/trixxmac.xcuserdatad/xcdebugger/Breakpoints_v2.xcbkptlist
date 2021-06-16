@@ -6,16 +6,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
-            timestampString = "644427803.120361"
+            filePath = "arcadeCollector/View Controllers/PopOverViewController.swift"
+            timestampString = "645562695.069471"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
-            landmarkName = "historyButtonTapped(_:)"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
+            landmarkName = "setView()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
