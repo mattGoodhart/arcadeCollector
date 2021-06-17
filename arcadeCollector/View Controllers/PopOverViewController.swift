@@ -20,6 +20,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     var text: String!
     var type: String!
     var webURL: URL!
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     @IBOutlet weak var pdfView: PDFView!
     @IBOutlet weak var textView: UITextView!
@@ -57,17 +58,20 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         switch type {
             
         case "pdfView":
+            appDelegate.allowedOrientations = .portrait
             pdfView.isHidden = false
             pdfView.document = manual
             pdfView.frame = view.frame
             
         case "textView":
+            appDelegate.allowedOrientations = .portrait
             textView.isHidden = false
             textView.text = text
             textView.backgroundColor = UIColor.black
             textView.frame = view.frame
             
         case "webView":
+            appDelegate.allowedOrientations = .all
             webView.isHidden = false
             webView.configuration.allowsInlineMediaPlayback = true // done in storyboard
             webView.frame = view.frame
@@ -76,6 +80,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             webView.load(request)
             
         case "marqueeView": //
+            appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.image = marqueeImage
@@ -88,6 +93,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             imageView.isHidden = false
             
         case "flyerView":
+            appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.image = image
@@ -100,6 +106,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             imageView.isHidden = false
             
         case "hardwareView":
+            appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.image = image
@@ -112,7 +119,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             imageView.isHidden = false
             
         case "gameImageView":
-        
+            appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
             
             let portraitHeightAnchor = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 3.0/4.0)
