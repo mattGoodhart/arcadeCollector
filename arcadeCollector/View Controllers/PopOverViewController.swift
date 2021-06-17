@@ -57,8 +57,12 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         
         switch type {
             
-        case "pdfView":
+        case "pdfView": //to do - indicate pdf downloading and move to popup right away once downloaded
             appDelegate.allowedOrientations = .portrait
+            pdfView.displayMode = .singlePageContinuous
+            pdfView.autoScales = true
+            pdfView.displayDirection = .vertical
+            pdfView.contentMode = .scaleAspectFit
             pdfView.isHidden = false
             pdfView.document = manual
             pdfView.frame = view.frame

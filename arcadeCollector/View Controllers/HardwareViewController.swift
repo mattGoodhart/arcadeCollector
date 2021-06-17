@@ -13,6 +13,7 @@ import PDFKit
 
 class HardwareViewController: UIViewController, XMLParserDelegate {
     
+    var isPDF : Bool = false
     var formattedSoundStringArray = [String]()
     var formattedCPUStringArray = [String]()
     var cpuStringArray = [String]()
@@ -37,7 +38,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var audioChannelsLine: UILabel!
     @IBOutlet weak var manualButton: UIButton!
-    @IBOutlet weak var manualActivityIndicator: UIActivityIndicatorView!
+    // @IBOutlet weak var manualActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var scrollView: UIScrollView!
     
     //MARK App Life Cycle
@@ -46,12 +47,12 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         super.viewDidLoad()
         
         scrollView.contentSize.equalTo(view.frame.size)
-       // scrollView.delegate = self
+        // scrollView.delegate = self
         
         prepMainImageView()
         
         
-     
+        
         //  handleActivityIndicator(indicator: manualActivityIndicator, vc: self, show: false)
         
         getHardwareDetailsIfNeeded(game: viewedGame)
@@ -71,7 +72,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     
     func prepMainImageView() {
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
-      //  handleActivityIndicator(indicator: manualActivityIndicator, vc: self, show: false)
+        //  handleActivityIndicator(indicator: manualActivityIndicator, vc: self, show: false)
         mainImageView.image = nil
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.mainImageTapped))
         mainImageView.addGestureRecognizer(tapRecognizer)
@@ -84,33 +85,29 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         if hasNoAvailableImages(){
             mainImageView.image = UIImage(named: "noHardwareDefaultImage")
         }
+        
+        if viewedGame.manualURLString == "" {
+            manualButton.isEnabled = false
+        }
     }
     
     func segueToMameNotes() {
         let popOverVC = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
-       // self.addChild(popOverVC)
+        // self.addChild(popOverVC)
         popOverVC.text = viewedGame.mameNotes ?? "Sorry, MAME driver notes could not be fetched."
         popOverVC.type = "textView"
         popOverVC.modalTransitionStyle = .crossDissolve
         present(popOverVC, animated: true, completion: nil)
         
-        
-//        popOverVC.view.frame = self.view.frame
-//        self.view.addSubview(popOverVC.view)
-//        popOverVC.didMove(toParent: self)
     }
     
     @objc func mainImageTapped(_ sender: UIGestureRecognizer) {
         if sender.state == .ended {
             let popOverVC = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
-           // self.addChild(popOverVC)
             popOverVC.image = mainImageView.image
             popOverVC.type = "hardwareView"
             popOverVC.modalTransitionStyle = .crossDissolve
             present(popOverVC, animated: true, completion: nil)
-//            popOverVC.view.frame = self.view.frame
-//            self.view.addSubview(popOverVC.view)
-//            popOverVC.didMove(toParent: self)
         }
     }
     
@@ -119,25 +116,15 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         if let manual = viewedGame.manual {
             segueToManualViewController(manualData: manual)
         } else {
-            getManual()
-            if let manual = viewedGame.manual {
-                segueToManualViewController(manualData: manual)
-                segueToManualViewController(manualData: viewedGame.manual!)
-            } else {
-                handleButtons(enabled: false, button: manualButton)
-            }
+            getManualIfNeeded()
         }
     }
     
     func segueToManualViewController(manualData: Data) {
         let manualPDF = PDFDocument(data: manualData)!
         let popOverVC = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
-      //  self.addChild(popOverVC)
         popOverVC.manual = manualPDF
         popOverVC.type = "pdfView"
-      //  popOverVC.view.frame = self.view.frame
-//        self.view.addSubview(popOverVC.view)
-//        popOverVC.didMove(toParent: self)
         popOverVC.modalTransitionStyle = .crossDissolve
         present(popOverVC, animated: true, completion: nil)
     }
@@ -180,7 +167,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         }
     }
     
-    
     func setInfo() {
         
         var cpuLineText = ""
@@ -215,7 +201,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
             getAtLeastOnePhotoIfPossible()
         }
     }
-  
+    
     func getAtLeastOnePhotoIfPossible() {
         
         if let cabinetImageData = viewedGame.cabinetImageData {
@@ -308,76 +294,99 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 if hasNoAvailableImages() {
                     mainImageView.image = UIImage(named: "noHardwareDefaultImage")
                     
-                 //   mainImageView.translatesAutoresizingMaskIntoConstraints = false
-//                    mainImageView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
-//                    mainImageView.topAnchor.constraint(equalTo: marqueeView.bottomAnchor, constant: 20).isActive = true
+                    //   mainImageView.translatesAutoresizingMaskIntoConstraints = false
+                    //                    mainImageView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
+                    //                    mainImageView.topAnchor.constraint(equalTo: marqueeView.bottomAnchor, constant: 20).isActive = true
                     mainImageView.heightAnchor.constraint(equalToConstant: 0).isActive = true
-//                    mainImageView.widthAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: multiplier).isActive = true
+                    //                    mainImageView.widthAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: multiplier).isActive = true
                     
                 }
             }
         }
     }
+    
+    func saveGameAttributesFromXML() {
         
-        func saveGameAttributesFromXML() {
-            
-            viewedGame.vRefresh = displayDictionary!["refresh"]
-            viewedGame.vTotalLines = displayDictionary!["vtotal"]
-            viewedGame.resolution = displayDictionary!["width"]! + " x " + displayDictionary!["height"]!
-          //  viewedGame.hRefresh = getHorizontalRefresh(viewedGame: viewedGame)
-            viewedGame.displayType = displayDictionary!["type"]
-            viewedGame.driver = machineDictionary!["driver"]
-            viewedGame.audioChannels = soundChannels
-            viewedGame.monitorResolutionType = getMonitorResolutionType()
-          //  determineOrientation()  // This info is now provided in the JSON
-            parseHardwareData()
-            try? dataController.viewContext.save()
+        viewedGame.vRefresh = displayDictionary!["refresh"]
+        viewedGame.vTotalLines = displayDictionary!["vtotal"]
+        viewedGame.resolution = displayDictionary!["width"]! + " x " + displayDictionary!["height"]!
+        //  viewedGame.hRefresh = getHorizontalRefresh(viewedGame: viewedGame)
+        viewedGame.displayType = displayDictionary!["type"]
+        viewedGame.driver = machineDictionary!["driver"]
+        viewedGame.audioChannels = soundChannels
+        viewedGame.monitorResolutionType = getMonitorResolutionType()
+        //  determineOrientation()  // This info is now provided in the JSON
+        parseHardwareData()
+        try? dataController.viewContext.save()
+    }
+    
+    func determineOrientation() {
+        
+        if displayDictionary!["rotate"] == "90"  {
+            viewedGame.orientation = "Vertical"
+        }
+        else if displayDictionary!["rotate"] == "270"{
+            viewedGame.orientation = "Vertical"
+        }
+        else {
+            viewedGame.orientation = "Horizontal"
+        }
+    }
+    
+    func getInfoFromXML(){
+        
+        let urlString = String("http://adb.arcadeitalia.net/download_file.php?tipo=xml&codice=" + viewedGame.romSetName!)
+        let url = URL(string: urlString)!
+        
+        guard let data = try? Data(contentsOf: url) else {
+            print("XML download failure.")
+            return
         }
         
-        func determineOrientation() {
-            
-            if displayDictionary!["rotate"] == "90"  {
-                viewedGame.orientation = "Vertical"
+        let parser = XMLParser(data: data)
+        parser.delegate = self
+        
+        if parser.parse() {
+            self.saveGameAttributesFromXML()
+        }
+    }
+    
+    func checkForRealPDF(assetData: NSData) {
+        
+        if assetData.length >= 1024 //only check if bigger
+        {
+            var pdfBytes = [UInt8]()
+            pdfBytes = [0x25, 0x50, 0x44, 0x46]
+            let pdfHeader = NSData(bytes: pdfBytes, length: 4)
+            let a = NSData(data: assetData as Data).range(of: pdfHeader as Data, options: .anchored, in: NSMakeRange(0, 1024))
+            if (a.length) > 0
+            {
+                isPDF = true
             }
-            else if displayDictionary!["rotate"] == "270"{
-                viewedGame.orientation = "Vertical"
-            }
-            else {
-                viewedGame.orientation = "Horizontal"
+            else
+            {
+                isPDF = false
             }
         }
-        
-        func getInfoFromXML(){
+    }
+    
+    func getManualIfNeeded() {
+        if let manual = viewedGame.manual {
+            segueToManualViewController(manualData: manual)
+        } else {
             
-            let urlString = String("http://adb.arcadeitalia.net/download_file.php?tipo=xml&codice=" + viewedGame.romSetName!)
-            let url = URL(string: urlString)!
-            
-            guard let data = try? Data(contentsOf: url) else {
-                print("XML download failure.")
-                return
-            }
-            
-            let parser = XMLParser(data: data)
-            parser.delegate = self
-            
-            if parser.parse() {
-                self.saveGameAttributesFromXML()
-            }
-        }
-        
-        func getManual() {
             if viewedGame.manualURLString == nil {
-            
-          //  handleActivityIndicator(indicator: manualActivityIndicator, vc: self, show: true)
-            
-            DispatchQueue.global().async {
+                
+                handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
+                
+                //  DispatchQueue.global().async {
                 let urlString = String("http://adb.arcadeitalia.net/download_file.php?tipo=mame_current&codice=" + self.viewedGame.romSetName! + "&entity=manual")
                 let url = URL(string: urlString)!
                 
-                guard let data = try? Data(contentsOf: url) else {
+                guard let data = try? Data(contentsOf: url) else {// issue - possible it downloads garbage
                     print("manual download failure.")
                     DispatchQueue.main.async {
-                     //   self.handleActivityIndicator(indicator: self.manualActivityIndicator, vc: self, show: false)
+                        self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
                         self.manualButton.isEnabled = false
                         self.viewedGame.manualURLString = ""
                         try? self.dataController.viewContext.save()
@@ -385,30 +394,45 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                     return
                 }
                 DispatchQueue.main.async {
-                    self.viewedGame.manual = data
-                    try? self.dataController.viewContext.save()
-                    //self.handleActivityIndicator(indicator: self.manualActivityIndicator, vc: self, show: false)
+                    self.checkForRealPDF(assetData: NSData(data: data))
+                    if !self.isPDF {
+                        self.viewedGame.manualURLString = ""
+                        self.viewedGame.manual = nil
+                        self.manualButton.isEnabled = false
+                        self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                        try? self.dataController.viewContext.save()
+                        return
+                    }
+                        
+                    else {
+                        DispatchQueue.main.async {
+                            self.viewedGame.manual = data
+                            try? self.dataController.viewContext.save()
+                            self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                            self.segueToManualViewController(manualData: data)
+                        }
+                    }
                 }
             }
         }
     }
+    
+    func getHorizontalRefresh(viewedGame: Game) -> String { // TODO - account for vRefresh or vTotlaline missing
         
-        func getHorizontalRefresh(viewedGame: Game) -> String { // TODO - account for vRefresh or vTotlaline missing
-            
-            if let vRefresh = viewedGame.vRefresh, let vTotalLines = viewedGame.vTotalLines {
-                let hRefresh = Double(vRefresh)! * Double(vTotalLines)!
+        if let vRefresh = viewedGame.vRefresh, let vTotalLines = viewedGame.vTotalLines {
+            let hRefresh = Double(vRefresh)! * Double(vTotalLines)!
+            return "\(hRefresh)"
+        } else {
+            if Int(displayDictionary!["width"]!)! > 262 {
+                let hRefresh = Double(31550)
                 return "\(hRefresh)"
             } else {
-                if Int(displayDictionary!["width"]!)! > 262 {
-                    let hRefresh = Double(31550)
-                    return "\(hRefresh)"
-                } else {
-                    let hRefresh = Double(15720)
-                    return "\(hRefresh)"
-                }
+                let hRefresh = Double(15720)
+                return "\(hRefresh)"
             }
         }
-        
+    }
+    
     func getMonitorResolutionType() -> String {
         if let hRefresh = viewedGame.hRefresh {
             
