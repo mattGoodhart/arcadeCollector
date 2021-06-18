@@ -34,14 +34,6 @@ enum Tab: Int {
     }
 }
 
-enum SortMethod {
-    case name
-    case year
-    case manufacturer
-    case orientation
-    case players
-}
-
 class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
 
     //MARK: Properties
@@ -52,7 +44,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var viewedGame : Game!
     var filteredGames : [Game] = []
     var tab: Tab!
-    var currentSortMethod: SortMethod = .name
+  //  var currentSortMethod: SortMethod = .name
     var reverseActive : Bool = false
     
     var visibleGamesList: [Game] {

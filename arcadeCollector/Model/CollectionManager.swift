@@ -134,6 +134,15 @@ class CollectionManager {
         return result
     }
     
+   func fetchCollectionsForGame(game: Game) -> [CollectionEntity]? {
+    let fetchRequest: NSFetchRequest<CollectionEntity> = CollectionEntity.fetchRequest()
+    let predicate = NSPredicate(format: "(ANY games == %@)", game)
+    fetchRequest.predicate = predicate
+    let result = try? DataController.shared.viewContext.fetch(fetchRequest)
+    print(result as Any)
+    return result
+    }
+    
     func fetchGamesForAllCollections() {
         self.myGames += fetchGamesForCollection(collection: myGamesCollection) ?? []
         self.allGames += fetchGamesForCollection(collection: allGamesCollection) ?? []

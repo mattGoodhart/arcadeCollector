@@ -13,6 +13,8 @@ class DetailViewController: UIViewController {
     
     //MARK: Properties
     
+    var isInMyCollection = false
+    var isWanted = false
     var viewMargins : UILayoutGuide!
     let masterCollection = CollectionManager.shared
     var viewedGame: Game!
@@ -43,11 +45,11 @@ class DetailViewController: UIViewController {
         setMarqueeView()
         setImageViewAspectRatio()
         setOtherConstraints()
-        setCollection() // todo: instead of relying on the collection view from the tab bar, I should check if the viewed game belong to either the wanted games or my games collection
+        determineCollectionsGameBelongsTo() // todo: instead of relying on the collection view from the tab bar, I should check if the viewed game belong to either the wanted games or my games collection. this way i can enable / disable buttons depending on the collection.
         
-        if viewedCollection.name != "All Games" {
-            handleButtons(enabled: false, button: wantedButton)
-        }
+//        if viewedCollection.name != "All Games" {
+//            handleButtons(enabled: false, button: wantedButton)
+//        }
         
         handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
         handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: false)
@@ -68,7 +70,7 @@ class DetailViewController: UIViewController {
         super .viewWillAppear(animated)
         
         if viewedGame.flyerImageURLString == "" {
-             mainImageSwitch.selectedSegmentIndex = 0 // i want in-game to be highlighted, but this aint doing it
+             mainImageSwitch.selectedSegmentIndex = 1 // i want in-game to be highlighted, but this aint doing it
         }
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -192,19 +194,46 @@ class DetailViewController: UIViewController {
             
         }
     }
-    
-    func setCollection() {
-        let index = self.tabBarController!.selectedIndex
+    /// fetch collections the viewedGame belongs to
+    func determineCollectionsGameBelongsTo() {
         
-      
-            switch index {
-            case 1: viewedCollection = masterCollection.myGamesCollection
-            case 2: viewedCollection = masterCollection.allGamesCollection
-            case 3: viewedCollection = masterCollection.wantedGamesCollection
-            default: break
+        var collectionNameArray = [String]()
+        
+        if let collectionOwnership = masterCollection.fetchCollectionsForGame(game: viewedGame) {
+
+        for collection in collectionOwnership {
+            collectionNameArray += [collection.name!]
+        }
+        
+            if collectionNameArray.contains("My Games") {
+                self.isInMyCollection = true
             }
+            if collectionNameArray.contains("Wanted Games") {
+                self.isWanted = true
+            }
+            
+            
         
         }
+        if isWanted {
+            handleButtons(enabled: false, button: wantedButton)
+           // wantedButton.isEnabled = false
+        }
+        if isInMyCollection {
+            // change add button to edit button
+        }
+        
+        let index = self.tabBarController!.selectedIndex
+        
+        
+        switch index {
+        case 1: viewedCollection = masterCollection.myGamesCollection
+        case 2: viewedCollection = masterCollection.allGamesCollection
+        case 3: viewedCollection = masterCollection.wantedGamesCollection
+        default: break
+        }
+
+    }
     
     
     func loadYoutube(videoID: String) {
