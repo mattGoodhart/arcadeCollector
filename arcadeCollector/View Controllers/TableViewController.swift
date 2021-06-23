@@ -63,6 +63,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
   
     @IBOutlet weak var reverseButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var pickerView: UIPickerView!
+    
     
     //MARK Overrides
     
@@ -79,9 +81,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         definesPresentationContext = true
         
       arrayOfUniqueYears = createArrayOfUniqueYears()
-        
         groups = Dictionary(grouping: gamesList.sorted { $0.title! < $1.title! }, by :{ $0.year! })
-        
         sortByYear()
     }
     
@@ -180,6 +180,11 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return getUniqueYearsIfNeeded()[section]
+    }
+    
+    func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        if tabBarController?.selectedIndex == 2 { return getUniqueYearsIfNeeded()}
+        else {return nil}
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
