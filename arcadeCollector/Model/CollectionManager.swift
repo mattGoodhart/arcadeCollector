@@ -26,6 +26,9 @@ class CollectionManager {
     var allGames = [Game]()
     var myGames = [Game]()
     var wantedGames = [Game]()
+   // var uniqueYearsCount = 1
+    var arrayOfUniqueYears : [String]!
+    
     
     private init() {}
     
@@ -102,6 +105,8 @@ class CollectionManager {
     
     func initializeAllGames() {
         parse(jsonData: readLocalFile(forName: "ScrollingData")!)
+        
+        
     }
 
     private func fetchCollectionsFromCoreData() -> [CollectionEntity]? {
@@ -139,7 +144,7 @@ class CollectionManager {
     let predicate = NSPredicate(format: "(ANY games == %@)", game)
     fetchRequest.predicate = predicate
     let result = try? DataController.shared.viewContext.fetch(fetchRequest)
-    print(result as Any)
+  //  print(result as Any)
     return result
     }
     

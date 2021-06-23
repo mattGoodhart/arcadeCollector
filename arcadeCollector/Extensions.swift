@@ -8,21 +8,10 @@
 
 import UIKit
 
-extension TableViewController: UISearchResultsUpdating {
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        
-        let searchBar = searchController.searchBar
-        filterContentForSearchText(searchBar.text!)
-    }
-    
-    func filterContentForSearchText(_ searchText: String) {
-        filteredGames = gamesList.filter { (game: Game) -> Bool in
-            return game.title!.lowercased().contains(searchText.lowercased())
-        }
-        tableView.reloadData()
-    }
-}
+//extension TableViewController: UISearchResultsUpdating {
+//
+//
+//}
 
 extension UIViewController {
     func handleActivityIndicator(indicator: UIActivityIndicatorView, vc: UIViewController, show: Bool) {
@@ -249,6 +238,16 @@ extension UIView {
     }
 }
 
+extension Array where Element: Equatable {
+    var unique: [Element] {
+        var uniqueValues: [Element] = []
+        forEach { item in
+            guard !uniqueValues.contains(item) else { return }
+            uniqueValues.append(item)
+        }
+        return uniqueValues
+    }
+}
 
 
 

@@ -34,21 +34,23 @@ enum Tab: Int {
     }
 }
 
-class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
+class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchResultsUpdating {
 
     //MARK: Properties
+    var segmentOfGames : [Game]!
+    var groups : [String : [Game]]!
     let searchController = UISearchController(searchResultsController: nil)
     let dataController = DataController.shared
 
+    var arrayOfUniqueYears : [String]!
     var gamesList = [Game]()
     var viewedGame : Game!
     var filteredGames : [Game] = []
     var tab: Tab!
-  //  var currentSortMethod: SortMethod = .name
     var reverseActive : Bool = false
     
-    var visibleGamesList: [Game] {
-        return isFiltering ? filteredGames : gamesList
+    var visibleGamesList: [Game]! {
+       return isFiltering ? filteredGames : gamesList
     }
     
     var isSearchBarEmpty: Bool {
@@ -58,22 +60,15 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var isFiltering: Bool {
         return searchController.isActive && !isSearchBarEmpty
     }
-    
-    
+  
     @IBOutlet weak var reverseButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
-  //  @IBOutlet weak var sortOptions: UISegmentedControl!
     
     //MARK Overrides
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         tableView.frame = view.frame
-        
-//        let font = UIFont.systemFont(ofSize: 12)
-//        sortOptions.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
-        
         tableView.dataSource = self
         tableView.delegate = self
         gamesList = tab.baseGamesList
@@ -82,12 +77,18 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         searchController.searchBar.placeholder = "Search for Game by Title"
         navigationItem.searchController = searchController
         definesPresentationContext = true
+        
+      arrayOfUniqueYears = createArrayOfUniqueYears()
+        
+        groups = Dictionary(grouping: gamesList.sorted { $0.title! < $1.title! }, by :{ $0.year! })
+        
         sortByYear()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
-        refreshCollectionIfnNeeded()
+        refreshCollectionIfNeeded()
+    
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -97,61 +98,54 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
-//    @IBAction func segmentedControlPressed(_sender: UISegmentedControl){
-//        switch sortOptions.selectedSegmentIndex {
-//        case 0:
-//            sortByName()
-//
-//        case 1:
-//            sortByYear()
-//
-//        default:
-//            break;
-//        }
-//    }
-
-    
-//    func sortByName() {
-//        gamesList.sort() {
-//            let isGreater = $0.title! < $1.title!
-//            return isGreater
-//        }
-//        tableView.reloadData()
-//    }
-    
     @IBAction func reverseButtonTapped(_ sender: UIButton) {
         reverseActive = !reverseActive
         sortByYear()
+        tableView.reloadData()
         tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: UITableView.ScrollPosition.top, animated: false)
     }
     
-    
-    func sortByYear() { // I will want to sort by name after this
-        gamesList.sort() {
-            if $0.year != $1.year {
-                if !reverseActive {
-                    let isGreater = $0.year! < $1.year!
-                    return isGreater
-                }
-                else {
-                    let isLessThan = $0.year! > $1.year!
-                    return isLessThan
-                }
-            }
-            else {
-                return $0.title! < $1.title!
-            }
+    func createArrayOfUniqueYears() -> [String] {
+        var uniqueYears = [String]()
+        for game in visibleGamesList {
+            uniqueYears += [game.year!]
         }
-        tableView.reloadData()
+        var uniqueYearsArray = Array(Set(uniqueYears))
+        uniqueYearsArray.sort()
+        return uniqueYearsArray
     }
     
-    private func refreshCollectionIfnNeeded() {
+    func getUniqueYearsIfNeeded() -> [String] {
+        guard arrayOfUniqueYears != nil, isFiltering else {return arrayOfUniqueYears}
+        return createArrayOfUniqueYears()
+    }
+    
+    func makeGroupsIfNeeded(gamesList: [Game]) -> [String : [Game]]  {
+        guard isFiltering else {return groups}
+        let newGroups = Dictionary(grouping: gamesList.sorted { $0.title! < $1.title! }, by :{ $0.year! })
+        return newGroups
+    }
+    
+    func sortByYear() {
+        if !reverseActive {
+            var uniqueYears = getUniqueYearsIfNeeded()
+            uniqueYears.sort()
+            arrayOfUniqueYears = uniqueYears
+        }
+        else {
+            var uniqueYears = getUniqueYearsIfNeeded()
+            uniqueYears.sort(by: >)
+            arrayOfUniqueYears = uniqueYears
+        }
+    }
+    
+    private func refreshCollectionIfNeeded() {
         guard tab.shouldRefresh else {
             return
         }
+        
         let gamesSet = Set(gamesList)
         let baseGamesSet = Set(tab.baseGamesList)
-        
         guard gamesSet != baseGamesSet else {
             print("No refresh needed")
             return
@@ -163,32 +157,54 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tableView.reloadData()
     }
     
+    // MARK UISearchResultsUpdating
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        let searchBar = searchController.searchBar
+        filterContentForSearchText(searchBar.text!)
+    }
+    
+    func filterContentForSearchText(_ searchText: String) {
+        filteredGames = gamesList.filter { (game: Game) -> Bool in
+    return game.title!.lowercased().contains(searchText.lowercased())
+        }
+       // makeGroups(gamesList: filteredGames)
+        tableView.reloadData()
+    }
+    
     // MARK TableViewDelegate
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return getUniqueYearsIfNeeded().count
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return getUniqueYearsIfNeeded()[section]
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return visibleGamesList.count
+        let year = getUniqueYearsIfNeeded()[section]
+        let groupSection = makeGroupsIfNeeded(gamesList: visibleGamesList)[year]
+        return groupSection!.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GameTableCell", for: indexPath) as! GameTableCell
-    
-        let game = visibleGamesList[indexPath.item]
+        let section = getUniqueYearsIfNeeded()[indexPath.section]
+        var group = makeGroupsIfNeeded(gamesList: visibleGamesList)[section]!
+        let game = group[indexPath.row]
         if let name = game.romSetName, let dataAsset = NSDataAsset(name: "icons/\(name)") {
             let iconImage = UIImage(data: dataAsset.data)
             cell.iconImageView.image = iconImage
         }
-        
-        cell.titleText.text = visibleGamesList[indexPath.item].title
-        cell.detailtext.text = (visibleGamesList[indexPath.item].manufacturer ?? "Jesus") + ", " + (visibleGamesList[indexPath.item].year ?? "0000")
+        cell.titleText.text = game.title
+        cell.detailtext.text = (game.manufacturer ?? "Unknown") + ", " + (game.year ?? "????")
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewedGame = visibleGamesList[indexPath.item]
+        let section = getUniqueYearsIfNeeded()[indexPath.section]
+        viewedGame = makeGroupsIfNeeded(gamesList: visibleGamesList)[section]![indexPath.row]
         performSegue(withIdentifier: "GamesDetailSegue", sender: self)
     }
 }
