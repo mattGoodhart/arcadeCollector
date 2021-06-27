@@ -29,8 +29,4 @@ class TabBarController: UITabBarController {
         wantedViewController.tab = .wanted
     }
     
-    
-    @IBAction func filterButonTapped() {
-        
-    }
 }
