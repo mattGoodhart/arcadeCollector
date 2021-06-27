@@ -185,26 +185,32 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         var group = groups[section]!
         let game = group[indexPath.row]
         let visibleRemovalIndex = gamesList.firstIndex(of: game)
-        if editingStyle == .delete
-        {
-            if tabBarController?.selectedIndex == 1 { //mygames
-                let removalIndex = CollectionManager.shared.myGames.firstIndex(of: game)
-               
-                CollectionManager.shared.myGames.remove(at: removalIndex!)
-                
-                CollectionManager.shared.myGamesCollection.removeFromGames(game)
-                
-            } else if tabBarController?.selectedIndex == 3 {
-                let removalIndex = CollectionManager.shared.wantedGames.firstIndex(of: game)
-                CollectionManager.shared.wantedGames.remove(at: removalIndex!)
-                CollectionManager.shared.wantedGamesCollection.removeFromGames(game)
-                
-            }
-            gamesList.remove(at: visibleRemovalIndex!)
-            refreshDataSource()
-         
-            tableView.deleteRows(at: [indexPath], with: .fade) // the row im deleting doesnt align with my datasource
-            try? dataController.viewContext.save()
+        
+        guard editingStyle == .delete else {
+            return
+        }
+        
+        if tabBarController?.selectedIndex == 1 { //mygames
+            let removalIndex = CollectionManager.shared.myGames.firstIndex(of: game)
+            
+            CollectionManager.shared.myGames.remove(at: removalIndex!)
+            
+            CollectionManager.shared.myGamesCollection.removeFromGames(game)
+            
+        } else if tabBarController?.selectedIndex == 3 {
+            let removalIndex = CollectionManager.shared.wantedGames.firstIndex(of: game)
+            CollectionManager.shared.wantedGames.remove(at: removalIndex!)
+            CollectionManager.shared.wantedGamesCollection.removeFromGames(game)
+            
+        }
+
+        try? dataController.viewContext.save()
+        refreshDataSource()
+        
+        if group.count == 1 {
+            tableView.deleteSections([indexPath.section], with: .fade)
+        } else {
+            tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
     
