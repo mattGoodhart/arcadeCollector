@@ -133,8 +133,13 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func refreshDataSource() {
         gamesList = tab.baseGamesList
-        arrayOfUniqueYears = createArrayOfUniqueYears(listOfGames: gamesList )
-        groups = Dictionary(grouping: gamesList.sorted { $0.title! < $1.title! }, by :{ $0.year! })
+        
+        if !isFiltering {
+            arrayOfUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)}
+        else {
+             filteredUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
+        }
+        groups = Dictionary(grouping: visibleGamesList.sorted { $0.title! < $1.title! }, by :{ $0.year! })
     }
     
     private func refreshCollectionIfNeeded() {
@@ -148,7 +153,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             print("No refresh needed")
             return
         }
-        
         print("Refreshing list")
         refreshDataSource()
         tableView.reloadData()
@@ -166,6 +170,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         filteredGames = gamesList.filter { (game: Game) -> Bool in
     return game.title!.lowercased().contains(searchText.lowercased())
         }
+        // shit do i have to call refreshDataSource here?
+        refreshDataSource()
         tableView.reloadData()
     }
     
@@ -173,18 +179,19 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     /// Prevents the deleting of rows when viewing allGames on TableVC
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        if tabBarController?.selectedIndex == 2 {
+        
+        guard tabBarController?.selectedIndex != 2 else {
             return false
         }
-        else {return true}
+        return true
     }
     
+    /// Removes game from myGames or wantedGames with delete gesture
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         let section = visibleUniqueYears[indexPath.section]
         var group = groups[section]!
         let game = group[indexPath.row]
-        let visibleRemovalIndex = gamesList.firstIndex(of: game)
         
         guard editingStyle == .delete else {
             return
@@ -192,16 +199,13 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         if tabBarController?.selectedIndex == 1 { //mygames
             let removalIndex = CollectionManager.shared.myGames.firstIndex(of: game)
-            
             CollectionManager.shared.myGames.remove(at: removalIndex!)
-            
             CollectionManager.shared.myGamesCollection.removeFromGames(game)
             
         } else if tabBarController?.selectedIndex == 3 {
             let removalIndex = CollectionManager.shared.wantedGames.firstIndex(of: game)
             CollectionManager.shared.wantedGames.remove(at: removalIndex!)
             CollectionManager.shared.wantedGamesCollection.removeFromGames(game)
-            
         }
 
         try? dataController.viewContext.save()
