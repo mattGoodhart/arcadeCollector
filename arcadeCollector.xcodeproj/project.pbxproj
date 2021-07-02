@@ -10,6 +10,7 @@
 		E304C2AD264F2E7F00D0597E /* ScrollingData.json in Resources */ = {isa = PBXBuildFile; fileRef = E304C2AC264F2A6400D0597E /* ScrollingData.json */; };
 		E32D434C261F8B160031B1B7 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32D434B261F8B160031B1B7 /* Networking.swift */; };
 		E34B771B260E7F1800EAE50B /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34B771A260E7F1800EAE50B /* AboutViewController.swift */; };
+		E370BB90268A4F6000D91D9E /* FilterOptionsPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E370BB8F268A4F6000D91D9E /* FilterOptionsPopup.swift */; };
 		E383228D26239BF100A52BD5 /* EditGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E383228C26239BF100A52BD5 /* EditGameViewController.swift */; };
 		E3BFF79C260286FF00EF34C4 /* CollectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3BFF79B260286FF00EF34C4 /* CollectionManager.swift */; };
 		E3C4BBF5262CB5D9000C035E /* ScrollingDataDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3C4BBF4262CB5D9000C035E /* ScrollingDataDecoder.swift */; };
@@ -34,6 +35,7 @@
 		E304C2AC264F2A6400D0597E /* ScrollingData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = ScrollingData.json; path = arcadeCollector/Model/ScrollingData.json; sourceTree = SOURCE_ROOT; };
 		E32D434B261F8B160031B1B7 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 		E34B771A260E7F1800EAE50B /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
+		E370BB8F268A4F6000D91D9E /* FilterOptionsPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterOptionsPopup.swift; sourceTree = "<group>"; };
 		E383228C26239BF100A52BD5 /* EditGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGameViewController.swift; sourceTree = "<group>"; };
 		E3BFF79B260286FF00EF34C4 /* CollectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionManager.swift; sourceTree = "<group>"; };
 		E3C4BBF4262CB5D9000C035E /* ScrollingDataDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollingDataDecoder.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 				E383228C26239BF100A52BD5 /* EditGameViewController.swift */,
 				E34B771A260E7F1800EAE50B /* AboutViewController.swift */,
 				E3D90E4A265ABF12005C86E7 /* TabBarController.swift */,
+				E370BB8F268A4F6000D91D9E /* FilterOptionsPopup.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -247,6 +250,7 @@
 				E3FB7E2C264AE7C400422DFF /* TableViewController.swift in Sources */,
 				E3E6074725F04EA1003F1888 /* ArcadeCollector.xcdatamodeld in Sources */,
 				E3C4BBF5262CB5D9000C035E /* ScrollingDataDecoder.swift in Sources */,
+				E370BB90268A4F6000D91D9E /* FilterOptionsPopup.swift in Sources */,
 				E3E6073F25F04EA1003F1888 /* AppDelegate.swift in Sources */,
 				E34B771B260E7F1800EAE50B /* AboutViewController.swift in Sources */,
 			);

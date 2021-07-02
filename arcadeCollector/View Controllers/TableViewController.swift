@@ -6,7 +6,20 @@
 //  Copyright © 2021 CatBoiz. All rights reserved.
 //
 
+
 import UIKit
+
+
+//enum FilterOption {
+//    case orientation
+//    case players
+//    case manufacturer
+//}
+
+protocol FilterSelectionDelegate: AnyObject {
+    func didSelect(filter: String, filterOptionString: String)
+    func didFinish()
+}
 
 enum Tab: Int {
     case myGames = 1
@@ -34,56 +47,110 @@ enum Tab: Int {
     }
 }
 
-class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchResultsUpdating {
+class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchResultsUpdating, FilterSelectionDelegate {
 
     //MARK: Properties
-    var filteredUniqueYears = [String]()
-    var segmentOfGames = [Game]()
-    var groups = [String : [Game]]()
+   // var popOverVC : FilterOptionsPopup!
     let searchController = UISearchController(searchResultsController: nil)
     let dataController = DataController.shared
 
+    var reverseActive = false
+    
+    var popUpVC: FilterOptionsPopup!
+    var filterOptionSelected = "orientation"
+    var filterOptionString = ""
+    var filteredUniqueYears = [String]()
+    var groups = [String : [Game]]()
+    var doubleFilteredYears = [String]()
+    var filterOptionedUniqueYears = [String]()
+    var doubleFilteredGames = [Game]()
+    var filterOptionedGames = [Game]()
     var arrayOfUniqueYears = [String]()
     var gamesList = [Game]()
     var viewedGame : Game!
     var filteredGames : [Game] = []
     var tab: Tab!
-    var reverseActive : Bool = false
     
     var visibleGamesList: [Game] {
-       return isFiltering ? filteredGames : gamesList
-    }
-    
-    var visibleUniqueYears : [String] {
-        let filtered = isFiltering ? filteredUniqueYears : arrayOfUniqueYears
-        guard reverseActive else {
-            return filtered
+        
+        //base
+        if !isFiltering && !isFilterOptionChosen {
+            return gamesList
         }
-        return filtered.sorted(by: >)
+        
+    // search filtered list
+        else if isFiltering && !isFilterOptionChosen {
+            return filteredGames
+        }
+    //option filtered list
+        else if !isFiltering && isFilterOptionChosen {
+            return filterOptionedGames
+        }
+        
+    //option list then search filtered  --- or just disable the search bar in this case?
+        else if isFiltering && isFilterOptionChosen {
+            return doubleFilteredGames
+        }
+        else {return gamesList}
+  //do i need to sort again when using optionFiltered?
+       //  return isFiltering ? filteredGames : gamesList
     }
     
-//    var sortedUniqueYears: [String] {
-//        guard reverseActive else {
-//            return arrayOfUniqueYears
-//        }
-//        return arrayOfUniqueYears.sorted(by: >)
-//    }
+    var visibleUniqueYears : [String] { // need 4 versions of this too
+        var uniqueYears = [String]()
+        
+        
+        //base
+        if !isFiltering && !isFilterOptionChosen { uniqueYears = arrayOfUniqueYears }
+        
+        //filtered
+        else if isFiltering && !isFilterOptionChosen { uniqueYears = filteredUniqueYears }
+        
+        //optionfiltered
+        else if !isFiltering && isFilterOptionChosen { uniqueYears = filterOptionedUniqueYears }
+        
+        //doublefiltered
+        else if isFiltering && isFilterOptionChosen { uniqueYears = doubleFilteredYears }
+        
+        
+        //let uniqueYears = isFiltering ? filteredUniqueYears : arrayOfUniqueYears
+        
+        
+        guard reverseActive else {
+            return uniqueYears
+        }
+        return uniqueYears.sorted(by: >)
+    }
     
     var isSearchBarEmpty: Bool {
         return searchController.searchBar.text?.isEmpty ?? true
     }
     
     var isFiltering: Bool {
-        return searchController.isActive && !isSearchBarEmpty
+        return (searchController.isActive && !isSearchBarEmpty)
     }
-  
+    
+    var isFilterOptionChosen: Bool {
+        if filterOptionString == "" {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    //MARK: Outlets
+    
     @IBOutlet weak var reverseButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var filterButton: UIButton!
     
     //MARK Overrides
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+     //popOverVC = storyboard!.instantiateViewController(withIdentifier: "FilterOptionsPopup") as! FilterOptionsPopup
+        
         tableView.frame = view.frame
         tableView.dataSource = self
         tableView.delegate = self
@@ -98,7 +165,14 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
         refreshCollectionIfNeeded()
+        //refreshDataSourceIfFilterOptionSet()
+        //checkIfFilterOptionChosen()
     }
+    
+//    override func viewDidAppear(_ animated: Bool) {
+//        super .viewDidAppear(false)
+//        refreshDataSourceIfFilterOptionSet()
+//    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "GamesDetailSegue" {
@@ -107,10 +181,59 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
+    //MARK: Actions
+    
     @IBAction func reverseButtonTapped(_ sender: UIButton) {
         reverseActive.toggle()
         tableView.reloadData()
         tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: UITableView.ScrollPosition.top, animated: false)
+    }
+
+    @IBAction func filterButtonTapped(_ sender: UIButton) {
+        if let popOver = popUpVC {
+            handleButtons(enabled: false, button: filterButton)
+            present(popOver, animated: true, completion: nil)
+        } else {
+            
+            popUpVC = storyboard!.instantiateViewController(withIdentifier: "FilterOptionsPopup") as? FilterOptionsPopup
+            popUpVC.delegate = self
+            popUpVC.gamesList = gamesList
+            popUpVC.modalPresentationStyle = .overCurrentContext
+            popUpVC.modalTransitionStyle = .crossDissolve
+            handleButtons(enabled: false, button: filterButton) // not working..
+            
+            
+            present(popUpVC, animated: true, completion: nil)
+            
+            //how do I make sure i return to the same instance of the FilterVC?
+            
+            //        self.addChild(popOverVC)
+            //        popOverVC.view.frame = self.view.frame
+            //        self.view.addSubview(popOverVC.view)
+            //        popOverVC.didMove(toParent: self)
+        }
+    }
+    func refreshDataSourceIfFilterOptionSet() {
+        if isFilterOptionChosen {
+            
+            switch filterOptionSelected {
+            case "orientation": filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
+                return game.orientation!.lowercased() == filterOptionString.lowercased()
+            }
+            case "players": filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
+                return game.players!.lowercased().contains(filterOptionString.lowercased())
+                }
+            case "manufacturer": filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
+                return game.manufacturer!.lowercased().contains(filterOptionString.lowercased())
+                }
+            default: break;
+            }
+            refreshDataSource()
+            tableView.reloadData()
+        } else {
+            refreshDataSource()
+            tableView.reloadData()
+        }
     }
     
     func createArrayOfUniqueYears(listOfGames: [Game]) -> [String] {
@@ -123,22 +246,19 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return uniqueYearsArray
     }
     
-    func makeGroupsIfFiltered(gamesList: [Game]) -> [String : [Game]]  {
-        guard isFiltering else {
-            return groups
-        }
-        let newGroups = Dictionary(grouping: gamesList.sorted { $0.title! < $1.title! }, by :{ $0.year! })
-        return newGroups
-    }
-    
-    func refreshDataSource() {
+    func refreshDataSource() { // update for all 4 options
         gamesList = tab.baseGamesList
         
-        if !isFiltering {
-            arrayOfUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)}
-        else {
+        if !isFiltering && !isFilterOptionChosen {
+            arrayOfUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
+        } else if isFiltering && !isFilterOptionChosen {
              filteredUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
+        } else if !isFiltering && isFilterOptionChosen {
+            filterOptionedUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
+        } else if isFiltering && isFilterOptionChosen {
+            doubleFilteredYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
         }
+        
         groups = Dictionary(grouping: visibleGamesList.sorted { $0.title! < $1.title! }, by :{ $0.year! })
     }
     
@@ -166,11 +286,17 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func filterContentForSearchText(_ searchText: String) {
+        //originally used gamesList
         
-        filteredGames = gamesList.filter { (game: Game) -> Bool in
-    return game.title!.lowercased().contains(searchText.lowercased())
+        if !isFilterOptionChosen {
+            filteredGames = gamesList.filter { (game: Game) -> Bool in
+                return game.title!.lowercased().contains(searchText.lowercased())
+            }
+        } else {
+            doubleFilteredGames = filterOptionedGames.filter { (game: Game) -> Bool in
+                return game.title!.lowercased().contains(searchText.lowercased())
+            }
         }
-        // shit do i have to call refreshDataSource here?
         refreshDataSource()
         tableView.reloadData()
     }
@@ -258,4 +384,20 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         viewedGame = groups[section]![indexPath.row]
         performSegue(withIdentifier: "GamesDetailSegue", sender: self)
     }
+    
+    
+    // MARK: - FilterSelectionDelegate
+    
+    func didSelect(filter: String, filterOptionString: String) {
+        //apply the results of selecting the filter
+        filterOptionSelected = filter
+        self.filterOptionString = filterOptionString
+        refreshDataSourceIfFilterOptionSet()
+    }
+    
+    func didFinish() {
+        handleButtons(enabled: true, button: filterButton)
+
+    }
+    
 }

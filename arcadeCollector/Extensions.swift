@@ -8,11 +8,6 @@
 
 import UIKit
 
-//extension TableViewController: UISearchResultsUpdating {
-//
-//
-//}
-
 extension UIViewController {
     func handleActivityIndicator(indicator: UIActivityIndicatorView, vc: UIViewController, show: Bool) {
         if show {
@@ -46,27 +41,6 @@ extension UIViewController {
             }
         }
     }
-//
-//    func showAnimate(viewController: UIViewController) {
-//        viewController.view.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
-//        viewController.view.alpha = 0.0;
-//        UIView.animate(withDuration: 0.25, animations: {
-//            viewController.view.alpha = 1.0
-//            viewController.view.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-//        })
-//    }
-//
-//    func removeAnimate(viewController: UIViewController) {
-//        UIView.animate(withDuration: 0.25, animations: {
-//            viewController.view.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
-//            viewController.view.alpha = 0.0
-//        }, completion:{(finished : Bool)  in
-//            if (finished)
-//            {
-//                viewController.view.removeFromSuperview()
-//            }
-//        })
-//    }
 }
 
 extension HardwareViewController {

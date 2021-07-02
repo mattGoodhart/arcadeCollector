@@ -456,10 +456,14 @@
                                 <rect key="frame" x="324" y="7" width="35" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Filter"/>
+                                <connections>
+                                    <action selector="filterButtonTapped:" destination="tzh-ei-Hb8" eventType="touchUpInside" id="nWF-Dn-MTQ"/>
+                                </connections>
                             </button>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="filterButton" destination="b8w-Ed-RC0" id="lwJ-0T-jPU"/>
                         <outlet property="reverseButton" destination="dU2-tX-L2G" id="5jT-hB-CZy"/>
                         <outlet property="tableView" destination="V05-Ao-i18" id="tng-WY-BIe"/>
                         <segue destination="lxs-nA-Z7j" kind="show" identifier="GamesDetailSegue" id="Iyc-i3-pyh"/>
@@ -662,6 +666,80 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tkA-kd-qDm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1725.5999999999999" y="682.3088455772114"/>
+        </scene>
+        <!--Filter Options Popup-->
+        <scene sceneID="zfJ-hP-eWy">
+            <objects>
+                <viewController storyboardIdentifier="FilterOptionsPopup" id="YJO-5F-QkP" customClass="FilterOptionsPopup" customModule="arcadeCollector" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" restorationIdentifier="FilterOptionsPopUp" id="5XM-d8-zY2">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Xg-hL-IOo">
+                                <rect key="frame" x="67" y="269" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="k2z-hr-ArF">
+                                        <rect key="frame" x="-40" y="-103" width="320" height="334"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="lbt-bx-4ZW">
+                                                <rect key="frame" x="0.0" y="0.0" width="320" height="29"/>
+                                                <segments>
+                                                    <segment title="Orientation"/>
+                                                    <segment title="Players"/>
+                                                    <segment title="Manufacturer"/>
+                                                </segments>
+                                                <connections>
+                                                    <action selector="segmentedControlPressedWith_sender:" destination="YJO-5F-QkP" eventType="valueChanged" id="eXh-YL-bSy"/>
+                                                </connections>
+                                            </segmentedControl>
+                                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Ct-SH-suv">
+                                                <rect key="frame" x="0.0" y="28" width="320" height="216"/>
+                                            </pickerView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KBN-dF-ACn">
+                                                <rect key="frame" x="0.0" y="244" width="320" height="30"/>
+                                                <state key="normal" title="Apply"/>
+                                                <connections>
+                                                    <action selector="applyButtonPressed:" destination="YJO-5F-QkP" eventType="touchUpInside" id="8M2-hG-yGC"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QZg-5S-c7q">
+                                                <rect key="frame" x="0.0" y="274" width="320" height="30"/>
+                                                <state key="normal" title="Cancel"/>
+                                                <connections>
+                                                    <action selector="cancelButtonPressed:" destination="YJO-5F-QkP" eventType="touchUpInside" id="DeC-9P-Siy"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vcb-Zs-oc0">
+                                                <rect key="frame" x="0.0" y="304" width="320" height="30"/>
+                                                <state key="normal" title="Remove Filter"/>
+                                                <connections>
+                                                    <action selector="removeFilterButtonPressed:" destination="YJO-5F-QkP" eventType="touchUpInside" id="cwC-rD-7JQ"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="GsF-jX-e9s"/>
+                    </view>
+                    <connections>
+                        <outlet property="applyButton" destination="KBN-dF-ACn" id="VYW-38-0gr"/>
+                        <outlet property="cancelButton" destination="QZg-5S-c7q" id="lWH-pd-eZe"/>
+                        <outlet property="contentView" destination="6Xg-hL-IOo" id="uAb-N7-mgj"/>
+                        <outlet property="optionsSegmentedControl" destination="lbt-bx-4ZW" id="2l6-yx-54Q"/>
+                        <outlet property="pickerView" destination="7Ct-SH-suv" id="2Jk-fv-CqN"/>
+                        <outlet property="removeFilterButton" destination="vcb-Zs-oc0" id="ccS-Bn-Tbl"/>
+                        <outlet property="stackView" destination="k2z-hr-ArF" id="aw5-Gf-ljz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vke-t3-b42" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="61.600000000000001" y="682.3088455772114"/>
         </scene>
         <!--Edit Game Pop Over-->
         <scene sceneID="kF9-Fl-ssP">
