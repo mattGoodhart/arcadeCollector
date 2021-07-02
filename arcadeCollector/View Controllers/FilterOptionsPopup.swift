@@ -107,12 +107,12 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
             //buildStackView()
            // handleButtons(enabled: true, button: removeFilterButton)
            // stackView.removeArrangedSubview(removeFilterButton)
-            removeFilterButton.isHidden = true
+            stackView.arrangedSubviews[4].isHidden = true
             
         } else {
-            removeFilterButton.isHidden = false
-            stackView.removeAllConstraints()
-            setStackViewConstraints()
+            stackView.arrangedSubviews[4].isHidden = false
+           // stackView.removeAllConstraints()
+           // setStackViewConstraints()
         }
             //removeFilterButton.bottomAnchor.constraint(equalTo: stackView.bottomAnchor).isActive = true
     }
@@ -120,17 +120,19 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     func buildMainView() {
         view.backgroundColor = .gray
         view.alpha = 0.5 // why cant i see tableview underneath?
-        setContentView()
-        buildStackView()
+        
+       
         view.addSubview(contentView)
+        setContentView()
         contentView.addSubview(stackView)
+        buildStackView()
     }
     
     func setContentView() {
       
         contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.backgroundColor = .white
-        contentView.layer.cornerRadius = 24
+        //contentView.layer.cornerRadius = 24
         
         contentView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         contentView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
@@ -141,11 +143,7 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     
     func buildStackView() {
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addArrangedSubview(optionsSegmentedControl)
-        stackView.addArrangedSubview(pickerView)
-        stackView.addArrangedSubview(applyButton)
-        stackView.addArrangedSubview(cancelButton)
-        stackView.addArrangedSubview(removeFilterButton)
+        setStackViewConstraints()
         
         
 //        if hasActiveFilter {
@@ -160,22 +158,32 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
 //            removeFilterButton.removeFromSuperview()
 //        }
         stackView.axis = .vertical
-        setStackViewConstraints()
+        stackView.alignment = .fill
+        stackView.distribution = .equalSpacing
+        stackView.spacing = 0
+        
+        stackView.addArrangedSubview(optionsSegmentedControl)
+        stackView.addArrangedSubview(pickerView)
+        stackView.addArrangedSubview(applyButton)
+        stackView.addArrangedSubview(cancelButton)
+        stackView.addArrangedSubview(removeFilterButton)
+        
        
     }
     
     func setStackViewConstraints() {
-        stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15).isActive = true
+        stackView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
         stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        stackView.heightAnchor.constraint(equalTo: contentView.heightAnchor).isActive = true
         
-        pickerView.centerXAnchor.constraint(equalTo: stackView.centerXAnchor).isActive = true
-        pickerView.centerYAnchor.constraint(equalTo: stackView.centerYAnchor).isActive = true
-        
-        optionsSegmentedControl.topAnchor.constraint(equalTo: stackView.topAnchor).isActive = true
-        
-        removeFilterButton.bottomAnchor.constraint(equalTo: stackView.bottomAnchor).isActive = true
+//        pickerView.centerXAnchor.constraint(equalTo: stackView.centerXAnchor).isActive = true
+//        pickerView.centerYAnchor.constraint(equalTo: stackView.centerYAnchor).isActive = true
+//
+//        optionsSegmentedControl.topAnchor.constraint(equalTo: stackView.topAnchor).isActive = true
+//
+//        removeFilterButton.bottomAnchor.constraint(equalTo: stackView.bottomAnchor).isActive = true
     }
     
     // these need to be refactored.
