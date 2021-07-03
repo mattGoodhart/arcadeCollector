@@ -35,13 +35,12 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         arrayOfUniquePlayerCounts = createArrayOfUniquePlayerCounts()
         arrayOfUniqueManufacturers = createArrayOfUniqueManufacturers()
         
-        pickerView.delegate = self //this is horseshit.... finding nil..
+        pickerView.delegate = self
         pickerView.dataSource = self
         optionsSegmentedControl.selectedSegmentIndex = 0
         stringArrayForPicker = arrayOfUniqueOrientations
         buildMainView()
-        //checkForActiveFilterOption()
-        navigationController?.navigationBar.popItem(animated: true)
+       // navigationController?.navigationBar.popItem(animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -57,10 +56,8 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     }
     
     @IBAction func cancelButtonPressed(_ sender: UIButton) {
-      
         delegate?.didFinish()
         dismiss(animated: true, completion: nil)
-        
     }
     
     @IBAction func applyButtonPressed(_ sender: UIButton) {
@@ -98,92 +95,70 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     
     func checkForActiveFilterOption() {
         if !hasActiveFilter {
-           // handleButtons(enabled: false, button: removeFilterButton)
-            //stackView.viewWithTag(4)?.removeAllConstraints()
-            //stackView.removeArrangedSubview(removeFilterButton)
-       // } else {
-           // stackView.removeAllConstraints()
-            //stackView.subviews.forEach({ $0.removeFromSuperview() })
-            //buildStackView()
-           // handleButtons(enabled: true, button: removeFilterButton)
-           // stackView.removeArrangedSubview(removeFilterButton)
-            stackView.arrangedSubviews[4].isHidden = true
-            
+            stackView.arrangedSubviews[3].isHidden = true
+            applyButton.setTitle("Apply", for: .normal) // I can see this happening...
         } else {
-            stackView.arrangedSubviews[4].isHidden = false
-           // stackView.removeAllConstraints()
-           // setStackViewConstraints()
+            stackView.arrangedSubviews[3].isHidden = false
+            applyButton.setTitle("Apply New Filter", for: .normal)
         }
-            //removeFilterButton.bottomAnchor.constraint(equalTo: stackView.bottomAnchor).isActive = true
     }
     
     func buildMainView() {
         view.backgroundColor = .gray
         view.alpha = 0.5 // why cant i see tableview underneath?
         
-       
-        view.addSubview(contentView)
         setContentView()
-        contentView.addSubview(stackView)
+        view.addSubview(contentView)
+        
         buildStackView()
+        contentView.addSubview(stackView)
+        
     }
     
     func setContentView() {
       
         contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.backgroundColor = .white
-        //contentView.layer.cornerRadius = 24
+        contentView.layer.cornerRadius = 8
         
         contentView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         contentView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         contentView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.75).isActive = true
-        contentView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5).isActive = true
+        contentView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.66).isActive = true
         
         }
     
     func buildStackView() {
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        
         setStackViewConstraints()
-        
-        
-//        if hasActiveFilter {
-//            if let button = removeFilterButton {
-//                stackView.addArrangedSubview(button)
-//            } else {
-//
-//                stackView.addSubview(removeFilterButton)
-//                stackView.addArrangedSubview(removeFilterButton)
-//            }
-//        } else {
-//            removeFilterButton.removeFromSuperview()
-//        }
+
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .equalSpacing
-        stackView.spacing = 0
+        //stackView.spacing = 0
         
         stackView.addArrangedSubview(optionsSegmentedControl)
         stackView.addArrangedSubview(pickerView)
         stackView.addArrangedSubview(applyButton)
-        stackView.addArrangedSubview(cancelButton)
         stackView.addArrangedSubview(removeFilterButton)
+        stackView.addArrangedSubview(cancelButton)
         
-       
     }
     
     func setStackViewConstraints() {
-        stackView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
-        stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        
+        stackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+        stackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        stackView.widthAnchor.constraint(equalTo: contentView.widthAnchor).isActive = true
         stackView.heightAnchor.constraint(equalTo: contentView.heightAnchor).isActive = true
         
-//        pickerView.centerXAnchor.constraint(equalTo: stackView.centerXAnchor).isActive = true
-//        pickerView.centerYAnchor.constraint(equalTo: stackView.centerYAnchor).isActive = true
-//
-//        optionsSegmentedControl.topAnchor.constraint(equalTo: stackView.topAnchor).isActive = true
-//
-//        removeFilterButton.bottomAnchor.constraint(equalTo: stackView.bottomAnchor).isActive = true
+//        stackView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+//        stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+//        stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+//        stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+//        stackView.heightAnchor.constraint(equalTo: contentView.heightAnchor).isActive = true
+
     }
     
     // these need to be refactored.
