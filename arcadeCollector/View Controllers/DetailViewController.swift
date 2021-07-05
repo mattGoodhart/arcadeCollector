@@ -32,7 +32,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var mainImageActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var historyButton: UIButton!
     @IBOutlet weak var youTubeButton: UIButton!
-    @IBOutlet weak var wantedButton: UIButton!
+  //  @IBOutlet weak var wantedButton: UIButton!
+    @IBOutlet weak var wantedSwitch: UISwitch!
     @IBOutlet weak var addEditButton: UIButton!
     
     //MARK: View Controller Life Cycle
@@ -99,11 +100,22 @@ class DetailViewController: UIViewController {
 //        popOverVC.didMove(toParent: self)
     }
     
-    @IBAction func addToWanted(_ sender: UIButton) {
-        masterCollection.wantedGames.append(viewedGame)
-        masterCollection.wantedGamesCollection.addToGames(viewedGame)
+    @IBAction func addToWanted(_ sender: UISwitch) {
+        
+    
+        if wantedSwitch.isOn {
+            masterCollection.wantedGames.append(viewedGame)
+            masterCollection.wantedGamesCollection.addToGames(viewedGame)
+            wantedSwitch.setOn(true, animated: true)
+            
+        } else {
+            let removalIndex = masterCollection.wantedGames.firstIndex(of: viewedGame)
+            masterCollection.wantedGames.remove(at: removalIndex!)
+            masterCollection.wantedGamesCollection.removeFromGames(viewedGame)
+            wantedSwitch.setOn(false, animated: true)
+        }
         try? dataController.viewContext.save()
-        handleButtons(enabled: false, button: sender)
+        //   handleButtons(enabled: false, button: sender)
     }
     
     @IBAction func historyButtonTapped(_ sender: UIButton) { 
@@ -169,15 +181,15 @@ class DetailViewController: UIViewController {
         mainImageSwitch.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
         addEditButton.translatesAutoresizingMaskIntoConstraints = false
         addEditButton.topAnchor.constraint(equalTo: mainImageSwitch.bottomAnchor, constant: 20).isActive = true
-        wantedButton.translatesAutoresizingMaskIntoConstraints = false
-        wantedButton.centerYAnchor.constraint(equalTo: addEditButton.centerYAnchor).isActive = true
-        wantedButton.trailingAnchor.constraint(equalTo: mainImageSwitch.trailingAnchor).isActive = true
+        wantedSwitch.translatesAutoresizingMaskIntoConstraints = false
+        wantedSwitch.centerYAnchor.constraint(equalTo: addEditButton.centerYAnchor).isActive = true
+        wantedSwitch.trailingAnchor.constraint(equalTo: mainImageSwitch.trailingAnchor).isActive = true
         historyButton.translatesAutoresizingMaskIntoConstraints = false
         historyButton.topAnchor.constraint(equalTo: addEditButton.bottomAnchor, constant: 20).isActive = true
         historyButton.leadingAnchor.constraint(equalTo: mainImageSwitch.leadingAnchor).isActive = true
         youTubeButton.translatesAutoresizingMaskIntoConstraints = false
         youTubeButton.centerYAnchor.constraint(equalTo: historyButton.centerYAnchor).isActive = true
-        youTubeButton.centerXAnchor.constraint(equalTo: wantedButton.centerXAnchor).isActive = true
+        youTubeButton.centerXAnchor.constraint(equalTo: wantedSwitch.centerXAnchor).isActive = true
         addEditButton.centerXAnchor.constraint(equalTo: historyButton.centerXAnchor).isActive = true
     }
     
@@ -216,12 +228,11 @@ class DetailViewController: UIViewController {
         
         }
         if isWanted {
-            handleButtons(enabled: false, button: wantedButton)
-           // wantedButton.isEnabled = false
+            wantedSwitch.isOn = true
+        } else {
+            wantedSwitch.isOn = false
         }
-        if isInMyCollection {
-            // change add button to edit button
-        }
+     
         
         let index = self.tabBarController!.selectedIndex
         
@@ -269,13 +280,14 @@ class DetailViewController: UIViewController {
     func toggleButtons(enabled: Bool) {
         if enabled {
             handleButtons(enabled: true, button: historyButton)
-            handleButtons(enabled: true, button: wantedButton)
+            
+          //  handleButtons(enabled: true, button: wantedButton)
             handleButtons(enabled: true, button: youTubeButton)
             handleButtons(enabled: true, button: addEditButton)
             mainImageSwitch.isEnabled = true
         } else {
             handleButtons(enabled: false, button: historyButton)
-            handleButtons(enabled: false, button: wantedButton)
+           // handleButtons(enabled: false, button: wantedButton)
             handleButtons(enabled: false, button: youTubeButton)
             handleButtons(enabled: false, button: addEditButton)
             mainImageSwitch.isEnabled = false

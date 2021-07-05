@@ -496,16 +496,6 @@
                                 <rect key="frame" x="18" y="84" width="340" height="85"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6VE-CG-753">
-                                <rect key="frame" x="217" y="461" width="71" height="34"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="wanted+">
-                                    <color key="titleColor" red="0.0" green="0.33956323300000002" blue="0.70743604280000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="addToWanted:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="C8f-BB-RYw"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
                                 <rect key="frame" x="86" y="528" width="50" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -542,6 +532,13 @@
                                     <action selector="segmentedControlPressed" destination="lxs-nA-Z7j" eventType="valueChanged" id="JDA-oV-Mb0"/>
                                 </connections>
                             </segmentedControl>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eh2-a4-MZF">
+                                <rect key="frame" x="230" y="461" width="49" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="addToWanted:" destination="lxs-nA-Z7j" eventType="valueChanged" id="oja-5T-KAB"/>
+                                </connections>
+                            </switch>
                         </subviews>
                         <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="VIa-ds-nvC"/>
@@ -561,7 +558,7 @@
                         <outlet property="mainImageView" destination="54q-Ij-hNz" id="ebY-oN-af4"/>
                         <outlet property="marqueeActivityIndicator" destination="1iP-hh-OfY" id="SdX-J9-zek"/>
                         <outlet property="marqueeView" destination="ntz-FS-uBs" id="3ZH-gH-qDH"/>
-                        <outlet property="wantedButton" destination="6VE-CG-753" id="G6A-0H-LOx"/>
+                        <outlet property="wantedSwitch" destination="eh2-a4-MZF" id="FRs-62-mJI"/>
                         <outlet property="youTubeButton" destination="uEO-wp-z7R" id="XZR-KW-hse"/>
                         <segue destination="Lvk-oR-b5P" kind="show" identifier="HardwareSegue" id="2si-dK-nJE"/>
                     </connections>
