@@ -1,49 +1,16 @@
 //
-//  Extensions.swift
+//  HardwareViewControllerExtension.swift
 //  arcadeCollector
 //
-//  Created by TrixxMac on 5/4/21.
+//  Created by TrixxMac on 7/5/21.
 //  Copyright © 2021 CatBoiz. All rights reserved.
 //
 
 import UIKit
 
-extension UIViewController {
-    func handleActivityIndicator(indicator: UIActivityIndicatorView, vc: UIViewController, show: Bool) {
-        if show {
-            _ = indicator
-            DispatchQueue.main.async {
-                indicator.bringSubviewToFront(vc.view)
-                indicator.center = vc.view.center
-                indicator.isHidden = false // could also set hidesWhenStopped to true
-                indicator.startAnimating()
-            }
-        } else {
-            _ = indicator
-            DispatchQueue.main.async {
-                indicator.sendSubviewToBack(vc.view)
-                indicator.isHidden = true
-                indicator.stopAnimating()
-            }
-        }
-    }
-    
-    func handleButtons(enabled: Bool, button: UIButton) {
-        if enabled {
-            DispatchQueue.main.async {
-                button.isEnabled = true
-                button.alpha = 1.0
-            }
-        } else {
-            DispatchQueue.main.async {
-                button.isEnabled = false
-                button.alpha = 0.5
-            }
-        }
-    }
-}
-
 extension HardwareViewController {
+    
+    // MARK - XML Parser
     
     func parserDidStartDocument(_ parser: XMLParser) {
         chipResults = [[:]]
@@ -99,11 +66,11 @@ extension HardwareViewController {
                 displayDictionary!["vtotal"] = vtotal
             }
         }
-                
+            
         else if elementName == "sound" {
             
             if let channels = attributeDict["channels"]{
-              soundChannels = "Audio Channels: \(channels)"
+                soundChannels = "Audio Channels: \(channels)"
             }
         }
             
@@ -111,7 +78,7 @@ extension HardwareViewController {
             currentValue = ""
         }
     }
-
+    
     func parser(_ parser: XMLParser, foundCharacters string: String) {
         currentValue? += string
     }
@@ -165,7 +132,7 @@ extension HardwareViewController {
                 let adjust = Double(poorlyFormattedClockDouble / 1000000)
                 let rounded = Double(round(100 * adjust)/100)
                 let replacementClockString = String(rounded)  + " MHz"
-    
+                
                 let goodCPUString = cpuString.replacingOccurrences(of: poorlyFormattedClock, with: replacementClockString)
                 formattedCPUStringArray += [goodCPUString]
             } else {
@@ -192,41 +159,3 @@ extension HardwareViewController {
         try? dataController.viewContext.save()
     }
 }
-
-extension UIView {
-    public func removeAllConstraints() {
-        var _superview = self.superview
-        while let superview = _superview {
-            for constraint in superview.constraints {
-                if let first = constraint.firstItem as? UIView, first == self {
-                    superview.removeConstraint(constraint)
-                }
-                if let second = constraint.secondItem as? UIView, second == self {
-                    superview.removeConstraint(constraint)
-                }
-            }
-            _superview = superview.superview
-        }
-        self.removeConstraints(self.constraints)
-        self.translatesAutoresizingMaskIntoConstraints = true
-    }
-}
-
-extension Array where Element: Equatable {
-    var unique: [Element] {
-        var uniqueValues: [Element] = []
-        forEach { item in
-            guard !uniqueValues.contains(item) else { return }
-            uniqueValues.append(item)
-        }
-        return uniqueValues
-    }
-}
-
-
-
-
-
-
-
-

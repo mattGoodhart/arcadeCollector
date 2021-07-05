@@ -46,11 +46,7 @@ class DetailViewController: UIViewController {
         setMarqueeView()
         setImageViewAspectRatio()
         setOtherConstraints()
-        determineCollectionsGameBelongsTo() // todo: instead of relying on the collection view from the tab bar, I should check if the viewed game belong to either the wanted games or my games collection. this way i can enable / disable buttons depending on the collection.
-        
-//        if viewedCollection.name != "All Games" {
-//            handleButtons(enabled: false, button: wantedButton)
-//        }
+        determineCollectionsGameBelongsTo()
         
         handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
         handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: false)
@@ -59,8 +55,8 @@ class DetailViewController: UIViewController {
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.mainImageTapped))
         let marqueeTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.marqueeImageTapped))
         
-        configureImageView(imageView: mainImageView, gestureRecognizer: tapRecognizer)
-        configureImageView(imageView: marqueeView, gestureRecognizer: marqueeTapRecognizer)
+        configureGestureForImageView(imageView: mainImageView, gestureRecognizer: tapRecognizer)
+        configureGestureForImageView(imageView: marqueeView, gestureRecognizer: marqueeTapRecognizer)
         
         marqueeView.image = UIImage(named: "About Banners/logo-mame") // set better default
         mainImageView.image = nil
@@ -101,7 +97,6 @@ class DetailViewController: UIViewController {
     }
     
     @IBAction func addToWanted(_ sender: UISwitch) {
-        
     
         if wantedSwitch.isOn {
             masterCollection.wantedGames.append(viewedGame)
@@ -115,7 +110,6 @@ class DetailViewController: UIViewController {
             wantedSwitch.setOn(false, animated: true)
         }
         try? dataController.viewContext.save()
-        //   handleButtons(enabled: false, button: sender)
     }
     
     @IBAction func historyButtonTapped(_ sender: UIButton) { 
@@ -124,12 +118,6 @@ class DetailViewController: UIViewController {
         popOverVC.text = viewedGame.history!
         popOverVC.modalTransitionStyle = .crossDissolve
         present(popOverVC, animated: true, completion: nil)
-//        self.addChild(popOverVC)
-//        popOverVC.view.frame = self.view.frame
-//        self.view.addSubview(popOverVC.view)
-//        popOverVC.didMove(toParent: self)
-        
-        //_sender: UISegmentedControl
     }
     
     @IBAction func segmentedControlPressed(){
@@ -223,19 +211,15 @@ class DetailViewController: UIViewController {
             if collectionNameArray.contains("Wanted Games") {
                 self.isWanted = true
             }
-            
-            
-        
+    
         }
         if isWanted {
             wantedSwitch.isOn = true
         } else {
             wantedSwitch.isOn = false
         }
-     
-        
+    
         let index = self.tabBarController!.selectedIndex
-        
         
         switch index {
         case 1: viewedCollection = masterCollection.myGamesCollection
@@ -243,9 +227,7 @@ class DetailViewController: UIViewController {
         case 3: viewedCollection = masterCollection.wantedGamesCollection
         default: break
         }
-
     }
-    
     
     func loadYoutube(videoID: String) {
         guard let youtubeURL = URL(string: "https://www.youtube.com/embed/\(videoID)?playsinline=1") else {
@@ -263,16 +245,7 @@ class DetailViewController: UIViewController {
         
         
         present(popOverViewController, animated: true, completion: nil)
-        //        self.addChild(popOverViewController)
-//
-//        popOverViewController.type = "webView"
-//        popOverViewController.webURL = youtubeURL
-//
-//        popOverViewController.view.frame = self.view.frame
-//        self.view.addSubview(popOverViewController.view)
-//        popOverViewController.didMove(toParent: self)
         
-     
     }
     
     // MARK: Other Methods
@@ -280,14 +253,11 @@ class DetailViewController: UIViewController {
     func toggleButtons(enabled: Bool) {
         if enabled {
             handleButtons(enabled: true, button: historyButton)
-            
-          //  handleButtons(enabled: true, button: wantedButton)
             handleButtons(enabled: true, button: youTubeButton)
             handleButtons(enabled: true, button: addEditButton)
             mainImageSwitch.isEnabled = true
         } else {
             handleButtons(enabled: false, button: historyButton)
-           // handleButtons(enabled: false, button: wantedButton)
             handleButtons(enabled: false, button: youTubeButton)
             handleButtons(enabled: false, button: addEditButton)
             mainImageSwitch.isEnabled = false
@@ -432,7 +402,6 @@ class DetailViewController: UIViewController {
                 }
                 
                 for item in response.result {
-                    
                     self.viewedGame.inGameImageURLString = item.inGameImageURLString
                     self.viewedGame.titleImageURLString = item.titleImageURLString
                     self.viewedGame.marqueeURLString = item.marqueeImageURLString
@@ -485,40 +454,39 @@ class DetailViewController: UIViewController {
     }
     
     func photoTapped(imageView: UIImageView) {
+        
         let popOverViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
         popOverViewController.modalTransitionStyle = .crossDissolve
         
-        
-       // self.addChild(popOverViewController)
-        
         if imageView == mainImageView && mainImageSwitch.selectedSegmentIndex != 0 {
-            popOverViewController.image = imageView.image
-            popOverViewController.type = "gameImageView"
-            popOverViewController.orientation = viewedGame.orientation
+            setImageForPopOver(viewController: popOverViewController, imageView: imageView, viewType: "gameImageView")
         }
         
-        if imageView == mainImageView && mainImageSwitch.selectedSegmentIndex == 0{
-            popOverViewController.image = imageView.image
-            popOverViewController.type = "flyerView"
+        if imageView == mainImageView && mainImageSwitch.selectedSegmentIndex == 0 {
+            setImageForPopOver(viewController: popOverViewController, imageView: imageView, viewType: "flyerView")
         }
         
         if imageView == self.marqueeView {
-            popOverViewController.marqueeImage = imageView.image
-            popOverViewController.type = "marqueeView"
+            setImageForPopOver(viewController: popOverViewController, imageView: imageView, viewType: "marqueeView")
         }
-        
-     
-        
-//        popOverViewController.view.frame = self.view.frame
-//        self.view.addSubview(popOverViewController.view)
-//        popOverViewController.didMove(toParent: self)
-        
         present(popOverViewController, animated: true, completion: nil)
     }
     
-    
-    func configureImageView(imageView: UIImageView, gestureRecognizer: UIGestureRecognizer) {
+    func configureGestureForImageView(imageView: UIImageView, gestureRecognizer: UIGestureRecognizer) {
         imageView.addGestureRecognizer(gestureRecognizer)
         imageView.isUserInteractionEnabled = true
+    }
+    
+    func setImageForPopOver(viewController: PopOverViewController, imageView: UIImageView, viewType: String) {
+        if viewType != "marqueeView" {
+            viewController.image = imageView.image
+        } else {
+            viewController.marqueeImage = imageView.image
+        }
+        viewController.type = viewType
+        guard viewType == "gameImageView" else {
+            return
+        }
+        viewController.orientation = viewedGame.orientation
     }
 }
