@@ -40,16 +40,19 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     @IBOutlet weak var manualButton: UIButton!
     // @IBOutlet weak var manualActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var stackView: UIStackView!
     
     //MARK App Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        scrollView.contentSize.equalTo(view.frame.size)
+       // scrollView.contentSize.equalTo(view.frame.size)
         // scrollView.delegate = self
         
         prepMainImageView()
+        
+        //stackView.setCustomSpacing(-20, after: mainImageView)
         
         
         
@@ -130,12 +133,14 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     }
     
     @IBAction func segmentedControlPressed(_sender: UISegmentedControl){
+        stackView.arrangedSubviews[0].isHidden = true
         
         switch imageChooser.selectedSegmentIndex {
         case 0: self.mainImageView.image = UIImage(data: self.viewedGame.cabinetImageData!)
         case 1: getBoardPhotoIfNeeded()
         default: break;
         }
+          stackView.arrangedSubviews[0].isHidden = false
     }
     
     func getNotesFromMameIfNeeded() {
