@@ -143,6 +143,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet weak var reverseButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var filterButton: UIButton!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     //MARK Overrides
     
@@ -168,11 +169,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         //refreshDataSourceIfFilterOptionSet()
         //checkIfFilterOptionChosen()
     }
-    
-//    override func viewDidAppear(_ animated: Bool) {
-//        super .viewDidAppear(false)
-//        refreshDataSourceIfFilterOptionSet()
-//    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "GamesDetailSegue" {
@@ -200,26 +196,33 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             popUpVC.gamesList = gamesList
             popUpVC.modalPresentationStyle = .overCurrentContext
             popUpVC.modalTransitionStyle = .crossDissolve
-            handleButtons(enabled: false, button: filterButton) // not working..
             
+            handleButtons(enabled: false, button: filterButton)
             
             present(popUpVC, animated: true, completion: nil)
-            
-            //how do I make sure i return to the same instance of the FilterVC?
-            
-            //        self.addChild(popOverVC)
-            //        popOverVC.view.frame = self.view.frame
-            //        self.view.addSubview(popOverVC.view)
-            //        popOverVC.didMove(toParent: self)
         }
     }
+    
+    func refreshDataInBackground() {
+        handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
+        
+        DispatchQueue.global().async {
+            self.refreshDataSource()
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+            }
+        }
+    }
+    
     func refreshDataSourceIfFilterOptionSet() {
         if isFilterOptionChosen {
             
             switch filterOptionSelected {
             case "orientation": filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
                 return game.orientation!.lowercased() == filterOptionString.lowercased()
-            }
+                }
             case "players": filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
                 return game.players!.lowercased().contains(filterOptionString.lowercased())
                 }
@@ -228,15 +231,19 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 }
             default: break;
             }
-            refreshDataSource()
-            tableView.reloadData()
-        } else {
-            refreshDataSource()
-            tableView.reloadData()
+            
+            
+            //            refreshDataSource()
+            //            tableView.reloadData()
+            //        } else {
+            //            refreshDataSource()
+            //            tableView.reloadData()
+            //        }
         }
+         refreshDataInBackground()
     }
     
-    func createArrayOfUniqueYears(listOfGames: [Game]) -> [String] {
+    func createArrayOfUniqueYears(listOfGames: [Game]) -> [String] { // use my array extension?
         var uniqueYears = [String]()
         for game in listOfGames {
             uniqueYears += [game.year!]
@@ -246,7 +253,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return uniqueYearsArray
     }
     
-    func refreshDataSource() { // update for all 4 options
+    func refreshDataSource() {
         gamesList = tab.baseGamesList
         
         if !isFiltering && !isFilterOptionChosen {
@@ -274,8 +281,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             return
         }
         print("Refreshing list")
-        refreshDataSource()
-        tableView.reloadData()
+        refreshDataInBackground()
+//        refreshDataSource()
+//        tableView.reloadData()
     }
     
     // MARK UISearchResultsUpdating
@@ -297,8 +305,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 return game.title!.lowercased().contains(searchText.lowercased())
             }
         }
-        refreshDataSource()
-        tableView.reloadData()
+        
+        refreshDataInBackground()
+//        refreshDataSource()
+//        tableView.reloadData()
     }
     
     // MARK TableViewDelegate

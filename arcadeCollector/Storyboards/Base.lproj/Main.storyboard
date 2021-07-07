@@ -369,6 +369,10 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <activityIndicatorView key="tableFooterView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" id="pOZ-yG-Mbl">
+                                    <rect key="frame" x="0.0" y="72" width="375" height="20"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                </activityIndicatorView>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="GameTableCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="GameTableCell" id="Fuw-96-Z24" customClass="GameTableCell" customModule="arcadeCollector" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
@@ -456,6 +460,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="activityIndicator" destination="pOZ-yG-Mbl" id="kl5-hP-q6d"/>
                         <outlet property="filterButton" destination="b8w-Ed-RC0" id="lwJ-0T-jPU"/>
                         <outlet property="reverseButton" destination="dU2-tX-L2G" id="5jT-hB-CZy"/>
                         <outlet property="tableView" destination="V05-Ao-i18" id="tng-WY-BIe"/>
