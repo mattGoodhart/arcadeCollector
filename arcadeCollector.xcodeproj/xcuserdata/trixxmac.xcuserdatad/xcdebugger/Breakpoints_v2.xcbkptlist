@@ -6,11 +6,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
-            timestampString = "647995813.387619"
+            timestampString = "648084409.495892"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "94"
@@ -22,11 +22,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
-            timestampString = "647995813.38773"
+            timestampString = "648084409.4960001"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "95"
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
-            timestampString = "647995813.387813"
+            timestampString = "648084409.496081"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "101"
@@ -54,11 +54,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
-            timestampString = "647995813.387892"
+            timestampString = "648084409.496158"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "100"
@@ -74,7 +74,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
-            timestampString = "647995813.38797"
+            timestampString = "648084409.496235"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "448"
@@ -90,7 +90,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
-            timestampString = "647995813.3880481"
+            timestampString = "648084409.4963109"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "449"
@@ -106,7 +106,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
-            timestampString = "647995813.3881249"
+            timestampString = "648084409.496385"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "450"
@@ -122,7 +122,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
-            timestampString = "647995813.388203"
+            timestampString = "648084409.496461"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "464"
@@ -138,7 +138,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
-            timestampString = "647995813.388281"
+            timestampString = "648084409.496537"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "465"
@@ -202,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/Model/CollectionManager.swift"
-            timestampString = "648074732.823527"
+            timestampString = "648084409.496724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "169"
-            endingLineNumber = "169"
+            startingLineNumber = "170"
+            endingLineNumber = "170"
             landmarkName = "getBoardsByWorkingCondition()"
             landmarkType = "7">
             <Locations>
@@ -218,7 +218,7 @@
                   moduleName = "arcadeCollector"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/trixxmac/Desktop/arcadeCollector%202/arcadeCollector/Model/CollectionManager.swift"
-                  timestampString = "648072029.768025"
+                  timestampString = "648076625.981989"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "169"
@@ -233,12 +233,12 @@
                   moduleName = "arcadeCollector"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/trixxmac/Desktop/arcadeCollector%202/arcadeCollector/Model/CollectionManager.swift"
-                  timestampString = "648072029.899622"
+                  timestampString = "648076625.985201"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "169"
                   endingLineNumber = "169"
-                  offsetFromSymbolStart = "1229">
+                  offsetFromSymbolStart = "1322">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -250,23 +250,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/Model/CollectionManager.swift"
-            timestampString = "648074732.82373"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "170"
-            endingLineNumber = "170"
-            landmarkName = "getBoardsByWorkingCondition()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "arcadeCollector/Model/CollectionManager.swift"
-            timestampString = "648074732.823822"
+            timestampString = "648084409.4974999"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "171"
@@ -282,7 +266,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/Model/CollectionManager.swift"
-            timestampString = "648074732.82392"
+            timestampString = "648084409.4980299"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "172"
@@ -297,8 +281,24 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
+            filePath = "arcadeCollector/Model/CollectionManager.swift"
+            timestampString = "648084409.498528"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "173"
+            endingLineNumber = "173"
+            landmarkName = "getBoardsByWorkingCondition()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/SummaryViewController.swift"
-            timestampString = "648074732.82401"
+            timestampString = "648084409.499007"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "31"
@@ -314,11 +314,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/Model/CollectionManager.swift"
-            timestampString = "648074732.82479"
+            timestampString = "648084409.499104"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "160"
-            endingLineNumber = "160"
+            startingLineNumber = "167"
+            endingLineNumber = "167"
             landmarkName = "getBoardsByWorkingCondition()"
             landmarkType = "7">
          </BreakpointContent>
@@ -330,7 +330,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/Model/CollectionManager.swift"
-            timestampString = "648074732.824883"
+            timestampString = "648084409.499609"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "159"
@@ -346,12 +346,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/Model/CollectionManager.swift"
-            timestampString = "648074732.824968"
+            timestampString = "648084409.500109"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "167"
-            endingLineNumber = "167"
+            startingLineNumber = "168"
+            endingLineNumber = "168"
             landmarkName = "getBoardsByWorkingCondition()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "arcadeCollector/View Controllers/EditGameViewController.swift"
+            timestampString = "648084409.500596"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
+            landmarkName = "dismissButtonTapped(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

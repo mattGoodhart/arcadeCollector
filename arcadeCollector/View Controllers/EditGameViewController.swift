@@ -12,6 +12,7 @@ class EditGameViewController: UIViewController {
     
     var tabBar : UITabBar!
     let dataController = DataController.shared
+    let masterCollection = CollectionManager.shared
     var viewedGame: Game!
     
     @IBOutlet weak var hasBoard: UISwitch!
@@ -42,6 +43,14 @@ class EditGameViewController: UIViewController {
         
     @IBAction func dismissButtonTapped(_ sender: UIButton) {
         getGameAttributeValuesFromSwitches()
+        if viewedGame.hasBoard || viewedGame.hasCabinetHardware {
+            masterCollection.myGames.append(viewedGame)
+            masterCollection.myGamesCollection.addToGames(viewedGame)
+        } else if !viewedGame.hasBoard && !viewedGame.hasCabinetHardware {
+            let removalIndex = masterCollection.myGames.firstIndex(of: viewedGame)
+            masterCollection.myGames.remove(at: removalIndex!)
+            masterCollection.myGamesCollection.removeFromGames(viewedGame)
+        }
         try? dataController.viewContext.save()
         dismiss(animated: true, completion: nil)
         }
@@ -89,8 +98,6 @@ class EditGameViewController: UIViewController {
         if hasMonitorFlag.isOn {viewedGame.hasMonitorFlag = true} else {viewedGame.hasMonitorFlag = false}
         viewedGame.functionalCondition = Int16(functionalCondition.selectedSegmentIndex)
     }
-    
-    
     
     func setSwitches() {
         //values set to false / 0 upon json decode

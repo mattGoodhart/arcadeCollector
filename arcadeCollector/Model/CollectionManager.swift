@@ -157,14 +157,15 @@ class CollectionManager {
     }
     
     func getBoardsByWorkingCondition(){ // 0=working, 1=partial, 2=non
-        let fetchRequest: NSFetchRequest<Game> = Game.fetchRequest()
-        let predicate = NSPredicate(format: "(functionalCondition == 1)")
-        fetchRequest.predicate = predicate
+//        let fetchRequest: NSFetchRequest<Game> = Game.fetchRequest()
+//        let predicate = NSPredicate(format: "%K != nil", "functionalCondition")
+//        fetchRequest.predicate = predicate
+//
+//        let result = try? DataController.shared.viewContext.fetch(fetchRequest)
+//        boards = result!
         
-        let result = try? DataController.shared.viewContext.fetch(fetchRequest)
-        boards = result!
         
-        for board in boards {
+        for board in myGames {
             
             switch Int(board.functionalCondition) {
             case 0: workingBoards += [board]

@@ -28,8 +28,7 @@ class SummaryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Summary"
-        masterCollection.getBoardsByWorkingCondition()
-      
+      //  masterCollection.getBoardsByWorkingCondition()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -45,7 +44,9 @@ class SummaryViewController: UIViewController {
     }
     
     func getBoardFunctionalityCounts() {
-       
+        
+       masterCollection.getBoardsByWorkingCondition()
+        
         self.workingBoardsLabel.text = String(masterCollection.workingBoards.count) + " Working Boards"
         self.partiallyWorkingBoardsLabel.text = String(masterCollection.partiallyWorkingBoards.count) + "  Boards that Boot But Don't Fully Work"
         self.nonWorkingBoardsLabel.text = String(masterCollection.nonWorkingBoards.count) + " Non-Working Boards"
