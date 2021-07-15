@@ -58,12 +58,8 @@
         <attribute name="youtubeVideoID" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="collection" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CollectionEntity" inverseName="games" inverseEntity="CollectionEntity" syncable="YES"/>
     </entity>
-    <entity name="UniqueGameCount" representedClassName="UniqueGameCount" syncable="YES" codeGenerationType="class">
-        <attribute name="count" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-    </entity>
     <elements>
         <element name="CollectionEntity" positionX="-317.27734375" positionY="-19.36328125" width="129.328125" height="75"/>
         <element name="Game" positionX="-34.20703125" positionY="-125.28125" width="102.18359375" height="825"/>
-        <element name="UniqueGameCount" positionX="-318.09765625" positionY="-121.48828125" width="128" height="60"/>
     </elements>
 </model>

@@ -15,19 +15,27 @@ class SummaryViewController: UIViewController {
     @IBOutlet weak var myCollectionLabel: UILabel!
     @IBOutlet weak var wantedGamesLabel: UILabel!
     @IBOutlet weak var aboutButton: UIButton!
+    @IBOutlet weak var workingBoardsLabel: UILabel!
+    @IBOutlet weak var partiallyWorkingBoardsLabel: UILabel!
+    @IBOutlet weak var nonWorkingBoardsLabel: UILabel!
     
     let masterCollection = CollectionManager.shared
     let dataController = DataController.shared
+    var workingBoardsCount = 0
+    var partiallyWorkingBoardsCount = 0
+    var nonWorkingBoardsCount = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Summary"
+        masterCollection.getBoardsByWorkingCondition()
       
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super .viewWillAppear(false)
-          getGameCollectionCounts()
+        getGameCollectionCounts()
+        getBoardFunctionalityCounts()
     }
     
     func getGameCollectionCounts() {
@@ -36,6 +44,14 @@ class SummaryViewController: UIViewController {
         self.wantedGamesLabel.text = "\(masterCollection.wantedGames.count) Wanted Games"
     }
     
+    func getBoardFunctionalityCounts() {
+       
+        self.workingBoardsLabel.text = String(masterCollection.workingBoards.count) + " Working Boards"
+        self.partiallyWorkingBoardsLabel.text = String(masterCollection.partiallyWorkingBoards.count) + "  Boards that Boot But Don't Fully Work"
+        self.nonWorkingBoardsLabel.text = String(masterCollection.nonWorkingBoards.count) + " Non-Working Boards"
+        
+    }
+//
     @IBAction func aboutButtonPressed(_sender: UIButton) {
         performSegue(withIdentifier: "AboutSegue", sender: _sender)
     }

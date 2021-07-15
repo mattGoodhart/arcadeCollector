@@ -55,7 +55,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     let dataController = DataController.shared
 
     var reverseActive = false
-    
     var popUpVC: FilterOptionsPopup!
     var filterOptionSelected = "orientation"
     var filterOptionString = ""
@@ -72,49 +71,36 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var tab: Tab!
     
     var visibleGamesList: [Game] {
-        
         //base
         if !isFiltering && !isFilterOptionChosen {
             return gamesList
         }
-        
-    // search filtered list
+        // search filtered list
         else if isFiltering && !isFilterOptionChosen {
             return filteredGames
         }
-    //option filtered list
+        //option filtered list
         else if !isFiltering && isFilterOptionChosen {
             return filterOptionedGames
         }
-        
-    //option list then search filtered  --- or just disable the search bar in this case?
+        // option filtered and search filtered list
         else if isFiltering && isFilterOptionChosen {
             return doubleFilteredGames
         }
         else {return gamesList}
-  //do i need to sort again when using optionFiltered?
-       //  return isFiltering ? filteredGames : gamesList
     }
     
     var visibleUniqueYears : [String] { // need 4 versions of this too
         var uniqueYears = [String]()
         
-        
         //base
         if !isFiltering && !isFilterOptionChosen { uniqueYears = arrayOfUniqueYears }
-        
         //filtered
         else if isFiltering && !isFilterOptionChosen { uniqueYears = filteredUniqueYears }
-        
         //optionfiltered
         else if !isFiltering && isFilterOptionChosen { uniqueYears = filterOptionedUniqueYears }
-        
         //doublefiltered
         else if isFiltering && isFilterOptionChosen { uniqueYears = doubleFilteredYears }
-        
-        
-        //let uniqueYears = isFiltering ? filteredUniqueYears : arrayOfUniqueYears
-        
         
         guard reverseActive else {
             return uniqueYears
@@ -150,8 +136,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewDidLoad() {
         super.viewDidLoad()
         
-     //popOverVC = storyboard!.instantiateViewController(withIdentifier: "FilterOptionsPopup") as! FilterOptionsPopup
-        
         tableView.frame = view.frame
         tableView.dataSource = self
         tableView.delegate = self
@@ -166,8 +150,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
         refreshCollectionIfNeeded()
-        //refreshDataSourceIfFilterOptionSet()
-        //checkIfFilterOptionChosen()
+        handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -294,7 +277,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func filterContentForSearchText(_ searchText: String) {
-        //originally used gamesList
         
         if !isFilterOptionChosen {
             filteredGames = gamesList.filter { (game: Game) -> Bool in
@@ -306,16 +288,18 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
         }
         
-        refreshDataInBackground()
-//        refreshDataSource()
-//        tableView.reloadData()
+     //   refreshDataInBackground() // UI API called on background thread??
+        handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
+        refreshDataSource()
+        tableView.reloadData()
+        handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
     }
     
     // MARK TableViewDelegate
     
     /// Prevents the deleting of rows when viewing allGames on TableVC
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        
+       
         guard tabBarController?.selectedIndex != 2 else {
             return false
         }
@@ -407,7 +391,5 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func didFinish() {
         handleButtons(enabled: true, button: filterButton)
-
     }
-    
 }

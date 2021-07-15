@@ -29,6 +29,12 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     let machineElementKeys = Set<String>(["year" , "description", "manufacturer", "chip", "display", "sound"])
     var pdfDoc: PDFDocument?
     
+    
+    @IBOutlet weak var controlsStack : UIStackView!
+    @IBOutlet weak var displayStack : UIStackView!
+    @IBOutlet weak var audioStack : UIStackView!
+    @IBOutlet weak var processorsStack : UIStackView!
+    
     @IBOutlet weak var mainImageView: UIImageView!
     @IBOutlet weak var displayLine: UILabel!
     @IBOutlet weak var controlsLine: UILabel!
@@ -41,37 +47,71 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     // @IBOutlet weak var manualActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var stackView: UIStackView!
+    @IBOutlet weak var mameButton: UIButton!
+    
+    
     
     //MARK App Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-       // scrollView.contentSize.equalTo(view.frame.size)
-        // scrollView.delegate = self
-        
         prepMainImageView()
-        
-        //stackView.setCustomSpacing(-20, after: mainImageView)
-        
-        
-        
-        //  handleActivityIndicator(indicator: manualActivityIndicator, vc: self, show: false)
-        
         getHardwareDetailsIfNeeded(game: viewedGame)
-        // self.imageChooser.isHidden = true
         
+     
+      //  buildMainStackView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         if viewedGame.manualURLString == "" {
             manualButton.isEnabled = false
         }
+        
+       // stackView.heightAnchor.constraint(equalTo: proces).isActive = true
     }
     
     @IBAction func mameNotesButtonTapped(_ sender: UIButton) {
         getNotesFromMameIfNeeded()
     }
+    
+//    func determineStackHeight() {
+//        mainImageView.
+//
+//
+//    }
+    
+    func setImage(image: UIImage) {
+        var imageViewAspectConstraint: NSLayoutConstraint?
+        
+        mainImageView.image = image
+        
+        imageViewAspectConstraint?.isActive = false
+        imageViewAspectConstraint = mainImageView.widthAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: image.size.width / image.size.height)
+        imageViewAspectConstraint!.isActive = true
+    }
+    
+    func buildMainStackView() {
+        
+        buildIndividualStackViews()
+        
+        stackView.addArrangedSubview(mainImageView)
+        stackView.addArrangedSubview(imageChooser)
+        stackView.addArrangedSubview(mameButton)
+        stackView.addArrangedSubview(manualButton)
+        stackView.addArrangedSubview(controlsStack)
+        stackView.addArrangedSubview(displayStack)
+        stackView.addArrangedSubview(audioStack)
+        stackView.addArrangedSubview(processorsStack)
+    }
+    
+    func buildIndividualStackViews() {
+        let controlsTitle = UILabel()
+        controlsTitle.text = "Controls"
+        
+        controlsStack.addArrangedSubview(controlsTitle)
+        controlsStack.addArrangedSubview(controlsLine)
+    }
+    
     
     func prepMainImageView() {
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
@@ -134,14 +174,16 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     
     @IBAction func segmentedControlPressed(_sender: UISegmentedControl){
         stackView.arrangedSubviews[0].isHidden = true
-        
         switch imageChooser.selectedSegmentIndex {
-        case 0: self.mainImageView.image = UIImage(data: self.viewedGame.cabinetImageData!)
+        case 0: setImage(image: UIImage(data: self.viewedGame.cabinetImageData!)!)
+            //self.mainImageView.image = UIImage(data: self.viewedGame.cabinetImageData!)
+            
         case 1: getBoardPhotoIfNeeded()
         default: break;
         }
           stackView.arrangedSubviews[0].isHidden = false
     }
+    // to allow the stack view to update properly, I need to providethe  view's aspect ratio?. Probably...or do I need to completely rebuild the stackview?... or force the imagechooser to not stretch with hugging priority or something?
     
     func getNotesFromMameIfNeeded() {
         
@@ -150,7 +192,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         } else {
             let url = URL(string: "https://raw.githubusercontent.com/mamedev/mame/master/src/mame/drivers/" + viewedGame.driver!)!
             
-            DispatchQueue.global().async { // Trixx - Ok to create a new global thread instance everytime? Even necessary?
+            DispatchQueue.global().async {
                 do {
                     let contents = try String(contentsOf: url)
                     if let range = contents.range(of: "*/") {
@@ -211,7 +253,8 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         
         if let cabinetImageData = viewedGame.cabinetImageData {
             let image = UIImage(data: cabinetImageData)
-            mainImageView.image = image
+            setImage(image: image!)
+          //  mainImageView.image = image
         } else {
             if viewedGame.cabinetImageURLString != "" {
                 handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
@@ -228,7 +271,8 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                     DispatchQueue.main.async {
                         self.viewedGame.cabinetImageData = imageData
                         try? self.dataController.viewContext.save()
-                        self.mainImageView.image = UIImage(data: imageData)!
+                        self.setImage(image: UIImage(data: imageData)!)
+                       // self.mainImageView.image = UIImage(data: imageData)!
                         self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
                     }
                 }
@@ -260,7 +304,8 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     func getBoardPhotoIfNeeded () {
         
         if let boardPhotoData = viewedGame.pcbImageData {
-            mainImageView.image = UIImage(data: boardPhotoData)
+            setImage(image: UIImage(data: boardPhotoData)!)
+           // mainImageView.image = UIImage(data: boardPhotoData)
         } else {
             if viewedGame.pcbPhotoURLString != "" {
                 handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
@@ -279,7 +324,9 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                             if self.hasNoAvailableImages() {
                                 self.mainImageView.image = UIImage(named: "noHardwareDefaultImage")
                                 
-                                //set height constraint with constant set to 0.f
+                                self.mainImageView.heightAnchor.constraint(equalToConstant: 0).isActive = true
+                                
+                                //set height constraint with constant set to 0.f.. should hide it. hm. did that in egmentedcontrol pressed
                             }
                             
                         }
@@ -290,7 +337,9 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                         self.viewedGame.pcbImageData = data
                         try? self.dataController.viewContext.save()
                         self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
-                        self.mainImageView.image = UIImage(data: data)
+                        
+                        self.setImage(image: UIImage(data: data)!)
+                        //self.mainImageView.image = UIImage(data: data)
                     }
                 }
             } else {
@@ -311,22 +360,27 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     }
     
     func saveGameAttributesFromXML() {
+        viewedGame.displayType = displayDictionary?["type"] ?? "Unknown Type"
+        viewedGame.vRefresh = displayDictionary?["refresh"] ?? "Unknown vRefresh"
+        viewedGame.vTotalLines = displayDictionary?["vtotal"] ?? "Unknown vTotalLines"
         
-        viewedGame.vRefresh = displayDictionary!["refresh"]
-        viewedGame.vTotalLines = displayDictionary!["vtotal"]
+        if (displayDictionary?["width"]) != nil {
         viewedGame.resolution = displayDictionary!["width"]! + " x " + displayDictionary!["height"]!
+        } else {
+            viewedGame.resolution = "Unknown"
+        }
         //  viewedGame.hRefresh = getHorizontalRefresh(viewedGame: viewedGame)
-        viewedGame.displayType = displayDictionary!["type"]
+        
         viewedGame.driver = machineDictionary!["driver"]
         viewedGame.audioChannels = soundChannels
         viewedGame.monitorResolutionType = getMonitorResolutionType()
-        //  determineOrientation()  // This info is now provided in the JSON
         parseHardwareData()
         try? dataController.viewContext.save()
     }
     
+    /// Unused because orientation now included in JSON
     func determineOrientation() {
-        
+
         if displayDictionary!["rotate"] == "90"  {
             viewedGame.orientation = "Vertical"
         }
@@ -388,11 +442,12 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 let urlString = String("http://adb.arcadeitalia.net/download_file.php?tipo=mame_current&codice=" + self.viewedGame.romSetName! + "&entity=manual")
                 let url = URL(string: urlString)!
                 
-                guard let data = try? Data(contentsOf: url) else {// issue - possible it downloads garbage
+                guard let data = try? Data(contentsOf: url) else {
                     print("manual download failure.")
                     DispatchQueue.main.async {
                         self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
                         self.manualButton.isEnabled = false
+                        self.manualButton.isHidden = true
                         self.viewedGame.manualURLString = ""
                         try? self.dataController.viewContext.save()
                     }

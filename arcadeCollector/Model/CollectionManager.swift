@@ -28,6 +28,10 @@ class CollectionManager {
     var wantedGames = [Game]()
    // var uniqueYearsCount = 1
     var arrayOfUniqueYears : [String]!
+    var workingBoards = [Game]()
+    var partiallyWorkingBoards = [Game]()
+    var nonWorkingBoards = [Game]()
+    var boards = [Game]()
     
     
     private init() {}
@@ -105,8 +109,6 @@ class CollectionManager {
     
     func initializeAllGames() {
         parse(jsonData: readLocalFile(forName: "ScrollingData")!)
-        
-        
     }
 
     private func fetchCollectionsFromCoreData() -> [CollectionEntity]? {
@@ -153,4 +155,32 @@ class CollectionManager {
         self.allGames += fetchGamesForCollection(collection: allGamesCollection) ?? []
         self.wantedGames += fetchGamesForCollection(collection: wantedGamesCollection) ?? []
     }
+    
+    func getBoardsByWorkingCondition(){ // 0=working, 1=partial, 2=non
+        let fetchRequest: NSFetchRequest<Game> = Game.fetchRequest()
+        let predicate = NSPredicate(format: "(functionalCondition == 1)")
+        fetchRequest.predicate = predicate
+        
+        let result = try? DataController.shared.viewContext.fetch(fetchRequest)
+        boards = result!
+        
+        for board in boards {
+            
+            switch Int(board.functionalCondition) {
+            case 0: workingBoards += [board]
+            case 1: partiallyWorkingBoards += [board]
+            case 2: nonWorkingBoards += [board]
+            default: break;
+            }
+        }
+    }
+//
+//    func fetchPartiallyWorkingBoards() {
+//
+//    }
+//
+//    func fetchNonWorkingBoards() {
+//
+//    }
+    
 }
