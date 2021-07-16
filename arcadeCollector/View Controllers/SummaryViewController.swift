@@ -45,7 +45,7 @@ class SummaryViewController: UIViewController {
     
     func getBoardFunctionalityCounts() {
         
-       masterCollection.getBoardsByWorkingCondition()
+       masterCollection.getBoardsByWorkingCondition()// run only if myGames was updated
         
         self.workingBoardsLabel.text = String(masterCollection.workingBoards.count) + " Working Boards"
         self.partiallyWorkingBoardsLabel.text = String(masterCollection.partiallyWorkingBoards.count) + "  Boards that Boot But Don't Fully Work"

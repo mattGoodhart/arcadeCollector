@@ -155,6 +155,10 @@ class CollectionManager {
     }
     
     func getBoardsByWorkingCondition(){
+        workingBoards = []
+        partiallyWorkingBoards = []
+        nonWorkingBoards = []
+        
         for board in myGames {
             switch Int(board.functionalCondition) {
             case 0: workingBoards += [board]
