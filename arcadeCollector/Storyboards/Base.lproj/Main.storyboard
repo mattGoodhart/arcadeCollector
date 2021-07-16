@@ -821,14 +821,14 @@
                                 <rect key="frame" x="312" y="267" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
-                                    <action selector="enableCabinetTraits:" destination="zwu-wC-BfZ" eventType="valueChanged" id="iXu-7g-4HO"/>
+                                    <action selector="cabinetHardwareSwitchTapped:" destination="zwu-wC-BfZ" eventType="valueChanged" id="jMK-7T-M1p"/>
                                 </connections>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="bfH-94-ZAn">
                                 <rect key="frame" x="312" y="58" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
-                                    <action selector="enableBoardTraits:" destination="zwu-wC-BfZ" eventType="valueChanged" id="ede-Iy-xAx"/>
+                                    <action selector="boardSwitchTapped:" destination="zwu-wC-BfZ" eventType="valueChanged" id="n69-xF-shT"/>
                                 </connections>
                             </switch>
                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Bezel" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="g5S-X1-Pdv">

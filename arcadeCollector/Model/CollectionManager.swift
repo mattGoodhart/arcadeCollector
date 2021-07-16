@@ -31,7 +31,7 @@ class CollectionManager {
     var workingBoards = [Game]()
     var partiallyWorkingBoards = [Game]()
     var nonWorkingBoards = [Game]()
-    var boards = [Game]()
+   // var boards = [Game]()
     
     
     private init() {}
@@ -88,7 +88,7 @@ class CollectionManager {
                 gameEntity.manufacturer = game.manufacturer
                 gameEntity.players = game.players
                 gameEntity.orientation = game.orientation
-                gameEntity.hasBezel = false // There's gotta be a way to refactor these chumbawumbas (booleans)
+                gameEntity.hasBezel = false
                 gameEntity.hasBoard = false
                 gameEntity.hasCabinet = false
                 gameEntity.hasCabinetArt = false
@@ -137,7 +137,6 @@ class CollectionManager {
         let predicate = NSPredicate(format: "collection CONTAINS %@", collection)
         fetchRequest.predicate = predicate
         let result = try? DataController.shared.viewContext.fetch(fetchRequest)
-       // print(result as Any)
         return result
     }
     
@@ -146,7 +145,6 @@ class CollectionManager {
     let predicate = NSPredicate(format: "(ANY games == %@)", game)
     fetchRequest.predicate = predicate
     let result = try? DataController.shared.viewContext.fetch(fetchRequest)
-  //  print(result as Any)
     return result
     }
     
@@ -156,17 +154,8 @@ class CollectionManager {
         self.wantedGames += fetchGamesForCollection(collection: wantedGamesCollection) ?? []
     }
     
-    func getBoardsByWorkingCondition(){ // 0=working, 1=partial, 2=non
-//        let fetchRequest: NSFetchRequest<Game> = Game.fetchRequest()
-//        let predicate = NSPredicate(format: "%K != nil", "functionalCondition")
-//        fetchRequest.predicate = predicate
-//
-//        let result = try? DataController.shared.viewContext.fetch(fetchRequest)
-//        boards = result!
-        
-        
+    func getBoardsByWorkingCondition(){
         for board in myGames {
-            
             switch Int(board.functionalCondition) {
             case 0: workingBoards += [board]
             case 1: partiallyWorkingBoards += [board]
@@ -175,13 +164,4 @@ class CollectionManager {
             }
         }
     }
-//
-//    func fetchPartiallyWorkingBoards() {
-//
-//    }
-//
-//    func fetchNonWorkingBoards() {
-//
-//    }
-    
 }

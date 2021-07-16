@@ -32,7 +32,6 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var mainImageActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var historyButton: UIButton!
     @IBOutlet weak var youTubeButton: UIButton!
-  //  @IBOutlet weak var wantedButton: UIButton!
     @IBOutlet weak var wantedSwitch: UISwitch!
     @IBOutlet weak var addEditButton: UIButton!
     
@@ -88,12 +87,6 @@ class DetailViewController: UIViewController {
         popOverVC.viewedGame = viewedGame
         popOverVC.modalTransitionStyle = .crossDissolve
         present(popOverVC, animated: true, completion: nil)
-        
-        
-//        self.addChild(popOverVC)
-//        popOverVC.view.frame = self.view.frame
-//        self.view.addSubview(popOverVC.view)
-//        popOverVC.didMove(toParent: self)
     }
     
     @IBAction func addToWanted(_ sender: UISwitch) {
@@ -102,7 +95,6 @@ class DetailViewController: UIViewController {
             masterCollection.wantedGames.append(viewedGame)
             masterCollection.wantedGamesCollection.addToGames(viewedGame)
             wantedSwitch.setOn(true, animated: true)
-            
         } else {
             let removalIndex = masterCollection.wantedGames.firstIndex(of: viewedGame)
             masterCollection.wantedGames.remove(at: removalIndex!)
@@ -121,9 +113,7 @@ class DetailViewController: UIViewController {
     }
     
     @IBAction func segmentedControlPressed(){
-        
         if viewedGame.flyerImageURLString != "" {
-        
             switch mainImageSwitch.selectedSegmentIndex {
             case 0: getFlyerImageIfNeeded()
             case 1: getInGameImageIfNeeded()
@@ -131,8 +121,6 @@ class DetailViewController: UIViewController {
             default: break
             }
         } else {
-            
-           
             switch mainImageSwitch.selectedSegmentIndex {
             case 0: getInGameImageIfNeeded()
             case 1: getTitleImageIfNeeded()
@@ -204,15 +192,14 @@ class DetailViewController: UIViewController {
         for collection in collectionOwnership {
             collectionNameArray += [collection.name!]
         }
-        
             if collectionNameArray.contains("My Games") {
                 self.isInMyCollection = true
             }
             if collectionNameArray.contains("Wanted Games") {
                 self.isWanted = true
             }
-    
         }
+        
         if isWanted {
             wantedSwitch.isOn = true
         } else {
@@ -234,18 +221,7 @@ class DetailViewController: UIViewController {
             return
         }
         
-        let safariViewController = SFSafariViewController(url: youtubeURL)
-        present(safariViewController, animated: true, completion: nil)
-        
-        return
-        
-        
-        let popOverViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
-        
-        
-        
-        present(popOverViewController, animated: true, completion: nil)
-        
+        UIApplication.shared.open(youtubeURL, options: [:], completionHandler: nil)
     }
     
     // MARK: Other Methods

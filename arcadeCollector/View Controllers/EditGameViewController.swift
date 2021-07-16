@@ -40,51 +40,85 @@ class EditGameViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
     }
-        
+    
     @IBAction func dismissButtonTapped(_ sender: UIButton) {
         getGameAttributeValuesFromSwitches()
         if viewedGame.hasBoard || viewedGame.hasCabinetHardware {
-            masterCollection.myGames.append(viewedGame)
-            masterCollection.myGamesCollection.addToGames(viewedGame)
-        } else if !viewedGame.hasBoard && !viewedGame.hasCabinetHardware {
-            let removalIndex = masterCollection.myGames.firstIndex(of: viewedGame)
-            masterCollection.myGames.remove(at: removalIndex!)
-            masterCollection.myGamesCollection.removeFromGames(viewedGame)
-        }
-        try? dataController.viewContext.save()
-        dismiss(animated: true, completion: nil)
-        }
-    
-    @IBAction func enableBoardTraits(_ sender: UISwitch) {
-        if sender.isOn == true {
-            isBootleg.isEnabled = true
-            functionalCondition.isEnabled = true
-        } else {
-            isBootleg.isEnabled = false; isBootleg.isOn = false
-            functionalCondition.isEnabled = false
             
+            if !masterCollection.myGames.contains(viewedGame) {
+                masterCollection.myGames.append(viewedGame) // can I do this only ifNecessary?
+                masterCollection.myGamesCollection.addToGames(viewedGame)
+            }
+            
+            
+        } else if !viewedGame.hasBoard && !viewedGame.hasCabinetHardware {
+            if let removalIndex = masterCollection.myGames.firstIndex(of: viewedGame) {
+                masterCollection.myGames.remove(at: removalIndex)
+                masterCollection.myGamesCollection.removeFromGames(viewedGame)
             }
         }
+        
+        try? dataController.viewContext.save()
+        dismiss(animated: true, completion: nil)
+    }
     
-    @IBAction func enableCabinetTraits(_ sender: UISwitch) {
-        if sender.isOn == true {
-            hasCabinet.isEnabled = true
-            hasMonitorFlag.isEnabled = true
-            hasControls.isEnabled = true
-            hasBezel.isEnabled = true
-            hasControlPanelOverlay.isEnabled = true
-            hasCabinetArt.isEnabled = true
-            hasMarquee.isEnabled = true
+    @IBAction func boardSwitchTapped(_ sender: UISwitch) {
+        if sender.isOn {
+            enableBoardTraits(state: true)
         } else {
-            hasCabinet.isEnabled = false; hasCabinet.isOn = false
-            hasMonitorFlag.isEnabled = false; hasMonitorFlag.isOn = false
-            hasControls.isEnabled = false; hasControls.isOn = false
-            hasBezel.isEnabled = false; hasBezel.isOn = false
-            hasControlPanelOverlay.isEnabled = false; hasControlPanelOverlay.isOn = false
-            hasCabinetArt.isEnabled = false; hasCabinetArt.isOn = false
-            hasMarquee.isEnabled = false; hasMarquee.isOn = false
+            enableBoardTraits(state: false)
         }
     }
+    
+    @IBAction func cabinetHardwareSwitchTapped(_ sender: UISwitch) {
+        if sender.isOn {
+            enableCabinetTraits(state: true)
+        } else {
+            enableCabinetTraits(state: false)
+        }
+    }
+        
+        func enableBoardTraits(state: Bool) {
+            isBootleg.isEnabled = state
+            functionalCondition.isEnabled = state
+        }
+        
+        //        if sender.isOn == true {
+        //            isBootleg.isEnabled = true
+        //            functionalCondition.isEnabled = true
+        //        } else {
+        //            isBootleg.isEnabled = false; isBootleg.isOn = false
+        //            functionalCondition.isEnabled = false
+        //
+        //            }
+    
+    func enableCabinetTraits(state: Bool) {
+        hasCabinet.isEnabled = state
+        hasMonitorFlag.isEnabled = state
+        hasControls.isEnabled = state
+        hasBezel.isEnabled = state
+        hasControlPanelOverlay.isEnabled = state
+        hasCabinetArt.isEnabled = state
+        hasMarquee.isEnabled = state
+    }
+        
+//        if sender.isOn == true {
+//            hasCabinet.isEnabled = true
+//            hasMonitorFlag.isEnabled = true
+//            hasControls.isEnabled = true
+//            hasBezel.isEnabled = true
+//            hasControlPanelOverlay.isEnabled = true
+//            hasCabinetArt.isEnabled = true
+//            hasMarquee.isEnabled = true
+//        } else {
+//            hasCabinet.isEnabled = false; hasCabinet.isOn = false
+//            hasMonitorFlag.isEnabled = false; hasMonitorFlag.isOn = false
+//            hasControls.isEnabled = false; hasControls.isOn = false
+//            hasBezel.isEnabled = false; hasBezel.isOn = false
+//            hasControlPanelOverlay.isEnabled = false; hasControlPanelOverlay.isOn = false
+//            hasCabinetArt.isEnabled = false; hasCabinetArt.isOn = false
+//            hasMarquee.isEnabled = false; hasMarquee.isOn = false
+//        }
     
     func getGameAttributeValuesFromSwitches() {
         if hasBoard.isOn {viewedGame.hasBoard = true} else {viewedGame.hasBoard = false}
@@ -102,16 +136,16 @@ class EditGameViewController: UIViewController {
     func setSwitches() {
         //values set to false / 0 upon json decode
         
-        if viewedGame.hasBoard {hasBoard.isOn = true} else {hasBoard.isOn = false}
+        if viewedGame.hasBoard {hasBoard.isOn = true; enableBoardTraits(state: true)} else {hasBoard.isOn = false; enableBoardTraits(state: false)}
         if viewedGame.isBootleg {isBootleg.isOn = true} else {isBootleg.isOn = false}
         if viewedGame.hasCabinetArt {hasCabinetArt.isOn = true} else {hasCabinetArt.isOn = false}
         if viewedGame.hasControlPanelOverlay {hasControlPanelOverlay.isOn = true} else {hasControlPanelOverlay.isOn = false}
         if viewedGame.hasControls {hasControls.isOn = true} else {hasControls.isOn = false}
-        if viewedGame.hasBoard {hasCabinetHardware.isOn = true} else {hasCabinetHardware.isOn = false}
+        if viewedGame.hasCabinetHardware {hasCabinetHardware.isOn = true;} else {hasCabinetHardware.isOn = false;}
         if viewedGame.hasCabinet {hasCabinet.isOn = true} else {hasCabinet.isOn = false}
         if viewedGame.hasBezel {hasBezel.isOn = true} else {hasBezel.isOn = false}
         if viewedGame.hasMonitorFlag {hasMonitorFlag.isOn = true} else {hasMonitorFlag.isOn = false}
         if viewedGame.hasMarquee {hasMarquee.isOn = true} else {hasMarquee.isOn = false}
-        functionalCondition.selectedSegmentIndex = 0
+        functionalCondition.selectedSegmentIndex = Int(viewedGame.functionalCondition)
     }
 }
