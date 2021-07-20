@@ -28,11 +28,10 @@ class SummaryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Summary"
-      //  masterCollection.getBoardsByWorkingCondition()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super .viewWillAppear(false)
+        super.viewWillAppear(false)
         getGameCollectionCounts()
         getBoardFunctionalityCounts()
     }
@@ -44,13 +43,11 @@ class SummaryViewController: UIViewController {
     }
     
     func getBoardFunctionalityCounts() {
-        
-       masterCollection.getBoardsByWorkingCondition()// run only if myGames was updated
+       masterCollection.getBoardsByWorkingCondition()
         
         self.workingBoardsLabel.text = String(masterCollection.workingBoards.count) + " Working Boards"
         self.partiallyWorkingBoardsLabel.text = String(masterCollection.partiallyWorkingBoards.count) + "  Boards that Boot But Don't Fully Work"
         self.nonWorkingBoardsLabel.text = String(masterCollection.nonWorkingBoards.count) + " Non-Working Boards"
-        
     }
 //
     @IBAction func aboutButtonPressed(_sender: UIButton) {

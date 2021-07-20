@@ -6,15 +6,7 @@
 //  Copyright © 2021 CatBoiz. All rights reserved.
 //
 
-
 import UIKit
-
-
-//enum FilterOption {
-//    case orientation
-//    case players
-//    case manufacturer
-//}
 
 protocol FilterSelectionDelegate: AnyObject {
     func didSelect(filter: String, filterOptionString: String)
@@ -70,7 +62,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var filteredGames : [Game] = []
     var tab: Tab!
     
-    var visibleGamesList: [Game] {
+    var visibleGamesList: [Game] { // should i use a switch here?
         //base
         if !isFiltering && !isFilterOptionChosen {
             return gamesList
@@ -90,7 +82,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         else {return gamesList}
     }
     
-    var visibleUniqueYears : [String] { // need 4 versions of this too
+    var visibleUniqueYears : [String] { // use switch here?
         var uniqueYears = [String]()
         
         //base
@@ -131,11 +123,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet weak var filterButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    //MARK Overrides
+    //MARK Life Cycle and Overrides
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         tableView.frame = view.frame
         tableView.dataSource = self
         tableView.delegate = self
@@ -160,6 +151,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
+ 
     //MARK: Actions
     
     @IBAction func reverseButtonTapped(_ sender: UIButton) {
@@ -214,14 +206,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 }
             default: break;
             }
-            
-            
-            //            refreshDataSource()
-            //            tableView.reloadData()
-            //        } else {
-            //            refreshDataSource()
-            //            tableView.reloadData()
-            //        }
         }
          refreshDataInBackground()
     }
@@ -265,8 +249,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         print("Refreshing list")
         refreshDataInBackground()
-//        refreshDataSource()
-//        tableView.reloadData()
     }
     
     // MARK UISearchResultsUpdating
@@ -380,10 +362,18 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     
+//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//
+//        if indexPath.row % 2 == 0 {
+//            let alternateCellColor: UIColor? = UIColor(red: 0.15, green: 0.55, blue: 0.4, alpha: 1)//UIColor(red: 40, green: 140, blue: 100, alpha: 1)
+//            cell.backgroundColor = alternateCellColor
+//        }
+//    }
+    
+    
     // MARK: - FilterSelectionDelegate
     
     func didSelect(filter: String, filterOptionString: String) {
-        //apply the results of selecting the filter
         filterOptionSelected = filter
         self.filterOptionString = filterOptionString
         refreshDataSourceIfFilterOptionSet()

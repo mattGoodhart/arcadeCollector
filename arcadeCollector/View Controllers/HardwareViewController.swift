@@ -293,7 +293,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         }
     }
     
-    func hasNoAvailableImages() -> Bool {
+    func hasNoAvailableImages() -> Bool { // should this just be a variable?
         if viewedGame.pcbPhotoURLString == "" && viewedGame.cabinetImageURLString == "" {
             return true
         } else {
@@ -322,13 +322,10 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                             self.imageChooser.isHidden = true
                             
                             if self.hasNoAvailableImages() {
-                                self.mainImageView.image = UIImage(named: "noHardwareDefaultImage")
-                                
-                                self.mainImageView.heightAnchor.constraint(equalToConstant: 0).isActive = true
-                                
-                                //set height constraint with constant set to 0.f.. should hide it. hm. did that in egmentedcontrol pressed
+                              //  self.mainImageView.image = UIImage(named: "noHardwareDefaultImage")
+                                self.setImage(image: UIImage(named: "noHardwareDefaultImage")!)
+                             //   self.mainImageView.heightAnchor.constraint(equalToConstant: 0).isActive = true
                             }
-                            
                         }
                         return
                     }
@@ -346,14 +343,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 self.imageChooser.isHidden = true
                 print("no PCB image available")
                 if hasNoAvailableImages() {
-                    mainImageView.image = UIImage(named: "noHardwareDefaultImage")
-                    
-                    //   mainImageView.translatesAutoresizingMaskIntoConstraints = false
-                    //                    mainImageView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
-                    //                    mainImageView.topAnchor.constraint(equalTo: marqueeView.bottomAnchor, constant: 20).isActive = true
-                    mainImageView.heightAnchor.constraint(equalToConstant: 0).isActive = true
-                    //                    mainImageView.widthAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: multiplier).isActive = true
-                    
+                    setImage(image: UIImage(named: "noHardwareDefaultImage")!)
                 }
             }
         }
@@ -369,7 +359,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         } else {
             viewedGame.resolution = "Unknown"
         }
-        //  viewedGame.hRefresh = getHorizontalRefresh(viewedGame: viewedGame)
+        viewedGame.hRefresh = getHorizontalRefresh(viewedGame: viewedGame)
         
         viewedGame.driver = machineDictionary!["driver"]
         viewedGame.audioChannels = soundChannels
@@ -477,10 +467,10 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         }
     }
     
-    func getHorizontalRefresh(viewedGame: Game) -> String { // TODO - account for vRefresh or vTotlaline missing
+    func getHorizontalRefresh(viewedGame: Game) -> String {
         
-        if let vRefresh = viewedGame.vRefresh, let vTotalLines = viewedGame.vTotalLines {
-            let hRefresh = Double(vRefresh)! * Double(vTotalLines)!
+        if let vRefresh = Double(viewedGame.vRefresh!), let vTotalLines = Double(viewedGame.vTotalLines!) {
+           let hRefresh = vRefresh * vTotalLines
             return "\(hRefresh)"
         } else {
             if Int(displayDictionary!["width"]!)! > 262 {

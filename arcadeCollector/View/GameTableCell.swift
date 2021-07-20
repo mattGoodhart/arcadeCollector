@@ -18,7 +18,6 @@ class GameTableCell: UITableViewCell {
     
     let dataAsset = NSDataAsset(name: "space_invaders_icon")!
 
-
     // MARK: UICollectionReusableView
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -31,7 +30,4 @@ class GameTableCell: UITableViewCell {
         let iconImage = UIImage(data: dataAsset.data)
         iconImageView.image = iconImage
     }
-    
-    
-    
 }

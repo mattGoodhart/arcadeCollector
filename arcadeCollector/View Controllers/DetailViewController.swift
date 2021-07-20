@@ -35,7 +35,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var wantedSwitch: UISwitch!
     @IBOutlet weak var addEditButton: UIButton!
     
-    //MARK: View Controller Life Cycle
+    //MARK: View Controller Life Cycle and Other Overrides
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,9 +66,10 @@ class DetailViewController: UIViewController {
         super .viewWillAppear(animated)
         
         if viewedGame.flyerImageURLString == "" {
-             mainImageSwitch.selectedSegmentIndex = 1 // i want in-game to be highlighted, but this aint doing it
+             mainImageSwitch.selectedSegmentIndex = 1
         }
     }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "HardwareSegue"  {
             let hardwareVC = segue.destination as! HardwareViewController
@@ -112,7 +113,7 @@ class DetailViewController: UIViewController {
         present(popOverVC, animated: true, completion: nil)
     }
     
-    @IBAction func segmentedControlPressed(){
+    @IBAction func segmentedControlPressed() {
         if viewedGame.flyerImageURLString != "" {
             switch mainImageSwitch.selectedSegmentIndex {
             case 0: getFlyerImageIfNeeded()
@@ -129,7 +130,7 @@ class DetailViewController: UIViewController {
         }
     }
     
-    @IBAction func youTubeButtonPressed(_ sender: UIButton){
+    @IBAction func youTubeButtonPressed(_ sender: UIButton) {
         loadYoutube(videoID: viewedGame.youtubeVideoID ?? "")
     }
     
@@ -148,38 +149,41 @@ class DetailViewController: UIViewController {
         marqueeView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
         marqueeView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
         marqueeView.heightAnchor.constraint(equalToConstant: 85).isActive = true
-      //  marqueeView.widthAnchor.constraint(equalTo: marqueeView.heightAnchor, multiplier: 4).isActive = true
     }
     
     func setOtherConstraints() {
         mainImageSwitch.translatesAutoresizingMaskIntoConstraints = false
         mainImageSwitch.topAnchor.constraint(equalTo: mainImageView.bottomAnchor, constant: 20).isActive = true
         mainImageSwitch.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
+        
         addEditButton.translatesAutoresizingMaskIntoConstraints = false
         addEditButton.topAnchor.constraint(equalTo: mainImageSwitch.bottomAnchor, constant: 20).isActive = true
+        
         wantedSwitch.translatesAutoresizingMaskIntoConstraints = false
         wantedSwitch.centerYAnchor.constraint(equalTo: addEditButton.centerYAnchor).isActive = true
         wantedSwitch.trailingAnchor.constraint(equalTo: mainImageSwitch.trailingAnchor).isActive = true
+        
         historyButton.translatesAutoresizingMaskIntoConstraints = false
         historyButton.topAnchor.constraint(equalTo: addEditButton.bottomAnchor, constant: 20).isActive = true
         historyButton.leadingAnchor.constraint(equalTo: mainImageSwitch.leadingAnchor).isActive = true
+        
         youTubeButton.translatesAutoresizingMaskIntoConstraints = false
         youTubeButton.centerYAnchor.constraint(equalTo: historyButton.centerYAnchor).isActive = true
         youTubeButton.centerXAnchor.constraint(equalTo: wantedSwitch.centerXAnchor).isActive = true
+        
         addEditButton.centerXAnchor.constraint(equalTo: historyButton.centerXAnchor).isActive = true
     }
     
     func setImageViewAspectRatio() {
         let orientation = viewedGame.orientation
+        
         switch orientation {
-            
         case "Horizontal": mainImageView.contentMode = .scaleToFill
         adjustImageView(height: 210, multiplier: 4.0/3.0)
         case "Vertical": mainImageView.contentMode = .scaleToFill
         adjustImageView(height: 280, multiplier: 3.0/4.0)
         default: mainImageView.contentMode = .scaleAspectFit
         adjustImageView(height: 210, multiplier: 4.0/3.0)
-            
         }
     }
     /// fetch collections the viewedGame belongs to
@@ -220,7 +224,6 @@ class DetailViewController: UIViewController {
         guard let youtubeURL = URL(string: "https://www.youtube.com/embed/\(videoID)?playsinline=1") else {
             return
         }
-        
         UIApplication.shared.open(youtubeURL, options: [:], completionHandler: nil)
     }
     
@@ -254,7 +257,7 @@ class DetailViewController: UIViewController {
         }
     }
     
-    func getInGameImageIfNeeded() {
+    func getInGameImageIfNeeded() { //refactor
         if let inGameImageData = viewedGame.inGameImageData {
             let image = UIImage(data: inGameImageData)
             mainImageView.contentMode = .scaleToFill
@@ -312,7 +315,7 @@ class DetailViewController: UIViewController {
         }
     }
     
-    func getFlyerImageIfNeeded(){
+    func getFlyerImageIfNeeded() { //refactor this and below methods
         if let flyerImageData = viewedGame.flyerImageData {
             let image = UIImage(data: flyerImageData)
             mainImageView.contentMode = .scaleAspectFit
@@ -325,7 +328,6 @@ class DetailViewController: UIViewController {
                     guard let imageData = try? Data(contentsOf: url) else {
                         print("Flyer download failure.")
                         self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                       // self.mainImageSwitch.setEnabled(false, forSegmentAt: 0)
                         self.mainImageSwitch.removeSegment(at: 0, animated: true)
                         return
                     }
@@ -339,8 +341,7 @@ class DetailViewController: UIViewController {
                 }
             } else {
                 self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                //self.mainImageSwitch.setEnabled(false, forSegmentAt: 0)
-                 self.mainImageSwitch.removeSegment(at: 0, animated: true)
+                self.mainImageSwitch.removeSegment(at: 0, animated: true)
                 return
             }
         }
@@ -349,9 +350,11 @@ class DetailViewController: UIViewController {
     func getDetailsIfNeeded() {
         
         if viewedGame.emulationStatus != nil {
+            
             if let inGameImageData =  viewedGame.inGameImageData {
                 mainImageView.image = UIImage(data: inGameImageData)
             }
+            
             if let marqueeImageData = viewedGame.marqueeImageData {
                 marqueeView.image = UIImage(data: marqueeImageData)
             }
@@ -359,7 +362,9 @@ class DetailViewController: UIViewController {
             if viewedGame.flyerImageURLString == "" {
                 mainImageSwitch.removeSegment(at: 0, animated: false)
             }
+            
             return
+            
         } else {
             
             handleActivityIndicator(indicator: self.marqueeActivityIndicator, vc: self, show: true)
@@ -393,6 +398,7 @@ class DetailViewController: UIViewController {
                     self.viewedGame.youtubeVideoID = item.youtubeVideoID
                     self.viewedGame.shortPlayURLString = item.shortPlayURLString
                 }
+                
                 try? self.dataController.viewContext.save()
                 self.getInGameImageIfNeeded()
                 self.getMarqueeIfNeeded()
@@ -445,6 +451,7 @@ class DetailViewController: UIViewController {
         if imageView == self.marqueeView {
             setImageForPopOver(viewController: popOverViewController, imageView: imageView, viewType: "marqueeView")
         }
+        
         present(popOverViewController, animated: true, completion: nil)
     }
     
@@ -454,6 +461,7 @@ class DetailViewController: UIViewController {
     }
     
     func setImageForPopOver(viewController: PopOverViewController, imageView: UIImageView, viewType: String) {
+       
         if viewType != "marqueeView" {
             viewController.image = imageView.image
         } else {
