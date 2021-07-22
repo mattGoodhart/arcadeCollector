@@ -29,7 +29,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     let machineElementKeys = Set<String>(["year" , "description", "manufacturer", "chip", "display", "sound"])
     var pdfDoc: PDFDocument?
     
-    
     @IBOutlet weak var controlsStack : UIStackView!
     @IBOutlet weak var displayStack : UIStackView!
     @IBOutlet weak var audioStack : UIStackView!
@@ -44,11 +43,9 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var audioChannelsLine: UILabel!
     @IBOutlet weak var manualButton: UIButton!
-    // @IBOutlet weak var manualActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var mameButton: UIButton!
-    
     
     
     //MARK App Life Cycle
@@ -58,7 +55,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         prepMainImageView()
         getHardwareDetailsIfNeeded(game: viewedGame)
         
-     
       //  buildMainStackView()
     }
     
@@ -115,7 +111,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     
     func prepMainImageView() {
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
-        //  handleActivityIndicator(indicator: manualActivityIndicator, vc: self, show: false)
         mainImageView.image = nil
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.mainImageTapped))
         mainImageView.addGestureRecognizer(tapRecognizer)
@@ -136,12 +131,10 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     
     func segueToMameNotes() {
         let popOverVC = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
-        // self.addChild(popOverVC)
         popOverVC.text = viewedGame.mameNotes ?? "Sorry, MAME driver notes could not be fetched."
         popOverVC.type = "textView"
         popOverVC.modalTransitionStyle = .crossDissolve
         present(popOverVC, animated: true, completion: nil)
-        
     }
     
     @objc func mainImageTapped(_ sender: UIGestureRecognizer) {
@@ -176,8 +169,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         stackView.arrangedSubviews[0].isHidden = true
         switch imageChooser.selectedSegmentIndex {
         case 0: setImage(image: UIImage(data: self.viewedGame.cabinetImageData!)!)
-            //self.mainImageView.image = UIImage(data: self.viewedGame.cabinetImageData!)
-            
         case 1: getBoardPhotoIfNeeded()
         default: break;
         }
@@ -232,12 +223,11 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         audioChannelsLine.text = viewedGame.audioChannels ?? "viewedGame.audioChannels is nil"
         processorsLine.text = cpuLineText
         processorsLine.sizeToFit()
-        displayLine.text = "\(viewedGame.orientation ?? ""), \(viewedGame.displayType ?? ""), \(horizontalRefresh)"
+        displayLine.text = "\(viewedGame.orientation ?? ""), \(viewedGame.displayType ?? ""), \(viewedGame.resolution ?? ""), \(horizontalRefresh)"
         controlsLine.text = " \(viewedGame.inputControls ?? ""), \(viewedGame.inputButtons ?? "") buttons"
     }
     
     func getHardwareDetailsIfNeeded(game: Game) {
-        
         if viewedGame.resolution != nil {
             setInfo()
             getAtLeastOnePhotoIfPossible()
@@ -285,6 +275,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
             }
         }
     }
+    
     func hasEmptyImageStrings() -> Bool {
         if viewedGame.pcbPhotoURLString == "" || viewedGame.cabinetImageURLString == "" {
             return true
