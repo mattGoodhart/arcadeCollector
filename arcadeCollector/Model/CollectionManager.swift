@@ -32,6 +32,9 @@ class CollectionManager {
     var partiallyWorkingBoards = [Game]()
     var nonWorkingBoards = [Game]()
    // var boards = [Game]()
+    var collectedCabinetHardWare = [Game]()
+    var boardsInCollection = [Game]()
+    var allHardwareInCollection = [Game]()
     
     
     private init() {}
@@ -65,7 +68,7 @@ class CollectionManager {
         initializeAllGames()
     }
   
-    private func readLocalFile(forName name: String) -> Data? { // Trixx - discuss do-try-catch vs guard
+    private func readLocalFile(forName name: String) -> Data? {
         do {
             if let bundlePath = Bundle.main.path(forResource: name, ofType: "json"), let jsonData = try String(contentsOfFile: bundlePath).data(using: .utf8) {
                 return jsonData
@@ -167,5 +170,40 @@ class CollectionManager {
             default: break;
             }
         }
+        boardsInCollection = workingBoards + partiallyWorkingBoards + nonWorkingBoards
     }
+    func getCabinetHardware() {
+        collectedCabinetHardWare = []
+        
+        var cabinets = [Game]()
+        var monitors = [Game]()
+        var controls = [Game]()
+        var bezels = [Game]()
+        var controlPanelOverlays = [Game]()
+        var artworks = [Game]()
+        var marquees = [Game]()
+        
+        
+        
+        for game in myGames {
+            if game.hasCabinetHardware {
+                
+            if game.hasCabinet { cabinets += [game] }
+            if game.hasMonitorFlag { monitors += [game] }
+            if game.hasControls { controls += [game] }
+            if game.hasBezel { bezels += [game] }
+            if game.hasControlPanelOverlay { controlPanelOverlays += [game] }
+            if game.hasCabinetArt { artworks += [game] }
+            if game.hasMarquee { marquees += [game] }
+            }
+        }
+        collectedCabinetHardWare = cabinets + monitors + controls + bezels + controlPanelOverlays + artworks + marquees
+        
+       // return collectedCabinetHardWare.count
+    }
+    func getAllHardwareCount() {
+        allHardwareInCollection = boardsInCollection + collectedCabinetHardWare
+       //return allHardwareInCollection.count
+    }
+    
 }

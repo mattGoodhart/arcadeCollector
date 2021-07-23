@@ -18,6 +18,7 @@ class SummaryViewController: UIViewController {
     @IBOutlet weak var workingBoardsLabel: UILabel!
     @IBOutlet weak var partiallyWorkingBoardsLabel: UILabel!
     @IBOutlet weak var nonWorkingBoardsLabel: UILabel!
+    @IBOutlet weak var boardsStatus: UILabel!
     
     let masterCollection = CollectionManager.shared
     let dataController = DataController.shared
@@ -32,13 +33,15 @@ class SummaryViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
-        getGameCollectionCounts()
         getBoardFunctionalityCounts()
+        masterCollection.getCabinetHardware()
+        masterCollection.getAllHardwareCount()
+        getGameCollectionCounts()
     }
     
     func getGameCollectionCounts() {
         self.allGamesLabel.text = "\(masterCollection.allGames.count) Unique Games in Reference"
-        self.myCollectionLabel.text = "\(masterCollection.myGames.count) Games in Collection"
+        self.myCollectionLabel.text = "\(masterCollection.allHardwareInCollection.count) Pieces of Hardware in Collection"
         self.wantedGamesLabel.text = "\(masterCollection.wantedGames.count) Wanted Games"
     }
     
@@ -48,6 +51,8 @@ class SummaryViewController: UIViewController {
         self.workingBoardsLabel.text = String(masterCollection.workingBoards.count) + " Working Boards"
         self.partiallyWorkingBoardsLabel.text = String(masterCollection.partiallyWorkingBoards.count) + "  Boards that Boot But Don't Fully Work"
         self.nonWorkingBoardsLabel.text = String(masterCollection.nonWorkingBoards.count) + " Non-Working Boards"
+        
+        self.boardsStatus.text = String(masterCollection.boardsInCollection.count) + " Boards in Collection"
     }
 //
     @IBAction func aboutButtonPressed(_sender: UIButton) {
