@@ -30,6 +30,11 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         margins = view.layoutMarginsGuide
+       
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         hideAllViews()
         setView()
     }
@@ -96,26 +101,13 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             heightAnchor.isActive = true
             imageView.isHidden = false
             
-        case "flyerView":
+        case "flyerView", "hardwareView":
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.image = image
             imageView.frame = view.frame
             imageView.contentMode = .scaleAspectFit
-            centerX.isActive = true
-            centerY.isActive = true
-            widthAnchor.isActive = true
-            heightAnchor.isActive = true
-            imageView.isHidden = false
-            
-        case "hardwareView":
-            appDelegate.allowedOrientations = .all
-            view.backgroundColor = UIColor.black
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-            imageView.image = image
-            imageView.contentMode = .scaleAspectFit
-            imageView.frame = view.frame
             centerX.isActive = true
             centerY.isActive = true
             widthAnchor.isActive = true
@@ -174,7 +166,8 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         default: break
         }
     }
-    
+
+
     func hideAllViews() {
         pdfView.isHidden = true
         textView.isHidden = true
