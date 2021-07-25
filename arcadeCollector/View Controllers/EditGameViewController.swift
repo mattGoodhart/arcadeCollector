@@ -13,6 +13,7 @@ class EditGameViewController: UIViewController {
     var tabBar : UITabBar!
     let dataController = DataController.shared
     let masterCollection = CollectionManager.shared
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var viewedGame: Game!
     
     @IBOutlet weak var hasBoard: UISwitch!
@@ -35,6 +36,7 @@ class EditGameViewController: UIViewController {
         
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        appDelegate.allowedOrientations = .portrait
     }
         
     override func viewWillDisappear(_ animated: Bool) {

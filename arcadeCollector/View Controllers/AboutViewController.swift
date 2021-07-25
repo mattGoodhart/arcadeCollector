@@ -9,13 +9,12 @@
 import UIKit
 
 class AboutViewController: UIViewController {
-//
-//    @IBOutlet weak var dismissButton: UIButton!
-//
-//    @IBAction func dismissButtonTapped(_sender: UIButton) {
-//        self.dismiss(animated: true) {
-//
-//        }
-//    }
+    
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        appDelegate.allowedOrientations = .portrait
+    }
 }
     

@@ -24,6 +24,7 @@ class DetailViewController: UIViewController {
     var inGameImageData: Data!
     var flyerImageData: Data!
     var marqueeImageData: Data!
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     @IBOutlet weak var marqueeView: UIImageView!
     @IBOutlet weak var mainImageView: UIImageView!
@@ -64,6 +65,8 @@ class DetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super .viewWillAppear(animated)
+        
+        appDelegate.allowedOrientations = .portrait
         
         if viewedGame.flyerImageURLString == "" {
              mainImageSwitch.selectedSegmentIndex = 1

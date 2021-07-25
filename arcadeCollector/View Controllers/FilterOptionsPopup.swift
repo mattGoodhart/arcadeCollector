@@ -20,6 +20,7 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     var arrayOfUniqueOrientations: [String]!
     var arrayOfUniquePlayerCounts: [String]!
     var arrayOfUniqueManufacturers: [String]!
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     @IBOutlet weak var optionsSegmentedControl: UISegmentedControl!
     @IBOutlet weak var removeFilterButton: UIButton!
@@ -40,11 +41,11 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         optionsSegmentedControl.selectedSegmentIndex = 0
         stringArrayForPicker = arrayOfUniqueOrientations
         buildMainView()
-       // navigationController?.navigationBar.popItem(animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super .viewWillAppear(true)
+        appDelegate.allowedOrientations = .portrait
         checkForActiveFilterOption()
     }
     

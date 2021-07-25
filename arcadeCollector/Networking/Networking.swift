@@ -10,7 +10,7 @@ import Foundation
 
 class Networking { // Make this a Singleton?
     
-    func taskForJSON<ResponseType: Decodable>(url: URL, responseType: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) { // TODO - error handling based on server response. Maybe show a notification
+    func taskForJSON<ResponseType: Decodable>(url: URL, responseType: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) {
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"

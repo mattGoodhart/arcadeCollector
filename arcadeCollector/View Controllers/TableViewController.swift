@@ -45,6 +45,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
    // var popOverVC : FilterOptionsPopup!
     let searchController = UISearchController(searchResultsController: nil)
     let dataController = DataController.shared
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
     var reverseActive = false
     var popUpVC: FilterOptionsPopup!
@@ -140,6 +141,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
+        appDelegate.allowedOrientations = .portrait
         refreshCollectionIfNeeded()
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
     }
@@ -367,6 +369,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
 //        if indexPath.row % 2 == 0 {
 //            let alternateCellColor: UIColor? = UIColor(red: 0.15, green: 0.55, blue: 0.4, alpha: 1)//UIColor(red: 40, green: 140, blue: 100, alpha: 1)
 //            cell.backgroundColor = alternateCellColor
+//        }else {
+//           cell.backgroundColor = view.backgroundColor
 //        }
 //    }
     

@@ -21,6 +21,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     var viewedGame: Game!
     var soundChannels = ""
     let dataController = DataController.shared
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var currentValue: String?
     var machineDictionary: [String: String]?
     var displayDictionary: [String: String]?
@@ -59,6 +60,10 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+       super.viewWillAppear(true)
+        
+        appDelegate.allowedOrientations = .portrait
+        
         if viewedGame.manualURLString == "" {
             manualButton.isEnabled = false
         }

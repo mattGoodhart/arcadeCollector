@@ -20,19 +20,35 @@ class SummaryViewController: UIViewController {
     @IBOutlet weak var nonWorkingBoardsLabel: UILabel!
     @IBOutlet weak var boardsStatus: UILabel!
     
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let masterCollection = CollectionManager.shared
     let dataController = DataController.shared
     var workingBoardsCount = 0
     var partiallyWorkingBoardsCount = 0
     var nonWorkingBoardsCount = 0
     
+//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+//        return .portrait
+//    }
+//    override func shouldAutoRotate() -> Bool {
+//        return false
+//    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Summary"
+        
+        
+        
+//        let value = UIInterfaceOrientation.portrait.rawValue
+//        UIDevice.current.setValue(value, forKey: "orientation")
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
+        
+      appDelegate.allowedOrientations = .portrait
+        
         getBoardFunctionalityCounts()
         masterCollection.getCabinetHardware()
         masterCollection.getAllHardwareCount()

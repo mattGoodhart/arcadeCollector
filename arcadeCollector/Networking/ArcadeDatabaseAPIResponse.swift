@@ -35,8 +35,8 @@ struct RomSetResults: Codable {
     let inputControls: String
     let inputButtons: Int
     let youtubeVideoID: String
-    let shortPlayURLString: String // this might allow me to bring in a media playback framework/library
-//
+    let shortPlayURLString: String
+
     enum CodingKeys: String, CodingKey {
         case resultIndex = "index"
         case title = "short_title"

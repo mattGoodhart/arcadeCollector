@@ -74,14 +74,14 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             textView.backgroundColor = UIColor.black
             textView.frame = view.frame
             
-        case "webView":
-            appDelegate.allowedOrientations = .all
-            webView.isHidden = false
-            webView.configuration.allowsInlineMediaPlayback = true // done in storyboard
-            webView.frame = view.frame
-            
-            let request = URLRequest(url: webURL)
-            webView.load(request)
+//        case "webView":
+//            appDelegate.allowedOrientations = .all
+//            webView.isHidden = false
+//            webView.configuration.allowsInlineMediaPlayback = true // done in storyboard
+//            webView.frame = view.frame
+//
+//            let request = URLRequest(url: webURL)
+//            webView.load(request)
             
         case "marqueeView": //
             appDelegate.allowedOrientations = .all
