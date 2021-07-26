@@ -26,6 +26,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var webView: WKWebView!
+    @IBOutlet weak var dismissButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +37,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         hideAllViews()
+        dismissButton.removeAllConstraints()
         setView()
     }
     
@@ -71,6 +73,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             pdfView.isHidden = false
             pdfView.document = manual
             pdfView.frame = view.frame
+            setDismissButton()
             
         case "textView":
             appDelegate.allowedOrientations = .portrait
@@ -78,6 +81,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             textView.text = text
             textView.backgroundColor = UIColor.black
             textView.frame = view.frame
+            setDismissButton()
             
 //        case "webView":
 //            appDelegate.allowedOrientations = .all
@@ -100,6 +104,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             widthAnchor.isActive = true
             heightAnchor.isActive = true
             imageView.isHidden = false
+            setDismissButton()
             
         case "flyerView", "hardwareView":
             appDelegate.allowedOrientations = .all
@@ -113,6 +118,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             widthAnchor.isActive = true
             heightAnchor.isActive = true
             imageView.isHidden = false
+            setDismissButton()
             
         case "gameImageView":
             appDelegate.allowedOrientations = .all
@@ -165,9 +171,16 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             }
         default: break
         }
+        setDismissButton()
     }
 
-
+    func setDismissButton() {
+        view.addSubview(dismissButton)
+        dismissButton.translatesAutoresizingMaskIntoConstraints = false
+        dismissButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20).isActive = true
+        dismissButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+    }
+    
     func hideAllViews() {
         pdfView.isHidden = true
         textView.isHidden = true

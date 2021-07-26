@@ -746,9 +746,9 @@ nplayers.arcadebelgium.be</string>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rT-ia-fkI">
                                 <rect key="frame" x="8" y="20" width="50" height="75"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="X" image="Minus"/>
+                                <state key="normal" image="Minus"/>
                                 <connections>
-                                    <action selector="dismissButtonTapped:" destination="mxO-mm-E9o" eventType="touchUpInside" id="Kzd-UT-Gzm"/>
+                                    <action selector="dismissButtonTapped:" destination="mxO-mm-E9o" eventType="touchUpInside" id="7OO-5v-ORd"/>
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ve-le-nVU">
@@ -783,6 +783,7 @@ nplayers.arcadebelgium.be</string>
                         <viewLayoutGuide key="safeArea" id="XYV-bU-ZSo"/>
                     </view>
                     <connections>
+                        <outlet property="dismissButton" destination="6rT-ia-fkI" id="ZMt-H2-fd5"/>
                         <outlet property="imageView" destination="9ve-le-nVU" id="d3l-j2-Gpb"/>
                         <outlet property="pdfView" destination="Erm-Ej-BPX" id="RHp-Xy-5Hj"/>
                         <outlet property="textView" destination="SDz-3a-Eop" id="Bnc-0w-CiZ"/>
