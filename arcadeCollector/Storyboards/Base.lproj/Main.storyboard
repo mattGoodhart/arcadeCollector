@@ -628,49 +628,57 @@ nplayers.arcadebelgium.be</string>
                                     <action selector="segmentedControlPressed" destination="lxs-nA-Z7j" eventType="valueChanged" id="JDA-oV-Mb0"/>
                                 </connections>
                             </segmentedControl>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kip-WN-wSa">
-                                <rect key="frame" x="108" y="550" width="46" height="46"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" spacing="49" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
+                                <rect key="frame" x="18" y="548" width="342" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="Plus"/>
-                                <connections>
-                                    <action selector="addEditButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="d6h-Fe-b6m"/>
-                                </connections>
-                            </button>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eh2-a4-MZF">
-                                <rect key="frame" x="197" y="567" width="51" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <connections>
-                                    <action selector="addToWanted:" destination="lxs-nA-Z7j" eventType="valueChanged" id="oja-5T-KAB"/>
-                                </connections>
-                            </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Wanted" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q07-zN-ECX">
-                                <rect key="frame" x="193" y="538" width="59" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
-                                <rect key="frame" x="18" y="548" width="50" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="BEp-qr-Gaq"/>
-                                    <constraint firstAttribute="width" constant="50" id="muU-2B-Dxm"/>
-                                </constraints>
-                                <connections>
-                                    <action selector="historyButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="TUs-08-SOa"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uEO-wp-z7R">
-                                <rect key="frame" x="308" y="548" width="50" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="lRb-8j-DyR"/>
-                                    <constraint firstAttribute="width" constant="50" id="q2g-8u-YKY"/>
-                                </constraints>
-                                <state key="normal" title="YouToob" image="youtubeIcon"/>
-                                <connections>
-                                    <action selector="youTubeButtonPressed:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="nvY-Dr-vfU"/>
-                                </connections>
-                            </button>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="BEp-qr-Gaq"/>
+                                            <constraint firstAttribute="width" constant="50" id="muU-2B-Dxm"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="historyButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="TUs-08-SOa"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kip-WN-wSa">
+                                        <rect key="frame" x="99" y="0.0" width="46" height="50"/>
+                                        <state key="normal" image="Plus"/>
+                                        <connections>
+                                            <action selector="addEditButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="d6h-Fe-b6m"/>
+                                        </connections>
+                                    </button>
+                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="9" translatesAutoresizingMaskIntoConstraints="NO" id="e6t-cj-SYt" userLabel="Wanted Stack View">
+                                        <rect key="frame" x="194" y="0.0" width="49" height="50"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Wanted" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q07-zN-ECX">
+                                                <rect key="frame" x="0.0" y="0.0" width="49" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eh2-a4-MZF">
+                                                <rect key="frame" x="0.0" y="29.5" width="51" height="20.5"/>
+                                                <connections>
+                                                    <action selector="addToWanted:" destination="lxs-nA-Z7j" eventType="valueChanged" id="oja-5T-KAB"/>
+                                                </connections>
+                                            </switch>
+                                        </subviews>
+                                    </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uEO-wp-z7R">
+                                        <rect key="frame" x="292" y="0.0" width="50" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="lRb-8j-DyR"/>
+                                            <constraint firstAttribute="width" constant="50" id="q2g-8u-YKY"/>
+                                        </constraints>
+                                        <state key="normal" title="YouToob" image="youtubeIcon"/>
+                                        <connections>
+                                            <action selector="youTubeButtonPressed:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="nvY-Dr-vfU"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="VIa-ds-nvC"/>
@@ -684,12 +692,15 @@ nplayers.arcadebelgium.be</string>
                     </navigationItem>
                     <connections>
                         <outlet property="addEditButton" destination="kip-WN-wSa" id="nLJ-0H-OAN"/>
+                        <outlet property="baseStackView" destination="iQ8-AK-4kX" id="43A-kI-9HS"/>
                         <outlet property="historyButton" destination="991-6b-6CQ" id="hq9-Lw-fML"/>
                         <outlet property="mainImageActivityIndicator" destination="JyI-B0-F0s" id="bLL-FD-N8p"/>
                         <outlet property="mainImageSwitch" destination="dgt-ne-yRV" id="xEV-ZT-e52"/>
                         <outlet property="mainImageView" destination="54q-Ij-hNz" id="ebY-oN-af4"/>
                         <outlet property="marqueeActivityIndicator" destination="1iP-hh-OfY" id="SdX-J9-zek"/>
                         <outlet property="marqueeView" destination="ntz-FS-uBs" id="3ZH-gH-qDH"/>
+                        <outlet property="wantedLabel" destination="Q07-zN-ECX" id="JD1-hf-69q"/>
+                        <outlet property="wantedStackView" destination="e6t-cj-SYt" id="rk6-zF-i9U"/>
                         <outlet property="wantedSwitch" destination="eh2-a4-MZF" id="FRs-62-mJI"/>
                         <outlet property="youTubeButton" destination="uEO-wp-z7R" id="XZR-KW-hse"/>
                         <segue destination="Lvk-oR-b5P" kind="show" identifier="HardwareSegue" id="2si-dK-nJE"/>
@@ -992,7 +1003,7 @@ nplayers.arcadebelgium.be</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="wuN-Ta-1e3">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="wuN-Ta-1e3">
                                 <rect key="frame" x="314" y="616" width="49" height="31"/>
                             </switch>
                         </subviews>

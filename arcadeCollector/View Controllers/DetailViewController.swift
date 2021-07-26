@@ -35,6 +35,9 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var youTubeButton: UIButton!
     @IBOutlet weak var wantedSwitch: UISwitch!
     @IBOutlet weak var addEditButton: UIButton!
+    @IBOutlet weak var baseStackView: UIStackView!
+    @IBOutlet weak var wantedStackView: UIStackView!
+    @IBOutlet weak var wantedLabel: UILabel!
     
     //MARK: View Controller Life Cycle and Other Overrides
     
@@ -159,22 +162,45 @@ class DetailViewController: UIViewController {
         mainImageSwitch.topAnchor.constraint(equalTo: mainImageView.bottomAnchor, constant: 20).isActive = true
         mainImageSwitch.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
         
-        addEditButton.translatesAutoresizingMaskIntoConstraints = false
-        addEditButton.topAnchor.constraint(equalTo: mainImageSwitch.bottomAnchor, constant: 20).isActive = true
+        baseStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        wantedSwitch.translatesAutoresizingMaskIntoConstraints = false
-        wantedSwitch.centerYAnchor.constraint(equalTo: addEditButton.centerYAnchor).isActive = true
-        wantedSwitch.trailingAnchor.constraint(equalTo: mainImageSwitch.trailingAnchor).isActive = true
+        baseStackView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
         
-        historyButton.translatesAutoresizingMaskIntoConstraints = false
-        historyButton.topAnchor.constraint(equalTo: addEditButton.bottomAnchor, constant: 20).isActive = true
-        historyButton.leadingAnchor.constraint(equalTo: mainImageSwitch.leadingAnchor).isActive = true
+        baseStackView.bottomAnchor.constraint(equalTo: viewMargins.bottomAnchor, constant: -40).isActive = true
+        baseStackView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
         
-        youTubeButton.translatesAutoresizingMaskIntoConstraints = false
-        youTubeButton.centerYAnchor.constraint(equalTo: historyButton.centerYAnchor).isActive = true
-        youTubeButton.centerXAnchor.constraint(equalTo: wantedSwitch.centerXAnchor).isActive = true
+        baseStackView.heightAnchor.constraint(equalToConstant: 50)
         
-        addEditButton.centerXAnchor.constraint(equalTo: historyButton.centerXAnchor).isActive = true
+        baseStackView.addSubview(historyButton)
+        baseStackView.addSubview(addEditButton)
+        
+        
+        wantedStackView.addSubview(wantedLabel)
+        wantedStackView.addSubview(wantedSwitch)
+        wantedStackView.axis = .vertical
+        
+        baseStackView.addSubview(wantedStackView)
+        baseStackView.addSubview(youTubeButton)
+        
+        baseStackView.axis = .horizontal
+        baseStackView.spacing = 40
+        
+//        addEditButton.translatesAutoresizingMaskIntoConstraints = false
+//        addEditButton.topAnchor.constraint(equalTo: mainImageSwitch.bottomAnchor, constant: 20).isActive = true
+//
+//        wantedSwitch.translatesAutoresizingMaskIntoConstraints = false
+//        wantedSwitch.centerYAnchor.constraint(equalTo: addEditButton.centerYAnchor).isActive = true
+//        wantedSwitch.trailingAnchor.constraint(equalTo: mainImageSwitch.trailingAnchor).isActive = true
+//
+//        historyButton.translatesAutoresizingMaskIntoConstraints = false
+//        historyButton.topAnchor.constraint(equalTo: addEditButton.bottomAnchor, constant: 20).isActive = true
+//        historyButton.leadingAnchor.constraint(equalTo: mainImageSwitch.leadingAnchor).isActive = true
+//
+//        youTubeButton.translatesAutoresizingMaskIntoConstraints = false
+//        youTubeButton.centerYAnchor.constraint(equalTo: historyButton.centerYAnchor).isActive = true
+//        youTubeButton.centerXAnchor.constraint(equalTo: wantedSwitch.centerXAnchor).isActive = true
+//
+//        addEditButton.centerXAnchor.constraint(equalTo: historyButton.centerXAnchor).isActive = true
     }
     
     func setImageViewAspectRatio() {
