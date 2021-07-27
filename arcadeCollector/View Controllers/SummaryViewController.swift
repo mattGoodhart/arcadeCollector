@@ -27,21 +27,9 @@ class SummaryViewController: UIViewController {
     var partiallyWorkingBoardsCount = 0
     var nonWorkingBoardsCount = 0
     
-//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-//        return .portrait
-//    }
-//    override func shouldAutoRotate() -> Bool {
-//        return false
-//    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Summary"
-        
-        
-        
-//        let value = UIInterfaceOrientation.portrait.rawValue
-//        UIDevice.current.setValue(value, forKey: "orientation")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,7 +58,7 @@ class SummaryViewController: UIViewController {
         
         self.boardsStatus.text = String(masterCollection.boardsInCollection.count) + " Boards in Collection"
     }
-//
+
     @IBAction func aboutButtonPressed(_sender: UIButton) {
         performSegue(withIdentifier: "AboutSegue", sender: _sender)
     }

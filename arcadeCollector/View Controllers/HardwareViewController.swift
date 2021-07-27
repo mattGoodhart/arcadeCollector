@@ -55,8 +55,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         super.viewDidLoad()
         prepMainImageView()
         getHardwareDetailsIfNeeded(game: viewedGame)
-        
-      //  buildMainStackView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,20 +65,12 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         if viewedGame.manualURLString == "" {
             manualButton.isEnabled = false
         }
-        
-       // stackView.heightAnchor.constraint(equalTo: proces).isActive = true
     }
     
     @IBAction func mameNotesButtonTapped(_ sender: UIButton) {
         getNotesFromMameIfNeeded()
     }
-    
-//    func determineStackHeight() {
-//        mainImageView.
-//
-//
-//    }
-    
+
     func setImage(image: UIImage) {
         var imageViewAspectConstraint: NSLayoutConstraint?
         
@@ -153,7 +143,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     }
     
     @IBAction func manualButtonTapped(_ sender: UIButton) {
-        
         if let manual = viewedGame.manual {
             segueToManualViewController(manualData: manual)
         } else {
@@ -179,7 +168,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         }
           stackView.arrangedSubviews[0].isHidden = false
     }
-    // to allow the stack view to update properly, I need to providethe  view's aspect ratio?. Probably...or do I need to completely rebuild the stackview?... or force the imagechooser to not stretch with hugging priority or something?
     
     func getNotesFromMameIfNeeded() {
         
@@ -249,7 +237,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         if let cabinetImageData = viewedGame.cabinetImageData {
             let image = UIImage(data: cabinetImageData)
             setImage(image: image!)
-          //  mainImageView.image = image
         } else {
             if viewedGame.cabinetImageURLString != "" {
                 handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
@@ -267,7 +254,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                         self.viewedGame.cabinetImageData = imageData
                         try? self.dataController.viewContext.save()
                         self.setImage(image: UIImage(data: imageData)!)
-                       // self.mainImageView.image = UIImage(data: imageData)!
                         self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
                     }
                 }
@@ -301,11 +287,10 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         
         if let boardPhotoData = viewedGame.pcbImageData {
             setImage(image: UIImage(data: boardPhotoData)!)
-           // mainImageView.image = UIImage(data: boardPhotoData)
         } else {
             if viewedGame.pcbPhotoURLString != "" {
                 handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
-                DispatchQueue.global().async { // necessary?
+                DispatchQueue.global().async {
                     let inputString = self.viewedGame.romSetName!
                     let urlString = ("http://adb.arcadeitalia.net/media/mame.current/pcbs/" + inputString + ".png")
                     let url = URL(string: urlString)!
@@ -318,9 +303,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                             self.imageChooser.isHidden = true
                             
                             if self.hasNoAvailableImages() {
-                              //  self.mainImageView.image = UIImage(named: "noHardwareDefaultImage")
                                 self.setImage(image: UIImage(named: "noHardwareDefaultImage")!)
-                             //   self.mainImageView.heightAnchor.constraint(equalToConstant: 0).isActive = true
                             }
                         }
                         return
@@ -332,7 +315,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                         self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
                         
                         self.setImage(image: UIImage(data: data)!)
-                        //self.mainImageView.image = UIImage(data: data)
                     }
                 }
             } else {
@@ -362,20 +344,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         viewedGame.monitorResolutionType = getMonitorResolutionType()
         parseHardwareData()
         try? dataController.viewContext.save()
-    }
-    
-    /// Unused because orientation now included in JSON
-    func determineOrientation() {
-
-        if displayDictionary!["rotate"] == "90"  {
-            viewedGame.orientation = "Vertical"
-        }
-        else if displayDictionary!["rotate"] == "270"{
-            viewedGame.orientation = "Vertical"
-        }
-        else {
-            viewedGame.orientation = "Horizontal"
-        }
     }
     
     func getInfoFromXML(){
@@ -424,7 +392,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 
                 handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
                 
-                //  DispatchQueue.global().async {
                 let urlString = String("http://adb.arcadeitalia.net/download_file.php?tipo=mame_current&codice=" + self.viewedGame.romSetName! + "&entity=manual")
                 let url = URL(string: urlString)!
                 

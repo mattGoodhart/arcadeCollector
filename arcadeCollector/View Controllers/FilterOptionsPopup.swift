@@ -11,9 +11,7 @@ import UIKit
 class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
 
     weak var delegate: FilterSelectionDelegate?
-    
-    //weak var presentingViewController: UIViewController?
-    
+ 
     var hasActiveFilter: Bool! = false
     var gamesList: [Game]!
     var stringArrayForPicker = [String]()
@@ -88,7 +86,6 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         case 2: stringArrayForPicker = arrayOfUniqueManufacturers
         default: break;
         }
-        
         DispatchQueue.main.async {
             self.pickerView.reloadAllComponents()
         }
@@ -97,7 +94,7 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     func checkForActiveFilterOption() {
         if !hasActiveFilter {
             stackView.arrangedSubviews[3].isHidden = true
-            applyButton.setTitle("Apply", for: .normal) // I can see this happening...
+            applyButton.setTitle("Apply", for: .normal)
         } else {
             stackView.arrangedSubviews[3].isHidden = false
             applyButton.setTitle("Apply New Filter", for: .normal)
@@ -106,14 +103,13 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     
     func buildMainView() {
         view.backgroundColor = .gray
-        view.alpha = 0.5 // why cant i see tableview underneath?
+        view.alpha = 0.5
         
         setContentView()
         view.addSubview(contentView)
         
         buildStackView()
         contentView.addSubview(stackView)
-        
     }
     
     func setContentView() {
@@ -126,7 +122,6 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         contentView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         contentView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.75).isActive = true
         contentView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.66).isActive = true
-        
         }
     
     func buildStackView() {
@@ -137,14 +132,11 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .equalSpacing
-        //stackView.spacing = 0
-        
         stackView.addArrangedSubview(optionsSegmentedControl)
         stackView.addArrangedSubview(pickerView)
         stackView.addArrangedSubview(applyButton)
         stackView.addArrangedSubview(removeFilterButton)
         stackView.addArrangedSubview(cancelButton)
-        
     }
     
     func setStackViewConstraints() {
@@ -153,13 +145,6 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         stackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
         stackView.widthAnchor.constraint(equalTo: contentView.widthAnchor).isActive = true
         stackView.heightAnchor.constraint(equalTo: contentView.heightAnchor).isActive = true
-        
-//        stackView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-//        stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
-//        stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-//        stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-//        stackView.heightAnchor.constraint(equalTo: contentView.heightAnchor).isActive = true
-
     }
     
     // these need to be refactored.
@@ -192,27 +177,7 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         uniquePlayerCountsArray.sort()
         return uniquePlayerCountsArray
     }
-    
-//    func showAnimate(viewController: UIViewController) {
-//        viewController.view.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
-//        viewController.view.alpha = 0.0;
-//        UIView.animate(withDuration: 0.25, animations: {
-//            viewController.view.alpha = 1.0
-//            viewController.view.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-//        })
-//    }
-//
-//    func removeAnimate(viewController: UIViewController) {
-//        UIView.animate(withDuration: 0.25, animations: {
-//            viewController.view.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
-//            viewController.view.alpha = 0.0
-//        }, completion:{(finished : Bool)  in
-//            if (finished)
-//            {
-//                viewController.view.removeFromSuperview()
-//            }
-//        })
-//    }
+
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }

@@ -812,15 +812,6 @@ nplayers.arcadebelgium.be</string>
                                 <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <wkWebView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xsc-kB-cmh">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <wkWebViewConfiguration key="configuration" allowsInlineMediaPlayback="YES">
-                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
-                                    <wkPreferences key="preferences"/>
-                                </wkWebViewConfiguration>
-                            </wkWebView>
                             <view contentMode="scaleAspectFit" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Erm-Ej-BPX" userLabel="PDFView" customClass="PDFView">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -835,7 +826,6 @@ nplayers.arcadebelgium.be</string>
                         <outlet property="imageView" destination="9ve-le-nVU" id="d3l-j2-Gpb"/>
                         <outlet property="pdfView" destination="Erm-Ej-BPX" id="RHp-Xy-5Hj"/>
                         <outlet property="textView" destination="SDz-3a-Eop" id="Bnc-0w-CiZ"/>
-                        <outlet property="webView" destination="Xsc-kB-cmh" id="9eg-7X-01Y"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tkA-kd-qDm" userLabel="First Responder" sceneMemberID="firstResponder"/>

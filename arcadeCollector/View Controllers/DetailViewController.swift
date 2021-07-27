@@ -162,45 +162,27 @@ class DetailViewController: UIViewController {
         mainImageSwitch.topAnchor.constraint(equalTo: mainImageView.bottomAnchor, constant: 20).isActive = true
         mainImageSwitch.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
         
-        baseStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        baseStackView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
-        
-        baseStackView.bottomAnchor.constraint(equalTo: viewMargins.bottomAnchor, constant: -40).isActive = true
-        baseStackView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
-        
-        baseStackView.heightAnchor.constraint(equalToConstant: 50)
-        
-        baseStackView.addSubview(historyButton)
-        baseStackView.addSubview(addEditButton)
-        
-        
         wantedStackView.addSubview(wantedLabel)
         wantedStackView.addSubview(wantedSwitch)
         wantedStackView.axis = .vertical
         
+        baseStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        if viewedGame.orientation == "Horizontal" {
+            baseStackView.bottomAnchor.constraint(equalTo: viewMargins.bottomAnchor, constant: -75).isActive = true
+        } else {
+            baseStackView.bottomAnchor.constraint(equalTo: viewMargins.bottomAnchor, constant: -35).isActive = true
+        }
+        
+        baseStackView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
+        baseStackView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
+        baseStackView.heightAnchor.constraint(equalToConstant: 50)
+        baseStackView.addSubview(historyButton)
+        baseStackView.addSubview(addEditButton)
         baseStackView.addSubview(wantedStackView)
         baseStackView.addSubview(youTubeButton)
-        
         baseStackView.axis = .horizontal
         baseStackView.spacing = 40
-        
-//        addEditButton.translatesAutoresizingMaskIntoConstraints = false
-//        addEditButton.topAnchor.constraint(equalTo: mainImageSwitch.bottomAnchor, constant: 20).isActive = true
-//
-//        wantedSwitch.translatesAutoresizingMaskIntoConstraints = false
-//        wantedSwitch.centerYAnchor.constraint(equalTo: addEditButton.centerYAnchor).isActive = true
-//        wantedSwitch.trailingAnchor.constraint(equalTo: mainImageSwitch.trailingAnchor).isActive = true
-//
-//        historyButton.translatesAutoresizingMaskIntoConstraints = false
-//        historyButton.topAnchor.constraint(equalTo: addEditButton.bottomAnchor, constant: 20).isActive = true
-//        historyButton.leadingAnchor.constraint(equalTo: mainImageSwitch.leadingAnchor).isActive = true
-//
-//        youTubeButton.translatesAutoresizingMaskIntoConstraints = false
-//        youTubeButton.centerYAnchor.constraint(equalTo: historyButton.centerYAnchor).isActive = true
-//        youTubeButton.centerXAnchor.constraint(equalTo: wantedSwitch.centerXAnchor).isActive = true
-//
-//        addEditButton.centerXAnchor.constraint(equalTo: historyButton.centerXAnchor).isActive = true
     }
     
     func setImageViewAspectRatio() {

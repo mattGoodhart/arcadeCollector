@@ -183,8 +183,6 @@ class CollectionManager {
         var artworks = [Game]()
         var marquees = [Game]()
         
-        
-        
         for game in myGames {
             if game.hasCabinetHardware {
                 
@@ -198,12 +196,8 @@ class CollectionManager {
             }
         }
         collectedCabinetHardWare = cabinets + monitors + controls + bezels + controlPanelOverlays + artworks + marquees
-        
-       // return collectedCabinetHardWare.count
     }
     func getAllHardwareCount() {
         allHardwareInCollection = boardsInCollection + collectedCabinetHardWare
-       //return allHardwareInCollection.count
     }
-    
 }

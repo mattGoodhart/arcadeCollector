@@ -42,7 +42,7 @@ enum Tab: Int {
 class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchResultsUpdating, FilterSelectionDelegate {
 
     //MARK: Properties
-   // var popOverVC : FilterOptionsPopup!
+    
     let searchController = UISearchController(searchResultsController: nil)
     let dataController = DataController.shared
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -83,7 +83,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         else {return gamesList}
     }
     
-    var visibleUniqueYears : [String] { // use switch here?
+    var visibleUniqueYears : [String] {
         var uniqueYears = [String]()
         
         //base
@@ -152,7 +152,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             detailViewController.viewedGame = viewedGame
         }
     }
-    
  
     //MARK: Actions
     
@@ -167,7 +166,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             handleButtons(enabled: false, button: filterButton)
             present(popOver, animated: true, completion: nil)
         } else {
-            
             popUpVC = storyboard!.instantiateViewController(withIdentifier: "FilterOptionsPopup") as? FilterOptionsPopup
             popUpVC.delegate = self
             popUpVC.gamesList = gamesList

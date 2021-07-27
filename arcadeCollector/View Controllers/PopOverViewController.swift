@@ -25,7 +25,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var pdfView: PDFView!
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var webView: WKWebView!
     @IBOutlet weak var dismissButton: UIButton!
     
     override func viewDidLoad() {
@@ -64,7 +63,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         
         switch type {
             
-        case "pdfView": //to do - indicate pdf downloading and move to popup right away once downloaded
+        case "pdfView":
             appDelegate.allowedOrientations = .portrait
             pdfView.displayMode = .singlePageContinuous
             pdfView.autoScales = true
@@ -82,15 +81,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             textView.backgroundColor = UIColor.black
             textView.frame = view.frame
             setDismissButton()
-            
-//        case "webView":
-//            appDelegate.allowedOrientations = .all
-//            webView.isHidden = false
-//            webView.configuration.allowsInlineMediaPlayback = true // done in storyboard
-//            webView.frame = view.frame
-//
-//            let request = URLRequest(url: webURL)
-//            webView.load(request)
             
         case "marqueeView": //
             appDelegate.allowedOrientations = .all
@@ -185,6 +175,5 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         pdfView.isHidden = true
         textView.isHidden = true
         pdfView.isHidden = true
-        webView.isHidden = true
     }
 }

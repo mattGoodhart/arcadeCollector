@@ -41,7 +41,7 @@ class DataController {
 
 // MARK: - Autosaving
 
-extension DataController { //Is this really worth keeping?
+extension DataController { //necessary?
     func autoSave(interval:TimeInterval = 45) {
         print("autosaving")
         

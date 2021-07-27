@@ -52,7 +52,6 @@ class EditGameViewController: UIViewController {
                 masterCollection.myGamesCollection.addToGames(viewedGame)
             }
             
-            
         } else if !viewedGame.hasBoard && !viewedGame.hasCabinetHardware {
             if let removalIndex = masterCollection.myGames.firstIndex(of: viewedGame) {
                 masterCollection.myGames.remove(at: removalIndex)
@@ -84,15 +83,6 @@ class EditGameViewController: UIViewController {
             isBootleg.isEnabled = state
             functionalCondition.isEnabled = state
         }
-        
-        //        if sender.isOn == true {
-        //            isBootleg.isEnabled = true
-        //            functionalCondition.isEnabled = true
-        //        } else {
-        //            isBootleg.isEnabled = false; isBootleg.isOn = false
-        //            functionalCondition.isEnabled = false
-        //
-        //            }
     
     func enableCabinetTraits(state: Bool) {
         hasCabinet.isEnabled = state
@@ -103,24 +93,6 @@ class EditGameViewController: UIViewController {
         hasCabinetArt.isEnabled = state
         hasMarquee.isEnabled = state
     }
-        
-//        if sender.isOn == true {
-//            hasCabinet.isEnabled = true
-//            hasMonitorFlag.isEnabled = true
-//            hasControls.isEnabled = true
-//            hasBezel.isEnabled = true
-//            hasControlPanelOverlay.isEnabled = true
-//            hasCabinetArt.isEnabled = true
-//            hasMarquee.isEnabled = true
-//        } else {
-//            hasCabinet.isEnabled = false; hasCabinet.isOn = false
-//            hasMonitorFlag.isEnabled = false; hasMonitorFlag.isOn = false
-//            hasControls.isEnabled = false; hasControls.isOn = false
-//            hasBezel.isEnabled = false; hasBezel.isOn = false
-//            hasControlPanelOverlay.isEnabled = false; hasControlPanelOverlay.isOn = false
-//            hasCabinetArt.isEnabled = false; hasCabinetArt.isOn = false
-//            hasMarquee.isEnabled = false; hasMarquee.isOn = false
-//        }
     
     func getGameAttributeValuesFromSwitches() {
         if hasBoard.isOn {viewedGame.hasBoard = true} else {viewedGame.hasBoard = false}
@@ -135,9 +107,7 @@ class EditGameViewController: UIViewController {
         viewedGame.functionalCondition = Int16(functionalCondition.selectedSegmentIndex)
     }
     
-    func setSwitches() {
-        //values set to false / 0 upon json decode
-        
+    func setSwitches() { //values set to false / 0 upon json decode
         if viewedGame.hasBoard {hasBoard.isOn = true; enableBoardTraits(state: true)} else {hasBoard.isOn = false; enableBoardTraits(state: false)}
         if viewedGame.isBootleg {isBootleg.isOn = true} else {isBootleg.isOn = false}
         if viewedGame.hasCabinetArt {hasCabinetArt.isOn = true} else {hasCabinetArt.isOn = false}
