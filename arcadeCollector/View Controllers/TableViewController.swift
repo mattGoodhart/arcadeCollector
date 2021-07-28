@@ -156,12 +156,14 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     //MARK: Actions
     
     @IBAction func reverseButtonTapped(_ sender: UIButton) {
+        guard visibleGamesList.count != 0 else {return}
         reverseActive.toggle()
         tableView.reloadData()
         tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: UITableView.ScrollPosition.top, animated: false)
     }
 
     @IBAction func filterButtonTapped(_ sender: UIButton) {
+        guard visibleGamesList.count != 0 else {return}
         if let popOver = popUpVC {
             handleButtons(enabled: false, button: filterButton)
             present(popOver, animated: true, completion: nil)
@@ -360,7 +362,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         viewedGame = groups[section]![indexPath.row]
         performSegue(withIdentifier: "GamesDetailSegue", sender: self)
     }
-    
     
 //    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 //
