@@ -29,6 +29,11 @@ Arcade Collector is an arcade video game collection tracker and reference for iO
 ## Credits
 All game media and data linked from the Arcade Game Database: http://adb.arcadeitalia.net
 
+## Requirements
+Minimum requirements to build and run: 
+- iOS 12.1
+- Xcode 10.1
+- Swift 4.2
 
 ## Status
 App is in Beta, using placeholder assets
