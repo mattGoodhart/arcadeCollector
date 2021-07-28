@@ -73,13 +73,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E3D90E47265ABBAE005C86E7 /* DataSource */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = DataSource;
-			sourceTree = "<group>";
-		};
 		E3E6073225F04EA1003F1888 = {
 			isa = PBXGroup;
 			children = (
@@ -99,7 +92,6 @@
 		E3E6073D25F04EA1003F1888 /* arcadeCollector */ = {
 			isa = PBXGroup;
 			children = (
-				E3D90E47265ABBAE005C86E7 /* DataSource */,
 				E3E6074D25F04EA2003F1888 /* Info.plist */,
 				E3E6073E25F04EA1003F1888 /* AppDelegate.swift */,
 				E3D124152641C7C200C17F29 /* ViewControllerExtension.swift */,

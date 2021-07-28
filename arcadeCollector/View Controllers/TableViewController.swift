@@ -210,7 +210,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
          refreshDataInBackground()
     }
     
-    func createArrayOfUniqueYears(listOfGames: [Game]) -> [String] { // use my array extension?
+    func createArrayOfUniqueYears(listOfGames: [Game]) -> [String] { // use my array extension instead?
         var uniqueYears = [String]()
         for game in listOfGames {
             uniqueYears += [game.year!]

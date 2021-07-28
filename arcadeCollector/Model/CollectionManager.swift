@@ -26,16 +26,13 @@ class CollectionManager {
     var allGames = [Game]()
     var myGames = [Game]()
     var wantedGames = [Game]()
-   // var uniqueYearsCount = 1
     var arrayOfUniqueYears : [String]!
     var workingBoards = [Game]()
     var partiallyWorkingBoards = [Game]()
     var nonWorkingBoards = [Game]()
-   // var boards = [Game]()
     var collectedCabinetHardWare = [Game]()
     var boardsInCollection = [Game]()
     var allHardwareInCollection = [Game]()
-    
     
     private init() {}
     

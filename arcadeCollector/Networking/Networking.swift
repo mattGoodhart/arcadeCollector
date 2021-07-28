@@ -8,7 +8,10 @@
 
 import Foundation
 
-class Networking { // Make this a Singleton?
+class Networking { 
+    
+    static let shared = Networking()
+    private init() {}
     
     func taskForJSON<ResponseType: Decodable>(url: URL, responseType: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) {
         
@@ -31,7 +34,6 @@ class Networking { // Make this a Singleton?
                 let responseObject = try JSONDecoder().decode(ResponseType.self, from: data)
                 DispatchQueue.main.async {
                     completion(responseObject, nil)
-                   // print(responseObject)
                 }
             }
             catch {

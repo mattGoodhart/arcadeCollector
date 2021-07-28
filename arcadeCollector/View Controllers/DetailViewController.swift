@@ -61,7 +61,7 @@ class DetailViewController: UIViewController {
         configureGestureForImageView(imageView: mainImageView, gestureRecognizer: tapRecognizer)
         configureGestureForImageView(imageView: marqueeView, gestureRecognizer: marqueeTapRecognizer)
         
-        marqueeView.image = UIImage(named: "About Banners/logo-mame") // set better default
+        marqueeView.image = UIImage(named: "About Banners/logo-mame")
         mainImageView.image = nil
         getDetailsIfNeeded()
     }
@@ -97,7 +97,7 @@ class DetailViewController: UIViewController {
     }
     
     @IBAction func addToWanted(_ sender: UISwitch) {
-    
+        
         if wantedSwitch.isOn {
             masterCollection.wantedGames.append(viewedGame)
             masterCollection.wantedGamesCollection.addToGames(viewedGame)
@@ -268,7 +268,7 @@ class DetailViewController: UIViewController {
         }
     }
     
-    func getInGameImageIfNeeded() { //refactor
+    func getInGameImageIfNeeded() {
         if let inGameImageData = viewedGame.inGameImageData {
             let image = UIImage(data: inGameImageData)
             mainImageView.contentMode = .scaleToFill
@@ -326,7 +326,7 @@ class DetailViewController: UIViewController {
         }
     }
     
-    func getFlyerImageIfNeeded() { //refactor this and below methods
+    func getFlyerImageIfNeeded() {
         if let flyerImageData = viewedGame.flyerImageData {
             let image = UIImage(data: flyerImageData)
             mainImageView.contentMode = .scaleAspectFit
@@ -384,7 +384,7 @@ class DetailViewController: UIViewController {
             
             let url = URL(string: "http://adb.arcadeitalia.net/service_scraper.php?ajax=query_mame&game_name=" + viewedGame.romSetName! + "&use_parent=1")!
             
-            Networking().taskForJSON(url: url, responseType: ArcadeDatabaseAPIResponse.self) { response, error in
+            Networking.shared.taskForJSON(url: url, responseType: ArcadeDatabaseAPIResponse.self) { response, error in
                 
                 guard let response = response else {
                     print("error: \(String(describing: error))")
