@@ -26,7 +26,6 @@ extension HardwareViewController {
         }
             
         else if elementName == "chip" {
-            
             chipDictionary = [:]
             
             if let type = attributeDict["type"] {
@@ -44,7 +43,6 @@ extension HardwareViewController {
         }
             
         else if elementName == "display" {
-            
             displayDictionary = [:]
             
             if let type = attributeDict["type"]{
@@ -67,11 +65,8 @@ extension HardwareViewController {
             }
         }
             
-        else if elementName == "sound" {
-            
-            if let channels = attributeDict["channels"]{
-                soundChannels = "Audio Channels: \(channels)"
-            }
+        else if elementName == "sound", let channels = attributeDict["channels"] {
+            soundChannels = "Audio Channels: \(channels)"
         }
             
         else if machineElementKeys.contains(elementName) {
@@ -84,17 +79,12 @@ extension HardwareViewController {
     }
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
-        
-        if elementName == "machine" {
-            
-            //            print(chipResults as Any)
-        }
-        else if elementName == "chip" {
+        if elementName == "chip" {
             chipResults!.append(chipDictionary!)
             chipDictionary = nil
         }
             
-        else if machineElementKeys.contains(elementName) {
+        if machineElementKeys.contains(elementName) {
             machineDictionary![elementName] = currentValue
             currentValue = nil
         }
@@ -108,8 +98,11 @@ extension HardwareViewController {
     }
     
     func parseHardwareData() {
+        guard let results = chipResults else {
+            return
+        }
         
-        for chip in chipResults! {
+        for chip in results {
             if chip["type"] == "cpu" {
                 if chip["tag"] == "maincpu" {
                     cpuStringArray += ["Main CPU: " + "\(chip["name"] ?? ""), " + "\(chip["clock"] ?? "")"]

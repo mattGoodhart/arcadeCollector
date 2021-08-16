@@ -18,12 +18,7 @@ class Networking {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         let task = URLSession.shared.dataTask(with: request) { data, response, error  in
-            if error != nil {
-                completion(nil, error)
-                print(error!)
-                return
-            }
-            guard let data = data else {
+            guard error == nil, let data = data else {
                 DispatchQueue.main.async {
                     completion(nil, error)
                     print(error!)
@@ -37,7 +32,10 @@ class Networking {
                 }
             }
             catch {
-                print(error)
+                DispatchQueue.main.async {
+                    completion(nil, error)
+                    print(error)
+                }
             }
         }
         task.resume()

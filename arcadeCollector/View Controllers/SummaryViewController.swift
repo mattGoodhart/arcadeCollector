@@ -35,22 +35,22 @@ class SummaryViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
         
-      appDelegate.allowedOrientations = .portrait
+        appDelegate.allowedOrientations = .portrait
         
-        getBoardFunctionalityCounts()
+        setBoardFunctionalityCounts()
         masterCollection.getCabinetHardware()
         masterCollection.getAllHardwareCount()
-        getGameCollectionCounts()
+        setGameCollectionCounts()
     }
     
-    func getGameCollectionCounts() {
+    func setGameCollectionCounts() {
         self.allGamesLabel.text = "\(masterCollection.allGames.count) Unique Games in Reference"
         self.myCollectionLabel.text = "\(masterCollection.allHardwareInCollection.count) Pieces of Hardware in Collection"
         self.wantedGamesLabel.text = "\(masterCollection.wantedGames.count) Wanted Games"
     }
     
-    func getBoardFunctionalityCounts() {
-       masterCollection.getBoardsByWorkingCondition()
+    func setBoardFunctionalityCounts() {
+        masterCollection.getBoardsByWorkingCondition()
         
         self.workingBoardsLabel.text = String(masterCollection.workingBoards.count) + " Working Boards"
         self.partiallyWorkingBoardsLabel.text = String(masterCollection.partiallyWorkingBoards.count) + "  Boards that Boot But Don't Fully Work"

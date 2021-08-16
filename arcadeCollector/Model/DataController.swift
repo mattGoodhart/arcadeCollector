@@ -14,11 +14,11 @@ class DataController {
     static let shared = DataController(modelName: "ArcadeCollector")
     let persistentContainer:NSPersistentContainer
     
-    var viewContext:NSManagedObjectContext {
+    var viewContext: NSManagedObjectContext {
         return persistentContainer.viewContext
     }
     
-    private init(modelName:String) {
+    private init(modelName: String) {
         persistentContainer = NSPersistentContainer(name: modelName)
     }
     
@@ -42,9 +42,7 @@ class DataController {
 // MARK: - Autosaving
 
 extension DataController { //necessary?
-    func autoSave(interval:TimeInterval = 45) {
-        print("autosaving")
-        
+    func autoSave(interval: TimeInterval = 45) {        
         guard interval > 0 else {
             print("cannot set negative autosave interval")
             return

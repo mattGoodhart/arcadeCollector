@@ -11,7 +11,6 @@ import UIKit
 extension UIViewController {
     func handleActivityIndicator(indicator: UIActivityIndicatorView, vc: UIViewController, show: Bool) {
         if show {
-            _ = indicator
             DispatchQueue.main.async {
                 indicator.bringSubviewToFront(vc.view)
                 indicator.center = vc.view.center
@@ -19,7 +18,6 @@ extension UIViewController {
                 indicator.startAnimating()
             }
         } else {
-            _ = indicator
             DispatchQueue.main.async {
                 indicator.sendSubviewToBack(vc.view)
                 indicator.isHidden = true
