@@ -9,22 +9,22 @@
 import UIKit
 import CoreData
 
-@UIApplicationMain
- class AppDelegate: UIResponder, UIApplicationDelegate {
+@UIApplicationMain class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     var allowedOrientations: UIInterfaceOrientationMask = .all
   
-    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        return self.allowedOrientations
-    }
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         DataController.shared.load()
         CollectionManager.shared.createCollectionsIfNeeded()
         return true
     }
+    
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return allowedOrientations
+    }
+    
     func saveViewContext() {
         try? DataController.shared.viewContext.save()
     }

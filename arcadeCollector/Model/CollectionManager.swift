@@ -16,17 +16,17 @@ enum CollectionName: String {
 
 class CollectionManager {
     
-   static let shared = CollectionManager()
+    static let shared = CollectionManager()
     
     let dataController = DataController.shared
-    var collections: [CollectionEntity]!
+    var collections: [CollectionEntity] = []
     var allGamesCollection: CollectionEntity!
     var myGamesCollection: CollectionEntity!
     var wantedGamesCollection: CollectionEntity!
     var allGames = [Game]()
     var myGames = [Game]()
     var wantedGames = [Game]()
-    var arrayOfUniqueYears : [String]!
+    var arrayOfUniqueYears: [String] = []
     var workingBoards = [Game]()
     var partiallyWorkingBoards = [Game]()
     var nonWorkingBoards = [Game]()
@@ -34,6 +34,8 @@ class CollectionManager {
     var boardsInCollection = [Game]()
     var allHardwareInCollection = [Game]()
     
+    // MARK: - Initialization
+
     private init() {}
     
     func createCollectionsIfNeeded() {
@@ -45,25 +47,38 @@ class CollectionManager {
             createCollections()
         }
     }
-
+    
     func createCollections() {
+        let allGamesCollection = CollectionEntity(context: dataController.viewContext)
+        let myGamesCollection = CollectionEntity(context: dataController.viewContext)
+        let wantedGamesCollection = CollectionEntity(context: dataController.viewContext)
         
-        let allGamesColl = CollectionEntity(context: dataController.viewContext)
-        let myGamesColl = CollectionEntity(context: dataController.viewContext)
-        let wantedGamesColl = CollectionEntity(context: dataController.viewContext)
+        allGamesCollection.name = CollectionName.allGames.rawValue
+        myGamesCollection.name = CollectionName.myGames.rawValue
+        wantedGamesCollection.name = CollectionName.wantedGames.rawValue
         
-        allGamesColl.name = CollectionName.allGames.rawValue
-        myGamesColl.name = CollectionName.myGames.rawValue
-        wantedGamesColl.name = CollectionName.wantedGames.rawValue
-        
-        allGamesCollection = allGamesColl
-        myGamesCollection = myGamesColl
-        wantedGamesCollection = wantedGamesColl
-        collections = [allGamesColl, myGamesColl, wantedGamesColl]
+        self.allGamesCollection = allGamesCollection
+        self.myGamesCollection = myGamesCollection
+        self.wantedGamesCollection = wantedGamesCollection
+        collections = [allGamesCollection, myGamesCollection, wantedGamesCollection]
 
         try? dataController.viewContext.save()
         initializeAllGames()
     }
+    
+    private func fetchCollectionsFromCoreData() -> [CollectionEntity]? {
+        let fetchRequest: NSFetchRequest<CollectionEntity> = CollectionEntity.fetchRequest()
+        let fetchResult = try? dataController.viewContext.fetch(fetchRequest)
+        return fetchResult
+    }
+    
+    private func load(from collections: [CollectionEntity]) {
+        allGamesCollection = collection(from: collections, with: .allGames)
+        myGamesCollection = collection(from: collections, with: .myGames)
+        wantedGamesCollection = collection(from: collections, with: .wantedGames)
+    }
+    
+    // MARK: - Parsing
   
     private func readLocalFile(forName name: String) -> Data? {
         do {
@@ -110,27 +125,13 @@ class CollectionManager {
     func initializeAllGames() {
         parse(jsonData: readLocalFile(forName: "ScrollingData")!)
     }
-
-    private func fetchCollectionsFromCoreData() -> [CollectionEntity]? {
-        let fetchRequest: NSFetchRequest<CollectionEntity> = CollectionEntity.fetchRequest()
-        let fetchResult = try? dataController.viewContext.fetch(fetchRequest)
-        return fetchResult
-    }
-    
-    private func load(from collections: [CollectionEntity]) {
-        guard let collections = fetchCollectionsFromCoreData() else {
-            print("Unable to fetch collections")
-            return
-        }
-        allGamesCollection = collection(from: collections, with: .allGames)
-        myGamesCollection = collection(from: collections, with: .myGames)
-        wantedGamesCollection = collection(from: collections, with: .wantedGames)
-    }
     
     private func collection(from collections: [CollectionEntity],
                             with name: CollectionName) -> CollectionEntity? {
         return collections.first(where: { $0.name == name.rawValue })
     }
+    
+    // MARK: - Fetching
 
     func fetchGamesForCollection(collection: CollectionEntity) -> [Game]? {
         let fetchRequest: NSFetchRequest<Game> = Game.fetchRequest()
@@ -140,12 +141,12 @@ class CollectionManager {
         return result
     }
     
-   func fetchCollectionsForGame(game: Game) -> [CollectionEntity]? {
-    let fetchRequest: NSFetchRequest<CollectionEntity> = CollectionEntity.fetchRequest()
-    let predicate = NSPredicate(format: "(ANY games == %@)", game)
-    fetchRequest.predicate = predicate
-    let result = try? DataController.shared.viewContext.fetch(fetchRequest)
-    return result
+    func fetchCollectionsForGame(game: Game) -> [CollectionEntity]? {
+        let fetchRequest: NSFetchRequest<CollectionEntity> = CollectionEntity.fetchRequest()
+        let predicate = NSPredicate(format: "(ANY games == %@)", game)
+        fetchRequest.predicate = predicate
+        let result = try? DataController.shared.viewContext.fetch(fetchRequest)
+        return result
     }
     
     func fetchGamesForAllCollections() {
@@ -154,21 +155,26 @@ class CollectionManager {
         self.wantedGames += fetchGamesForCollection(collection: wantedGamesCollection) ?? []
     }
     
-    func getBoardsByWorkingCondition(){
+    func getBoardsByWorkingCondition() {
         workingBoards = []
         partiallyWorkingBoards = []
         nonWorkingBoards = []
         
         for board in myGames {
             switch Int(board.functionalCondition) {
-            case 0: workingBoards += [board]
-            case 1: partiallyWorkingBoards += [board]
-            case 2: nonWorkingBoards += [board]
-            default: break;
+            case 0:
+                workingBoards += [board]
+            case 1:
+                partiallyWorkingBoards += [board]
+            case 2:
+                nonWorkingBoards += [board]
+            default:
+                break
             }
         }
         boardsInCollection = workingBoards + partiallyWorkingBoards + nonWorkingBoards
     }
+    
     func getCabinetHardware() {
         collectedCabinetHardWare = []
         
@@ -194,6 +200,7 @@ class CollectionManager {
         }
         collectedCabinetHardWare = cabinets + monitors + controls + bezels + controlPanelOverlays + artworks + marquees
     }
+    
     func getAllHardwareCount() {
         allHardwareInCollection = boardsInCollection + collectedCabinetHardWare
     }

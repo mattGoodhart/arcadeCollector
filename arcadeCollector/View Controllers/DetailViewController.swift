@@ -12,6 +12,18 @@ import SafariServices
 class DetailViewController: UIViewController {
     
     //MARK: Properties
+    @IBOutlet weak var marqueeView: UIImageView!
+    @IBOutlet weak var mainImageView: UIImageView!
+    @IBOutlet weak var mainImageSwitch: UISegmentedControl!
+    @IBOutlet weak var marqueeActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var mainImageActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var historyButton: UIButton!
+    @IBOutlet weak var youTubeButton: UIButton!
+    @IBOutlet weak var wantedSwitch: UISwitch!
+    @IBOutlet weak var addEditButton: UIButton!
+    @IBOutlet weak var baseStackView: UIStackView!
+    @IBOutlet weak var wantedStackView: UIStackView!
+    @IBOutlet weak var wantedLabel: UILabel!
     
     var isInMyCollection = false
     var isWanted = false
@@ -25,19 +37,6 @@ class DetailViewController: UIViewController {
     var flyerImageData: Data!
     var marqueeImageData: Data!
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    
-    @IBOutlet weak var marqueeView: UIImageView!
-    @IBOutlet weak var mainImageView: UIImageView!
-    @IBOutlet weak var mainImageSwitch: UISegmentedControl!
-    @IBOutlet weak var marqueeActivityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var mainImageActivityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var historyButton: UIButton!
-    @IBOutlet weak var youTubeButton: UIButton!
-    @IBOutlet weak var wantedSwitch: UISwitch!
-    @IBOutlet weak var addEditButton: UIButton!
-    @IBOutlet weak var baseStackView: UIStackView!
-    @IBOutlet weak var wantedStackView: UIStackView!
-    @IBOutlet weak var wantedLabel: UILabel!
     
     //MARK: View Controller Life Cycle and Other Overrides
     
@@ -53,7 +52,7 @@ class DetailViewController: UIViewController {
         
         handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
         handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: false)
-        self.title = viewedGame.title!
+        self.title = viewedGame.title
         
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.mainImageTapped))
         let marqueeTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.marqueeImageTapped))
@@ -77,7 +76,7 @@ class DetailViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "HardwareSegue"  {
+        if segue.identifier == "HardwareSegue" {
             let hardwareVC = segue.destination as! HardwareViewController
             hardwareVC.viewedGame = self.viewedGame
         }
@@ -97,7 +96,6 @@ class DetailViewController: UIViewController {
     }
     
     @IBAction func addToWanted(_ sender: UISwitch) {
-        
         if wantedSwitch.isOn {
             masterCollection.wantedGames.append(viewedGame)
             masterCollection.wantedGamesCollection.addToGames(viewedGame)
@@ -122,16 +120,23 @@ class DetailViewController: UIViewController {
     @IBAction func segmentedControlPressed() {
         if viewedGame.flyerImageURLString != "" {
             switch mainImageSwitch.selectedSegmentIndex {
-            case 0: getFlyerImageIfNeeded()
-            case 1: getInGameImageIfNeeded()
-            case 2: getTitleImageIfNeeded()
-            default: break
+            case 0:
+                getFlyerImageIfNeeded()
+            case 1:
+                getInGameImageIfNeeded()
+            case 2:
+                getTitleImageIfNeeded()
+            default:
+                break
             }
         } else {
             switch mainImageSwitch.selectedSegmentIndex {
-            case 0: getInGameImageIfNeeded()
-            case 1: getTitleImageIfNeeded()
-            default: break
+            case 0:
+                getInGameImageIfNeeded()
+            case 1:
+                getTitleImageIfNeeded()
+            default:
+                break
             }
         }
     }
@@ -162,8 +167,8 @@ class DetailViewController: UIViewController {
         mainImageSwitch.topAnchor.constraint(equalTo: mainImageView.bottomAnchor, constant: 20).isActive = true
         mainImageSwitch.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
         
-        wantedStackView.addSubview(wantedLabel)
-        wantedStackView.addSubview(wantedSwitch)
+        wantedStackView.addArrangedSubview(wantedLabel)
+        wantedStackView.addArrangedSubview(wantedSwitch)
         wantedStackView.axis = .vertical
         
         baseStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -177,10 +182,10 @@ class DetailViewController: UIViewController {
         baseStackView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
         baseStackView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
         baseStackView.heightAnchor.constraint(equalToConstant: 50)
-        baseStackView.addSubview(historyButton)
-        baseStackView.addSubview(addEditButton)
-        baseStackView.addSubview(wantedStackView)
-        baseStackView.addSubview(youTubeButton)
+        baseStackView.addArrangedSubview(historyButton)
+        baseStackView.addArrangedSubview(addEditButton)
+        baseStackView.addArrangedSubview(wantedStackView)
+        baseStackView.addArrangedSubview(youTubeButton)
         baseStackView.axis = .horizontal
         baseStackView.spacing = 40
     }
@@ -189,14 +194,18 @@ class DetailViewController: UIViewController {
         let orientation = viewedGame.orientation
         
         switch orientation {
-        case "Horizontal": mainImageView.contentMode = .scaleToFill
-        adjustImageView(height: 210, multiplier: 4.0/3.0)
-        case "Vertical": mainImageView.contentMode = .scaleToFill
-        adjustImageView(height: 280, multiplier: 3.0/4.0)
-        default: mainImageView.contentMode = .scaleAspectFit
-        adjustImageView(height: 210, multiplier: 4.0/3.0)
+        case "Horizontal":
+            mainImageView.contentMode = .scaleToFill
+            adjustImageView(height: 210, multiplier: 4.0/3.0)
+        case "Vertical":
+            mainImageView.contentMode = .scaleToFill
+            adjustImageView(height: 280, multiplier: 3.0/4.0)
+        default:
+            mainImageView.contentMode = .scaleAspectFit
+            adjustImageView(height: 210, multiplier: 4.0/3.0)
         }
     }
+    
     /// fetch collections the viewedGame belongs to
     func determineCollectionsGameBelongsTo() {
         
@@ -215,19 +224,19 @@ class DetailViewController: UIViewController {
             }
         }
         
-        if isWanted {
-            wantedSwitch.isOn = true
-        } else {
-            wantedSwitch.isOn = false
-        }
-    
+        wantedSwitch.isOn = isWanted
+        
         let index = self.tabBarController!.selectedIndex
         
         switch index {
-        case 1: viewedCollection = masterCollection.myGamesCollection
-        case 2: viewedCollection = masterCollection.allGamesCollection
-        case 3: viewedCollection = masterCollection.wantedGamesCollection
-        default: break
+        case 1:
+            viewedCollection = masterCollection.myGamesCollection
+        case 2:
+            viewedCollection = masterCollection.allGamesCollection
+        case 3:
+            viewedCollection = masterCollection.wantedGamesCollection
+        default:
+            break
         }
     }
     
@@ -263,7 +272,7 @@ class DetailViewController: UIViewController {
             DispatchQueue.main.async {
                 self.viewedGame.marqueeImageData = imageData
                 try? self.dataController.viewContext.save()
-                self.marqueeView.image = UIImage(data: imageData)!
+                self.marqueeView.image = UIImage(data: imageData)
             }
         }
     }
@@ -423,7 +432,6 @@ class DetailViewController: UIViewController {
     }
     
     func getMarqueeIfNeeded() {
-        
         if let marqueeURLString = self.viewedGame.marqueeURLString {
             if marqueeURLString != "" {
                 self.loadMarqueeFromURL(at: URL(string: marqueeURLString)!)
