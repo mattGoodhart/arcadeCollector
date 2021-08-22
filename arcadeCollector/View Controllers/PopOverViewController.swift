@@ -12,6 +12,13 @@ import PDFKit
 
 class PopOverViewController: UIViewController, UIScrollViewDelegate {
     
+    //MARK: Properties
+    
+    @IBOutlet weak var pdfView: PDFView!
+    @IBOutlet weak var textView: UITextView!
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var dismissButton: UIButton!
+    
     var margins: UILayoutGuide!
     var orientation: String!
     var manual: PDFDocument!
@@ -21,12 +28,9 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     var type: String!
     var webURL: URL!
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
+  
     
-    @IBOutlet weak var pdfView: PDFView!
-    @IBOutlet weak var textView: UITextView!
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var dismissButton: UIButton!
-    
+    //MARK: View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         margins = view.layoutMarginsGuide
@@ -174,6 +178,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     func hideAllViews() {
         pdfView.isHidden = true
         textView.isHidden = true
-        pdfView.isHidden = true
+        imageView.isHidden = true
     }
 }

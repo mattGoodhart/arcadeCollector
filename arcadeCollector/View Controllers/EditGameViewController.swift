@@ -10,12 +10,6 @@ import UIKit
 
 class EditGameViewController: UIViewController {
     
-    var tabBar : UITabBar!
-    let dataController = DataController.shared
-    let masterCollection = CollectionManager.shared
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    var viewedGame: Game!
-    
     @IBOutlet weak var hasBoard: UISwitch!
     @IBOutlet weak var isBootleg: UISwitch!
     @IBOutlet weak var functionalCondition: UISegmentedControl!
@@ -27,6 +21,12 @@ class EditGameViewController: UIViewController {
     @IBOutlet weak var hasBezel: UISwitch!
     @IBOutlet weak var hasMonitorFlag: UISwitch!
     @IBOutlet weak var hasMarquee: UISwitch!
+    
+    var tabBar : UITabBar!
+    let dataController = DataController.shared
+    let masterCollection = CollectionManager.shared
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var viewedGame: Game!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +48,7 @@ class EditGameViewController: UIViewController {
         if viewedGame.hasBoard || viewedGame.hasCabinetHardware {
             
             if !masterCollection.myGames.contains(viewedGame) {
-                masterCollection.myGames.append(viewedGame) // can I do this only ifNecessary?
+                masterCollection.myGames.append(viewedGame)
                 masterCollection.myGamesCollection.addToGames(viewedGame)
             }
             
@@ -95,29 +95,32 @@ class EditGameViewController: UIViewController {
     }
     
     func getGameAttributeValuesFromSwitches() {
-        if hasBoard.isOn {viewedGame.hasBoard = true} else {viewedGame.hasBoard = false}
-        if isBootleg.isOn {viewedGame.isBootleg = true} else {viewedGame.isBootleg = false}
-        if hasCabinetArt.isOn {viewedGame.hasCabinetArt = true} else {viewedGame.hasCabinetArt = false}
-        if hasControlPanelOverlay.isOn {viewedGame.hasControlPanelOverlay = true} else {viewedGame.hasControlPanelOverlay = false}
-        if hasControls.isOn {viewedGame.hasControls = true} else {viewedGame.hasControls = false}
-        if hasCabinetHardware.isOn {viewedGame.hasCabinetHardware = true} else {viewedGame.hasCabinetHardware = false}
-        if hasCabinet.isOn {viewedGame.hasCabinet = true} else {viewedGame.hasCabinet = false}
-        if hasBezel.isOn {viewedGame.hasBezel = true} else {viewedGame.hasBezel = false}
-        if hasMonitorFlag.isOn {viewedGame.hasMonitorFlag = true} else {viewedGame.hasMonitorFlag = false}
+        viewedGame.hasBoard = hasBoard.isOn
+        viewedGame.isBootleg = isBootleg.isOn
+        viewedGame.hasCabinetArt = hasCabinetArt.isOn
+        viewedGame.hasControlPanelOverlay = hasControlPanelOverlay.isOn
+        viewedGame.hasControls = hasControls.isOn
+        viewedGame.hasCabinetHardware = hasCabinetHardware.isOn
+        viewedGame.hasCabinet = hasCabinet.isOn
+        viewedGame.hasBezel = hasBezel.isOn
+        viewedGame.hasMonitorFlag = hasMonitorFlag.isOn
         viewedGame.functionalCondition = Int16(functionalCondition.selectedSegmentIndex)
     }
     
     func setSwitches() { //values set to false / 0 upon json decode
+       
+        
         if viewedGame.hasBoard {hasBoard.isOn = true; enableBoardTraits(state: true)} else {hasBoard.isOn = false; enableBoardTraits(state: false)}
-        if viewedGame.isBootleg {isBootleg.isOn = true} else {isBootleg.isOn = false}
-        if viewedGame.hasCabinetArt {hasCabinetArt.isOn = true} else {hasCabinetArt.isOn = false}
-        if viewedGame.hasControlPanelOverlay {hasControlPanelOverlay.isOn = true} else {hasControlPanelOverlay.isOn = false}
-        if viewedGame.hasControls {hasControls.isOn = true} else {hasControls.isOn = false}
-        if viewedGame.hasCabinetHardware {hasCabinetHardware.isOn = true;} else {hasCabinetHardware.isOn = false;}
-        if viewedGame.hasCabinet {hasCabinet.isOn = true} else {hasCabinet.isOn = false}
-        if viewedGame.hasBezel {hasBezel.isOn = true} else {hasBezel.isOn = false}
-        if viewedGame.hasMonitorFlag {hasMonitorFlag.isOn = true} else {hasMonitorFlag.isOn = false}
-        if viewedGame.hasMarquee {hasMarquee.isOn = true} else {hasMarquee.isOn = false}
+        
+        isBootleg.isOn = viewedGame.isBootleg
+        hasCabinetArt.isOn = viewedGame.hasCabinetArt
+        hasControlPanelOverlay.isOn = viewedGame.hasControlPanelOverlay
+        hasControls.isOn = viewedGame.hasControls
+        hasCabinetHardware.isOn = viewedGame.hasCabinetHardware
+        hasCabinet.isOn = viewedGame.hasCabinet
+        hasBezel.isOn = viewedGame.hasBezel
+        hasMonitorFlag.isOn = viewedGame.hasMonitorFlag
+        hasMarquee.isOn = viewedGame.hasMarquee
         functionalCondition.selectedSegmentIndex = Int(viewedGame.functionalCondition)
     }
 }

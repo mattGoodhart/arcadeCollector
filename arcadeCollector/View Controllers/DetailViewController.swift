@@ -67,7 +67,6 @@ class DetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super .viewWillAppear(animated)
-        
         appDelegate.allowedOrientations = .portrait
         
         if viewedGame.flyerImageURLString == "" {

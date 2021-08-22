@@ -43,6 +43,11 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
     //MARK: Properties
     
+    @IBOutlet weak var reverseButton: UIButton!
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var filterButton: UIButton!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
     let searchController = UISearchController(searchResultsController: nil)
     let dataController = DataController.shared
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -63,7 +68,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var filteredGames : [Game] = []
     var tab: Tab!
     
-    var visibleGamesList: [Game] { // should i use a switch here?
+    var visibleGamesList: [Game] {
         //base
         if !isFiltering && !isFilterOptionChosen {
             return gamesList
@@ -117,13 +122,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
 
-    //MARK: Outlets
-    
-    @IBOutlet weak var reverseButton: UIButton!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var filterButton: UIButton!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    
+
     //MARK Life Cycle and Overrides
     
     override func viewDidLoad() {
@@ -212,7 +211,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
          refreshDataInBackground()
     }
     
-    func createArrayOfUniqueYears(listOfGames: [Game]) -> [String] { // use my array extension instead?
+    func createArrayOfUniqueYears(listOfGames: [Game]) -> [String] {
         var uniqueYears = [String]()
         for game in listOfGames {
             uniqueYears += [game.year!]
@@ -272,7 +271,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
         }
         
-     //   refreshDataInBackground() // UI API called on background thread??
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
         refreshDataSource()
         tableView.reloadData()
@@ -301,12 +299,12 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             return
         }
         
-        if tabBarController?.selectedIndex == 1 { //mygames
+        if tabBarController?.selectedIndex == 1 { //myGames
             let removalIndex = CollectionManager.shared.myGames.firstIndex(of: game)
             CollectionManager.shared.myGames.remove(at: removalIndex!)
             CollectionManager.shared.myGamesCollection.removeFromGames(game)
             
-        } else if tabBarController?.selectedIndex == 3 {
+        } else if tabBarController?.selectedIndex == 3 { //wantedGames
             let removalIndex = CollectionManager.shared.wantedGames.firstIndex(of: game)
             CollectionManager.shared.wantedGames.remove(at: removalIndex!)
             CollectionManager.shared.wantedGamesCollection.removeFromGames(game)
@@ -330,6 +328,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return visibleUniqueYears[section]
     }
     
+    /// Right-side scroll index for allGames
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         guard tabBarController?.selectedIndex == 2 else {
             return nil
@@ -362,17 +361,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         viewedGame = groups[section]![indexPath.row]
         performSegue(withIdentifier: "GamesDetailSegue", sender: self)
     }
-    
-//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//
-//        if indexPath.row % 2 == 0 {
-//            let alternateCellColor: UIColor? = UIColor(red: 0.15, green: 0.55, blue: 0.4, alpha: 1)//UIColor(red: 40, green: 140, blue: 100, alpha: 1)
-//            cell.backgroundColor = alternateCellColor
-//        }else {
-//           cell.backgroundColor = view.backgroundColor
-//        }
-//    }
-    
     
     // MARK: - FilterSelectionDelegate
     

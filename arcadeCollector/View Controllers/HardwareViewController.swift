@@ -6,12 +6,27 @@
 //  Copyright © 2021 CatBoiz. All rights reserved.
 //
 
-//ToDO: calculate size in Megabits of game
-
 import UIKit
 import PDFKit
 
 class HardwareViewController: UIViewController, XMLParserDelegate {
+    
+    @IBOutlet weak var controlsStack : UIStackView!
+    @IBOutlet weak var displayStack : UIStackView!
+    @IBOutlet weak var audioStack : UIStackView!
+    @IBOutlet weak var processorsStack : UIStackView!
+    @IBOutlet weak var mainImageView: UIImageView!
+    @IBOutlet weak var displayLine: UILabel!
+    @IBOutlet weak var controlsLine: UILabel!
+    @IBOutlet weak var soundHardwareLine: UILabel!
+    @IBOutlet weak var processorsLine: UILabel!
+    @IBOutlet weak var imageChooser: UISegmentedControl!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var audioChannelsLine: UILabel!
+    @IBOutlet weak var manualButton: UIButton!
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var stackView: UIStackView!
+    @IBOutlet weak var mameButton: UIButton!
     
     var isPDF : Bool = false
     var formattedSoundStringArray = [String]()
@@ -30,26 +45,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     let machineElementKeys = Set<String>(["year" , "description", "manufacturer", "chip", "display", "sound"])
     var pdfDoc: PDFDocument?
     
-    @IBOutlet weak var controlsStack : UIStackView!
-    @IBOutlet weak var displayStack : UIStackView!
-    @IBOutlet weak var audioStack : UIStackView!
-    @IBOutlet weak var processorsStack : UIStackView!
-    
-    @IBOutlet weak var mainImageView: UIImageView!
-    @IBOutlet weak var displayLine: UILabel!
-    @IBOutlet weak var controlsLine: UILabel!
-    @IBOutlet weak var soundHardwareLine: UILabel!
-    @IBOutlet weak var processorsLine: UILabel!
-    @IBOutlet weak var imageChooser: UISegmentedControl!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var audioChannelsLine: UILabel!
-    @IBOutlet weak var manualButton: UIButton!
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var stackView: UIStackView!
-    @IBOutlet weak var mameButton: UIButton!
-    
-    
-    //MARK App Life Cycle
+    //MARK View Controller Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,9 +78,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     }
     
     func buildMainStackView() {
-        
-        buildIndividualStackViews()
-        
         stackView.addArrangedSubview(mainImageView)
         stackView.addArrangedSubview(imageChooser)
         stackView.addArrangedSubview(mameButton)
@@ -94,15 +87,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         stackView.addArrangedSubview(audioStack)
         stackView.addArrangedSubview(processorsStack)
     }
-    
-    func buildIndividualStackViews() {
-        let controlsTitle = UILabel()
-        controlsTitle.text = "Controls"
-        
-        controlsStack.addArrangedSubview(controlsTitle)
-        controlsStack.addArrangedSubview(controlsLine)
-    }
-    
     
     func prepMainImageView() {
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
@@ -173,7 +157,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         
         if viewedGame.mameNotes != nil {
             segueToMameNotes()
-        } else {
+        } else { //TODO: Refactor and move into Networking class
             let url = URL(string: "https://raw.githubusercontent.com/mamedev/mame/master/src/mame/drivers/" + viewedGame.driver!)!
             
             DispatchQueue.global().async {
@@ -237,7 +221,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         if let cabinetImageData = viewedGame.cabinetImageData {
             let image = UIImage(data: cabinetImageData)
             setImage(image: image!)
-        } else {
+        } else { //TODO: Refactor and move into Networking class
             if viewedGame.cabinetImageURLString != "" {
                 handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
                 let url = URL(string: viewedGame.cabinetImageURLString!)!
@@ -288,7 +272,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         if let boardPhotoData = viewedGame.pcbImageData {
             setImage(image: UIImage(data: boardPhotoData)!)
         } else {
-            if viewedGame.pcbPhotoURLString != "" {
+            if viewedGame.pcbPhotoURLString != "" { //TODO: Refactor and move into Networking class
                 handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
                 DispatchQueue.global().async {
                     let inputString = self.viewedGame.romSetName!
@@ -337,8 +321,8 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         } else {
             viewedGame.resolution = "Unknown"
         }
-        viewedGame.hRefresh = getHorizontalRefresh(viewedGame: viewedGame)
         
+        viewedGame.hRefresh = getHorizontalRefresh(viewedGame: viewedGame)
         viewedGame.driver = machineDictionary!["driver"]
         viewedGame.audioChannels = soundChannels
         viewedGame.monitorResolutionType = getMonitorResolutionType()
@@ -388,10 +372,11 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
             segueToManualViewController(manualData: manual)
         } else {
             
-            if viewedGame.manualURLString == nil {
-                
+            guard viewedGame.manualURLString != "" else {
+                return
+            }
                 handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
-                
+                //TODO: Refactor and move into Networking class
                 let urlString = String("http://adb.arcadeitalia.net/download_file.php?tipo=mame_current&codice=" + self.viewedGame.romSetName! + "&entity=manual")
                 let url = URL(string: urlString)!
                 
@@ -428,7 +413,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 }
             }
         }
-    }
     
     func getHorizontalRefresh(viewedGame: Game) -> String {
         

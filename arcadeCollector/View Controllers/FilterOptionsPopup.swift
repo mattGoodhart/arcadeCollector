@@ -8,18 +8,17 @@
 
 import UIKit
 
+
+enum filterType {
+    case players
+    case manufacturers
+    case orientation
+}
+
 class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
 
     weak var delegate: FilterSelectionDelegate?
  
-    var hasActiveFilter: Bool! = false
-    var gamesList: [Game]!
-    var stringArrayForPicker = [String]()
-    var arrayOfUniqueOrientations: [String]!
-    var arrayOfUniquePlayerCounts: [String]!
-    var arrayOfUniqueManufacturers: [String]!
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    
     @IBOutlet weak var optionsSegmentedControl: UISegmentedControl!
     @IBOutlet weak var removeFilterButton: UIButton!
     @IBOutlet weak var applyButton: UIButton!
@@ -28,11 +27,19 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var pickerView: UIPickerView!
     
+    var hasActiveFilter: Bool! = false
+    var gamesList: [Game]!
+    var stringArrayForPicker = [String]()
+    var arrayOfUniqueOrientations: [String]!
+    var arrayOfUniquePlayerCounts: [String]!
+    var arrayOfUniqueManufacturers: [String]!
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        arrayOfUniqueOrientations = createArrayOfUniqueOrientations()
-        arrayOfUniquePlayerCounts = createArrayOfUniquePlayerCounts()
-        arrayOfUniqueManufacturers = createArrayOfUniqueManufacturers()
+        arrayOfUniqueOrientations = createArrayOfUniqueFilterItems(filterType: .orientation)
+        arrayOfUniquePlayerCounts = createArrayOfUniqueFilterItems(filterType: .players)
+        arrayOfUniqueManufacturers = createArrayOfUniqueFilterItems(filterType: .manufacturers)
         
         pickerView.delegate = self
         pickerView.dataSource = self
@@ -147,37 +154,28 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         stackView.heightAnchor.constraint(equalTo: contentView.heightAnchor).isActive = true
     }
     
-    // these need to be refactored.
-    func createArrayOfUniqueManufacturers() -> [String] {
-        var uniqueManufacturers = [String]()
-        for game in gamesList {
-            uniqueManufacturers += [game.manufacturer!]
+    func createArrayOfUniqueFilterItems(filterType: filterType) -> [String] {
+        
+        var items = [String]()
+        
+        switch filterType {
+        case .manufacturers: for game in gamesList {
+            items += [game.manufacturer!]
+            }
+        case .players: for game in gamesList {
+            items += [game.players!]
+            }
+        case .orientation: for game in gamesList {
+            items += [game.orientation!]
+            }
         }
-        var uniqueManufacturersArray = Array(Set(uniqueManufacturers))
-        uniqueManufacturersArray.sort()
-        return uniqueManufacturersArray
+        
+        var uniqueItemsArray = Array(Set(items))
+        
+        uniqueItemsArray.sort()
+        return uniqueItemsArray
     }
     
-    func createArrayOfUniqueOrientations() -> [String] {
-        var uniqueOrientations = [String]()
-        for game in gamesList {
-            uniqueOrientations += [game.orientation!]
-        }
-        var uniqueOrientationsArray = Array(Set(uniqueOrientations))
-        uniqueOrientationsArray.sort()
-        return uniqueOrientationsArray
-    }
-    
-    func createArrayOfUniquePlayerCounts() -> [String] {
-        var uniquePlayerCounts = [String]()
-        for game in gamesList {
-            uniquePlayerCounts += [game.players!]
-        }
-        var uniquePlayerCountsArray = Array(Set(uniquePlayerCounts))
-        uniquePlayerCountsArray.sort()
-        return uniquePlayerCountsArray
-    }
-
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }

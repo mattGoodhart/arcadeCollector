@@ -34,9 +34,7 @@ class SummaryViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
-        
         appDelegate.allowedOrientations = .portrait
-        
         setBoardFunctionalityCounts()
         masterCollection.getCabinetHardware()
         masterCollection.getAllHardwareCount()
