@@ -1,5 +1,5 @@
 //
-//  ScrollingDataDecoder.swift
+//  ScrollingDataResult.swift
 //  arcadeCollector
 //
 //  Created by TrixxMac on 4/18/21.

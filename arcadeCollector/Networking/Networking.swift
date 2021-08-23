@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class Networking { 
     
@@ -40,5 +41,16 @@ class Networking {
         }
         task.resume()
     }
+    
+    func fetchImageData(at url: URL, with completion: @escaping ((Data) -> Void)) {
+        DispatchQueue.global().async {
+            guard let imageData = try? Data(contentsOf: url) else {
+                print("Image download failed for URL: \(url)")
+                return
+            }
+            DispatchQueue.main.async {
+                completion(imageData)
+            }
+        }
+    }
 }
-

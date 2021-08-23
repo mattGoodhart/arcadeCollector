@@ -11,7 +11,6 @@ import SafariServices
 
 class DetailViewController: UIViewController {
     
-    //MARK: Properties
     @IBOutlet weak var marqueeView: UIImageView!
     @IBOutlet weak var mainImageView: UIImageView!
     @IBOutlet weak var mainImageSwitch: UISegmentedControl!
@@ -27,23 +26,23 @@ class DetailViewController: UIViewController {
     
     var isInMyCollection = false
     var isWanted = false
-    var viewMargins : UILayoutGuide!
     let masterCollection = CollectionManager.shared
     var viewedGame: Game!
     var dataController = DataController.shared
     var viewedCollection: CollectionEntity!
-    var titleImageData: Data!
-    var inGameImageData: Data!
-    var flyerImageData: Data!
-    var marqueeImageData: Data!
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var titleImageData: Data?
+    var inGameImageData: Data?
+    var flyerImageData: Data?
+    var marqueeImageData: Data?
     
-    //MARK: View Controller Life Cycle and Other Overrides
+    var viewMargins: UILayoutGuide {
+        return view.layoutMarginsGuide
+    }
+    
+    // MARK: - View Controller Life Cycle and Other Overrides
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        viewMargins = view.layoutMarginsGuide
         
         setMarqueeView()
         setImageViewAspectRatio()
@@ -66,8 +65,8 @@ class DetailViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super .viewWillAppear(animated)
-        appDelegate.allowedOrientations = .portrait
+        super.viewWillAppear(animated)
+        (UIApplication.shared.delegate as? AppDelegate)?.allowedOrientations = .portrait
         
         if viewedGame.flyerImageURLString == "" {
              mainImageSwitch.selectedSegmentIndex = 1
@@ -109,11 +108,11 @@ class DetailViewController: UIViewController {
     }
     
     @IBAction func historyButtonTapped(_ sender: UIButton) { 
-        let popOverVC = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
-        popOverVC.type = "textView"
-        popOverVC.text = viewedGame.history!
-        popOverVC.modalTransitionStyle = .crossDissolve
-        present(popOverVC, animated: true, completion: nil)
+        let popoverViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
+        popoverViewController.type = "textView"
+        popoverViewController.text = viewedGame.history!
+        popoverViewController.modalTransitionStyle = .crossDissolve
+        present(popoverViewController, animated: true, completion: nil)
     }
     
     @IBAction func segmentedControlPressed() {
@@ -211,16 +210,12 @@ class DetailViewController: UIViewController {
         var collectionNameArray = [String]()
         
         if let collectionOwnership = masterCollection.fetchCollectionsForGame(game: viewedGame) {
-
-        for collection in collectionOwnership {
-            collectionNameArray += [collection.name!]
-        }
-            if collectionNameArray.contains("My Games") {
-                self.isInMyCollection = true
+            
+            for collection in collectionOwnership {
+                collectionNameArray += [collection.name!]
             }
-            if collectionNameArray.contains("Wanted Games") {
-                self.isWanted = true
-            }
+            isInMyCollection = collectionNameArray.contains("My Games")
+            isWanted = collectionNameArray.contains("Wanted Games")
         }
         
         wantedSwitch.isOn = isWanted
@@ -249,34 +244,21 @@ class DetailViewController: UIViewController {
     // MARK: Other Methods
     
     func toggleButtons(enabled: Bool) {
-        if enabled {
-            handleButtons(enabled: true, button: historyButton)
-            handleButtons(enabled: true, button: youTubeButton)
-            handleButtons(enabled: true, button: addEditButton)
-            mainImageSwitch.isEnabled = true
-        } else {
-            handleButtons(enabled: false, button: historyButton)
-            handleButtons(enabled: false, button: youTubeButton)
-            handleButtons(enabled: false, button: addEditButton)
-            mainImageSwitch.isEnabled = false
+        handleButtons(enabled: enabled, button: historyButton)
+        handleButtons(enabled: enabled, button: youTubeButton)
+        handleButtons(enabled: enabled, button: addEditButton)
+        mainImageSwitch.isEnabled = enabled
+    }
+    
+    func loadMarquee(at url: URL) {
+        Networking.shared.fetchImageData(at:url) { imageData in
+            self.viewedGame.marqueeImageData = imageData
+            try? self.dataController.viewContext.save()
+            self.marqueeView.image = UIImage(data: imageData)
         }
     }
     
-    func loadMarqueeFromURL(at url: URL) {
-        DispatchQueue.global().async {
-            guard let imageData = try? Data(contentsOf: url) else {
-                print("Marquee download failure.")
-                return
-            }
-            DispatchQueue.main.async {
-                self.viewedGame.marqueeImageData = imageData
-                try? self.dataController.viewContext.save()
-                self.marqueeView.image = UIImage(data: imageData)
-            }
-        }
-    }
-    
-    func getInGameImageIfNeeded() {
+    func getInGameImageIfNeeded() { // Update to use new image fetching function
         if let inGameImageData = viewedGame.inGameImageData {
             let image = UIImage(data: inGameImageData)
             mainImageView.contentMode = .scaleToFill
@@ -305,7 +287,7 @@ class DetailViewController: UIViewController {
         }
     }
     
-    func getTitleImageIfNeeded() { // These methods can be refactored
+    func getTitleImageIfNeeded() { // Update to use new image fetching function
         if let titleImageData = viewedGame.titleImageData {
             let image = UIImage(data: titleImageData)
             mainImageView.contentMode = .scaleToFill
@@ -334,7 +316,7 @@ class DetailViewController: UIViewController {
         }
     }
     
-    func getFlyerImageIfNeeded() {
+    func getFlyerImageIfNeeded() { // Update to use new image fetching function
         if let flyerImageData = viewedGame.flyerImageData {
             let image = UIImage(data: flyerImageData)
             mainImageView.contentMode = .scaleAspectFit
@@ -367,9 +349,7 @@ class DetailViewController: UIViewController {
     }
     
     func getDetailsIfNeeded() {
-        
-        if viewedGame.emulationStatus != nil {
-            
+        if viewedGame.emulationStatus != nil { // Pull this out into its own helper function
             if let inGameImageData =  viewedGame.inGameImageData {
                 mainImageView.image = UIImage(data: inGameImageData)
             }
@@ -381,9 +361,7 @@ class DetailViewController: UIViewController {
             if viewedGame.flyerImageURLString == "" {
                 mainImageSwitch.removeSegment(at: 0, animated: false)
             }
-            
             return
-            
         } else {
             
             handleActivityIndicator(indicator: self.marqueeActivityIndicator, vc: self, show: true)
@@ -431,14 +409,12 @@ class DetailViewController: UIViewController {
     }
     
     func getMarqueeIfNeeded() {
-        if let marqueeURLString = self.viewedGame.marqueeURLString {
-            if marqueeURLString != "" {
-                self.loadMarqueeFromURL(at: URL(string: marqueeURLString)!)
-                self.handleActivityIndicator(indicator: self.marqueeActivityIndicator, vc: self, show: false)
-            } else {
-                self.handleActivityIndicator(indicator: self.marqueeActivityIndicator, vc: self, show: false)
-            }
+        guard let urlString = viewedGame.marqueeURLString, let url = URL(string: urlString) else {
+            handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
+            return
         }
+        loadMarquee(at: url)
+        handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
     }
     
     @objc func mainImageTapped(_ sender: UIGestureRecognizer) {
@@ -454,7 +430,6 @@ class DetailViewController: UIViewController {
     }
     
     func photoTapped(imageView: UIImageView) {
-        
         let popOverViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
         popOverViewController.modalTransitionStyle = .crossDissolve
         

@@ -41,7 +41,7 @@ class DataController {
 
 // MARK: - Autosaving
 
-extension DataController { //necessary?
+extension DataController {
     func autoSave(interval: TimeInterval = 45) {        
         guard interval > 0 else {
             print("cannot set negative autosave interval")

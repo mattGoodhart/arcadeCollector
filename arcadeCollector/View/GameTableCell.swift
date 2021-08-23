@@ -24,10 +24,4 @@ class GameTableCell: UITableViewCell {
         let iconImage = UIImage(data: dataAsset.data)
         iconImageView.image = iconImage
     }
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        let iconImage = UIImage(data: dataAsset.data)
-        iconImageView.image = iconImage
-    }
 }
