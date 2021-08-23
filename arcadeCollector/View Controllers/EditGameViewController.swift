@@ -38,25 +38,15 @@ class EditGameViewController: UIViewController {
         super.viewWillAppear(animated)
         appDelegate.allowedOrientations = .portrait
     }
-        
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-    }
     
     @IBAction func dismissButtonTapped(_ sender: UIButton) {
         getGameAttributeValuesFromSwitches()
-        if viewedGame.hasBoard || viewedGame.hasCabinetHardware {
-            
-            if !masterCollection.myGames.contains(viewedGame) {
-                masterCollection.myGames.append(viewedGame)
-                masterCollection.myGamesCollection.addToGames(viewedGame)
-            }
-            
-        } else if !viewedGame.hasBoard && !viewedGame.hasCabinetHardware {
-            if let removalIndex = masterCollection.myGames.firstIndex(of: viewedGame) {
-                masterCollection.myGames.remove(at: removalIndex)
-                masterCollection.myGamesCollection.removeFromGames(viewedGame)
-            }
+        if (viewedGame.hasBoard || viewedGame.hasCabinetHardware) && !masterCollection.myGames.contains(viewedGame) {
+            masterCollection.myGames.append(viewedGame)
+            masterCollection.myGamesCollection.addToGames(viewedGame)
+        } else if !viewedGame.hasBoard && !viewedGame.hasCabinetHardware, let removalIndex = masterCollection.myGames.firstIndex(of: viewedGame) {
+            masterCollection.myGames.remove(at: removalIndex)
+            masterCollection.myGamesCollection.removeFromGames(viewedGame)
         }
         
         try? dataController.viewContext.save()
@@ -78,11 +68,11 @@ class EditGameViewController: UIViewController {
             enableCabinetTraits(state: false)
         }
     }
-        
-        func enableBoardTraits(state: Bool) {
-            isBootleg.isEnabled = state
-            functionalCondition.isEnabled = state
-        }
+    
+    func enableBoardTraits(state: Bool) {
+        isBootleg.isEnabled = state
+        functionalCondition.isEnabled = state
+    }
     
     func enableCabinetTraits(state: Bool) {
         hasCabinet.isEnabled = state
@@ -108,10 +98,8 @@ class EditGameViewController: UIViewController {
     }
     
     func setSwitches() { //values set to false / 0 upon json decode
-       
-        
-        if viewedGame.hasBoard {hasBoard.isOn = true; enableBoardTraits(state: true)} else {hasBoard.isOn = false; enableBoardTraits(state: false)}
-        
+        hasBoard.isOn = viewedGame.hasBoard
+        enableBoardTraits(state: viewedGame.hasBoard)
         isBootleg.isOn = viewedGame.isBootleg
         hasCabinetArt.isOn = viewedGame.hasCabinetArt
         hasControlPanelOverlay.isOn = viewedGame.hasControlPanelOverlay

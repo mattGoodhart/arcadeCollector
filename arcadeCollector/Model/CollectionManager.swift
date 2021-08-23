@@ -93,7 +93,7 @@ class CollectionManager {
     
     private func parse(jsonData: Data) {
         do {
-            let decodedData = try JSONDecoder().decode(ScrollingDataDecoder.self,
+            let decodedData = try JSONDecoder().decode(ScrollingDataResult.self,
                                                        from: jsonData)
             for game in decodedData.result {
                 let gameEntity = Game(context: dataController.viewContext)

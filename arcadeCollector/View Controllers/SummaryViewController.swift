@@ -20,7 +20,6 @@ class SummaryViewController: UIViewController {
     @IBOutlet weak var nonWorkingBoardsLabel: UILabel!
     @IBOutlet weak var boardsStatus: UILabel!
     
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let masterCollection = CollectionManager.shared
     let dataController = DataController.shared
     var workingBoardsCount = 0
@@ -34,7 +33,7 @@ class SummaryViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
-        appDelegate.allowedOrientations = .portrait
+        (UIApplication.shared.delegate as? AppDelegate)?.allowedOrientations = .portrait
         setBoardFunctionalityCounts()
         masterCollection.getCabinetHardware()
         masterCollection.getAllHardwareCount()

@@ -28,5 +28,4 @@ class TabBarController: UITabBarController {
         allGamesViewController.tab = .allGames
         wantedViewController.tab = .wanted
     }
-    
 }

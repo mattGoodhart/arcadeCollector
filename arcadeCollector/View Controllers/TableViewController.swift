@@ -53,42 +53,35 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
     var reverseActive = false
-    var popUpVC: FilterOptionsPopup!
+    var popUpViewController: FilterOptionsPopup!
     var filterOptionSelected = "orientation"
     var filterOptionString = ""
-    var filteredUniqueYears = [String]()
-    var groups = [String : [Game]]()
-    var doubleFilteredYears = [String]()
+    var filteredUniqueYears: [String] = []
+    var groups = [String: [Game]]()
+    var doubleFilteredYears: [String] = []
     var filterOptionedUniqueYears = [String]()
     var doubleFilteredGames = [Game]()
     var filterOptionedGames = [Game]()
     var arrayOfUniqueYears = [String]()
     var gamesList = [Game]()
-    var viewedGame : Game!
-    var filteredGames : [Game] = []
+    var viewedGame: Game!
+    var filteredGames: [Game] = []
     var tab: Tab!
     
     var visibleGamesList: [Game] {
-        //base
-        if !isFiltering && !isFilterOptionChosen {
+        switch (isFiltering, isFilterOptionChosen) {
+        case (false, false):
             return gamesList
-        }
-        // search filtered list
-        else if isFiltering && !isFilterOptionChosen {
+        case (true, false):
             return filteredGames
-        }
-        //option filtered list
-        else if !isFiltering && isFilterOptionChosen {
+        case (false, true):
             return filterOptionedGames
-        }
-        // option filtered and search filtered list
-        else if isFiltering && isFilterOptionChosen {
+        case (true, true):
             return doubleFilteredGames
         }
-        else {return gamesList}
     }
     
-    var visibleUniqueYears : [String] {
+    var visibleUniqueYears : [String] { // refactor to use switch as well
         var uniqueYears = [String]()
         
         //base
@@ -121,7 +114,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             return true
         }
     }
-
 
     //MARK Life Cycle and Overrides
     
@@ -163,19 +155,19 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
     @IBAction func filterButtonTapped(_ sender: UIButton) {
         guard visibleGamesList.count != 0 else {return}
-        if let popOver = popUpVC {
+        if let popOver = popUpViewController {
             handleButtons(enabled: false, button: filterButton)
             present(popOver, animated: true, completion: nil)
         } else {
-            popUpVC = storyboard!.instantiateViewController(withIdentifier: "FilterOptionsPopup") as? FilterOptionsPopup
-            popUpVC.delegate = self
-            popUpVC.gamesList = gamesList
-            popUpVC.modalPresentationStyle = .overCurrentContext
-            popUpVC.modalTransitionStyle = .crossDissolve
+            popUpViewController = storyboard!.instantiateViewController(withIdentifier: "FilterOptionsPopup") as? FilterOptionsPopup
+            popUpViewController.delegate = self
+            popUpViewController.gamesList = gamesList
+            popUpViewController.modalPresentationStyle = .overCurrentContext
+            popUpViewController.modalTransitionStyle = .crossDissolve
             
             handleButtons(enabled: false, button: filterButton)
             
-            present(popUpVC, animated: true, completion: nil)
+            present(popUpViewController, animated: true, completion: nil)
         }
     }
     
@@ -193,22 +185,27 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func refreshDataSourceIfFilterOptionSet() {
-        if isFilterOptionChosen {
-            
-            switch filterOptionSelected {
-            case "orientation": filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
-                return game.orientation!.lowercased() == filterOptionString.lowercased()
-                }
-            case "players": filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
-                return game.players!.lowercased().contains(filterOptionString.lowercased())
-                }
-            case "manufacturer": filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
-                return game.manufacturer!.lowercased().contains(filterOptionString.lowercased())
-                }
-            default: break;
-            }
+        guard isFilterOptionChosen else {
+            return
         }
-         refreshDataInBackground()
+        
+        switch filterOptionSelected {
+        case "orientation":
+            filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
+                return game.orientation!.lowercased() == filterOptionString.lowercased()
+            }
+        case "players":
+            filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
+                return game.players!.lowercased().contains(filterOptionString.lowercased())
+            }
+        case "manufacturer":
+            filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
+                return game.manufacturer!.lowercased().contains(filterOptionString.lowercased())
+            }
+        default:
+            break
+        }
+        refreshDataInBackground()
     }
     
     func createArrayOfUniqueYears(listOfGames: [Game]) -> [String] {
@@ -221,7 +218,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return uniqueYearsArray
     }
     
-    func refreshDataSource() {
+    func refreshDataSource() { // refactor to use switchs
         gamesList = tab.baseGamesList
         
         if !isFiltering && !isFilterOptionChosen {
@@ -260,7 +257,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func filterContentForSearchText(_ searchText: String) {
-        
         if !isFilterOptionChosen {
             filteredGames = gamesList.filter { (game: Game) -> Bool in
                 return game.title!.lowercased().contains(searchText.lowercased())
@@ -281,8 +277,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     /// Prevents the deleting of rows when viewing allGames on TableVC
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-       
-        guard tabBarController?.selectedIndex != 2 else {
+        guard tabBarController?.selectedIndex != Tab.allGames.rawValue else {
             return false
         }
         return true
@@ -299,12 +294,11 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             return
         }
         
-        if tabBarController?.selectedIndex == 1 { //myGames
+        if tabBarController?.selectedIndex == Tab.myGames.rawValue {
             let removalIndex = CollectionManager.shared.myGames.firstIndex(of: game)
             CollectionManager.shared.myGames.remove(at: removalIndex!)
             CollectionManager.shared.myGamesCollection.removeFromGames(game)
-            
-        } else if tabBarController?.selectedIndex == 3 { //wantedGames
+        } else if tabBarController?.selectedIndex == Tab.wanted.rawValue {
             let removalIndex = CollectionManager.shared.wantedGames.firstIndex(of: game)
             CollectionManager.shared.wantedGames.remove(at: removalIndex!)
             CollectionManager.shared.wantedGamesCollection.removeFromGames(game)
@@ -330,7 +324,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     /// Right-side scroll index for allGames
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        guard tabBarController?.selectedIndex == 2 else {
+        guard tabBarController?.selectedIndex == Tab.allGames.rawValue else {
             return nil
         }
         return visibleUniqueYears

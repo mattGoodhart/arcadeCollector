@@ -29,12 +29,11 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     var webURL: URL!
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
   
-    
     //MARK: View Controller Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         margins = view.layoutMarginsGuide
-       
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -49,25 +48,19 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         imageView.removeAllConstraints()
         setView()
     }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-    }
     
     @IBAction func dismissButtonTapped(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
     }
     
     func setView() {
-        
         let centerX = imageView.centerXAnchor.constraint(equalTo: margins.centerXAnchor)
         let centerY = imageView.centerYAnchor.constraint(equalTo: margins.centerYAnchor)
         let widthAnchor = imageView.widthAnchor.constraint(equalTo: margins.widthAnchor)
         let heightAnchor = imageView.heightAnchor.constraint(equalTo: margins.heightAnchor)
         
         switch type {
-            
-        case "pdfView":
+        case "pdfView": // split each of these into a helper function
             appDelegate.allowedOrientations = .portrait
             pdfView.displayMode = .singlePageContinuous
             pdfView.autoScales = true
@@ -77,7 +70,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             pdfView.document = manual
             pdfView.frame = view.frame
             setDismissButton()
-            
         case "textView":
             appDelegate.allowedOrientations = .portrait
             textView.isHidden = false
@@ -85,8 +77,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             textView.backgroundColor = UIColor.black
             textView.frame = view.frame
             setDismissButton()
-            
-        case "marqueeView": //
+        case "marqueeView":
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
             imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -99,7 +90,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             heightAnchor.isActive = true
             imageView.isHidden = false
             setDismissButton()
-            
         case "flyerView", "hardwareView":
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
@@ -113,7 +103,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             heightAnchor.isActive = true
             imageView.isHidden = false
             setDismissButton()
-            
         case "gameImageView":
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
@@ -129,7 +118,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             imageView.image = image
             
             switch orientation {
-                
+
             case "Horizontal": // Force 4:3 Aspect ratio
             
                 if UIDevice.current.orientation.isPortrait {

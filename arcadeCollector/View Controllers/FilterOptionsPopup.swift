@@ -16,8 +16,6 @@ enum filterType {
 }
 
 class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
-
-    weak var delegate: FilterSelectionDelegate?
  
     @IBOutlet weak var optionsSegmentedControl: UISegmentedControl!
     @IBOutlet weak var removeFilterButton: UIButton!
@@ -26,6 +24,8 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var pickerView: UIPickerView!
+
+    weak var delegate: FilterSelectionDelegate?
     
     var hasActiveFilter: Bool! = false
     var gamesList: [Game]!
@@ -71,27 +71,34 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         var filterOptionString = ""
         
         switch optionsSegmentedControl.selectedSegmentIndex {
-        case 0: filterOptionChosen = "orientation"
-        case 1: filterOptionChosen = "players"
-        case 2: filterOptionChosen = "manufacturer"
-        default: break;
+        case 0:
+            filterOptionChosen = "orientation"
+        case 1:
+            filterOptionChosen = "players"
+        case 2:
+            filterOptionChosen = "manufacturer"
+        default:
+            break
         }
         
         let row = pickerView.selectedRow(inComponent: 0)
         filterOptionString = stringArrayForPicker[row]
         delegate?.didSelect(filter: filterOptionChosen, filterOptionString: filterOptionString)
-       delegate?.didFinish()
+        delegate?.didFinish()
         hasActiveFilter = true
         dismiss(animated: true, completion: nil)
     }
     
     @IBAction func segmentedControlPressed(_sender: UISegmentedControl){
-
         switch optionsSegmentedControl.selectedSegmentIndex {
-        case 0: stringArrayForPicker = arrayOfUniqueOrientations
-        case 1: stringArrayForPicker = arrayOfUniquePlayerCounts
-        case 2: stringArrayForPicker = arrayOfUniqueManufacturers
-        default: break;
+        case 0:
+            stringArrayForPicker = arrayOfUniqueOrientations
+        case 1:
+            stringArrayForPicker = arrayOfUniquePlayerCounts
+        case 2:
+            stringArrayForPicker = arrayOfUniqueManufacturers
+        default:
+            break
         }
         DispatchQueue.main.async {
             self.pickerView.reloadAllComponents()
@@ -120,7 +127,6 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     }
     
     func setContentView() {
-      
         contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.backgroundColor = .white
         contentView.layer.cornerRadius = 8
@@ -147,7 +153,6 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     }
     
     func setStackViewConstraints() {
-        
         stackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
         stackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
         stackView.widthAnchor.constraint(equalTo: contentView.widthAnchor).isActive = true
