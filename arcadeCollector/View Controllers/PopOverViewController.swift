@@ -19,6 +19,14 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var dismissButton: UIButton!
     
+    var centerX: NSLayoutConstraint!
+    var centerY: NSLayoutConstraint!
+    var widthAnchor: NSLayoutConstraint!
+    var heightAnchor: NSLayoutConstraint!
+    var portraitHeightAnchor: NSLayoutConstraint!
+    var portraitWidthAnchor: NSLayoutConstraint!
+    var landscapeHeightAnchor: NSLayoutConstraint!
+    var landscapeWidthAnchor: NSLayoutConstraint!
     var margins: UILayoutGuide!
     var orientation: String!
     var manual: PDFDocument!
@@ -28,12 +36,15 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     var type: String!
     var webURL: URL!
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
-  
+    
+    
+    
     //MARK: View Controller Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         margins = view.layoutMarginsGuide
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -53,14 +64,27 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         dismiss(animated: true, completion: nil)
     }
     
+    func setAnchors() {
+        centerX = imageView.centerXAnchor.constraint(equalTo: margins.centerXAnchor)
+        centerY = imageView.centerYAnchor.constraint(equalTo: margins.centerYAnchor)
+        widthAnchor = imageView.widthAnchor.constraint(equalTo: margins.widthAnchor)
+        heightAnchor = imageView.heightAnchor.constraint(equalTo: margins.heightAnchor)
+    }
+    
+    func setGameImageAnchors() {
+        portraitHeightAnchor = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 3.0/4.0)
+        portraitWidthAnchor = imageView.widthAnchor.constraint(equalTo: margins.widthAnchor)
+        landscapeHeightAnchor =  imageView.heightAnchor.constraint(equalTo: margins.heightAnchor)
+        landscapeWidthAnchor = imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 4.0/3.0)
+    }
+    
     func setView() {
-        let centerX = imageView.centerXAnchor.constraint(equalTo: margins.centerXAnchor)
-        let centerY = imageView.centerYAnchor.constraint(equalTo: margins.centerYAnchor)
-        let widthAnchor = imageView.widthAnchor.constraint(equalTo: margins.widthAnchor)
-        let heightAnchor = imageView.heightAnchor.constraint(equalTo: margins.heightAnchor)
+        
+        setAnchors()
         
         switch type {
-        case "pdfView": // split each of these into a helper function
+            
+        case "pdfView":
             appDelegate.allowedOrientations = .portrait
             pdfView.displayMode = .singlePageContinuous
             pdfView.autoScales = true
@@ -70,6 +94,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             pdfView.document = manual
             pdfView.frame = view.frame
             setDismissButton()
+            
         case "textView":
             appDelegate.allowedOrientations = .portrait
             textView.isHidden = false
@@ -77,6 +102,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             textView.backgroundColor = UIColor.black
             textView.frame = view.frame
             setDismissButton()
+            
         case "marqueeView":
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
@@ -90,6 +116,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             heightAnchor.isActive = true
             imageView.isHidden = false
             setDismissButton()
+            
         case "flyerView", "hardwareView":
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
@@ -103,60 +130,62 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             heightAnchor.isActive = true
             imageView.isHidden = false
             setDismissButton()
+            
         case "gameImageView":
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
-            
-            let portraitHeightAnchor = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 3.0/4.0)
-            let portraitWidthAnchor = imageView.widthAnchor.constraint(equalTo: margins.widthAnchor)
-            let landscapeHeightAnchor =  imageView.heightAnchor.constraint(equalTo: margins.heightAnchor)
-            let landscapeWidthAnchor = imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 4.0/3.0)
-            
+            setGameImageAnchors()
             imageView.contentMode = .scaleToFill
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.isHidden = false
             imageView.image = image
+            setOrientation()
             
-            switch orientation {
-
-            case "Horizontal": // Force 4:3 Aspect ratio
-            
-                if UIDevice.current.orientation.isPortrait {
-                    centerX.isActive = true
-                    centerY.isActive = true
-                    portraitWidthAnchor.isActive = true
-                    portraitHeightAnchor.isActive = true
-                } else {
-                    centerX.isActive = true
-                    centerY.isActive = true
-                    landscapeHeightAnchor.isActive = true
-                    landscapeWidthAnchor.isActive = true
-                }
-                
-            case "Vertical": // Force 3:4 Aspect Ratio
-                
-                if UIDevice.current.orientation.isPortrait {
-                    imageView.widthAnchor.constraint(equalTo: margins.widthAnchor).isActive = true
-                    centerX.isActive = true
-                    centerY.isActive = true
-                    imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 4.0/3.0).isActive = true
-                }
-                else {
-                    centerX.isActive = true
-                    centerY.isActive = true
-                    imageView.heightAnchor.constraint(equalTo: margins.heightAnchor).isActive = true
-                    imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 3.0/4.0).isActive = true
-                }
-            default :
-                imageView.translatesAutoresizingMaskIntoConstraints = true
-                imageView.contentMode = .scaleAspectFit
-                imageView.frame = view.frame
-            }
         default: break
         }
         setDismissButton()
     }
-
+    
+    func setOrientation() {
+        
+        switch orientation {
+        case "Horizontal": // Force 4:3 Aspect ratio
+            
+            if UIDevice.current.orientation.isPortrait {
+                centerX.isActive = true
+                centerY.isActive = true
+                portraitWidthAnchor.isActive = true
+                portraitHeightAnchor.isActive = true
+            } else {
+                centerX.isActive = true
+                centerY.isActive = true
+                landscapeHeightAnchor.isActive = true
+                landscapeWidthAnchor.isActive = true
+            }
+            
+        case "Vertical": // Force 3:4 Aspect Ratio
+            
+            if UIDevice.current.orientation.isPortrait {
+                imageView.widthAnchor.constraint(equalTo: margins.widthAnchor).isActive = true
+                centerX.isActive = true
+                centerY.isActive = true
+                imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 4.0/3.0).isActive = true
+            }
+            else {
+                centerX.isActive = true
+                centerY.isActive = true
+                imageView.heightAnchor.constraint(equalTo: margins.heightAnchor).isActive = true
+                imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 3.0/4.0).isActive = true
+            }
+        default :
+            imageView.translatesAutoresizingMaskIntoConstraints = true
+            imageView.contentMode = .scaleAspectFit
+            imageView.frame = view.frame
+        }
+        
+    }
+    
+    
     func setDismissButton() {
         view.addSubview(dismissButton)
         dismissButton.translatesAutoresizingMaskIntoConstraints = false

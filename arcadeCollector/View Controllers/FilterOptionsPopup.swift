@@ -29,10 +29,10 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     
     var hasActiveFilter: Bool! = false
     var gamesList: [Game]!
-    var stringArrayForPicker = [String]()
-    var arrayOfUniqueOrientations: [String]!
-    var arrayOfUniquePlayerCounts: [String]!
-    var arrayOfUniqueManufacturers: [String]!
+    var stringArrayForPicker: [String] = []
+    var arrayOfUniqueOrientations: [String] = []
+    var arrayOfUniquePlayerCounts: [String] = []
+    var arrayOfUniqueManufacturers: [String] = []
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     override func viewDidLoad() {

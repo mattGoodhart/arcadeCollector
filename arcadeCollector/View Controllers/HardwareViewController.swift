@@ -29,10 +29,10 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     @IBOutlet weak var mameButton: UIButton!
     
     var isPDF: Bool = false
-    var formattedSoundStringArray = [String]()
-    var formattedCPUStringArray = [String]()
-    var cpuStringArray = [String]()
-    var soundDeviceStringArray = [String]()
+    var formattedSoundStringArray: [String] = []
+    var formattedCPUStringArray: [String] = []
+    var cpuStringArray: [String] = []
+    var soundDeviceStringArray: [String] = []
     var viewedGame: Game!
     var soundChannels = ""
     let dataController = DataController.shared
@@ -52,13 +52,13 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         return viewedGame.pcbPhotoURLString == "" && viewedGame.cabinetImageURLString == ""
     }
 
-    
     //MARK View Controller Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         prepMainImageView()
         getHardwareDetailsIfNeeded(game: viewedGame)
+        buildMainStackView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -108,6 +108,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         }
         
         if hasNoAvailableImages {
+            imageChooser.isHidden = true
             mainImageView.image = UIImage(named: "noHardwareDefaultImage")
         }
         
@@ -153,42 +154,41 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     
     @IBAction func segmentedControlPressed(_sender: UISegmentedControl) {
         stackView.arrangedSubviews[0].isHidden = true
+        
+        guard let cabinetImageData = viewedGame.cabinetImageData, let cabinetImage = UIImage(data: cabinetImageData) else {
+            return
+        }
+    
         switch imageChooser.selectedSegmentIndex {
         case 0:
-            setImage(image: UIImage(data: viewedGame.cabinetImageData!)!) // can this be not bung??
+            setImage(image: cabinetImage)
         case 1:
             getBoardPhotoIfNeeded()
         default: break;
         }
+        
         stackView.arrangedSubviews[0].isHidden = false
     }
     
     func getNotesFromMameIfNeeded() {
-        guard viewedGame.mameNotes == nil else {
+        if viewedGame.mameNotes != nil {
             segueToMameNotes()
-            return
-        }
-        
-        //TODO: Refactor and move into Networking class
-        let url = URL(string: "https://raw.githubusercontent.com/mamedev/mame/master/src/mame/drivers/" + viewedGame.driver!)! // avoid bang if possible
-        
-        DispatchQueue.global().async {
-            do {
-                let contents = try String(contentsOf: url)
-                if let range = contents.range(of: "*/") {
-                    let notes = contents [..<range.upperBound]
+        } else {
+            
+            guard let driver = viewedGame.driver, let url = URL(string: "https://raw.githubusercontent.com/mamedev/mame/master/src/mame/drivers/" + driver) else {
+                return
+            }
+            
+            Networking.shared.fetchText(at: url) { textData in 
+                if let range = textData.range(of: "*/") {
+                    let notes = textData [..<range.upperBound]
                     let mameNotes = String(notes)
                     self.viewedGame.mameNotes = mameNotes
                     try? self.dataController.viewContext.save()
                 } else {
                     print("Substringing didn't go so well")
                 }
-                DispatchQueue.main.async {
-                    self.segueToMameNotes()
-                }
-            }
-            catch {
-                print("Contents Could Not Be Loaded")
+                self.segueToMameNotes()
             }
         }
     }
@@ -226,80 +226,74 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         }
     }
     
-    func getAtLeastOnePhotoIfPossible() { // refactor to use new image fetching method
-        if let cabinetImageData = viewedGame.cabinetImageData {
-            let image = UIImage(data: cabinetImageData)
-            setImage(image: image!)
-        } else { //TODO: Refactor and move into Networking class
-            if viewedGame.cabinetImageURLString != "" {
-                handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
-                let url = URL(string: viewedGame.cabinetImageURLString!)!
-                DispatchQueue.global().async {
-                    guard let imageData = try? Data(contentsOf: url) else {
-                        print("Cabinet Photo download failure.")
-                        self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
-                        DispatchQueue.main.async {
-                            self.imageChooser.isHidden = true
-                        }
-                        return
-                    }
-                    DispatchQueue.main.async {
-                        self.viewedGame.cabinetImageData = imageData
-                        try? self.dataController.viewContext.save()
-                        self.setImage(image: UIImage(data: imageData)!)
-                        self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
-                    }
-                }
-            } else {
+    func getAtLeastOnePhotoIfPossible() {
+        if let cabinetImageData = viewedGame.cabinetImageData, let image = UIImage(data: cabinetImageData) {
+            setImage(image: image)
+        } else {
+            
+            guard viewedGame.cabinetImageURLString != "", let cabinetURLString = viewedGame.cabinetImageURLString, let url = URL(string: cabinetURLString) else {
                 print("No Cabinet Photo Available")
                 DispatchQueue.main.async {
                     self.imageChooser.isHidden = true
                 }
-                self.getBoardPhotoIfNeeded()
+                getBoardPhotoIfNeeded()
+                return
+            }
+            
+            handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
+            
+            Networking.shared.fetchData(at: url) { data in
+                
+                guard let data = data, let cabinetImage = UIImage(data: data) else {
+                    self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                    self.getBoardPhotoIfNeeded()
+                    return
+                }
+                
+                self.viewedGame.cabinetImageData = data
+                try? self.dataController.viewContext.save()
+                self.setImage(image: cabinetImage)
+                self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
             }
         }
     }
     
     func getBoardPhotoIfNeeded () {
         
-        if let boardPhotoData = viewedGame.pcbImageData {
-            setImage(image: UIImage(data: boardPhotoData)!)
+        if let boardPhotoData = viewedGame.pcbImageData, let image = UIImage(data: boardPhotoData) {
+            setImage(image: image)
         } else {
-            if viewedGame.pcbPhotoURLString != "" { //TODO: Refactor and move into Networking class
-                handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
-                DispatchQueue.global().async {
-                    let inputString = self.viewedGame.romSetName!
-                    let urlString = ("http://adb.arcadeitalia.net/media/mame.current/pcbs/" + inputString + ".png")
-                    let url = URL(string: urlString)!
+            //note: pcbPhotoURLString only will ever be nil or "" . maybe should update the name of this attribute and make it a bool
+            guard viewedGame.pcbPhotoURLString != "", let inputString = self.viewedGame.romSetName,
+                let url = URL(string: "http://adb.arcadeitalia.net/media/mame.current/pcbs/" + inputString + ".png") else {
                     
-                    guard let data = try? Data(contentsOf: url) else {
-                        print("PCB Photo download failure.")
-                        self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
-                        DispatchQueue.main.async {
-                            self.viewedGame.pcbPhotoURLString = ""
-                            self.imageChooser.isHidden = true
-                            
-                            if self.hasNoAvailableImages {
-                                self.setImage(image: UIImage(named: "noHardwareDefaultImage")!)
-                            }
-                        }
-                        return
+                    self.imageChooser.isHidden = true
+                    print("no PCB image available")
+                    if hasNoAvailableImages {
+                        setImage(image: UIImage(named: "noHardwareDefaultImage")!)
                     }
-                    DispatchQueue.main.async {
-                        self.viewedGame.pcbPhotoURLString = urlString
-                        self.viewedGame.pcbImageData = data
-                        try? self.dataController.viewContext.save()
-                        self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
-                        
-                        self.setImage(image: UIImage(data: data)!)
+                    return
+            }
+            
+            handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
+            Networking.shared.fetchData(at: url) { data in
+                
+                guard let data = data, let pcbImage = UIImage(data: data) else {
+                    print("PCB Photo download failure.")
+                    self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                    self.viewedGame.pcbPhotoURLString = ""
+                    self.imageChooser.isHidden = true
+                    
+                    if self.hasNoAvailableImages {
+                        self.setImage(image: UIImage(named: "noHardwareDefaultImage")!)
                     }
+                    
+                    return
                 }
-            } else {
-                self.imageChooser.isHidden = true
-                print("no PCB image available")
-                if hasNoAvailableImages {
-                    setImage(image: UIImage(named: "noHardwareDefaultImage")!)
-                }
+                self.viewedGame.pcbImageData = data
+                try? self.dataController.viewContext.save()
+                self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                self.setImage(image: pcbImage)
             }
         }
     }
@@ -360,27 +354,21 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         if let manual = viewedGame.manual {
             segueToManualViewController(manualData: manual)
         } else {
-            guard viewedGame.manualURLString != "" else {
+            guard viewedGame.manualURLString != "", let romName = self.viewedGame.romSetName, let url = URL(string: "http://adb.arcadeitalia.net/download_file.php?tipo=mame_current&codice=" + romName + "&entity=manual") else {
                 return
             }
             handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
-            
-            //TODO: Refactor and move into Networking class
-            let urlString = String("http://adb.arcadeitalia.net/download_file.php?tipo=mame_current&codice=" + self.viewedGame.romSetName! + "&entity=manual")
-            let url = URL(string: urlString)!
-            
-            guard let data = try? Data(contentsOf: url) else {
-                print("manual download failure.")
-                DispatchQueue.main.async {
-                    self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
-                    self.manualButton.isEnabled = false
-                    self.manualButton.isHidden = true
-                    self.viewedGame.manualURLString = ""
-                    try? self.dataController.viewContext.save()
+            Networking.shared.fetchData(at: url) { data in
+                guard let data = data else {
+                    print("manual download failure.")
+                        self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                        self.manualButton.isEnabled = false
+                        self.manualButton.isHidden = true
+                        self.viewedGame.manualURLString = ""
+                        try? self.dataController.viewContext.save()
+                    
+                    return
                 }
-                return
-            }
-            DispatchQueue.main.async {
                 self.checkForRealPDF(assetData: NSData(data: data))
                 if !self.isPDF {
                     self.viewedGame.manualURLString = ""
@@ -389,16 +377,13 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                     self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
                     try? self.dataController.viewContext.save()
                     return
+                } else {
+                    self.viewedGame.manual = data
+                    try? self.dataController.viewContext.save()
+                    self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                    self.segueToManualViewController(manualData: data)
                 }
-                    
-                else {
-                    DispatchQueue.main.async {
-                        self.viewedGame.manual = data
-                        try? self.dataController.viewContext.save()
-                        self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
-                        self.segueToManualViewController(manualData: data)
-                    }
-                }
+                
             }
         }
     }

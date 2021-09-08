@@ -41,8 +41,6 @@ enum Tab: Int {
 
 class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchResultsUpdating, FilterSelectionDelegate {
 
-    //MARK: Properties
-    
     @IBOutlet weak var reverseButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var filterButton: UIButton!
@@ -81,24 +79,26 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
-    var visibleUniqueYears : [String] { // refactor to use switch as well
-        var uniqueYears = [String]()
-        
-        //base
-        if !isFiltering && !isFilterOptionChosen { uniqueYears = arrayOfUniqueYears }
-        //filtered
-        else if isFiltering && !isFilterOptionChosen { uniqueYears = filteredUniqueYears }
-        //optionfiltered
-        else if !isFiltering && isFilterOptionChosen { uniqueYears = filterOptionedUniqueYears }
-        //doublefiltered
-        else if isFiltering && isFilterOptionChosen { uniqueYears = doubleFilteredYears }
-        
+    var visibleUniqueYears : [String] {
+       
+        var uniqueYears: [String] {
+            switch (isFiltering, isFilterOptionChosen) {
+            case (false, false):
+                return arrayOfUniqueYears
+            case (true, false):
+                return filteredUniqueYears
+            case (false, true):
+                return filterOptionedUniqueYears
+            case (true, true):
+                return doubleFilteredYears
+            }
+        }
         guard reverseActive else {
             return uniqueYears
         }
         return uniqueYears.sorted(by: >)
     }
-    
+
     var isSearchBarEmpty: Bool {
         return searchController.searchBar.text?.isEmpty ?? true
     }
@@ -218,19 +218,23 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return uniqueYearsArray
     }
     
-    func refreshDataSource() { // refactor to use switchs
+    func createUniqueYearArrayForFilterConditions() {
+        
+            switch (isFiltering, isFilterOptionChosen) {
+            case (false, false):
+                arrayOfUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
+            case (true, false):
+                filteredUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
+            case (false, true):
+                 filterOptionedUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
+            case (true, true):
+                doubleFilteredYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
+            }
+    }
+    
+    func refreshDataSource() {
         gamesList = tab.baseGamesList
-        
-        if !isFiltering && !isFilterOptionChosen {
-            arrayOfUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
-        } else if isFiltering && !isFilterOptionChosen {
-             filteredUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
-        } else if !isFiltering && isFilterOptionChosen {
-            filterOptionedUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
-        } else if isFiltering && isFilterOptionChosen {
-            doubleFilteredYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
-        }
-        
+        createUniqueYearArrayForFilterConditions()
         groups = Dictionary(grouping: visibleGamesList.sorted { $0.title! < $1.title! }, by :{ $0.year! })
     }
     

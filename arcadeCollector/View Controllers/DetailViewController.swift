@@ -39,7 +39,7 @@ class DetailViewController: UIViewController {
         return view.layoutMarginsGuide
     }
     
-    // MARK: - View Controller Life Cycle and Other Overrides
+    //MARK: - View Controller Life Cycle and Other Overrides
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,7 +93,7 @@ class DetailViewController: UIViewController {
         present(popOverVC, animated: true, completion: nil)
     }
     
-    @IBAction func addToWanted(_ sender: UISwitch) {
+    @IBAction func addToWantedTapped(_ sender: UISwitch) {
         if wantedSwitch.isOn {
             masterCollection.wantedGames.append(viewedGame)
             masterCollection.wantedGamesCollection.addToGames(viewedGame)
@@ -258,112 +258,103 @@ class DetailViewController: UIViewController {
         }
     }
     
-    func getInGameImageIfNeeded() { // Update to use new image fetching function
+    func getInGameImageIfNeeded() { // Note - combine this and below 2 methods?
         if let inGameImageData = viewedGame.inGameImageData {
             let image = UIImage(data: inGameImageData)
             mainImageView.contentMode = .scaleToFill
             mainImageView.image = image
         } else {
-            if viewedGame.inGameImageURLString != "" {
-                handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
-                let url = URL(string: viewedGame.inGameImageURLString!)!
-                DispatchQueue.global().async {
-                    guard let imageData = try? Data(contentsOf: url) else {
-                        print("Photo download failure.")
-                        self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                        return
-                    }
-                    DispatchQueue.main.async {
-                        self.viewedGame.inGameImageData = imageData
-                        try? self.dataController.viewContext.save()
-                        self.mainImageView.contentMode = .scaleToFill
-                        self.mainImageView.image = UIImage(data: imageData)!
-                        self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                    }
-                }
-            } else {
+            guard let urlString = viewedGame.inGameImageURLString, let url = URL(string: urlString) else {
                 return
+            }
+            handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
+            
+            Networking.shared.fetchData(at: url) { data in
+                guard let data = data, let inGameImage = UIImage(data: data) else {
+                    self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                    return
+                }
+                self.viewedGame.inGameImageData = data
+                try? self.dataController.viewContext.save()
+                self.mainImageView.contentMode = .scaleToFill
+                self.mainImageView.image = inGameImage
+                self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
             }
         }
     }
     
-    func getTitleImageIfNeeded() { // Update to use new image fetching function
+    func getTitleImageIfNeeded() {
         if let titleImageData = viewedGame.titleImageData {
             let image = UIImage(data: titleImageData)
             mainImageView.contentMode = .scaleToFill
             mainImageView.image = image
         } else {
-            if viewedGame.titleImageURLString != "" {
-                handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
-                let url = URL(string: viewedGame.titleImageURLString!)!
-                DispatchQueue.global().async {
-                    guard let imageData = try? Data(contentsOf: url) else {
-                        print("Photo download failure.")
-                        self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                        return
-                    }
-                    DispatchQueue.main.async {
-                        self.viewedGame.titleImageData = imageData
-                        try? self.dataController.viewContext.save()
-                        self.mainImageView.contentMode = .scaleToFill
-                        self.mainImageView.image = UIImage(data: imageData)!
-                        self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                    }
-                }
-            } else {
+            guard let urlString = viewedGame.titleImageURLString, let url = URL(string: urlString) else {
                 return
+            }
+            handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
+            
+            Networking.shared.fetchData(at: url) { data in
+                guard let data = data, let titleImage = UIImage(data: data) else {
+                    self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                    return
+                }
+                
+                self.viewedGame.titleImageData = data
+                try? self.dataController.viewContext.save()
+                self.mainImageView.contentMode = .scaleToFill
+                self.mainImageView.image = titleImage
+                self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
             }
         }
     }
     
-    func getFlyerImageIfNeeded() { // Update to use new image fetching function
+    func getFlyerImageIfNeeded() {
         if let flyerImageData = viewedGame.flyerImageData {
             let image = UIImage(data: flyerImageData)
             mainImageView.contentMode = .scaleAspectFit
             mainImageView.image = image
         } else {
-            if viewedGame.flyerImageURLString != "" {
-                handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
-                let url = URL(string: viewedGame.flyerImageURLString!)!
-                DispatchQueue.global().async {
-                    guard let imageData = try? Data(contentsOf: url) else {
-                        print("Flyer download failure.")
-                        self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                        self.mainImageSwitch.removeSegment(at: 0, animated: true)
-                        return
-                    }
-                    DispatchQueue.main.async {
-                        self.viewedGame.flyerImageData = imageData
-                        try? self.dataController.viewContext.save()
-                        self.mainImageView.contentMode = .scaleAspectFit
-                        self.mainImageView.image = UIImage(data: imageData)!
-                        self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                    }
-                }
-            } else {
-                self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                self.mainImageSwitch.removeSegment(at: 0, animated: true)
+            guard let urlString = viewedGame.flyerImageURLString, let url = URL(string: urlString) else {
                 return
+            }
+            handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
+            
+            Networking.shared.fetchData(at: url) { data in
+                guard let data = data, let flyerImage = UIImage(data: data) else {
+                    self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                    return
+                }
+                
+                self.viewedGame.flyerImageData = data
+                try? self.dataController.viewContext.save()
+                self.mainImageView.contentMode = .scaleAspectFit
+                self.mainImageView.image = flyerImage
+                self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
             }
         }
     }
     
+
+    func setImages() {
+        if let inGameImageData =  viewedGame.inGameImageData {
+            mainImageView.image = UIImage(data: inGameImageData)
+        }
+        
+        if let marqueeImageData = viewedGame.marqueeImageData {
+            marqueeView.image = UIImage(data: marqueeImageData)
+        }
+        
+        if viewedGame.flyerImageURLString == "" {
+            mainImageSwitch.removeSegment(at: 0, animated: false)
+        }
+    }
+    
     func getDetailsIfNeeded() {
-        if viewedGame.emulationStatus != nil { // Pull this out into its own helper function
-            if let inGameImageData =  viewedGame.inGameImageData {
-                mainImageView.image = UIImage(data: inGameImageData)
-            }
-            
-            if let marqueeImageData = viewedGame.marqueeImageData {
-                marqueeView.image = UIImage(data: marqueeImageData)
-            }
-            
-            if viewedGame.flyerImageURLString == "" {
-                mainImageSwitch.removeSegment(at: 0, animated: false)
-            }
+        if viewedGame.emulationStatus != nil {
+      setImages()
             return
         } else {
-            
             handleActivityIndicator(indicator: self.marqueeActivityIndicator, vc: self, show: true)
             handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: true)
             toggleButtons(enabled: false)
@@ -409,10 +400,11 @@ class DetailViewController: UIViewController {
     }
     
     func getMarqueeIfNeeded() {
+        
         guard let urlString = viewedGame.marqueeURLString, let url = URL(string: urlString) else {
-            handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
             return
         }
+        handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
         loadMarquee(at: url)
         handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
     }

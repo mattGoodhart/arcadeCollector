@@ -53,4 +53,32 @@ class Networking {
             }
         }
     }
+    
+    func fetchText(at url: URL, with completion: @escaping ((String) -> Void)) {
+        DispatchQueue.global().async {
+            guard let textData = try? String(contentsOf: url) else {
+                print("Text download failed for URL: \(url)")
+                return
+            }
+            DispatchQueue.main.async {
+                completion(textData)
+            }
+        }
+    }
+    
+    func fetchData(at url: URL, with completion: @escaping ((Data?) -> Void)) {
+        DispatchQueue.global().async {
+            guard let data = try? Data(contentsOf: url) else {
+                DispatchQueue.main.async {
+                    print("Download failed for URL: \(url)")
+                    completion(nil)
+                }
+                return
+            }
+            DispatchQueue.main.async {
+                completion(data)
+            }
+        }
+    }
+    
 }

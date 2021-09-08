@@ -23,16 +23,16 @@ class CollectionManager {
     var allGamesCollection: CollectionEntity!
     var myGamesCollection: CollectionEntity!
     var wantedGamesCollection: CollectionEntity!
-    var allGames = [Game]()
-    var myGames = [Game]()
-    var wantedGames = [Game]()
     var arrayOfUniqueYears: [String] = []
-    var workingBoards = [Game]()
-    var partiallyWorkingBoards = [Game]()
-    var nonWorkingBoards = [Game]()
-    var collectedCabinetHardWare = [Game]()
-    var boardsInCollection = [Game]()
-    var allHardwareInCollection = [Game]()
+    var allGames: [Game] = []
+    var myGames: [Game] = []
+    var wantedGames: [Game] = []
+    var workingBoards: [Game] = []
+    var partiallyWorkingBoards: [Game] = []
+    var nonWorkingBoards: [Game] = []
+    var collectedCabinetHardWare: [Game] = []
+    var boardsInCollection: [Game] = []
+    var allHardwareInCollection: [Game] = []
     
     // MARK: - Initialization
 
