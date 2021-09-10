@@ -241,7 +241,7 @@ class DetailViewController: UIViewController {
         UIApplication.shared.open(youtubeURL, options: [:], completionHandler: nil)
     }
     
-    // MARK: Other Methods
+    // MARK: Other Methods`
     
     func toggleButtons(enabled: Bool) {
         handleButtons(enabled: enabled, button: historyButton)
@@ -251,10 +251,13 @@ class DetailViewController: UIViewController {
     }
     
     func loadMarquee(at url: URL) {
-        Networking.shared.fetchImageData(at:url) { imageData in
-            self.viewedGame.marqueeImageData = imageData
+        Networking.shared.fetchData(at:url) { data in
+            guard let data = data, let marqueeImage = UIImage(data: data) else {
+                return
+            }
+            self.viewedGame.marqueeImageData = data
             try? self.dataController.viewContext.save()
-            self.marqueeView.image = UIImage(data: imageData)
+            self.marqueeView.image = marqueeImage
         }
     }
     
