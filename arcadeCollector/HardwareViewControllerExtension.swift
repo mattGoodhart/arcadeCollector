@@ -83,7 +83,7 @@ extension HardwareViewController {
             chipResults!.append(chipDictionary!)
             chipDictionary = nil
         }
-            
+        
         if machineElementKeys.contains(elementName) {
             machineDictionary![elementName] = currentValue
             currentValue = nil
@@ -109,46 +109,47 @@ extension HardwareViewController {
                 } else if chip["tag"] == "audiocpu" {
                     cpuStringArray += ["Audio CPU: " + "\(chip["name"] ?? ""), " + "\(chip["clock"] ?? "")"]
                 } else {
-                    cpuStringArray += ["\(chip["tag"] ?? ""): " + "\(chip["name"] ?? ""), " + "\(chip["clock"] ?? "")"]
+                    cpuStringArray += ["\(chip["name"] ?? ""), " + "\(chip["clock"] ?? "")"]
                 }
             }
             else if (chip["type"] == "audio") && chip["name"] != "Speaker" {
-                soundDeviceStringArray += ["\(chip["tag"] ?? "")" + ":" + "\(chip["name"] ?? ""), " + "\(chip["clock"] ?? "")"]
+                soundDeviceStringArray += ["\(chip["name"] ?? ""), " + "\(chip["clock"] ?? "")"]
             }
         }
         
-        for cpuString in cpuStringArray { // these two loops can be refactored into a single method
-            let split = cpuString.split(separator: " ")
-            let poorlyFormattedClock = String(split.suffix(1).joined(separator: [" "]))
-            
-            if let poorlyFormattedClockDouble = (Double(poorlyFormattedClock)) {
-                let adjust = Double(poorlyFormattedClockDouble / 1000000)
-                let rounded = Double(round(100 * adjust)/100)
-                let replacementClockString = String(rounded)  + " MHz"
-                
-                let goodCPUString = cpuString.replacingOccurrences(of: poorlyFormattedClock, with: replacementClockString)
-                formattedCPUStringArray += [goodCPUString]
-            } else {
-                formattedCPUStringArray += [cpuString]
-            }
+        for cpuString in cpuStringArray {
+            improveClockFormatting(stringToProcess: cpuString, stringArrayToUpdate: cpuStringArray, isForCPU: true)
         }
+            for soundString in soundDeviceStringArray {
+                improveClockFormatting(stringToProcess: soundString, stringArrayToUpdate: soundDeviceStringArray, isForCPU: false)
+        }
+            viewedGame.cpuStringArray = formattedCPUStringArray
+            viewedGame.soundDeviceStringArray = formattedSoundStringArray
+            try? dataController.viewContext.save()
+        }
+    
+    func improveClockFormatting(stringToProcess: String, stringArrayToUpdate: [String], isForCPU: Bool) {
         
-        for soundString in soundDeviceStringArray {
-            let split = soundString.split(separator: " ")
-            let poorlyFormattedClock = String(split.suffix(1).joined(separator: [" "]))
+        var formattedStringArray = [String]()
+        
+        let split = stringToProcess.split(separator: " ")
+        let poorlyFormattedClock = String(split.suffix(1).joined(separator: [" "]))
+        
+        if let poorlyFormattedClockDouble = (Double(poorlyFormattedClock)) {
+            let adjust = Double(poorlyFormattedClockDouble / 1000000)
+            let rounded = Double(round(100 * adjust)/100)
+            let replacementClockString = String(rounded)  + " MHz"
             
-            if let poorlyFormattedClockDouble = (Double(poorlyFormattedClock)) {
-                let adjust = Double(poorlyFormattedClockDouble / 1000000)
-                let rounded = Double(round(100 * adjust)/100)
-                let replacementClockString = String(rounded)  + " MHz"
-                let goodSoundString = soundString.replacingOccurrences(of: poorlyFormattedClock, with: replacementClockString)
-                formattedSoundStringArray += [goodSoundString]
-            } else {
-                formattedSoundStringArray += [soundString]
-            }
+            let goodString = stringToProcess.replacingOccurrences(of: poorlyFormattedClock, with: replacementClockString)
+            formattedStringArray += [goodString]
+        } else {
+            formattedStringArray += [stringToProcess]
         }
-        viewedGame.cpuStringArray = formattedCPUStringArray
-        viewedGame.soundDeviceStringArray = formattedSoundStringArray
-        try? dataController.viewContext.save()
+        if isForCPU {
+            formattedCPUStringArray = formattedStringArray
+        }
+        else {
+            formattedSoundStringArray = formattedStringArray
+        }
     }
 }

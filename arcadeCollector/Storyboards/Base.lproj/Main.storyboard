@@ -698,7 +698,7 @@ nplayers.arcadebelgium.be</string>
                                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eh2-a4-MZF">
                                                 <rect key="frame" x="0.0" y="29.5" width="51" height="20.5"/>
                                                 <connections>
-                                                    <action selector="addToWanted:" destination="lxs-nA-Z7j" eventType="valueChanged" id="oja-5T-KAB"/>
+                                                    <action selector="addToWantedTapped:" destination="lxs-nA-Z7j" eventType="valueChanged" id="OWr-9M-QPL"/>
                                                 </connections>
                                             </switch>
                                         </subviews>
@@ -738,7 +738,7 @@ nplayers.arcadebelgium.be</string>
                         <outlet property="marqueeView" destination="ntz-FS-uBs" id="3ZH-gH-qDH"/>
                         <outlet property="wantedLabel" destination="Q07-zN-ECX" id="JD1-hf-69q"/>
                         <outlet property="wantedStackView" destination="e6t-cj-SYt" id="rk6-zF-i9U"/>
-                        <outlet property="wantedSwitch" destination="eh2-a4-MZF" id="FRs-62-mJI"/>
+                        <outlet property="wantedSwitch" destination="eh2-a4-MZF" id="Xn4-MA-8eE"/>
                         <outlet property="youTubeButton" destination="uEO-wp-z7R" id="XZR-KW-hse"/>
                         <segue destination="Lvk-oR-b5P" kind="show" identifier="HardwareSegue" id="2si-dK-nJE"/>
                     </connections>
