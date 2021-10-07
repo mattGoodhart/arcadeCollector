@@ -28,6 +28,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var mameButton: UIButton!
     
+    var imageViewAspectConstraint: NSLayoutConstraint?
     var isPDF: Bool = false
     var formattedSoundStringArray: [String] = []
     var formattedCPUStringArray: [String] = []
@@ -76,13 +77,18 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     }
 
     func setImage(image: UIImage) {
-        var imageViewAspectConstraint: NSLayoutConstraint?
+    
+        for view in stackView.subviews {
+            stackView.removeArrangedSubview(view)
+        }
         
         mainImageView.image = image
         
         imageViewAspectConstraint?.isActive = false
         imageViewAspectConstraint = mainImageView.widthAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: image.size.width / image.size.height)
         imageViewAspectConstraint!.isActive = true
+        
+        buildMainStackView()
     }
     
     func buildMainStackView() {

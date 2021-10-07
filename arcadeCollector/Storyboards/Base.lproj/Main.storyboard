@@ -360,7 +360,7 @@ nplayers.arcadebelgium.be</string>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jkS-NS-0Mf">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="951"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="en3-Ku-4SB">
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="en3-Ku-4SB">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="1000"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="249" verticalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="c1J-YA-Ncd" userLabel="Main View">
@@ -442,7 +442,6 @@ nplayers.arcadebelgium.be</string>
                                             </stackView>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="1000" id="Hn3-V2-iYA"/>
                                             <constraint firstItem="c1J-YA-Ncd" firstAttribute="width" secondItem="en3-Ku-4SB" secondAttribute="width" id="nxU-X3-cid"/>
                                         </constraints>
                                     </stackView>
@@ -457,18 +456,19 @@ nplayers.arcadebelgium.be</string>
                                 </constraints>
                             </scrollView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="LIP-wD-4nA">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="20"/>
+                                <rect key="frame" x="0.0" y="389" width="375" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="LIP-wD-4nA" firstAttribute="leading" secondItem="09S-xz-qVm" secondAttribute="leading" id="JEG-0t-ygS"/>
-                            <constraint firstItem="LIP-wD-4nA" firstAttribute="top" secondItem="jkS-NS-0Mf" secondAttribute="top" id="LhS-8C-PvR"/>
                             <constraint firstItem="jkS-NS-0Mf" firstAttribute="leading" secondItem="09S-xz-qVm" secondAttribute="leading" id="PEP-7K-mag"/>
                             <constraint firstAttribute="trailing" secondItem="jkS-NS-0Mf" secondAttribute="trailing" id="SWQ-3F-BW8"/>
                             <constraint firstItem="jkS-NS-0Mf" firstAttribute="top" secondItem="09S-xz-qVm" secondAttribute="top" id="VvL-st-tpb"/>
                             <constraint firstItem="LIP-wD-4nA" firstAttribute="centerX" secondItem="09S-xz-qVm" secondAttribute="centerX" id="Ya0-qt-e2o"/>
+                            <constraint firstItem="LIP-wD-4nA" firstAttribute="centerY" secondItem="c1J-YA-Ncd" secondAttribute="centerY" id="mxf-89-htx"/>
                             <constraint firstAttribute="bottom" secondItem="jkS-NS-0Mf" secondAttribute="bottom" id="od6-91-LFX"/>
+                            <constraint firstItem="LIP-wD-4nA" firstAttribute="centerX" secondItem="c1J-YA-Ncd" secondAttribute="centerX" id="p8c-60-qev"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="MjL-2v-Q69"/>
                     </view>
