@@ -122,6 +122,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tableView.frame = view.frame
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.sectionIndexColor = UIColor.white
+        tableView.sectionIndexBackgroundColor = UIColor.init(red: 0.45, green: 0.62, blue: 0.5, alpha: 1)
         searchController.searchResultsUpdater = self as UISearchResultsUpdating
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search for Game by Title"

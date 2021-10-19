@@ -152,48 +152,48 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="1701"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="gQN-pF-6dD" userLabel="Credits Stack View">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1780.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1775.5"/>
                                         <subviews>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="App by Matt Goodhart - 2021" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rGT-gY-bkD" userLabel="About This App">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="40"/>
-                                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="20"/>
+                                                <fontDescription key="fontDescription" type="italicSystem" pointSize="20"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/arcade_database_banner1" translatesAutoresizingMaskIntoConstraints="NO" id="lX4-n9-GkL">
                                                 <rect key="frame" x="0.0" y="48" width="375" height="300"/>
                                             </imageView>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" verticalCompressionResistancePriority="748" scrollEnabled="NO" editable="NO" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Nk-K6-RTG" userLabel="ADB Text">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" verticalCompressionResistancePriority="748" scrollEnabled="NO" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="0Nk-K6-RTG" userLabel="ADB Text">
                                                 <rect key="frame" x="0.0" y="356" width="375" height="123.5"/>
                                                 <string key="text">The Arcade Database, created and maintained by Motoschifo, is the host of all of the media fetched by this App.
 
 adb.arcadeitalia.net</string>
-                                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="18"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/Progetto-snaps banner" translatesAutoresizingMaskIntoConstraints="NO" id="yra-SG-ncK">
                                                 <rect key="frame" x="0.0" y="487.5" width="375" height="101"/>
                                             </imageView>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" verticalCompressionResistancePriority="747" scrollEnabled="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="wPz-mO-oxT" userLabel="Progetto Text">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" verticalCompressionResistancePriority="747" scrollEnabled="NO" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="wPz-mO-oxT" userLabel="Progetto Text">
                                                 <rect key="frame" x="0.0" y="596.5" width="375" height="123.5"/>
                                                 <string key="text">Game, marquee, flyer, cabinet and PCB images  as well as manuals provided courtesy of AntoPisa and ProgettoSnaps
 
 progettosnaps.net</string>
-                                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="18"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/logo-mame" translatesAutoresizingMaskIntoConstraints="NO" id="xA8-mo-3LA">
                                                 <rect key="frame" x="0.0" y="728" width="375" height="199"/>
                                             </imageView>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="747" scrollEnabled="NO" text="All driver information comes directly from MAME.  mamedev.org" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="b5Y-zX-rFo" userLabel="MAME text">
-                                                <rect key="frame" x="0.0" y="935" width="375" height="107"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="747" scrollEnabled="NO" editable="NO" text="All driver information comes directly from MAME.  mamedev.org" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="b5Y-zX-rFo" userLabel="MAME text">
+                                                <rect key="frame" x="0.0" y="935" width="375" height="102"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/Gaming History Banner" translatesAutoresizingMaskIntoConstraints="NO" id="O3S-NK-gh5">
-                                                <rect key="frame" x="0.0" y="1050" width="375" height="64"/>
+                                                <rect key="frame" x="0.0" y="1045" width="375" height="64"/>
                                             </imageView>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="747" scrollEnabled="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="KPK-g7-322" userLabel="History Text">
-                                                <rect key="frame" x="0.0" y="1122" width="375" height="102"/>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="747" scrollEnabled="NO" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="KPK-g7-322" userLabel="History Text">
+                                                <rect key="frame" x="0.0" y="1117" width="375" height="102"/>
                                                 <string key="text">Game information provided by Alexis Bousiges and Gaming History
 
 arcade-history.com</string>
@@ -201,10 +201,10 @@ arcade-history.com</string>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/wolheader" translatesAutoresizingMaskIntoConstraints="NO" id="rNt-67-uSM">
-                                                <rect key="frame" x="0.0" y="1232" width="375" height="118"/>
+                                                <rect key="frame" x="0.0" y="1227" width="375" height="118"/>
                                             </imageView>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="BUg-fG-Kr6" userLabel="WorldOfLongplaysText">
-                                                <rect key="frame" x="0.0" y="1358" width="375" height="102"/>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="BUg-fG-Kr6" userLabel="WorldOfLongplaysText">
+                                                <rect key="frame" x="0.0" y="1353" width="375" height="102"/>
                                                 <string key="text">Longplay videos created and provided by the World of Longplays. 
 
 longplays.org</string>
@@ -212,10 +212,10 @@ longplays.org</string>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/MAMUIconsBanner" translatesAutoresizingMaskIntoConstraints="NO" id="qaJ-gf-HSu" userLabel="MAMEIconsBanner">
-                                                <rect key="frame" x="0.0" y="1468" width="375" height="39"/>
+                                                <rect key="frame" x="0.0" y="1463" width="375" height="39"/>
                                             </imageView>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="V0V-Ej-Elp" userLabel="MAMEIconsText">
-                                                <rect key="frame" x="0.0" y="1515" width="375" height="80.5"/>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="V0V-Ej-Elp" userLabel="MAMEIconsText">
+                                                <rect key="frame" x="0.0" y="1510" width="375" height="80.5"/>
                                                 <string key="text">Game icons provided by MAMU
 
 icons.mameworld.info</string>
@@ -223,10 +223,10 @@ icons.mameworld.info</string>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/titre" translatesAutoresizingMaskIntoConstraints="NO" id="17i-Mf-I49">
-                                                <rect key="frame" x="0.0" y="1603.5" width="375" height="67"/>
+                                                <rect key="frame" x="0.0" y="1598.5" width="375" height="67"/>
                                             </imageView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="1000" scrollEnabled="NO" editable="NO" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gaj-xa-VVp" userLabel="NPlayersText">
-                                                <rect key="frame" x="0.0" y="1678.5" width="375" height="102"/>
+                                                <rect key="frame" x="0.0" y="1673.5" width="375" height="102"/>
                                                 <string key="text">Most player support information from the nplayers.ini provided by Nomax
 
 nplayers.arcadebelgium.be</string>
@@ -617,28 +617,29 @@ nplayers.arcadebelgium.be</string>
                                 </connections>
                             </segmentedControl>
                             <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" spacing="49" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
-                                <rect key="frame" x="18" y="548" width="342" height="50"/>
+                                <rect key="frame" x="18" y="548" width="329" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="BEp-qr-Gaq"/>
                                             <constraint firstAttribute="width" constant="50" id="muU-2B-Dxm"/>
                                         </constraints>
+                                        <state key="normal" image="info_circle"/>
                                         <connections>
                                             <action selector="historyButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="TUs-08-SOa"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kip-WN-wSa">
-                                        <rect key="frame" x="99" y="0.0" width="46" height="50"/>
-                                        <state key="normal" image="Plus"/>
+                                        <rect key="frame" x="99" y="0.0" width="33" height="50"/>
+                                        <state key="normal" image="plus_circle_fill"/>
                                         <connections>
                                             <action selector="addEditButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="d6h-Fe-b6m"/>
                                         </connections>
                                     </button>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="9" translatesAutoresizingMaskIntoConstraints="NO" id="e6t-cj-SYt" userLabel="Wanted Stack View">
-                                        <rect key="frame" x="194" y="0.0" width="49" height="50"/>
+                                        <rect key="frame" x="181" y="0.0" width="49" height="50"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Wanted" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q07-zN-ECX">
                                                 <rect key="frame" x="0.0" y="0.0" width="49" height="20.5"/>
@@ -655,9 +656,8 @@ nplayers.arcadebelgium.be</string>
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uEO-wp-z7R">
-                                        <rect key="frame" x="292" y="0.0" width="50" height="50"/>
+                                        <rect key="frame" x="279" y="0.0" width="50" height="50"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="50" id="lRb-8j-DyR"/>
                                             <constraint firstAttribute="width" constant="50" id="q2g-8u-YKY"/>
                                         </constraints>
                                         <state key="normal" title="YouToob" image="youtubeIcon"/>
@@ -745,7 +745,7 @@ nplayers.arcadebelgium.be</string>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rT-ia-fkI">
                                 <rect key="frame" x="8" y="20" width="50" height="75"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="Minus"/>
+                                <state key="normal" image="minus_circle_fill"/>
                                 <connections>
                                     <action selector="dismissButtonTapped:" destination="mxO-mm-E9o" eventType="touchUpInside" id="7OO-5v-ORd"/>
                                 </connections>
@@ -865,9 +865,9 @@ nplayers.arcadebelgium.be</string>
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gSK-MQ-yJk">
+                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gSK-MQ-yJk">
                                 <rect key="frame" x="26" y="35" width="46" height="46"/>
-                                <state key="normal" image="Minus">
+                                <state key="normal" image="minus_circle_fill">
                                     <color key="titleColor" red="1" green="0.011625692389999999" blue="0.091876032750000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
@@ -1081,12 +1081,13 @@ nplayers.arcadebelgium.be</string>
         <image name="About Banners/titre" width="128" height="67"/>
         <image name="About Banners/wolheader" width="245" height="118"/>
         <image name="Arrow Up Arrow Down" width="33" height="33"/>
-        <image name="Minus" width="46" height="46"/>
-        <image name="Plus" width="46" height="46"/>
         <image name="chart_bar_circle_fill" width="33" height="33"/>
         <image name="favorite" width="33" height="33"/>
         <image name="filter_list" width="33" height="33"/>
+        <image name="info_circle" width="33" height="33"/>
         <image name="menu" width="33" height="33"/>
+        <image name="minus_circle_fill" width="33" height="33"/>
+        <image name="plus_circle_fill" width="33" height="33"/>
         <image name="star_circle" width="33" height="33"/>
         <image name="youtubeIcon" width="512" height="512"/>
     </resources>
