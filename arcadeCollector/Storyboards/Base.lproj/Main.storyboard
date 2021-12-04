@@ -17,6 +17,7 @@
                 <navigationController storyboardIdentifier="Summary" id="Fnu-BP-cIQ" userLabel="Summary Nav" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Summary" id="1SP-LR-4Vp"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="P4h-XW-Zbo">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
@@ -36,18 +37,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="KIB-Fc-56s" userLabel="Main Stack View">
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="KIB-Fc-56s" userLabel="Main Stack View">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="249" text="0" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HUK-Yg-HdD">
-                                        <rect key="frame" x="179.5" y="0.0" width="16.5" height="32.5"/>
+                                        <rect key="frame" x="179.5" y="0.0" width="16.5" height="177.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="26"/>
                                         <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                         <color key="shadowColor" red="0.0" green="0.33956323303876823" blue="0.70743604276839389" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="left" translatesAutoresizingMaskIntoConstraints="NO" id="A9p-Mw-8Rd" userLabel="Board Status Stack View">
-                                        <rect key="frame" x="52.5" y="72.5" width="270.5" height="83"/>
+                                        <rect key="frame" x="52.5" y="185.5" width="270.5" height="83"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noHardwareDefaultImage" translatesAutoresizingMaskIntoConstraints="NO" id="V6h-D0-wb8">
                                                 <rect key="frame" x="0.0" y="0.0" width="148" height="83"/>
@@ -62,19 +63,19 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="1000" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="4tL-Qk-odh" userLabel="Board Stack View">
-                                        <rect key="frame" x="152" y="180.5" width="71.5" height="61.5"/>
+                                        <rect key="frame" x="152" y="276.5" width="71.5" height="61.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="# working" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1rt-YT-L01">
                                                 <rect key="frame" x="0.0" y="0.0" width="71.5" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                <color key="textColor" red="0.28038496569474697" green="0.84166531739999995" blue="0.44841343086718594" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="textColor" red="0.0029590318445116282" green="0.36602622270584106" blue="0.19410619139671326" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                                 <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="# partial" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dPn-Pg-AF3">
                                                 <rect key="frame" x="0.0" y="20.5" width="71.5" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                <color key="textColor" red="0.84166531739999995" green="0.77993362510933428" blue="0.17035123571621397" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="textColor" red="0.89065653085708618" green="0.78686350584030151" blue="0.32425194978713989" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                                 <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                             </label>
@@ -88,7 +89,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RoG-Qa-ztg" userLabel="Wanted Stack View">
-                                        <rect key="frame" x="138" y="286" width="99" height="46"/>
+                                        <rect key="frame" x="138" y="346" width="99" height="46"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Heart" translatesAutoresizingMaskIntoConstraints="NO" id="q8r-em-7jb">
                                                 <rect key="frame" x="0.0" y="0.0" width="40" height="46"/>
@@ -105,7 +106,7 @@
                                         </constraints>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5RU-Xo-6yw" userLabel="All Games Stack View">
-                                        <rect key="frame" x="61.5" y="383.5" width="252" height="46"/>
+                                        <rect key="frame" x="61.5" y="400" width="252" height="46"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Cab" translatesAutoresizingMaskIntoConstraints="NO" id="Skm-KL-UrK">
                                                 <rect key="frame" x="0.0" y="0.0" width="40" height="46"/>
@@ -572,7 +573,7 @@ nplayers.arcadebelgium.be</string>
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" id="dU2-tX-L2G">
                                 <rect key="frame" x="16" y="5.5" width="147" height="33"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Years" image="Arrow Up Arrow Down">
+                                <state key="normal" title="Years" image="icons8-up-down-arrow">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                                 <connections>
@@ -584,7 +585,7 @@ nplayers.arcadebelgium.be</string>
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="b8w-Ed-RC0">
                                 <rect key="frame" x="285" y="5.5" width="74" height="33"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Filter" image="filter_list">
+                                <state key="normal" title="Filter" image="icons8-filter">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                                 <connections>
@@ -642,7 +643,7 @@ nplayers.arcadebelgium.be</string>
                                 </connections>
                             </segmentedControl>
                             <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" spacing="49" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
-                                <rect key="frame" x="18" y="548" width="329" height="50"/>
+                                <rect key="frame" x="18" y="548" width="326" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
@@ -651,20 +652,20 @@ nplayers.arcadebelgium.be</string>
                                             <constraint firstAttribute="height" constant="50" id="BEp-qr-Gaq"/>
                                             <constraint firstAttribute="width" constant="50" id="muU-2B-Dxm"/>
                                         </constraints>
-                                        <state key="normal" image="info_circle"/>
+                                        <state key="normal" image="icons8-info"/>
                                         <connections>
                                             <action selector="historyButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="TUs-08-SOa"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kip-WN-wSa">
-                                        <rect key="frame" x="99" y="0.0" width="33" height="50"/>
-                                        <state key="normal" image="plus_circle_fill"/>
+                                        <rect key="frame" x="99" y="0.0" width="30" height="50"/>
+                                        <state key="normal" image="icons8-add"/>
                                         <connections>
                                             <action selector="addEditButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="d6h-Fe-b6m"/>
                                         </connections>
                                     </button>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="9" translatesAutoresizingMaskIntoConstraints="NO" id="e6t-cj-SYt" userLabel="Wanted Stack View">
-                                        <rect key="frame" x="181" y="0.0" width="49" height="50"/>
+                                        <rect key="frame" x="178" y="0.0" width="49" height="50"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Wanted" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q07-zN-ECX">
                                                 <rect key="frame" x="0.0" y="0.0" width="49" height="20.5"/>
@@ -681,11 +682,8 @@ nplayers.arcadebelgium.be</string>
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uEO-wp-z7R">
-                                        <rect key="frame" x="279" y="0.0" width="50" height="50"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="50" id="q2g-8u-YKY"/>
-                                        </constraints>
-                                        <state key="normal" title="YouToob" image="youtubeIcon"/>
+                                        <rect key="frame" x="276" y="0.0" width="50" height="50"/>
+                                        <state key="normal" image="icons8-youtube"/>
                                         <connections>
                                             <action selector="youTubeButtonPressed:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="nvY-Dr-vfU"/>
                                         </connections>
@@ -770,7 +768,7 @@ nplayers.arcadebelgium.be</string>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rT-ia-fkI">
                                 <rect key="frame" x="8" y="20" width="50" height="75"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="minus_circle_fill"/>
+                                <state key="normal" image="icons8-minus"/>
                                 <connections>
                                     <action selector="dismissButtonTapped:" destination="mxO-mm-E9o" eventType="touchUpInside" id="7OO-5v-ORd"/>
                                 </connections>
@@ -892,7 +890,7 @@ nplayers.arcadebelgium.be</string>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gSK-MQ-yJk">
                                 <rect key="frame" x="26" y="35" width="46" height="46"/>
-                                <state key="normal" image="minus_circle_fill">
+                                <state key="normal" image="icons8-minus">
                                     <color key="titleColor" red="1" green="0.011625692389999999" blue="0.091876032750000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
@@ -1105,19 +1103,19 @@ nplayers.arcadebelgium.be</string>
         <image name="About Banners/logo-mame" width="691" height="199"/>
         <image name="About Banners/titre" width="128" height="67"/>
         <image name="About Banners/wolheader" width="245" height="118"/>
-        <image name="Arrow Up Arrow Down" width="33" height="33"/>
         <image name="Cab" width="41" height="46"/>
         <image name="Heart" width="46" height="46"/>
         <image name="chart_bar_circle_fill" width="33" height="33"/>
         <image name="favorite" width="33" height="33"/>
-        <image name="filter_list" width="33" height="33"/>
-        <image name="info_circle" width="33" height="33"/>
+        <image name="icons8-add" width="30" height="30"/>
+        <image name="icons8-filter" width="30" height="30"/>
+        <image name="icons8-info" width="30" height="30"/>
+        <image name="icons8-minus" width="30" height="30"/>
+        <image name="icons8-up-down-arrow" width="30" height="30"/>
+        <image name="icons8-youtube" width="50" height="50"/>
         <image name="menu" width="33" height="33"/>
-        <image name="minus_circle_fill" width="33" height="33"/>
         <image name="noHardwareDefaultImage" width="148" height="159"/>
-        <image name="plus_circle_fill" width="33" height="33"/>
         <image name="star_circle" width="33" height="33"/>
-        <image name="youtubeIcon" width="512" height="512"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Kxa-cf-8aS"/>
