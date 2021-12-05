@@ -112,8 +112,11 @@ extension HardwareViewController {
                     cpuStringArray += ["\(chip["name"] ?? ""), " + "\(chip["clock"] ?? "")"]
                 }
             }
-            else if (chip["type"] == "audio") && chip["name"] != "Speaker" {
+            else if (chip["type"] == "audio") && chip["name"] != "Speaker" && (chip["clock"] != nil){
                 soundDeviceStringArray += ["\(chip["name"] ?? ""), " + "\(chip["clock"] ?? "")"] // remove comma for case where device has no clock
+                
+            }else if (chip["type"] == "audio") && chip["name"] != "Speaker"{
+                soundDeviceStringArray += ["\(chip["name"] ?? "")"]
             }
         }
         
