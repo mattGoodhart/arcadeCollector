@@ -113,7 +113,7 @@ extension HardwareViewController {
                 }
             }
             else if (chip["type"] == "audio") && chip["name"] != "Speaker" {
-                soundDeviceStringArray += ["\(chip["name"] ?? ""), " + "\(chip["clock"] ?? "")"]
+                soundDeviceStringArray += ["\(chip["name"] ?? ""), " + "\(chip["clock"] ?? "")"] // remove comma for case where device has no clock
             }
         }
         
@@ -146,10 +146,10 @@ extension HardwareViewController {
             formattedStringArray += [stringToProcess]
         }
         if isForCPU {
-            formattedCPUStringArray = formattedStringArray
+            formattedCPUStringArray += formattedStringArray
         }
         else {
-            formattedSoundStringArray = formattedStringArray
+            formattedSoundStringArray += formattedStringArray
         }
     }
 }
