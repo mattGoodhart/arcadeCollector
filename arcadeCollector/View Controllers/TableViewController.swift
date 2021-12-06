@@ -173,23 +173,22 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
-    func refreshDataInBackground() {
+    func refreshData() {
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
         
-        DispatchQueue.global().async {
-            self.refreshDataSource()
+        self.refreshDataSource()
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+            self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
             
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-                self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
-            }
         }
     }
     
     func refreshDataSourceIfFilterOptionSet() {
-        guard isFilterOptionChosen else {
-            return
-        }
+//        guard isFilterOptionChosen else {
+//            return
+//        }
         
         switch filterOptionSelected {
         case "orientation":
@@ -204,10 +203,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
                 return game.manufacturer!.lowercased().contains(filterOptionString.lowercased())
             }
-        default:
+        default: // This handles the case if the filter option is removed
             break
         }
-        refreshDataInBackground()
+        refreshData()
     }
     
     func createArrayOfUniqueYears(listOfGames: [Game]) -> [String] {
@@ -252,7 +251,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             return
         }
         print("Refreshing list")
-        refreshDataInBackground()
+        refreshData()
     }
     
     // MARK UISearchResultsUpdating
