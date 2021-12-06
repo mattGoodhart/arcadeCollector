@@ -320,12 +320,32 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return visibleUniqueYears.count
+        if visibleGamesList.isEmpty && tabBarController?.selectedIndex == 1 {
+            let label = UILabel()
+            label.text = "No Games in Collection Yet!"
+            label.textAlignment = .center
+            tableView.backgroundView = label
+            tableView.separatorStyle = .none
+            return 0
+        }
+        else if visibleGamesList.isEmpty && tabBarController?.selectedIndex == 3 {
+            let label = UILabel()
+            label.text = "No Wanted Games!"
+            label.textAlignment = .center
+            tableView.backgroundView = label
+            tableView.separatorStyle = .none
+            return 0
+        }
+        else {
+            tableView.backgroundView = nil
+            tableView.separatorStyle = .singleLine
+            return visibleUniqueYears.count
+        }
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return visibleUniqueYears[section]
-    }
+            return visibleUniqueYears[section]
+        }
     
     /// Right-side scroll index for allGames
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
