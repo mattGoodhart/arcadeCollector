@@ -68,9 +68,12 @@ class DetailViewController: UIViewController {
         super.viewWillAppear(animated)
         (UIApplication.shared.delegate as? AppDelegate)?.allowedOrientations = .portrait
         
-        if viewedGame.flyerImageURLString == "" {
-             mainImageSwitch.selectedSegmentIndex = 1
-        }
+//        if viewedGame.flyerImageURLString == "" {
+//             mainImageSwitch.selectedSegmentIndex = 0
+//        }
+//        } else {
+//        mainImageSwitch.selectedSegmentIndex = 1
+//    }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -271,10 +274,12 @@ class DetailViewController: UIViewController {
                 return
             }
             handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
+            print("main activity indicator started")
             
             Networking.shared.fetchData(at: url) { data in
                 guard let data = data, let inGameImage = UIImage(data: data) else {
                     self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                    print("main activity indicator stopped")
                     return
                 }
                 self.viewedGame.inGameImageData = data
@@ -282,6 +287,7 @@ class DetailViewController: UIViewController {
                 self.mainImageView.contentMode = .scaleToFill
                 self.mainImageView.image = inGameImage
                 self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                print("main activity indicator stopped")
             }
         }
     }
@@ -295,11 +301,12 @@ class DetailViewController: UIViewController {
             guard let urlString = viewedGame.titleImageURLString, let url = URL(string: urlString) else {
                 return
             }
-            handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
-            
+           // handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
+            print("main activity indicator started")
             Networking.shared.fetchData(at: url) { data in
                 guard let data = data, let titleImage = UIImage(data: data) else {
                     self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                    print("main activity indicator stopped")
                     return
                 }
                 
@@ -308,6 +315,7 @@ class DetailViewController: UIViewController {
                 self.mainImageView.contentMode = .scaleToFill
                 self.mainImageView.image = titleImage
                 self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                print("main activity indicator stopped")
             }
         }
     }
@@ -400,6 +408,7 @@ class DetailViewController: UIViewController {
                 }
             }
         }
+        handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: false)
     }
     
     func getMarqueeIfNeeded() {
@@ -407,7 +416,7 @@ class DetailViewController: UIViewController {
         guard let urlString = viewedGame.marqueeURLString, let url = URL(string: urlString) else {
             return
         }
-        handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
+        handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: true)
         loadMarquee(at: url)
         handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
     }

@@ -49,7 +49,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     let searchController = UISearchController(searchResultsController: nil)
     let dataController = DataController.shared
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
-
+    let tableColor1 = UIColor(displayP3Red: 0.45, green: 0.62, blue: 0.5, alpha: 1.0)
+    let tableColor2 = UIColor(displayP3Red: 25.0/255.0, green: 100.0/255.0, blue: 100.0/255.0, alpha: 1.0)
+    
+    
     var reverseActive = false
     var popUpViewController: FilterOptionsPopup!
     var filterOptionSelected = "orientation"
@@ -344,9 +347,14 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-            return visibleUniqueYears[section]
+        //(view as! UITableViewHeaderFooterView).textLabel?.textColor = tableColor1
+        return visibleUniqueYears[section]
         }
     
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        //(view as! UITableViewHeaderFooterView).contentView.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        (view as! UITableViewHeaderFooterView).textLabel?.textColor = tableColor2
+    }
     /// Right-side scroll index for allGames
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         guard tabBarController?.selectedIndex == Tab.allGames.rawValue else {
@@ -363,6 +371,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GameTableCell", for: indexPath) as! GameTableCell
+        cell.backgroundColor = indexPath.row % 2 == 0 ? tableColor1 : tableColor2
+        
         let section = visibleUniqueYears[indexPath.section]
         var group = groups[section]!
         let game = group[indexPath.row]
