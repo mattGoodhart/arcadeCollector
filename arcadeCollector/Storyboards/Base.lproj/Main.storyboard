@@ -650,36 +650,36 @@ nplayers.arcadebelgium.be</string>
                                 </connections>
                             </segmentedControl>
                             <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
-                                <rect key="frame" x="35" y="548" width="304" height="50"/>
+                                <rect key="frame" x="35" y="548" width="320" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="50" id="BEp-qr-Gaq"/>
-                                            <constraint firstAttribute="width" constant="50" id="muU-2B-Dxm"/>
-                                        </constraints>
+                                        <rect key="frame" x="0.0" y="0.0" width="30" height="60"/>
                                         <state key="normal" image="icons8-info"/>
                                         <connections>
                                             <action selector="historyButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="TUs-08-SOa"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kip-WN-wSa">
-                                        <rect key="frame" x="100" y="0.0" width="30" height="50"/>
+                                        <rect key="frame" x="80" y="0.0" width="30" height="60"/>
                                         <state key="normal" image="icons8-add"/>
                                         <connections>
                                             <action selector="addEditButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="d6h-Fe-b6m"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rzT-cg-1Vj" userLabel="Wanted Button">
-                                        <rect key="frame" x="180" y="0.0" width="24" height="50"/>
+                                        <rect key="frame" x="160" y="0.0" width="60" height="60"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="60" id="7S2-df-2BA"/>
+                                            <constraint firstAttribute="width" constant="60" id="WT5-1e-jkS"/>
+                                        </constraints>
                                         <state key="normal" image="icons8-favorite"/>
                                         <connections>
                                             <action selector="addToWantedTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="2Jo-mM-hzl"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uEO-wp-z7R">
-                                        <rect key="frame" x="254" y="0.0" width="50" height="50"/>
+                                        <rect key="frame" x="270" y="0.0" width="50" height="60"/>
                                         <state key="normal" image="icons8-youtube"/>
                                         <connections>
                                             <action selector="youTubeButtonPressed:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="nvY-Dr-vfU"/>
