@@ -133,12 +133,14 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         navigationItem.searchController = searchController
         definesPresentationContext = true
         refreshDataSource()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
         appDelegate.allowedOrientations = .portrait
         refreshCollectionIfNeeded()
+       
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
     }
     
@@ -188,7 +190,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
-    func refreshDataSourceIfFilterOptionSet() {
+    func refreshDataSourceIfFilterChanged() {
 //        guard isFilterOptionChosen else {
 //            return
 //        }
@@ -396,10 +398,23 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func didSelect(filter: String, filterOptionString: String) {
         filterOptionSelected = filter
         self.filterOptionString = filterOptionString
-        refreshDataSourceIfFilterOptionSet()
+        refreshDataSourceIfFilterChanged()
     }
     
     func didFinish() {
         handleButtons(enabled: true, button: filterButton)
+        if isFilterOptionChosen {
+            DispatchQueue.main.async {
+                self.filterButton.setImage(UIImage(named: "icons8-filter-edit"), for: .normal) // not working...
+            }
+            
+        }
+        else {
+            DispatchQueue.main.async {
+                self.filterButton.setImage(UIImage(named: "icons8-filter"), for: .normal)
+            }
+        }
     }
 }
+
+

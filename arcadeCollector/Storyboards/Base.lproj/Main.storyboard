@@ -340,6 +340,7 @@ nplayers.arcadebelgium.be</string>
                                                     <segment title="Cabinet"/>
                                                     <segment title="PCB"/>
                                                 </segments>
+                                                <color key="tintColor" red="0.099378444254398346" green="0.39114663004875183" blue="0.39385095238685608" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <connections>
                                                     <action selector="segmentedControlPressedWith_sender:" destination="Lvk-oR-b5P" eventType="valueChanged" id="Uie-dG-3Q7"/>
                                                 </connections>
@@ -578,7 +579,7 @@ nplayers.arcadebelgium.be</string>
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" id="dU2-tX-L2G">
                                 <rect key="frame" x="16" y="5.5" width="147" height="33"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Years" image="icons8-up-down-arrow">
+                                <state key="normal" image="icons8-up-down-arrow">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                                 <connections>
@@ -587,7 +588,7 @@ nplayers.arcadebelgium.be</string>
                             </button>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Item" id="TkL-Np-xiC">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="b8w-Ed-RC0">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="b8w-Ed-RC0">
                                 <rect key="frame" x="285" y="5.5" width="74" height="33"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="icons8-filter">
@@ -609,7 +610,7 @@ nplayers.arcadebelgium.be</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Ea-PK-ubl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="61.600000000000001" y="1386.656671664168"/>
+            <point key="canvasLocation" x="62" y="1387"/>
         </scene>
         <!--Games Detail View Controller-->
         <scene sceneID="nzf-Bh-n9h">
@@ -643,6 +644,7 @@ nplayers.arcadebelgium.be</string>
                                     <segment title="In-Game"/>
                                     <segment title="Title"/>
                                 </segments>
+                                <color key="tintColor" red="0.099378444254398346" green="0.39114663004875183" blue="0.39385095238685608" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
                                     <action selector="segmentedControlPressed" destination="lxs-nA-Z7j" eventType="valueChanged" id="JDA-oV-Mb0"/>
                                 </connections>
@@ -834,6 +836,7 @@ nplayers.arcadebelgium.be</string>
                                                     <segment title="Players"/>
                                                     <segment title="Manufacturer"/>
                                                 </segments>
+                                                <color key="tintColor" red="0.099378444254398346" green="0.39114663004875183" blue="0.39385095238685608" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <connections>
                                                     <action selector="segmentedControlPressedWith_sender:" destination="YJO-5F-QkP" eventType="valueChanged" id="eXh-YL-bSy"/>
                                                 </connections>
@@ -843,21 +846,27 @@ nplayers.arcadebelgium.be</string>
                                             </pickerView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KBN-dF-ACn">
                                                 <rect key="frame" x="0.0" y="244" width="320" height="30"/>
-                                                <state key="normal" title="Apply"/>
+                                                <state key="normal" title="Apply">
+                                                    <color key="titleColor" red="0.099378444254398346" green="0.39114663004875183" blue="0.39385095238685608" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
                                                 <connections>
                                                     <action selector="applyButtonPressed:" destination="YJO-5F-QkP" eventType="touchUpInside" id="8M2-hG-yGC"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QZg-5S-c7q">
                                                 <rect key="frame" x="0.0" y="274" width="320" height="30"/>
-                                                <state key="normal" title="Cancel"/>
+                                                <state key="normal" title="Cancel">
+                                                    <color key="titleColor" red="0.099378444250000003" green="0.39114663" blue="0.39385095240000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
                                                 <connections>
                                                     <action selector="cancelButtonPressed:" destination="YJO-5F-QkP" eventType="touchUpInside" id="DeC-9P-Siy"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vcb-Zs-oc0">
                                                 <rect key="frame" x="0.0" y="304" width="320" height="30"/>
-                                                <state key="normal" title="Remove Filter"/>
+                                                <state key="normal" title="Remove Filter">
+                                                    <color key="titleColor" red="0.099378444250000003" green="0.39114663" blue="0.39385095240000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
                                                 <connections>
                                                     <action selector="removeFilterButtonPressed:" destination="YJO-5F-QkP" eventType="touchUpInside" id="cwC-rD-7JQ"/>
                                                 </connections>
@@ -865,7 +874,6 @@ nplayers.arcadebelgium.be</string>
                                         </subviews>
                                     </stackView>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1002,6 +1010,7 @@ nplayers.arcadebelgium.be</string>
                                     <segment title="Boots"/>
                                     <segment title="Non-Working"/>
                                 </segments>
+                                <color key="tintColor" red="0.099378444254398346" green="0.39114663004875183" blue="0.39385095238685608" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </segmentedControl>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Marquee" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9vJ-oH-ulD">
                                 <rect key="frame" x="18" y="617" width="97" height="30"/>
@@ -1013,7 +1022,7 @@ nplayers.arcadebelgium.be</string>
                                 <rect key="frame" x="314" y="616" width="49" height="31"/>
                             </switch>
                         </subviews>
-                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="0.44817062860000001" green="0.61384795989999996" blue="0.4994652537" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="CDk-jb-KHA" firstAttribute="trailing" secondItem="Z6n-mr-PAA" secondAttribute="trailing" constant="14" id="1AT-N3-I4v"/>
                             <constraint firstItem="CDk-jb-KHA" firstAttribute="trailing" secondItem="flP-zb-4zJ" secondAttribute="trailing" constant="260" id="1dc-8x-2GX"/>

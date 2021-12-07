@@ -55,8 +55,8 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     }
     
     @IBAction func removeFilterButtonPressed(_ sender: UIButton) {
-        delegate?.didFinish()
         delegate?.didSelect(filter: "", filterOptionString: "")
+        delegate?.didFinish()
         hasActiveFilter = false
         dismiss(animated: true, completion: nil)
     }
