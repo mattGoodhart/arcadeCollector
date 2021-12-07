@@ -18,11 +18,11 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var mainImageActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var historyButton: UIButton!
     @IBOutlet weak var youTubeButton: UIButton!
-    @IBOutlet weak var wantedSwitch: UISwitch!
+    @IBOutlet weak var wantedButton: UIButton!
     @IBOutlet weak var addEditButton: UIButton!
     @IBOutlet weak var baseStackView: UIStackView!
-    @IBOutlet weak var wantedStackView: UIStackView!
-    @IBOutlet weak var wantedLabel: UILabel!
+   // @IBOutlet weak var wantedStackView: UIStackView!
+   // @IBOutlet weak var wantedLabel: UILabel!
     
     var isInMyCollection = false
     var isWanted = false
@@ -96,16 +96,24 @@ class DetailViewController: UIViewController {
         present(popOverVC, animated: true, completion: nil)
     }
     
-    @IBAction func addToWantedTapped(_ sender: UISwitch) {
-        if wantedSwitch.isOn {
+    @IBAction func addToWantedTapped(_ sender: UIButton) {
+        if  !isWanted {
             masterCollection.wantedGames.append(viewedGame)
             masterCollection.wantedGamesCollection.addToGames(viewedGame)
-            wantedSwitch.setOn(true, animated: true)
+            isWanted = true
+            DispatchQueue.main.async {
+                self.wantedButton.setImage(UIImage(named: "icons8-favorite-filled"), for: .normal)
+            }
+           // wantedSwitch.setOn(true, animated: true)
         } else {
             let removalIndex = masterCollection.wantedGames.firstIndex(of: viewedGame)
             masterCollection.wantedGames.remove(at: removalIndex!)
             masterCollection.wantedGamesCollection.removeFromGames(viewedGame)
-            wantedSwitch.setOn(false, animated: true)
+            isWanted = false
+            DispatchQueue.main.async {
+                self.wantedButton.setImage(UIImage(named: "icons8-favorite"), for: .normal)
+            }
+            //wantedSwitch.setOn(false, animated: true)
         }
         try? dataController.viewContext.save()
     }
@@ -168,9 +176,9 @@ class DetailViewController: UIViewController {
         mainImageSwitch.topAnchor.constraint(equalTo: mainImageView.bottomAnchor, constant: 20).isActive = true
         mainImageSwitch.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
         
-        wantedStackView.addArrangedSubview(wantedLabel)
-        wantedStackView.addArrangedSubview(wantedSwitch)
-        wantedStackView.axis = .vertical
+        //wantedStackView.addArrangedSubview(wantedLabel)
+       // wantedStackView.addArrangedSubview(wantedSwitch)
+       // wantedStackView.axis = .vertical
         
         baseStackView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -183,12 +191,12 @@ class DetailViewController: UIViewController {
         baseStackView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
         baseStackView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
         baseStackView.heightAnchor.constraint(equalToConstant: 50)
-        baseStackView.addArrangedSubview(historyButton)
-        baseStackView.addArrangedSubview(addEditButton)
-        baseStackView.addArrangedSubview(wantedStackView)
-        baseStackView.addArrangedSubview(youTubeButton)
-        baseStackView.axis = .horizontal
-        baseStackView.spacing = 40
+//        baseStackView.addArrangedSubview(historyButton)
+//        baseStackView.addArrangedSubview(addEditButton)
+//        baseStackView.addArrangedSubview(wantedButton)
+//        baseStackView.addArrangedSubview(youTubeButton)
+//        baseStackView.axis = .horizontal
+//        baseStackView.spacing = 40
     }
     
     func setImageViewAspectRatio() {
@@ -221,7 +229,17 @@ class DetailViewController: UIViewController {
             isWanted = collectionNameArray.contains("Wanted Games")
         }
         
-        wantedSwitch.isOn = isWanted
+        //wantedSwitch.isOn = isWanted
+        
+        if isWanted {
+            DispatchQueue.main.async {
+                self.wantedButton.setImage(UIImage(named: "icons8-favorite-filled"), for: .normal)
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.wantedButton.setImage(UIImage(named: "icons8-favorite"), for: .normal)
+            }
+        }
         
         let index = self.tabBarController!.selectedIndex
         

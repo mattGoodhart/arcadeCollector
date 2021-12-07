@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/FilterOptionsPopup.swift"
-            timestampString = "660602668.329141"
+            timestampString = "660609846.310686"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "55"
@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/FilterOptionsPopup.swift"
-            timestampString = "660602668.3292429"
+            timestampString = "660609846.310859"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "54"
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/FilterOptionsPopup.swift"
-            timestampString = "660602668.329322"
+            timestampString = "660609846.310938"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "48"
@@ -154,7 +154,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/TableViewController.swift"
-            timestampString = "660602668.3296"
+            timestampString = "660609846.3113329"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "408"
@@ -170,7 +170,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/TableViewController.swift"
-            timestampString = "660602668.330762"
+            timestampString = "660609846.311429"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "405"
@@ -186,7 +186,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/TableViewController.swift"
-            timestampString = "660602668.332346"
+            timestampString = "660609846.311512"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "407"
@@ -234,7 +234,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/TableViewController.swift"
-            timestampString = "660602668.3332109"
+            timestampString = "660609846.3116159"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "406"
@@ -250,7 +250,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/TableViewController.swift"
-            timestampString = "660602668.334142"
+            timestampString = "660609846.311699"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "140"
@@ -266,7 +266,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/TableViewController.swift"
-            timestampString = "660602668.334923"
+            timestampString = "660609846.311776"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "124"
@@ -282,7 +282,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/TableViewController.swift"
-            timestampString = "660602668.3356839"
+            timestampString = "660609846.3118531"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "198"
@@ -330,12 +330,156 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/FilterOptionsPopup.swift"
-            timestampString = "660602668.336468"
+            timestampString = "660609846.311936"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "71"
             endingLineNumber = "71"
             landmarkName = "applyButtonPressed(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
+            timestampString = "660609846.3120151"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
+            landmarkName = "addToWantedTapped(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
+            timestampString = "660609846.312807"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
+            landmarkName = "addToWantedTapped(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "arcadeCollector.DetailViewController.addToWantedTapped(__C.UIButton) -&gt; ()"
+                  moduleName = "arcadeCollector"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/trixxmac/Desktop/arcadeCollector%202/arcadeCollector/View%20Controllers/DetailViewController.swift"
+                  timestampString = "660608390.91958"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104"
+                  offsetFromSymbolStart = "1064">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in arcadeCollector.DetailViewController.addToWantedTapped(__C.UIButton) -&gt; ()"
+                  moduleName = "arcadeCollector"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/trixxmac/Desktop/arcadeCollector%202/arcadeCollector/View%20Controllers/DetailViewController.swift"
+                  timestampString = "660608390.933821"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "105"
+                  endingLineNumber = "105"
+                  offsetFromSymbolStart = "29">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
+            timestampString = "660609846.313247"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
+            landmarkName = "addToWantedTapped(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
+            timestampString = "660609846.3137161"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "113"
+            endingLineNumber = "113"
+            landmarkName = "addToWantedTapped(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "arcadeCollector.DetailViewController.addToWantedTapped(__C.UIButton) -&gt; ()"
+                  moduleName = "arcadeCollector"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/trixxmac/Desktop/arcadeCollector%202/arcadeCollector/View%20Controllers/DetailViewController.swift"
+                  timestampString = "660608391.013024"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "113"
+                  endingLineNumber = "113"
+                  offsetFromSymbolStart = "2780">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 () -&gt; () in arcadeCollector.DetailViewController.addToWantedTapped(__C.UIButton) -&gt; ()"
+                  moduleName = "arcadeCollector"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/trixxmac/Desktop/arcadeCollector%202/arcadeCollector/View%20Controllers/DetailViewController.swift"
+                  timestampString = "660608391.01832"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "114"
+                  endingLineNumber = "114"
+                  offsetFromSymbolStart = "29">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
+            timestampString = "660609846.314159"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
+            landmarkName = "addToWantedTapped(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

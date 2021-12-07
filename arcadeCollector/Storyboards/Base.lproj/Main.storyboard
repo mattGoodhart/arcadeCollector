@@ -649,8 +649,8 @@ nplayers.arcadebelgium.be</string>
                                     <action selector="segmentedControlPressed" destination="lxs-nA-Z7j" eventType="valueChanged" id="JDA-oV-Mb0"/>
                                 </connections>
                             </segmentedControl>
-                            <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" spacing="49" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
-                                <rect key="frame" x="18" y="548" width="326" height="50"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
+                                <rect key="frame" x="35" y="548" width="304" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
@@ -665,31 +665,21 @@ nplayers.arcadebelgium.be</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kip-WN-wSa">
-                                        <rect key="frame" x="99" y="0.0" width="30" height="50"/>
+                                        <rect key="frame" x="100" y="0.0" width="30" height="50"/>
                                         <state key="normal" image="icons8-add"/>
                                         <connections>
                                             <action selector="addEditButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="d6h-Fe-b6m"/>
                                         </connections>
                                     </button>
-                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="9" translatesAutoresizingMaskIntoConstraints="NO" id="e6t-cj-SYt" userLabel="Wanted Stack View">
-                                        <rect key="frame" x="178" y="0.0" width="49" height="50"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Wanted" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q07-zN-ECX">
-                                                <rect key="frame" x="0.0" y="0.0" width="49" height="20.5"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eh2-a4-MZF">
-                                                <rect key="frame" x="0.0" y="29.5" width="51" height="20.5"/>
-                                                <connections>
-                                                    <action selector="addToWantedTapped:" destination="lxs-nA-Z7j" eventType="valueChanged" id="OWr-9M-QPL"/>
-                                                </connections>
-                                            </switch>
-                                        </subviews>
-                                    </stackView>
-                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uEO-wp-z7R">
-                                        <rect key="frame" x="276" y="0.0" width="50" height="50"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rzT-cg-1Vj" userLabel="Wanted Button">
+                                        <rect key="frame" x="180" y="0.0" width="24" height="50"/>
+                                        <state key="normal" image="icons8-favorite"/>
+                                        <connections>
+                                            <action selector="addToWantedTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="2Jo-mM-hzl"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uEO-wp-z7R">
+                                        <rect key="frame" x="254" y="0.0" width="50" height="50"/>
                                         <state key="normal" image="icons8-youtube"/>
                                         <connections>
                                             <action selector="youTubeButtonPressed:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="nvY-Dr-vfU"/>
@@ -717,9 +707,7 @@ nplayers.arcadebelgium.be</string>
                         <outlet property="mainImageView" destination="54q-Ij-hNz" id="ebY-oN-af4"/>
                         <outlet property="marqueeActivityIndicator" destination="1iP-hh-OfY" id="SdX-J9-zek"/>
                         <outlet property="marqueeView" destination="ntz-FS-uBs" id="3ZH-gH-qDH"/>
-                        <outlet property="wantedLabel" destination="Q07-zN-ECX" id="JD1-hf-69q"/>
-                        <outlet property="wantedStackView" destination="e6t-cj-SYt" id="rk6-zF-i9U"/>
-                        <outlet property="wantedSwitch" destination="eh2-a4-MZF" id="Xn4-MA-8eE"/>
+                        <outlet property="wantedButton" destination="rzT-cg-1Vj" id="b2w-yi-XAl"/>
                         <outlet property="youTubeButton" destination="uEO-wp-z7R" id="XZR-KW-hse"/>
                         <segue destination="Lvk-oR-b5P" kind="show" identifier="HardwareSegue" id="2si-dK-nJE"/>
                     </connections>
@@ -1124,6 +1112,7 @@ nplayers.arcadebelgium.be</string>
         <image name="icons8-add" width="30" height="30"/>
         <image name="icons8-audio" width="30" height="30"/>
         <image name="icons8-code-file" width="30" height="30"/>
+        <image name="icons8-favorite" width="24" height="24"/>
         <image name="icons8-filter" width="30" height="30"/>
         <image name="icons8-info" width="30" height="30"/>
         <image name="icons8-joystick" width="30" height="30"/>

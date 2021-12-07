@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "import_export@1x.png",
+      "filename" : "icons8-favorite-filled@1x.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "import_export@2x.png",
+      "filename" : "icons8-favorite-filled@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "import_export@3x.png",
+      "filename" : "icons8-favorite-filled@3x.png",
       "scale" : "3x"
     }
   ],
