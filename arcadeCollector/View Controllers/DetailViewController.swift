@@ -59,7 +59,7 @@ class DetailViewController: UIViewController {
         configureGestureForImageView(imageView: mainImageView, gestureRecognizer: tapRecognizer)
         configureGestureForImageView(imageView: marqueeView, gestureRecognizer: marqueeTapRecognizer)
         
-        marqueeView.image = UIImage(named: "About Banners/logo-mame")
+        marqueeView.image = UIImage(named: "missing_marquee")
         mainImageView.image = nil
         getDetailsIfNeeded()
     }

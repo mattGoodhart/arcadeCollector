@@ -37,6 +37,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bkg_lighter-1" translatesAutoresizingMaskIntoConstraints="NO" id="Wll-9G-dlj">
+                                <rect key="frame" x="0.0" y="32" width="375" height="618"/>
+                            </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="KIB-Fc-56s" userLabel="Main Stack View">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <subviews>
@@ -135,9 +138,13 @@
                         </subviews>
                         <color key="backgroundColor" red="0.61414436028489039" green="0.84166531735751293" blue="0.67950070801391271" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="Wll-9G-dlj" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="6uq-s8-tp1"/>
+                            <constraint firstItem="Wll-9G-dlj" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="7cU-cH-ITW"/>
                             <constraint firstItem="KIB-Fc-56s" firstAttribute="height" secondItem="6Tk-OE-BBY" secondAttribute="height" id="M1E-wD-P5H"/>
                             <constraint firstItem="KIB-Fc-56s" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="SiS-e1-koO"/>
                             <constraint firstItem="KIB-Fc-56s" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="VEP-NM-RnR"/>
+                            <constraint firstItem="Wll-9G-dlj" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="W1X-W2-A3a"/>
+                            <constraint firstItem="Wll-9G-dlj" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" id="dUM-zz-AZY"/>
                             <constraint firstItem="KIB-Fc-56s" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="n24-ua-H2M"/>
                             <constraint firstItem="V6h-D0-wb8" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.15" id="sSd-sP-QRL"/>
                         </constraints>
@@ -331,11 +338,8 @@ nplayers.arcadebelgium.be</string>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="en3-Ku-4SB">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="1048.5"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="249" verticalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="c1J-YA-Ncd" userLabel="Main View">
-                                                <rect key="frame" x="0.0" y="0.0" width="375" height="669.5"/>
-                                            </imageView>
                                             <segmentedControl opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="2aj-ix-rJC">
-                                                <rect key="frame" x="126" y="689.5" width="123" height="29"/>
+                                                <rect key="frame" x="126" y="0.0" width="123" height="29"/>
                                                 <segments>
                                                     <segment title="Cabinet"/>
                                                     <segment title="PCB"/>
@@ -345,6 +349,9 @@ nplayers.arcadebelgium.be</string>
                                                     <action selector="segmentedControlPressedWith_sender:" destination="Lvk-oR-b5P" eventType="valueChanged" id="Uie-dG-3Q7"/>
                                                 </connections>
                                             </segmentedControl>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="249" verticalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="c1J-YA-Ncd" userLabel="Main View">
+                                                <rect key="frame" x="0.0" y="48" width="375" height="669.5"/>
+                                            </imageView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xNP-IQ-C0q">
                                                 <rect key="frame" x="93" y="737.5" width="189" height="30"/>
                                                 <state key="normal" title="MAME Driver Notes" image="icons8-code-file"/>
@@ -442,7 +449,7 @@ nplayers.arcadebelgium.be</string>
                                 </constraints>
                             </scrollView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="LIP-wD-4nA">
-                                <rect key="frame" x="0.0" y="389" width="375" height="20"/>
+                                <rect key="frame" x="0.0" y="437" width="375" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -620,6 +627,9 @@ nplayers.arcadebelgium.be</string>
                         <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bkg_darker-1" translatesAutoresizingMaskIntoConstraints="NO" id="zSB-W3-U9j">
+                                <rect key="frame" x="0.0" y="32" width="375" height="618"/>
+                            </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="54q-Ij-hNz" userLabel="Main Image View">
                                 <rect key="frame" x="47" y="185" width="280" height="210"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -689,6 +699,12 @@ nplayers.arcadebelgium.be</string>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="zSB-W3-U9j" firstAttribute="width" secondItem="Vke-jr-5oi" secondAttribute="width" id="4jJ-Wk-kQd"/>
+                            <constraint firstItem="zSB-W3-U9j" firstAttribute="height" secondItem="Vke-jr-5oi" secondAttribute="height" id="abK-MX-en1"/>
+                            <constraint firstItem="zSB-W3-U9j" firstAttribute="centerY" secondItem="VIa-ds-nvC" secondAttribute="centerY" id="xB7-8i-f2a"/>
+                            <constraint firstItem="zSB-W3-U9j" firstAttribute="centerX" secondItem="VIa-ds-nvC" secondAttribute="centerX" id="yx5-A8-zkH"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="VIa-ds-nvC"/>
                     </view>
                     <navigationItem key="navigationItem" title="Game Details" id="xwR-Oe-egs">
@@ -760,6 +776,9 @@ nplayers.arcadebelgium.be</string>
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bkg_darker-1" translatesAutoresizingMaskIntoConstraints="NO" id="bGe-mT-5c0">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rT-ia-fkI">
                                 <rect key="frame" x="8" y="20" width="50" height="75"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -768,17 +787,16 @@ nplayers.arcadebelgium.be</string>
                                     <action selector="dismissButtonTapped:" destination="mxO-mm-E9o" eventType="touchUpInside" id="7OO-5v-ORd"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ve-le-nVU">
+                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ve-le-nVU">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="662"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="SDz-3a-Eop">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="SDz-3a-Eop">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                <color key="textColor" red="0.24121145799850022" green="0.86848283678756477" blue="0.67098173161764441" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <view contentMode="scaleAspectFit" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Erm-Ej-BPX" userLabel="PDFView" customClass="PDFView">
@@ -788,6 +806,12 @@ nplayers.arcadebelgium.be</string>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="bGe-mT-5c0" firstAttribute="centerX" secondItem="j9H-r0-0FF" secondAttribute="centerX" id="1iH-he-oz8"/>
+                            <constraint firstItem="bGe-mT-5c0" firstAttribute="height" secondItem="j9H-r0-0FF" secondAttribute="height" id="4Hz-2T-Rur"/>
+                            <constraint firstItem="bGe-mT-5c0" firstAttribute="width" secondItem="j9H-r0-0FF" secondAttribute="width" id="BTA-ml-Zv1"/>
+                            <constraint firstItem="bGe-mT-5c0" firstAttribute="centerY" secondItem="j9H-r0-0FF" secondAttribute="centerY" id="l6P-Vh-UmN"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="XYV-bU-ZSo"/>
                     </view>
                     <connections>
@@ -1009,6 +1033,10 @@ nplayers.arcadebelgium.be</string>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="wuN-Ta-1e3">
                                 <rect key="frame" x="314" y="616" width="49" height="31"/>
                             </switch>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zm4-Sg-oVC">
+                                <rect key="frame" x="121" y="131" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.44817062860000001" green="0.61384795989999996" blue="0.4994652537" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -1107,6 +1135,8 @@ nplayers.arcadebelgium.be</string>
         <image name="About Banners/wolheader" width="245" height="118"/>
         <image name="Cab" width="41" height="46"/>
         <image name="Heart" width="46" height="46"/>
+        <image name="bkg_darker-1" width="360" height="648"/>
+        <image name="bkg_lighter-1" width="360" height="648"/>
         <image name="chart_bar_circle_fill" width="33" height="33"/>
         <image name="favorite" width="33" height="33"/>
         <image name="icons8-add" width="30" height="30"/>
@@ -1127,6 +1157,6 @@ nplayers.arcadebelgium.be</string>
         <image name="star_circle" width="33" height="33"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Kxa-cf-8aS"/>
+        <segue reference="v1W-Pm-HdN"/>
     </inferredMetricsTieBreakers>
 </document>

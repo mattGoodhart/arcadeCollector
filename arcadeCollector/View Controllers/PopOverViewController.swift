@@ -99,7 +99,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             appDelegate.allowedOrientations = .portrait
             textView.isHidden = false
             textView.text = text
-            textView.backgroundColor = UIColor.black
+            //textView.backgroundColor = UIColor.black
             textView.frame = view.frame
             setDismissButton()
             
