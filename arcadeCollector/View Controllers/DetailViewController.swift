@@ -185,12 +185,14 @@ class DetailViewController: UIViewController {
         if viewedGame.orientation == "Horizontal" {
             baseStackView.bottomAnchor.constraint(equalTo: viewMargins.bottomAnchor, constant: -75).isActive = true
         } else {
-            baseStackView.bottomAnchor.constraint(equalTo: viewMargins.bottomAnchor, constant: -35).isActive = true
+            baseStackView.bottomAnchor.constraint(equalTo: viewMargins.bottomAnchor, constant: -35).isActive = true // may need to update these as functions of view height, to accomodate diff devices
         }
         
-        baseStackView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
-        baseStackView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
-        baseStackView.heightAnchor.constraint(equalToConstant: 50)
+        //baseStackView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
+       // baseStackView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
+       // baseStackView.heightAnchor.constraint(equalToConstant: 60)
+       // baseStackView.distribution = .fillEqually
+       // baseStackView.alignment = .fill
 //        baseStackView.addArrangedSubview(historyButton)
 //        baseStackView.addArrangedSubview(addEditButton)
 //        baseStackView.addArrangedSubview(wantedButton)

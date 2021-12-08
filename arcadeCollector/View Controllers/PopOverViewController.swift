@@ -189,8 +189,8 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     func setDismissButton() {
         view.addSubview(dismissButton)
         dismissButton.translatesAutoresizingMaskIntoConstraints = false
-        dismissButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20).isActive = true
-        dismissButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+        dismissButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
+        dismissButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
     }
     
     func hideAllViews() {

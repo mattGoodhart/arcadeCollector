@@ -659,37 +659,32 @@ nplayers.arcadebelgium.be</string>
                                     <action selector="segmentedControlPressed" destination="lxs-nA-Z7j" eventType="valueChanged" id="JDA-oV-Mb0"/>
                                 </connections>
                             </segmentedControl>
-                            <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
-                                <rect key="frame" x="35" y="548" width="320" height="60"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" distribution="fillEqually" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
+                                <rect key="frame" x="0.0" y="548" width="375" height="30"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
-                                        <rect key="frame" x="0.0" y="0.0" width="30" height="60"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="30"/>
                                         <state key="normal" image="icons8-info"/>
                                         <connections>
                                             <action selector="historyButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="TUs-08-SOa"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kip-WN-wSa">
-                                        <rect key="frame" x="80" y="0.0" width="30" height="60"/>
+                                        <rect key="frame" x="106.5" y="0.0" width="56" height="30"/>
                                         <state key="normal" image="icons8-add"/>
                                         <connections>
                                             <action selector="addEditButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="d6h-Fe-b6m"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rzT-cg-1Vj" userLabel="Wanted Button">
-                                        <rect key="frame" x="160" y="0.0" width="60" height="60"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="60" id="7S2-df-2BA"/>
-                                            <constraint firstAttribute="width" constant="60" id="WT5-1e-jkS"/>
-                                        </constraints>
+                                        <rect key="frame" x="212.5" y="0.0" width="56.5" height="30"/>
                                         <state key="normal" image="icons8-favorite"/>
                                         <connections>
                                             <action selector="addToWantedTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="2Jo-mM-hzl"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uEO-wp-z7R">
-                                        <rect key="frame" x="270" y="0.0" width="50" height="60"/>
+                                        <rect key="frame" x="319" y="0.0" width="56" height="30"/>
                                         <state key="normal" image="icons8-youtube"/>
                                         <connections>
                                             <action selector="youTubeButtonPressed:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="nvY-Dr-vfU"/>
@@ -701,6 +696,8 @@ nplayers.arcadebelgium.be</string>
                         <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="width" secondItem="Vke-jr-5oi" secondAttribute="width" id="4jJ-Wk-kQd"/>
+                            <constraint firstItem="iQ8-AK-4kX" firstAttribute="width" secondItem="Vke-jr-5oi" secondAttribute="width" id="OrT-hg-11P"/>
+                            <constraint firstItem="iQ8-AK-4kX" firstAttribute="centerX" secondItem="Vke-jr-5oi" secondAttribute="centerX" id="Qpn-Vk-YbH"/>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="height" secondItem="Vke-jr-5oi" secondAttribute="height" id="abK-MX-en1"/>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="centerY" secondItem="VIa-ds-nvC" secondAttribute="centerY" id="xB7-8i-f2a"/>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="centerX" secondItem="VIa-ds-nvC" secondAttribute="centerX" id="yx5-A8-zkH"/>
@@ -1142,7 +1139,7 @@ nplayers.arcadebelgium.be</string>
         <image name="icons8-add" width="30" height="30"/>
         <image name="icons8-audio" width="30" height="30"/>
         <image name="icons8-code-file" width="30" height="30"/>
-        <image name="icons8-favorite" width="24" height="24"/>
+        <image name="icons8-favorite" width="30" height="30"/>
         <image name="icons8-filter" width="30" height="30"/>
         <image name="icons8-info" width="30" height="30"/>
         <image name="icons8-joystick" width="30" height="30"/>
@@ -1151,7 +1148,7 @@ nplayers.arcadebelgium.be</string>
         <image name="icons8-processor" width="50" height="50"/>
         <image name="icons8-retro-tv" width="30" height="30"/>
         <image name="icons8-up-down-arrow" width="30" height="30"/>
-        <image name="icons8-youtube" width="50" height="50"/>
+        <image name="icons8-youtube" width="30" height="30"/>
         <image name="menu" width="33" height="33"/>
         <image name="noHardwareDefaultImage" width="148" height="159"/>
         <image name="star_circle" width="33" height="33"/>
