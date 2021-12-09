@@ -9,7 +9,12 @@
 import UIKit
 import SafariServices
 
-class DetailViewController: UIViewController {
+protocol EditGameDelegate: AnyObject {
+    func didFinishEditingGame()
+}
+
+
+class DetailViewController: UIViewController, EditGameDelegate {
     
     @IBOutlet weak var marqueeView: UIImageView!
     @IBOutlet weak var mainImageView: UIImageView!
@@ -243,6 +248,17 @@ class DetailViewController: UIViewController {
             }
         }
         
+        if isInMyCollection {
+            DispatchQueue.main.async {
+                self.addEditButton.setImage(UIImage(named: "icons8-edit"), for: .normal)
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.addEditButton.setImage(UIImage(named: "icons8-add"), for: .normal)
+            }
+            
+        }
+        
         let index = self.tabBarController!.selectedIndex
         
         switch index {
@@ -383,7 +399,7 @@ class DetailViewController: UIViewController {
     
     func getDetailsIfNeeded() {
         if viewedGame.emulationStatus != nil {
-      setImages()
+            setImages()
             return
         } else {
             handleActivityIndicator(indicator: self.marqueeActivityIndicator, vc: self, show: true)
@@ -489,5 +505,10 @@ class DetailViewController: UIViewController {
             return
         }
         viewController.orientation = viewedGame.orientation
+    }
+    
+    // MARK: EditGameDelegate
+    func didFinishEditingGame() {
+        determineCollectionsGameBelongsTo()
     }
 }

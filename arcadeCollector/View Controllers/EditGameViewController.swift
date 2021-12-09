@@ -21,6 +21,8 @@ class EditGameViewController: UIViewController {
     @IBOutlet weak var hasMonitorFlag: UISwitch!
     @IBOutlet weak var hasMarquee: UISwitch!
     
+    weak var delegate: EditGameDelegate?
+    
     var tabBar : UITabBar!
     let dataController = DataController.shared
     let masterCollection = CollectionManager.shared
@@ -43,12 +45,14 @@ class EditGameViewController: UIViewController {
         if (viewedGame.hasBoard || viewedGame.hasCabinetHardware) && !masterCollection.myGames.contains(viewedGame) {
             masterCollection.myGames.append(viewedGame)
             masterCollection.myGamesCollection.addToGames(viewedGame)
+            
         } else if !viewedGame.hasBoard && !viewedGame.hasCabinetHardware, let removalIndex = masterCollection.myGames.firstIndex(of: viewedGame) {
             masterCollection.myGames.remove(at: removalIndex)
             masterCollection.myGamesCollection.removeFromGames(viewedGame)
         }
         
         try? dataController.viewContext.save()
+        delegate?.didFinishEditingGame()
         dismiss(animated: true, completion: nil)
     }
     

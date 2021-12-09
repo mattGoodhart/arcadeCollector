@@ -336,7 +336,7 @@ nplayers.arcadebelgium.be</string>
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="1151"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="en3-Ku-4SB">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1048.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1028.5"/>
                                         <subviews>
                                             <segmentedControl opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="2aj-ix-rJC">
                                                 <rect key="frame" x="126" y="0.0" width="123" height="29"/>
@@ -420,13 +420,13 @@ nplayers.arcadebelgium.be</string>
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="3mc-lu-vlP" userLabel="processors Stack View">
-                                                <rect key="frame" x="102" y="998.5" width="171" height="50"/>
+                                                <rect key="frame" x="102" y="998.5" width="171" height="30"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icons8-processor" translatesAutoresizingMaskIntoConstraints="NO" id="c3u-ou-BO2">
-                                                        <rect key="frame" x="0.0" y="0.0" width="77.5" height="50"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="77.5" height="30"/>
                                                     </imageView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processors" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G5Y-or-QzG">
-                                                        <rect key="frame" x="85.5" y="0.0" width="85.5" height="50"/>
+                                                        <rect key="frame" x="85.5" y="0.0" width="85.5" height="30"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -1145,7 +1145,7 @@ nplayers.arcadebelgium.be</string>
         <image name="icons8-joystick" width="30" height="30"/>
         <image name="icons8-minus" width="30" height="30"/>
         <image name="icons8-pdf" width="30" height="30"/>
-        <image name="icons8-processor" width="50" height="50"/>
+        <image name="icons8-processor" width="30" height="30"/>
         <image name="icons8-retro-tv" width="30" height="30"/>
         <image name="icons8-up-down-arrow" width="30" height="30"/>
         <image name="icons8-youtube" width="30" height="30"/>
