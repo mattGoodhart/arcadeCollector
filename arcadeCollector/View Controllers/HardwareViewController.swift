@@ -126,7 +126,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     func segueToMameNotes() {
         let popOverVC = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
         popOverVC.text = viewedGame.mameNotes ?? "Sorry, MAME driver notes could not be fetched."
-        popOverVC.type = "textView"
+        popOverVC.type = "Horizontally Scrolling textView"
         popOverVC.modalTransitionStyle = .crossDissolve
         present(popOverVC, animated: true, completion: nil)
     }

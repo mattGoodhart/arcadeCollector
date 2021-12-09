@@ -366,7 +366,7 @@ nplayers.arcadebelgium.be</string>
                                                     <action selector="manualButtonTapped:" destination="Lvk-oR-b5P" eventType="touchUpInside" id="fYt-VP-5dq"/>
                                                 </connections>
                                             </button>
-                                            <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="BvU-cO-c8F" userLabel="controls Stack View">
+                                            <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="BvU-cO-c8F" userLabel="controls Stack View">
                                                 <rect key="frame" x="122.5" y="837.5" width="130" height="30"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icons8-joystick" translatesAutoresizingMaskIntoConstraints="NO" id="R6z-em-2Ps">

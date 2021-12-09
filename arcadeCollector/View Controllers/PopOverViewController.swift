@@ -95,8 +95,30 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             pdfView.frame = view.frame
             setDismissButton()
             
+        case "Horizontally Scrolling textView":
+            let scrollView = UIScrollView()
+            let maxSize = CGSize(width:9999, height:9999)
+            let font = UIFont(name: "Avenir Book", size: 17)!
+            let stringSize = text.boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font : font], context: nil)
+            let textFrame = CGRect(x: 0, y: 0, width: stringSize.width+50, height: stringSize.height+10)
+            textView.frame = textFrame
+            textView.isScrollEnabled = false
+            textView.font = font
+            textView.text = text
+            view.addSubview(scrollView)
+            scrollView.frame = view.frame
+            scrollView.contentSize = CGSize(width: stringSize.width, height: stringSize.height)
+            textView.isHidden = false
+            // textView.frame = view.frame
+            
+           textView.isScrollEnabled = false
+           scrollView.addSubview(textView)
+           textView.text = text
+           setDismissButton()
+            
+            
         case "textView":
-            appDelegate.allowedOrientations = .portrait
+            //appDelegate.allowedOrientations = .portrait
             textView.isHidden = false
             textView.text = text
             //textView.backgroundColor = UIColor.black
@@ -184,7 +206,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         }
         
     }
-    
     
     func setDismissButton() {
         view.addSubview(dismissButton)

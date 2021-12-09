@@ -97,6 +97,7 @@ class DetailViewController: UIViewController, EditGameDelegate {
     @IBAction func addEditButtonTapped(_ sender: UIButton) {
         let popOverVC = storyboard!.instantiateViewController(withIdentifier: "EditGameViewController") as! EditGameViewController
         popOverVC.viewedGame = viewedGame
+        popOverVC.delegate = self
         popOverVC.modalTransitionStyle = .crossDissolve
         present(popOverVC, animated: true, completion: nil)
     }
