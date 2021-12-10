@@ -37,8 +37,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     var webURL: URL!
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
-    
-    
     //MARK: View Controller Life Cycle
     
     override func viewDidLoad() {
@@ -96,6 +94,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             setDismissButton()
             
         case "Horizontally Scrolling textView":
+            appDelegate.allowedOrientations = .portrait
             let scrollView = UIScrollView()
             let maxSize = CGSize(width:9999, height:9999)
             let font = UIFont(name: "Avenir Book", size: 17)!
@@ -109,19 +108,15 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             scrollView.frame = view.frame
             scrollView.contentSize = CGSize(width: stringSize.width, height: stringSize.height)
             textView.isHidden = false
-            // textView.frame = view.frame
-            
-           textView.isScrollEnabled = false
-           scrollView.addSubview(textView)
-           textView.text = text
-           setDismissButton()
-            
+            textView.isScrollEnabled = false
+            scrollView.addSubview(textView)
+            textView.text = text
+            setDismissButton()
             
         case "textView":
-            //appDelegate.allowedOrientations = .portrait
+            appDelegate.allowedOrientations = .portrait
             textView.isHidden = false
             textView.text = text
-            //textView.backgroundColor = UIColor.black
             textView.frame = view.frame
             setDismissButton()
             
@@ -154,6 +149,12 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             setDismissButton()
             
         case "gameImageView":
+//            let scrollView = UIScrollView()
+//            view.addSubview(scrollView)
+//            scrollView.frame = view.frame
+//            scrollView.addSubview(imageView)
+//            let imageSize = image.size
+//            scrollView.contentSize = CGSize(width: imageSize.width, height: imageSize.height)
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
             setGameImageAnchors()

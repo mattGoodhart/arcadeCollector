@@ -336,10 +336,13 @@ nplayers.arcadebelgium.be</string>
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="1151"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="en3-Ku-4SB">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1028.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1200"/>
                                         <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="249" verticalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="c1J-YA-Ncd" userLabel="Main View">
+                                                <rect key="frame" x="0.0" y="0.0" width="375" height="669.5"/>
+                                            </imageView>
                                             <segmentedControl opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="2aj-ix-rJC">
-                                                <rect key="frame" x="126" y="0.0" width="123" height="29"/>
+                                                <rect key="frame" x="126" y="689.5" width="123" height="29"/>
                                                 <segments>
                                                     <segment title="Cabinet"/>
                                                     <segment title="PCB"/>
@@ -349,9 +352,6 @@ nplayers.arcadebelgium.be</string>
                                                     <action selector="segmentedControlPressedWith_sender:" destination="Lvk-oR-b5P" eventType="valueChanged" id="Uie-dG-3Q7"/>
                                                 </connections>
                                             </segmentedControl>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="249" verticalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="c1J-YA-Ncd" userLabel="Main View">
-                                                <rect key="frame" x="0.0" y="48" width="375" height="669.5"/>
-                                            </imageView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xNP-IQ-C0q">
                                                 <rect key="frame" x="93" y="737.5" width="189" height="30"/>
                                                 <state key="normal" title="MAME Driver Notes" image="icons8-code-file"/>
@@ -366,73 +366,42 @@ nplayers.arcadebelgium.be</string>
                                                     <action selector="manualButtonTapped:" destination="Lvk-oR-b5P" eventType="touchUpInside" id="fYt-VP-5dq"/>
                                                 </connections>
                                             </button>
-                                            <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="BvU-cO-c8F" userLabel="controls Stack View">
-                                                <rect key="frame" x="122.5" y="837.5" width="130" height="30"/>
-                                                <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icons8-joystick" translatesAutoresizingMaskIntoConstraints="NO" id="R6z-em-2Ps">
-                                                        <rect key="frame" x="0.0" y="0.0" width="57" height="30"/>
-                                                    </imageView>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Controls" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iVm-Jp-E8w">
-                                                        <rect key="frame" x="65" y="0.0" width="65" height="30"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                        <nil key="textColor"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                </subviews>
-                                            </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="T1J-hA-fTh" userLabel="display Stack View">
-                                                <rect key="frame" x="127.5" y="887.5" width="120" height="30"/>
-                                                <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icons8-retro-tv" translatesAutoresizingMaskIntoConstraints="NO" id="urY-Dt-CtH">
-                                                        <rect key="frame" x="0.0" y="0.0" width="56" height="30"/>
-                                                    </imageView>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Display" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c1i-F7-Br2">
-                                                        <rect key="frame" x="64" y="0.0" width="56" height="30"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                        <nil key="textColor"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                </subviews>
-                                            </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="6Sk-iL-C1s" userLabel="audio Stack View">
-                                                <rect key="frame" x="105" y="937.5" width="165.5" height="41"/>
-                                                <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icons8-audio" translatesAutoresizingMaskIntoConstraints="NO" id="zhA-MC-QxU">
-                                                        <rect key="frame" x="0.0" y="0.0" width="30" height="41"/>
-                                                    </imageView>
-                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="apo-Ae-QSd">
-                                                        <rect key="frame" x="38" y="0.0" width="127.5" height="41"/>
-                                                        <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Audio Channels" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gG7-Fw-ffo">
-                                                                <rect key="frame" x="0.0" y="0.0" width="127.5" height="20.5"/>
-                                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                                <nil key="textColor"/>
-                                                                <nil key="highlightedColor"/>
-                                                            </label>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sound Hardware" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EgA-fS-3VA" userLabel="Sound Hardware Line">
-                                                                <rect key="frame" x="0.0" y="20.5" width="127.5" height="20.5"/>
-                                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                                <nil key="textColor"/>
-                                                                <nil key="highlightedColor"/>
-                                                            </label>
-                                                        </subviews>
-                                                    </stackView>
-                                                </subviews>
-                                            </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="3mc-lu-vlP" userLabel="processors Stack View">
-                                                <rect key="frame" x="102" y="998.5" width="171" height="30"/>
-                                                <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icons8-processor" translatesAutoresizingMaskIntoConstraints="NO" id="c3u-ou-BO2">
-                                                        <rect key="frame" x="0.0" y="0.0" width="77.5" height="30"/>
-                                                    </imageView>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processors" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G5Y-or-QzG">
-                                                        <rect key="frame" x="85.5" y="0.0" width="85.5" height="30"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                        <nil key="textColor"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                </subviews>
-                                            </stackView>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icons8-joystick" translatesAutoresizingMaskIntoConstraints="NO" id="R6z-em-2Ps">
+                                                <rect key="frame" x="172.5" y="837.5" width="30" height="30"/>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Controls" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iVm-Jp-E8w">
+                                                <rect key="frame" x="155" y="887.5" width="65" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" red="0.098039215686274508" green="0.39215686274509803" blue="0.39215686274509803" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icons8-retro-tv" translatesAutoresizingMaskIntoConstraints="NO" id="urY-Dt-CtH">
+                                                <rect key="frame" x="172.5" y="928" width="30" height="30"/>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Display" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c1i-F7-Br2">
+                                                <rect key="frame" x="159.5" y="978" width="56" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" red="0.098039215686274508" green="0.39215686274509803" blue="0.39215686274509803" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icons8-audio" translatesAutoresizingMaskIntoConstraints="NO" id="zhA-MC-QxU">
+                                                <rect key="frame" x="172.5" y="1018.5" width="30" height="30"/>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sound" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EgA-fS-3VA" userLabel="Sound Line">
+                                                <rect key="frame" x="163" y="1068.5" width="49.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" red="0.098039215686274508" green="0.39215686274509803" blue="0.39215686274509803" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icons8-processor" translatesAutoresizingMaskIntoConstraints="NO" id="c3u-ou-BO2">
+                                                <rect key="frame" x="172.5" y="1109" width="30" height="30"/>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processors process like all the do dags illyossasckn" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G5Y-or-QzG">
+                                                <rect key="frame" x="37" y="1159" width="301.5" height="41"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" red="0.098039215686274508" green="0.39215686274509803" blue="0.39215686274509803" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <constraints>
                                             <constraint firstItem="c1J-YA-Ncd" firstAttribute="width" secondItem="en3-Ku-4SB" secondAttribute="width" id="nxU-X3-cid"/>
@@ -449,7 +418,7 @@ nplayers.arcadebelgium.be</string>
                                 </constraints>
                             </scrollView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="LIP-wD-4nA">
-                                <rect key="frame" x="0.0" y="437" width="375" height="20"/>
+                                <rect key="frame" x="0.0" y="389" width="375" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -468,20 +437,19 @@ nplayers.arcadebelgium.be</string>
                     <size key="freeformSize" width="375" height="1200"/>
                     <connections>
                         <outlet property="activityIndicator" destination="LIP-wD-4nA" id="gSH-bg-HWc"/>
-                        <outlet property="audioChannelsLine" destination="gG7-Fw-ffo" id="3LU-QO-d1B"/>
-                        <outlet property="audioStack" destination="6Sk-iL-C1s" id="tas-ms-eQn"/>
+                        <outlet property="audioIcon" destination="zhA-MC-QxU" id="eNg-9i-VyD"/>
+                        <outlet property="audioLine" destination="EgA-fS-3VA" id="jz1-zN-VmD"/>
                         <outlet property="controlsLine" destination="iVm-Jp-E8w" id="dZy-CY-Kir"/>
-                        <outlet property="controlsStack" destination="BvU-cO-c8F" id="NkP-y9-lYe"/>
+                        <outlet property="displayIcon" destination="urY-Dt-CtH" id="gnQ-DG-ar6"/>
                         <outlet property="displayLine" destination="c1i-F7-Br2" id="Mgd-PB-Nhu"/>
-                        <outlet property="displayStack" destination="T1J-hA-fTh" id="ktB-Ts-cXc"/>
                         <outlet property="imageChooser" destination="2aj-ix-rJC" id="x1g-Xf-0JC"/>
+                        <outlet property="joystickIcon" destination="R6z-em-2Ps" id="xXF-Zv-OfJ"/>
                         <outlet property="mainImageView" destination="c1J-YA-Ncd" id="EIX-Kl-yUb"/>
                         <outlet property="mameButton" destination="xNP-IQ-C0q" id="IbO-kw-9wN"/>
                         <outlet property="manualButton" destination="IBo-ul-ip5" id="6Fi-H8-IHT"/>
+                        <outlet property="processorIcon" destination="c3u-ou-BO2" id="MJU-qA-4Ag"/>
                         <outlet property="processorsLine" destination="G5Y-or-QzG" id="pOm-99-3a9"/>
-                        <outlet property="processorsStack" destination="3mc-lu-vlP" id="5Q4-42-Yz3"/>
                         <outlet property="scrollView" destination="jkS-NS-0Mf" id="LZa-hC-41c"/>
-                        <outlet property="soundHardwareLine" destination="EgA-fS-3VA" id="TLg-sX-0jy"/>
                         <outlet property="stackView" destination="en3-Ku-4SB" id="QC8-Eh-jhg"/>
                     </connections>
                 </viewController>
@@ -1030,10 +998,6 @@ nplayers.arcadebelgium.be</string>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="wuN-Ta-1e3">
                                 <rect key="frame" x="314" y="616" width="49" height="31"/>
                             </switch>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zm4-Sg-oVC">
-                                <rect key="frame" x="121" y="131" width="240" height="128"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.44817062860000001" green="0.61384795989999996" blue="0.4994652537" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>

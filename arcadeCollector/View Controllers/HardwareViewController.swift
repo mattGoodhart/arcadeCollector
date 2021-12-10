@@ -11,22 +11,27 @@ import PDFKit
 
 class HardwareViewController: UIViewController, XMLParserDelegate {
     
-    @IBOutlet weak var controlsStack : UIStackView!
-    @IBOutlet weak var displayStack : UIStackView!
-    @IBOutlet weak var audioStack : UIStackView!
-    @IBOutlet weak var processorsStack : UIStackView!
+//    @IBOutlet weak var controlsStack : UIStackView!
+//    @IBOutlet weak var displayStack : UIStackView!
+//    @IBOutlet weak var audioStack : UIStackView!
+//    @IBOutlet weak var processorsStack : UIStackView!
     @IBOutlet weak var mainImageView: UIImageView!
     @IBOutlet weak var displayLine: UILabel!
     @IBOutlet weak var controlsLine: UILabel!
-    @IBOutlet weak var soundHardwareLine: UILabel!
+   // @IBOutlet weak var soundHardwareLine: UILabel!
     @IBOutlet weak var processorsLine: UILabel!
     @IBOutlet weak var imageChooser: UISegmentedControl!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var audioChannelsLine: UILabel!
+  //  @IBOutlet weak var audioChannelsLine: UILabel!
     @IBOutlet weak var manualButton: UIButton!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var mameButton: UIButton!
+    @IBOutlet weak var joystickIcon: UIImageView!
+    @IBOutlet weak var displayIcon: UIImageView!
+    @IBOutlet weak var audioIcon: UIImageView!
+    @IBOutlet weak var processorIcon: UIImageView!
+    @IBOutlet weak var audioLine: UILabel!
     
     var imageViewAspectConstraint: NSLayoutConstraint?
     var isPDF: Bool = false
@@ -96,10 +101,19 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         stackView.addArrangedSubview(imageChooser)
         stackView.addArrangedSubview(mameButton)
         stackView.addArrangedSubview(manualButton)
-        stackView.addArrangedSubview(controlsStack)
-        stackView.addArrangedSubview(displayStack)
-        stackView.addArrangedSubview(audioStack)
-        stackView.addArrangedSubview(processorsStack)
+        stackView.addArrangedSubview(joystickIcon)
+        stackView.addArrangedSubview(controlsLine)
+        stackView.addArrangedSubview(displayIcon)
+        stackView.addArrangedSubview(displayLine)
+        stackView.addArrangedSubview(audioIcon)
+        stackView.addArrangedSubview(audioLine)
+        //stackView.addArrangedSubview(soundHardwareLine)
+        stackView.addArrangedSubview(processorIcon)
+        stackView.addArrangedSubview(processorsLine)
+//        stackView.addArrangedSubview(controlsStack)
+//        stackView.addArrangedSubview(displayStack)
+//        stackView.addArrangedSubview(audioStack)
+//        stackView.addArrangedSubview(processorsStack)
     }
     
     func prepMainImageView() {
@@ -212,13 +226,19 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         }
         
         let horizontalRefresh = getMonitorResolutionType()
-        soundHardwareLine.text = soundDevicesLineText
-        soundHardwareLine.sizeToFit()
-        audioChannelsLine.text = viewedGame.audioChannels ?? "viewedGame.audioChannels is nil"
+//        soundHardwareLine.text = soundDevicesLineText
+//        soundHardwareLine.sizeToFit()
+//        audioChannelsLine.text = viewedGame.audioChannels ?? "?"
+        audioLine.text = "\(viewedGame.audioChannels ?? "?")\n\(soundDevicesLineText)"
+        audioLine.sizeToFit()
         processorsLine.text = cpuLineText
         processorsLine.sizeToFit()
-        displayLine.text = "\(viewedGame.orientation ?? ""), \(viewedGame.displayType ?? ""), \(viewedGame.resolution ?? ""), \(horizontalRefresh)"
-        controlsLine.text = " \(viewedGame.inputControls ?? ""), \(viewedGame.inputButtons ?? "") buttons"
+        displayLine.text = "\(viewedGame.orientation?.capitalized ?? "")\n \(viewedGame.displayType?.capitalized ?? "")\n \(viewedGame.resolution ?? "")\n \(horizontalRefresh)"
+        if let inputButtons = viewedGame.inputButtons?.capitalized {
+            controlsLine.text = "\(viewedGame.inputControls?.capitalized ?? "")\n \(inputButtons) Buttons"
+        } else {
+            controlsLine.text = "\(viewedGame.inputControls ?? "")"
+        }
     }
     
     func getHardwareDetailsIfNeeded(game: Game) {
@@ -433,5 +453,11 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         }
         else { return "Horizontal Refresh Unknown" }
     }
+    
+    func createViewForInfo() {
+        let infoView = UIView()
+        
+    }
+    
 }
 
