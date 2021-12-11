@@ -65,6 +65,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         prepMainImageView()
         getHardwareDetailsIfNeeded(game: viewedGame)
         buildMainStackView()
+        manualButton.setTitle("Manual Unavailable", for: .disabled)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -156,11 +157,12 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     }
     
     @IBAction func manualButtonTapped(_ sender: UIButton) {
-        if let manual = viewedGame.manual {
-            segueToManualViewController(manualData: manual)
-        } else {
-            getManualIfNeeded()
-        }
+        getManualIfNeeded()
+//        if let manual = viewedGame.manual {
+//            segueToManualViewController(manualData: manual)
+//        } else {
+//            getManualIfNeeded()
+//        }
     }
     
     func segueToManualViewController(manualData: Data) {
@@ -375,21 +377,45 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
             isPDF = false
         }
     }
-    
+    func fileExistsAt(url: URL, completion: @escaping (Bool) -> Void) {
+        let checkSession = URLSession.shared
+        var request = URLRequest(url: url)
+        request.httpMethod = "HEAD"
+        request.timeoutInterval = 1.0 // Adjust to your needs
+        let task = checkSession.dataTask(with: request) { (data, response, error) -> Void in
+            if let httpResp = response as? HTTPURLResponse {
+                completion(httpResp.statusCode == 200) }
+        
+        }
+        task.resume()
+    }
+        
     func getManualIfNeeded() {
         if let manual = viewedGame.manual {
             segueToManualViewController(manualData: manual)
         } else {
             guard viewedGame.manualURLString != "", let romName = self.viewedGame.romSetName, let url = URL(string: "http://adb.arcadeitalia.net/download_file.php?tipo=mame_current&codice=" + romName + "&entity=manual") else {
+                manualButton.isEnabled = false
                 return
             }
+//            fileExistsAt(url: url) { response in
+//                guard let response = response else {
+//                    print("no response")
+//                }
+//                print(response)
+         //   }
+                
+           // let pdfExists = fileExistsAt(url: url, completion: <#T##(Bool) -> Void#>)
+            //let pdfExists = try?url.checkResourceIsReachable()
+            //print(pdfExists as Any)
             handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
             Networking.shared.fetchData(at: url) { data in
                 guard let data = data else {
                     print("manual download failure.")
+                    
                         self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
                         self.manualButton.isEnabled = false
-                        self.manualButton.isHidden = true
+                       // self.manualButton.isHidden = true
                         self.viewedGame.manualURLString = ""
                         try? self.dataController.viewContext.save()
                     
