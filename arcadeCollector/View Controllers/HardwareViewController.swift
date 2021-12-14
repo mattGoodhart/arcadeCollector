@@ -139,20 +139,20 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     }
     
     func segueToMameNotes() {
-        let popOverVC = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
-        popOverVC.text = viewedGame.mameNotes ?? "Sorry, MAME driver notes could not be fetched."
-        popOverVC.type = "Horizontally Scrolling textView"
-        popOverVC.modalTransitionStyle = .crossDissolve
-        present(popOverVC, animated: true, completion: nil)
+        let popOverViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
+        popOverViewController.text = viewedGame.mameNotes ?? "Sorry, MAME driver notes could not be fetched."
+        popOverViewController.type = "Horizontally Scrolling textView"
+        popOverViewController.modalTransitionStyle = .crossDissolve
+        present(popOverViewController, animated: true, completion: nil)
     }
     
     @objc func mainImageTapped(_ sender: UIGestureRecognizer) {
         if sender.state == .ended {
-            let popOverVC = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
-            popOverVC.image = mainImageView.image
-            popOverVC.type = "hardwareView"
-            popOverVC.modalTransitionStyle = .crossDissolve
-            present(popOverVC, animated: true, completion: nil)
+            let popOverViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
+            popOverViewController.image = mainImageView.image
+            popOverViewController.type = "hardwareView"
+            popOverViewController.modalTransitionStyle = .crossDissolve
+            present(popOverViewController, animated: true, completion: nil)
         }
     }
     
@@ -282,9 +282,43 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 try? self.dataController.viewContext.save()
                 self.setImage(image: cabinetImage)
                 self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                self.getBoardPhotoIfNeeded()
+               // self.getPCBPhotoButDontSetImage()
             }
         }
     }
+    
+//    func getPCBPhotoButDontSetImage () {
+//        guard viewedGame.pcbPhotoURLString != "", let inputString = self.viewedGame.romSetName,
+//            let url = URL(string: "http://adb.arcadeitalia.net/media/mame.current/pcbs/" + inputString + ".png") else {
+//
+//                self.imageChooser.isHidden = true
+//                print("no PCB image available")
+//                if hasNoAvailableImages {
+//                    setImage(image: UIImage(named: "noHardwareDefaultImage")!)
+//                }
+//                return
+//        }
+//        Networking.shared.fetchData(at: url) { data in
+//
+//            guard let data = data else {
+//                print("PCB Photo download failure.")
+//                self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+//                self.viewedGame.pcbPhotoURLString = ""
+//                self.imageChooser.isHidden = true
+//
+//                if self.hasNoAvailableImages {
+//                    self.setImage(image: UIImage(named: "noHardwareDefaultImage")!)
+//                }
+//
+//                return
+//            }
+//            self.viewedGame.pcbImageData = data
+//            try? self.dataController.viewContext.save()
+//
+//        }
+//    }
+    
     
     func getBoardPhotoIfNeeded () {
         
@@ -321,7 +355,9 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 self.viewedGame.pcbImageData = data
                 try? self.dataController.viewContext.save()
                 self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
-                self.setImage(image: pcbImage)
+                if self.viewedGame.cabinetImageURLString == "" {
+                    self.setImage(image: pcbImage)
+                }
             }
         }
     }

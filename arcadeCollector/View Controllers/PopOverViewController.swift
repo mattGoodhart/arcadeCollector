@@ -42,7 +42,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         margins = view.layoutMarginsGuide
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
