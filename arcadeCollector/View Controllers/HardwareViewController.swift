@@ -95,6 +95,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         imageViewAspectConstraint!.isActive = true
         
         buildMainStackView()
+        scrollView.setContentOffset(.zero, animated: true)
     }
     
     func buildMainStackView() {
@@ -237,7 +238,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         processorsLine.sizeToFit()
         displayLine.text = "\(viewedGame.orientation?.capitalized ?? "")\n \(viewedGame.displayType?.capitalized ?? "")\n \(viewedGame.resolution ?? "")\n \(horizontalRefresh)"
         if let inputButtons = viewedGame.inputButtons?.capitalized {
-            controlsLine.text = "\(viewedGame.inputControls?.capitalized ?? "")\n \(inputButtons) Buttons"
+            controlsLine.text = "\(viewedGame.inputControls?.capitalized ?? "")\n \(inputButtons) Button(s)"
         } else {
             controlsLine.text = "\(viewedGame.inputControls ?? "")"
         }
@@ -510,16 +511,10 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 return "VGA - 31.55KHz"
             }
             else {
-                return "VGA+"
+                return "Uncertain Horizontal Refresh Rate"
             }
         }
         else { return "Horizontal Refresh Unknown" }
     }
-    
-    func createViewForInfo() {
-        let infoView = UIView()
-        
-    }
-    
 }
 

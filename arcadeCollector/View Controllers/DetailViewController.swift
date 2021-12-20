@@ -395,6 +395,8 @@ class DetailViewController: UIViewController, EditGameDelegate {
         
         if viewedGame.flyerImageURLString == "" {
             mainImageSwitch.removeSegment(at: 0, animated: false)
+            mainImageSwitch.selectedSegmentIndex = 1 // doesnt seem to work
+          //  mainImageSwitch.setEnabled(true, forSegmentAt: 1) //this doesnt seem to work
         }
     }
     
