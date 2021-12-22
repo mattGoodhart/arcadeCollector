@@ -18,6 +18,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var dismissButton: UIButton!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     var centerX: NSLayoutConstraint!
     var centerY: NSLayoutConstraint!
@@ -41,6 +42,9 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        scrollView.delegate = self
+        scrollView.minimumZoomScale = 1.0
+        scrollView.maximumZoomScale = 5.0
         margins = view.layoutMarginsGuide
     }
     
@@ -148,12 +152,10 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             setDismissButton()
             
         case "gameImageView":
-//            let scrollView = UIScrollView()
-//            view.addSubview(scrollView)
-//            scrollView.frame = view.frame
-//            scrollView.addSubview(imageView)
-//            let imageSize = image.size
-//            scrollView.contentSize = CGSize(width: imageSize.width, height: imageSize.height)
+            //scrollView.frame = view.frame
+           //scrollView.addSubview(imageView)
+            let imageSize = image.size
+            scrollView.contentSize = CGSize(width: imageSize.width * 5, height: imageSize.height * 5)
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
             setGameImageAnchors()
@@ -218,5 +220,78 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         pdfView.isHidden = true
         textView.isHidden = true
         imageView.isHidden = true
+    }
+    
+//    public func scrollViewDidZoom(_ scrollView: UIScrollView) {
+//        centerScrollViewContents()
+//    }
+//
+//    private var scrollViewVisibleSize: CGSize {
+//        let contentInset = scrollView.contentInset
+//        let scrollViewSize = scrollView.bounds.standardized.size
+//        let width = scrollViewSize.width - contentInset.left - contentInset.right
+//        let height = scrollViewSize.height - contentInset.top - contentInset.bottom
+//        return CGSize(width:width, height:height)
+//    }
+//
+//    private var scrollViewCenter: CGPoint {
+//        let scrollViewSize = self.scrollViewVisibleSize
+//        return CGPoint(x: scrollViewSize.width / 2.0,
+//                       y: scrollViewSize.height / 2.0)
+//    }
+//
+//    private func centerScrollViewContents() {
+//        guard let image = imageView.image else {
+//            return
+//        }
+//
+//        let imgViewSize = imageView.frame.size
+//        let imageSize = image.size
+//
+//        var realImgSize: CGSize
+//        if imageSize.width / imageSize.height > imgViewSize.width / imgViewSize.height {
+//            realImgSize = CGSize(width: imgViewSize.width,height: imgViewSize.width / imageSize.width * imageSize.height)
+//        } else {
+//            realImgSize = CGSize(width: imgViewSize.height / imageSize.height * imageSize.width, height: imgViewSize.height)
+//        }
+//
+//        var frame = CGRect.zero
+//        frame.size = realImgSize
+//        imageView.frame = frame
+//
+//        let screenSize  = scrollView.frame.size
+//        let offx = screenSize.width > realImgSize.width ? (screenSize.width - realImgSize.width) / 2 : 0
+//        let offy = screenSize.height > realImgSize.height ? (screenSize.height - realImgSize.height) / 2 : 0
+//        scrollView.contentInset = UIEdgeInsets(top: offy,
+//                                               left: offx,
+//                                               bottom: offy,
+//                                               right: offx)
+//
+//        // The scroll view has zoomed, so you need to re-center the contents
+//        let scrollViewSize = scrollViewVisibleSize
+//
+//        // First assume that image center coincides with the contents box center.
+//        // This is correct when the image is bigger than scrollView due to zoom
+//        var imageCenter = CGPoint(x: scrollView.contentSize.width / 2.0,
+//                                  y: scrollView.contentSize.height / 2.0)
+//
+//        let center = scrollViewCenter
+//
+//        //if image is smaller than the scrollView visible size - fix the image center accordingly
+//        if scrollView.contentSize.width < scrollViewSize.width {
+//            imageCenter.x = center.x
+//        }
+//
+//        if scrollView.contentSize.height < scrollViewSize.height {
+//            imageCenter.y = center.y
+//        }
+//
+//        imageView.center = imageCenter
+//    }
+    
+    // MARK - UIScrollViewDelegate
+    
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return imageView
     }
 }

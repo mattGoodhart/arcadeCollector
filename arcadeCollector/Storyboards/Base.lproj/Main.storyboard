@@ -744,6 +744,15 @@ nplayers.arcadebelgium.be</string>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bkg_darker-1" translatesAutoresizingMaskIntoConstraints="NO" id="bGe-mT-5c0">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bBu-Eb-Fb8">
+                                <rect key="frame" x="67" y="269" width="240" height="128"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ve-le-nVU">
+                                        <rect key="frame" x="-68" y="-267" width="375" height="662"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                </subviews>
+                            </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rT-ia-fkI">
                                 <rect key="frame" x="8" y="20" width="50" height="75"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -752,10 +761,6 @@ nplayers.arcadebelgium.be</string>
                                     <action selector="dismissButtonTapped:" destination="mxO-mm-E9o" eventType="touchUpInside" id="7OO-5v-ORd"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ve-le-nVU">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="662"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="SDz-3a-Eop">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -773,9 +778,13 @@ nplayers.arcadebelgium.be</string>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="centerX" secondItem="j9H-r0-0FF" secondAttribute="centerX" id="1iH-he-oz8"/>
+                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="height" secondItem="j9H-r0-0FF" secondAttribute="height" id="43e-ZU-Khf"/>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="height" secondItem="j9H-r0-0FF" secondAttribute="height" id="4Hz-2T-Rur"/>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="width" secondItem="j9H-r0-0FF" secondAttribute="width" id="BTA-ml-Zv1"/>
+                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="centerY" secondItem="XYV-bU-ZSo" secondAttribute="centerY" id="h3B-ZR-UnA"/>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="centerY" secondItem="j9H-r0-0FF" secondAttribute="centerY" id="l6P-Vh-UmN"/>
+                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="centerX" secondItem="XYV-bU-ZSo" secondAttribute="centerX" id="nzB-dF-CrI"/>
+                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="width" secondItem="j9H-r0-0FF" secondAttribute="width" id="xNd-vq-78h"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="XYV-bU-ZSo"/>
                     </view>
@@ -783,6 +792,7 @@ nplayers.arcadebelgium.be</string>
                         <outlet property="dismissButton" destination="6rT-ia-fkI" id="ZMt-H2-fd5"/>
                         <outlet property="imageView" destination="9ve-le-nVU" id="d3l-j2-Gpb"/>
                         <outlet property="pdfView" destination="Erm-Ej-BPX" id="RHp-Xy-5Hj"/>
+                        <outlet property="scrollView" destination="bBu-Eb-Fb8" id="2dD-s0-pyT"/>
                         <outlet property="textView" destination="SDz-3a-Eop" id="Bnc-0w-CiZ"/>
                     </connections>
                 </viewController>
