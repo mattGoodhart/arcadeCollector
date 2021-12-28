@@ -17,7 +17,6 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="P4h-XW-Zbo">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <connections>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="lVh-e7-eum"/>
@@ -36,7 +35,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bkg_lighter-1" translatesAutoresizingMaskIntoConstraints="NO" id="Wll-9G-dlj">
-                                <rect key="frame" x="0.0" y="44" width="375" height="618"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="KIB-Fc-56s" userLabel="Main Stack View">
                                 <rect key="frame" x="0.0" y="44" width="375" height="574"/>
@@ -135,9 +134,8 @@
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" red="0.61414436028489039" green="0.84166531735751293" blue="0.67950070801391271" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Wll-9G-dlj" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" constant="22" id="7QW-zT-5tU"/>
+                            <constraint firstItem="Wll-9G-dlj" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="7QW-zT-5tU"/>
                             <constraint firstItem="Wll-9G-dlj" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="CJt-5B-ShU"/>
                             <constraint firstItem="KIB-Fc-56s" firstAttribute="height" secondItem="6Tk-OE-BBY" secondAttribute="height" id="M1E-wD-P5H"/>
                             <constraint firstItem="KIB-Fc-56s" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="SiS-e1-koO"/>
@@ -420,7 +418,6 @@ nplayers.arcadebelgium.be</string>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="MjL-2v-Q69"/>
-                        <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="LIP-wD-4nA" firstAttribute="leading" secondItem="09S-xz-qVm" secondAttribute="leading" id="JEG-0t-ygS"/>
                             <constraint firstItem="jkS-NS-0Mf" firstAttribute="leading" secondItem="09S-xz-qVm" secondAttribute="leading" id="PEP-7K-mag"/>
@@ -462,6 +459,7 @@ nplayers.arcadebelgium.be</string>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="bjD-ei-AtT">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" red="0.76860696080000002" green="0.90644639729999998" blue="0.90322679279999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </tabBar>
                     <connections>
                         <segue destination="Fnu-BP-cIQ" kind="relationship" relationship="viewControllers" id="ugq-Xd-jdK"/>
@@ -544,7 +542,6 @@ nplayers.arcadebelgium.be</string>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="qYf-zg-EkA"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="All Games" id="rQE-Of-WP2"/>
                     <navigationItem key="navigationItem" title="Games" id="gqd-cc-9T1">
@@ -594,7 +591,7 @@ nplayers.arcadebelgium.be</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bkg_darker-1" translatesAutoresizingMaskIntoConstraints="NO" id="zSB-W3-U9j">
-                                <rect key="frame" x="0.0" y="22" width="375" height="618"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="54q-Ij-hNz" userLabel="Main Image View">
                                 <rect key="frame" x="47" y="185" width="280" height="210"/>
@@ -666,7 +663,7 @@ nplayers.arcadebelgium.be</string>
                             <constraint firstItem="iQ8-AK-4kX" firstAttribute="width" secondItem="Vke-jr-5oi" secondAttribute="width" id="OrT-hg-11P"/>
                             <constraint firstItem="iQ8-AK-4kX" firstAttribute="centerX" secondItem="Vke-jr-5oi" secondAttribute="centerX" id="Qpn-Vk-YbH"/>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="height" secondItem="Vke-jr-5oi" secondAttribute="height" id="abK-MX-en1"/>
-                            <constraint firstItem="zSB-W3-U9j" firstAttribute="centerY" secondItem="VIa-ds-nvC" secondAttribute="centerY" id="xB7-8i-f2a"/>
+                            <constraint firstItem="zSB-W3-U9j" firstAttribute="centerY" secondItem="Vke-jr-5oi" secondAttribute="centerY" id="xB7-8i-f2a"/>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="centerX" secondItem="VIa-ds-nvC" secondAttribute="centerX" id="yx5-A8-zkH"/>
                         </constraints>
                     </view>
@@ -703,7 +700,7 @@ nplayers.arcadebelgium.be</string>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="RTe-3i-Z0P">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.35678580399999998" green="0.64314663409999995" blue="0.61176025869999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <connections>
                         <segue destination="tzh-ei-Hb8" kind="relationship" relationship="rootViewController" id="5vb-vC-DK9"/>
@@ -721,7 +718,7 @@ nplayers.arcadebelgium.be</string>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="RtL-uk-mUN">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="1" green="0.26352580577756013" blue="0.48727542652159705" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <connections>
                         <segue destination="tzh-ei-Hb8" kind="relationship" relationship="rootViewController" id="Kxa-cf-8aS"/>
@@ -900,15 +897,15 @@ nplayers.arcadebelgium.be</string>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Cabinet Hardware" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1P7-X2-Tcd">
-                                <rect key="frame" x="80" y="266" width="208" height="33"/>
+                                <rect key="frame" x="80" y="301.66666666666669" width="247" height="38.333333333333314"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="b8K-ix-fv8">
-                                <rect key="frame" x="312" y="98" width="51" height="31"/>
+                                <rect key="frame" x="351" y="98" width="51" height="31"/>
                             </switch>
                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Bootleg?" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MMq-ts-shU">
-                                <rect key="frame" x="16" y="90" width="95" height="34"/>
+                                <rect key="frame" x="16" y="90" width="134" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -921,22 +918,22 @@ nplayers.arcadebelgium.be</string>
                                 <rect key="frame" x="312" y="317" width="51" height="31"/>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="XsJ-vi-XP0">
-                                <rect key="frame" x="312" y="369" width="51" height="31"/>
+                                <rect key="frame" x="351" y="369" width="51" height="31"/>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Er8-FG-MlM">
-                                <rect key="frame" x="312" y="421" width="51" height="31"/>
+                                <rect key="frame" x="351" y="421" width="51" height="31"/>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="NOD-ac-j9w">
-                                <rect key="frame" x="312" y="575" width="51" height="31"/>
+                                <rect key="frame" x="351" y="575" width="51" height="31"/>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Dna-In-CKb">
-                                <rect key="frame" x="312" y="477" width="51" height="31"/>
+                                <rect key="frame" x="351" y="477" width="51" height="31"/>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Z6n-mr-PAA">
-                                <rect key="frame" x="312" y="527" width="51" height="31"/>
+                                <rect key="frame" x="351" y="527" width="51" height="31"/>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="SnQ-aT-mFv">
-                                <rect key="frame" x="312" y="267" width="51" height="31"/>
+                                <rect key="frame" x="351" y="267" width="51" height="31"/>
                                 <connections>
                                     <action selector="cabinetHardwareSwitchTapped:" destination="zwu-wC-BfZ" eventType="valueChanged" id="jMK-7T-M1p"/>
                                 </connections>
@@ -948,32 +945,32 @@ nplayers.arcadebelgium.be</string>
                                 </connections>
                             </switch>
                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Bezel" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="g5S-X1-Pdv">
-                                <rect key="frame" x="16" y="476" width="66" height="30"/>
+                                <rect key="frame" x="16" y="529" width="105" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Control Panel Overlay" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="tlu-Yn-cE9">
-                                <rect key="frame" x="16" y="526" width="196" height="30"/>
+                                <rect key="frame" x="16" y="583" width="235" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Cabinet Artwork" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2PF-0H-1QP">
-                                <rect key="frame" x="16" y="574" width="153" height="30"/>
+                                <rect key="frame" x="16" y="635" width="192" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Cabinet" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="TEU-D3-GMa">
-                                <rect key="frame" x="16" y="317" width="114" height="30"/>
+                                <rect key="frame" x="16" y="358" width="114" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Monitor" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yTI-D0-Aaq">
-                                <rect key="frame" x="16" y="369" width="84" height="30"/>
+                                <rect key="frame" x="16" y="414" width="123" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Controls" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="I7o-Mo-2so">
-                                <rect key="frame" x="16" y="421" width="90" height="30"/>
+                                <rect key="frame" x="16" y="470" width="129" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -987,7 +984,7 @@ nplayers.arcadebelgium.be</string>
                                 <color key="tintColor" red="0.099378444254398346" green="0.39114663004875183" blue="0.39385095238685608" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </segmentedControl>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Marquee" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9vJ-oH-ulD">
-                                <rect key="frame" x="18" y="617" width="103" height="30"/>
+                                <rect key="frame" x="18" y="682" width="103" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>

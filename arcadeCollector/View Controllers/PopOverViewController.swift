@@ -73,6 +73,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func setGameImageAnchors() {
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         portraitHeightAnchor = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 3.0/4.0)
         portraitWidthAnchor = imageView.widthAnchor.constraint(equalTo: margins.widthAnchor)
         landscapeHeightAnchor =  imageView.heightAnchor.constraint(equalTo: margins.heightAnchor)
@@ -154,13 +155,13 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         case "gameImageView":
             //scrollView.frame = view.frame
            //scrollView.addSubview(imageView)
-            let imageSize = image.size
-            scrollView.contentSize = CGSize(width: imageSize.width * 5, height: imageSize.height * 5)
+           // let imageSize = image.size
+            //scrollView.contentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height)
+            scrollView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
             setGameImageAnchors()
             imageView.contentMode = .scaleToFill
-            imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.isHidden = false
             imageView.image = image
             setOrientation()
