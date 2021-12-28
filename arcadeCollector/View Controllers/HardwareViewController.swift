@@ -8,6 +8,7 @@
 
 import UIKit
 import PDFKit
+import SafariServices
 
 class HardwareViewController: UIViewController, XMLParserDelegate {
     
@@ -79,7 +80,8 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     }
     
     @IBAction func mameNotesButtonTapped(_ sender: UIButton) {
-        getNotesFromMameIfNeeded()
+      //  getNotesFromMameIfNeeded()
+        goToMameDriverOnGithub()
     }
 
     func setImage(image: UIImage) {
@@ -137,6 +139,14 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         if viewedGame.manualURLString == "" {
             manualButton.isEnabled = false
         }
+    }
+    
+    func goToMameDriverOnGithub () {
+        guard let driver = viewedGame.driver, let url = URL(string: "https://github.com/mamedev/mame/blob/master/src/mame/drivers/" + driver) else {
+            return
+        }
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true, completion: nil)
     }
     
     func segueToMameNotes() {
