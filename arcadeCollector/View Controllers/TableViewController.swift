@@ -126,12 +126,12 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tableView.dataSource = self
         tableView.delegate = self
         tableView.sectionIndexColor = UIColor.white
-        tableView.sectionIndexBackgroundColor = UIColor.init(red: 0.45, green: 0.62, blue: 0.5, alpha: 1)
+        tableView.sectionIndexBackgroundColor = tableColor1
         searchController.searchResultsUpdater = self as UISearchResultsUpdating
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search for Game by Title"
         searchController.searchBar.barTintColor = .white
-        searchController.searchBar.backgroundColor = UIColor.init(red: 0.45, green: 0.62, blue: 0.5, alpha: 1)
+        searchController.searchBar.backgroundColor = tableColor2
         searchController.searchBar.tintColor = .white
         
 //        let textFieldInsideSearchBar = searchController.searchBar.value(forKey: "searchField") as? UITextField
