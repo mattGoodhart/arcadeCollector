@@ -97,7 +97,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         imageViewAspectConstraint!.isActive = true
         
         buildMainStackView()
-        scrollView.setContentOffset(.zero, animated: true)
+       // scrollView.setContentOffset(.zero, animated: true)
     }
     
     func buildMainStackView() {
@@ -162,7 +162,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
             let popOverViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
             popOverViewController.image = mainImageView.image
             popOverViewController.type = "hardwareView"
-            popOverViewController.modalTransitionStyle = .crossDissolve
+            popOverViewController.modalTransitionStyle = .coverVertical
             present(popOverViewController, animated: true, completion: nil)
         }
     }

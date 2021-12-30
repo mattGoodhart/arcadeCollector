@@ -98,7 +98,7 @@ class DetailViewController: UIViewController, EditGameDelegate {
         let popOverVC = storyboard!.instantiateViewController(withIdentifier: "EditGameViewController") as! EditGameViewController
         popOverVC.viewedGame = viewedGame
         popOverVC.delegate = self
-        popOverVC.modalTransitionStyle = .crossDissolve
+        popOverVC.modalTransitionStyle = .flipHorizontal
         present(popOverVC, animated: true, completion: nil)
     }
     
@@ -128,7 +128,7 @@ class DetailViewController: UIViewController, EditGameDelegate {
         let popoverViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
         popoverViewController.type = "textView"
         popoverViewController.text = viewedGame.history!
-        popoverViewController.modalTransitionStyle = .crossDissolve
+        popoverViewController.modalTransitionStyle = .coverVertical
         present(popoverViewController, animated: true, completion: nil)
     }
     

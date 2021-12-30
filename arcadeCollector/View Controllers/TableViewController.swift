@@ -130,6 +130,25 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         searchController.searchResultsUpdater = self as UISearchResultsUpdating
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search for Game by Title"
+        searchController.searchBar.barTintColor = .white
+        searchController.searchBar.backgroundColor = UIColor.init(red: 0.45, green: 0.62, blue: 0.5, alpha: 1)
+        searchController.searchBar.tintColor = .white
+        
+//        let textFieldInsideSearchBar = searchController.searchBar.value(forKey: "searchField") as? UITextField
+//        textFieldInsideSearchBar?.textColor = .white
+//
+//        let textFieldInsideSearchBarLabel = textFieldInsideSearchBar!.value(forKey: "placeholderLabel") as? UILabel
+//        textFieldInsideSearchBarLabel?.textColor = .white
+//
+//        if let placeholder = searchController.searchBar.placeholder {
+//            if #available(iOS 13.0, *) {
+//                searchController.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string:placeholder, attributes: [NSAttri = UIColor.white])
+//            } else {
+//                // Fallback on earlier versions
+//                return
+//            }
+//        }
+//
         navigationItem.searchController = searchController
         definesPresentationContext = true
         refreshDataSource()
