@@ -753,11 +753,16 @@ nplayers.arcadebelgium.be</string>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bBu-Eb-Fb8">
                                 <rect key="frame" x="67" y="269" width="240" height="128"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ve-le-nVU">
+                                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ve-le-nVU">
                                         <rect key="frame" x="-68" y="-267" width="375" height="662"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="9ve-le-nVU" secondAttribute="trailing" constant="20" symbolic="YES" id="4Rl-l4-D7R"/>
+                                    <constraint firstItem="9ve-le-nVU" firstAttribute="top" secondItem="bBu-Eb-Fb8" secondAttribute="top" constant="20" symbolic="YES" id="83v-XO-5Mb"/>
+                                    <constraint firstAttribute="bottom" secondItem="9ve-le-nVU" secondAttribute="bottom" id="8Ry-bJ-m4g"/>
+                                    <constraint firstItem="9ve-le-nVU" firstAttribute="leading" secondItem="bBu-Eb-Fb8" secondAttribute="leading" constant="20" symbolic="YES" id="LyV-zj-AcY"/>
+                                </constraints>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rT-ia-fkI">
                                 <rect key="frame" x="8" y="20" width="50" height="75"/>
@@ -785,13 +790,13 @@ nplayers.arcadebelgium.be</string>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="centerX" secondItem="j9H-r0-0FF" secondAttribute="centerX" id="1iH-he-oz8"/>
-                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="height" secondItem="j9H-r0-0FF" secondAttribute="height" id="43e-ZU-Khf"/>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="height" secondItem="j9H-r0-0FF" secondAttribute="height" id="4Hz-2T-Rur"/>
+                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="leading" secondItem="XYV-bU-ZSo" secondAttribute="leading" id="6Gy-Bf-327"/>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="width" secondItem="j9H-r0-0FF" secondAttribute="width" id="BTA-ml-Zv1"/>
-                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="centerY" secondItem="XYV-bU-ZSo" secondAttribute="centerY" id="h3B-ZR-UnA"/>
+                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="top" secondItem="XYV-bU-ZSo" secondAttribute="top" id="C79-6N-0JS"/>
+                            <constraint firstItem="XYV-bU-ZSo" firstAttribute="trailing" secondItem="bBu-Eb-Fb8" secondAttribute="trailing" id="c14-qc-KQY"/>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="centerY" secondItem="j9H-r0-0FF" secondAttribute="centerY" id="l6P-Vh-UmN"/>
-                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="centerX" secondItem="XYV-bU-ZSo" secondAttribute="centerX" id="nzB-dF-CrI"/>
-                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="width" secondItem="j9H-r0-0FF" secondAttribute="width" id="xNd-vq-78h"/>
+                            <constraint firstItem="XYV-bU-ZSo" firstAttribute="bottom" secondItem="bBu-Eb-Fb8" secondAttribute="bottom" id="y9E-0f-led"/>
                         </constraints>
                     </view>
                     <connections>
@@ -910,7 +915,7 @@ nplayers.arcadebelgium.be</string>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Board" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="J2c-H8-lV8">
                                                 <rect key="frame" x="0.0" y="0.0" width="90" height="38.5"/>
-                                                <color key="backgroundColor" red="0.086149089040000001" green="0.35294851659999998" blue="0.3529367149" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                                 <textInputTraits key="textInputTraits"/>
@@ -944,7 +949,7 @@ nplayers.arcadebelgium.be</string>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Marquee" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9vJ-oH-ulD">
                                                 <rect key="frame" x="0.0" y="0.0" width="120" height="38.5"/>
-                                                <color key="backgroundColor" red="0.078322805460000006" green="0.31765368579999997" blue="0.31764301659999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                                 <textInputTraits key="textInputTraits"/>
@@ -959,7 +964,7 @@ nplayers.arcadebelgium.be</string>
                                         <subviews>
                                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Cabinet" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="TEU-D3-GMa">
                                                 <rect key="frame" x="0.0" y="0.0" width="109" height="38.5"/>
-                                                <color key="backgroundColor" red="0.062663212420000003" green="0.25490739940000001" blue="0.2548986077" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                                 <textInputTraits key="textInputTraits"/>
@@ -977,7 +982,7 @@ nplayers.arcadebelgium.be</string>
                                         <subviews>
                                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Monitor" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yTI-D0-Aaq">
                                                 <rect key="frame" x="0.0" y="0.0" width="90" height="34"/>
-                                                <color key="backgroundColor" red="0.050920046869999999" green="0.20392602679999999" blue="0.2039188445" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits"/>
@@ -992,7 +997,7 @@ nplayers.arcadebelgium.be</string>
                                         <subviews>
                                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Controls" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="I7o-Mo-2so">
                                                 <rect key="frame" x="0.0" y="0.0" width="96" height="34"/>
-                                                <color key="backgroundColor" red="0.050920046869999999" green="0.20392602679999999" blue="0.2039188445" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits"/>
@@ -1007,7 +1012,7 @@ nplayers.arcadebelgium.be</string>
                                         <subviews>
                                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Cabinet Artwork" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2PF-0H-1QP">
                                                 <rect key="frame" x="0.0" y="0.0" width="158" height="34"/>
-                                                <color key="backgroundColor" red="0.039168562740000003" green="0.164709568" blue="0.1647035778" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits"/>
@@ -1022,7 +1027,7 @@ nplayers.arcadebelgium.be</string>
                                         <subviews>
                                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Bezel" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="g5S-X1-Pdv">
                                                 <rect key="frame" x="0.0" y="0.0" width="72" height="34"/>
-                                                <color key="backgroundColor" red="0.050920046869999999" green="0.20392602679999999" blue="0.2039188445" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits"/>
@@ -1037,7 +1042,7 @@ nplayers.arcadebelgium.be</string>
                                         <subviews>
                                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Control Panel Overlay" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="tlu-Yn-cE9">
                                                 <rect key="frame" x="0.0" y="0.0" width="201" height="34"/>
-                                                <color key="backgroundColor" red="0.031340766700000001" green="0.13333648440000001" blue="0.1333314478" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits"/>

@@ -115,14 +115,14 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             textView.isScrollEnabled = false
             scrollView.addSubview(textView)
             textView.text = text
-            setDismissButton()
+           // setDismissButton()
             
         case "textView":
             appDelegate.allowedOrientations = .portrait
             textView.isHidden = false
             textView.text = text
             textView.frame = view.frame
-            setDismissButton()
+            //setDismissButton()
             
         case "marqueeView":
             appDelegate.allowedOrientations = .all
@@ -136,7 +136,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             widthAnchor.isActive = true
             heightAnchor.isActive = true
             imageView.isHidden = false
-            setDismissButton()
+           // setDismissButton()
             
         case "flyerView", "hardwareView":
             appDelegate.allowedOrientations = .all
@@ -150,7 +150,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             widthAnchor.isActive = true
             heightAnchor.isActive = true
             imageView.isHidden = false
-            setDismissButton()
+           // setDismissButton()
             
         case "gameImageView":
             //scrollView.frame = view.frame
@@ -168,7 +168,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             
         default: break
         }
-        setDismissButton()
+       // setDismissButton()
     }
     
     func setOrientation() {
@@ -221,6 +221,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         pdfView.isHidden = true
         textView.isHidden = true
         imageView.isHidden = true
+        dismissButton.isHidden = true
     }
     
 //    public func scrollViewDidZoom(_ scrollView: UIScrollView) {
