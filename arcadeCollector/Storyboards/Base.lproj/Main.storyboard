@@ -489,21 +489,20 @@ nplayers.arcadebelgium.be</string>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <activityIndicatorView key="tableFooterView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" id="pOZ-yG-Mbl">
-                                    <rect key="frame" x="0.0" y="111" width="375" height="20"/>
+                                    <rect key="frame" x="0.0" y="106.5" width="375" height="20"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </activityIndicatorView>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="GameTableCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="GameTableCell" id="Fuw-96-Z24" customClass="GameTableCell" customModule="arcadeCollector" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="44.5" width="375" height="39.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Fuw-96-Z24" id="U2Y-lv-Xfq">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="39.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ahj-sN-o2v">
-                                                    <rect key="frame" x="0.0" y="0.0" width="43.5" height="44"/>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="space-invaders-placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="ahj-sN-o2v">
+                                                    <rect key="frame" x="0.0" y="0.0" width="43.5" height="39.5"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="43.5" id="FJy-eV-E8m"/>
                                                         <constraint firstAttribute="width" constant="43.5" id="Vhq-Hy-805"/>
                                                     </constraints>
                                                 </imageView>
@@ -517,7 +516,7 @@ nplayers.arcadebelgium.be</string>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detail" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TKA-Dd-mSy">
-                                                    <rect key="frame" x="47.5" y="23" width="327.5" height="21"/>
+                                                    <rect key="frame" x="47.5" y="23" width="327.5" height="16.5"/>
                                                     <fontDescription key="fontDescription" name="Arial-ItalicMT" family="Arial" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <color key="highlightedColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1120,6 +1119,7 @@ nplayers.arcadebelgium.be</string>
         <image name="icons8-youtube" width="30" height="30"/>
         <image name="menu" width="33.5" height="33.5"/>
         <image name="noHardwareDefaultImage" width="148" height="159"/>
+        <image name="space-invaders-placeholder" width="32" height="32"/>
         <image name="star_circle" width="33" height="33"/>
         <systemColor name="darkTextColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

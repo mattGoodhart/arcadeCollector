@@ -1,0 +1,12 @@
+{
+  "data" : [
+    {
+      "filename" : "space_invaders_resized.ico",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -16,7 +16,9 @@ class GameTableCell: UITableViewCell {
     @IBOutlet weak var titleText: UILabel!
     @IBOutlet weak var detailtext: UILabel!
     
-    let dataAsset = NSDataAsset(name: "space_invaders_icon")!
+   // let dataAsset = NSDataAsset(name: "space_invaders_icon")!
+    
+    let dataAsset = NSDataAsset(name: "space_invaders_resized")!
 
     // MARK: UICollectionReusableView
     override func prepareForReuse() {
