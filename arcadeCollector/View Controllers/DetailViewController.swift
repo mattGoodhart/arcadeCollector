@@ -180,8 +180,8 @@ class DetailViewController: UIViewController, EditGameDelegate {
             baseStackView.bottomAnchor.constraint(equalTo: viewMargins.bottomAnchor, constant: -35).isActive = true // may need to update these as functions of view height, to accomodate diff devices?
         }
         
-        //baseStackView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
-       // baseStackView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
+      baseStackView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
+      baseStackView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
        // baseStackView.heightAnchor.constraint(equalToConstant: 60)
        // baseStackView.distribution = .fillEqually
        // baseStackView.alignment = .fill

@@ -454,7 +454,7 @@ nplayers.arcadebelgium.be</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yFg-gj-Tos" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1725.5999999999999" y="1511.2443778110946"/>
+            <point key="canvasLocation" x="1726" y="1626"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="Yuc-of-w7v">
@@ -625,32 +625,32 @@ nplayers.arcadebelgium.be</string>
                                     <action selector="segmentedControlPressed" destination="lxs-nA-Z7j" eventType="valueChanged" id="JDA-oV-Mb0"/>
                                 </connections>
                             </segmentedControl>
-                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" distribution="fillEqually" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
-                                <rect key="frame" x="0.0" y="548" width="375" height="30"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" distribution="fillEqually" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
+                                <rect key="frame" x="52" y="549" width="270" height="30"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
-                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="30"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
                                         <state key="normal" image="icons8-info"/>
                                         <connections>
                                             <action selector="historyButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="TUs-08-SOa"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kip-WN-wSa">
-                                        <rect key="frame" x="106.5" y="0.0" width="56" height="30"/>
+                                        <rect key="frame" x="80" y="0.0" width="30" height="30"/>
                                         <state key="normal" image="icons8-add"/>
                                         <connections>
                                             <action selector="addEditButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="d6h-Fe-b6m"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rzT-cg-1Vj" userLabel="Wanted Button">
-                                        <rect key="frame" x="212.5" y="0.0" width="56.5" height="30"/>
+                                        <rect key="frame" x="160" y="0.0" width="30" height="30"/>
                                         <state key="normal" image="icons8-favorite"/>
                                         <connections>
                                             <action selector="addToWantedTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="2Jo-mM-hzl"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uEO-wp-z7R">
-                                        <rect key="frame" x="319" y="0.0" width="56" height="30"/>
+                                        <rect key="frame" x="240" y="0.0" width="30" height="30"/>
                                         <state key="normal" image="icons8-youtube"/>
                                         <connections>
                                             <action selector="youTubeButtonPressed:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="nvY-Dr-vfU"/>
@@ -663,8 +663,6 @@ nplayers.arcadebelgium.be</string>
                         <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="width" secondItem="Vke-jr-5oi" secondAttribute="width" id="4jJ-Wk-kQd"/>
-                            <constraint firstItem="iQ8-AK-4kX" firstAttribute="width" secondItem="Vke-jr-5oi" secondAttribute="width" id="OrT-hg-11P"/>
-                            <constraint firstItem="iQ8-AK-4kX" firstAttribute="centerX" secondItem="Vke-jr-5oi" secondAttribute="centerX" id="Qpn-Vk-YbH"/>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="height" secondItem="Vke-jr-5oi" secondAttribute="height" id="abK-MX-en1"/>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="centerY" secondItem="Vke-jr-5oi" secondAttribute="centerY" id="xB7-8i-f2a"/>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="centerX" secondItem="VIa-ds-nvC" secondAttribute="centerX" id="yx5-A8-zkH"/>
@@ -749,18 +747,27 @@ nplayers.arcadebelgium.be</string>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bkg_darker-1" translatesAutoresizingMaskIntoConstraints="NO" id="bGe-mT-5c0">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bBu-Eb-Fb8">
-                                <rect key="frame" x="67" y="269" width="240" height="128"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bBu-Eb-Fb8">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ve-le-nVU">
-                                        <rect key="frame" x="-68" y="-267" width="375" height="662"/>
-                                    </imageView>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="din-Tw-8ht" userLabel="Content View">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ve-le-nVU">
+                                                <rect key="frame" x="-68" y="-267" width="375" height="662"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="9ve-le-nVU" secondAttribute="trailing" constant="20" symbolic="YES" id="4Rl-l4-D7R"/>
-                                    <constraint firstItem="9ve-le-nVU" firstAttribute="top" secondItem="bBu-Eb-Fb8" secondAttribute="top" constant="20" symbolic="YES" id="83v-XO-5Mb"/>
-                                    <constraint firstAttribute="bottom" secondItem="9ve-le-nVU" secondAttribute="bottom" id="8Ry-bJ-m4g"/>
-                                    <constraint firstItem="9ve-le-nVU" firstAttribute="leading" secondItem="bBu-Eb-Fb8" secondAttribute="leading" constant="20" symbolic="YES" id="LyV-zj-AcY"/>
+                                    <constraint firstItem="din-Tw-8ht" firstAttribute="top" secondItem="bBu-Eb-Fb8" secondAttribute="top" id="61c-Ni-OM8"/>
+                                    <constraint firstAttribute="bottom" secondItem="din-Tw-8ht" secondAttribute="bottom" constant="20" symbolic="YES" id="Mzh-eL-CC2"/>
+                                    <constraint firstItem="din-Tw-8ht" firstAttribute="centerY" secondItem="bBu-Eb-Fb8" secondAttribute="centerY" id="Sgq-eg-lYd"/>
+                                    <constraint firstItem="din-Tw-8ht" firstAttribute="leading" secondItem="bBu-Eb-Fb8" secondAttribute="leading" id="hoI-L2-4B2"/>
+                                    <constraint firstItem="din-Tw-8ht" firstAttribute="centerX" secondItem="bBu-Eb-Fb8" secondAttribute="centerX" id="tCp-j8-zA8"/>
+                                    <constraint firstAttribute="trailing" secondItem="din-Tw-8ht" secondAttribute="trailing" id="tiv-Zc-7RI"/>
                                 </constraints>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rT-ia-fkI">
@@ -793,12 +800,15 @@ nplayers.arcadebelgium.be</string>
                             <constraint firstItem="bBu-Eb-Fb8" firstAttribute="leading" secondItem="XYV-bU-ZSo" secondAttribute="leading" id="6Gy-Bf-327"/>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="width" secondItem="j9H-r0-0FF" secondAttribute="width" id="BTA-ml-Zv1"/>
                             <constraint firstItem="bBu-Eb-Fb8" firstAttribute="top" secondItem="XYV-bU-ZSo" secondAttribute="top" id="C79-6N-0JS"/>
+                            <constraint firstItem="XYV-bU-ZSo" firstAttribute="bottom" secondItem="din-Tw-8ht" secondAttribute="bottom" id="DQG-wY-R61"/>
+                            <constraint firstItem="din-Tw-8ht" firstAttribute="centerY" secondItem="XYV-bU-ZSo" secondAttribute="centerY" id="YnQ-XW-Kbb"/>
                             <constraint firstItem="XYV-bU-ZSo" firstAttribute="trailing" secondItem="bBu-Eb-Fb8" secondAttribute="trailing" id="c14-qc-KQY"/>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="centerY" secondItem="j9H-r0-0FF" secondAttribute="centerY" id="l6P-Vh-UmN"/>
                             <constraint firstItem="XYV-bU-ZSo" firstAttribute="bottom" secondItem="bBu-Eb-Fb8" secondAttribute="bottom" id="y9E-0f-led"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="contentView" destination="din-Tw-8ht" id="nGN-DX-2C5"/>
                         <outlet property="dismissButton" destination="6rT-ia-fkI" id="ZMt-H2-fd5"/>
                         <outlet property="imageView" destination="9ve-le-nVU" id="d3l-j2-Gpb"/>
                         <outlet property="pdfView" destination="Erm-Ej-BPX" id="RHp-Xy-5Hj"/>
@@ -1126,6 +1136,9 @@ nplayers.arcadebelgium.be</string>
         <image name="star_circle" width="33" height="33"/>
         <systemColor name="darkTextColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemYellowColor">
             <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

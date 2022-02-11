@@ -19,6 +19,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var dismissButton: UIButton!
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var contentView: UIView!
     
     var centerX: NSLayoutConstraint!
     var centerY: NSLayoutConstraint!
@@ -51,38 +52,46 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         hideAllViews()
-        dismissButton.removeAllConstraints()
+    //    dismissButton.removeAllConstraints()
         setView()
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        imageView.removeAllConstraints()
-        setView()
-    }
+//    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+//        super.viewWillTransition(to: size, with: coordinator)
+//        imageView.removeAllConstraints()
+//        setView()
+//    }
     
     @IBAction func dismissButtonTapped(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
     }
     
-    func setAnchors() {
+    func setImageViewAnchors() {
         centerX = imageView.centerXAnchor.constraint(equalTo: margins.centerXAnchor)
         centerY = imageView.centerYAnchor.constraint(equalTo: margins.centerYAnchor)
         widthAnchor = imageView.widthAnchor.constraint(equalTo: margins.widthAnchor)
         heightAnchor = imageView.heightAnchor.constraint(equalTo: margins.heightAnchor)
+        centerX.isActive = true
+        centerY.isActive = true
+        widthAnchor.isActive = true
+        heightAnchor.isActive = true
     }
     
     func setGameImageAnchors() {
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+      //  imageView.translatesAutoresizingMaskIntoConstraints = false
         portraitHeightAnchor = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 3.0/4.0)
         portraitWidthAnchor = imageView.widthAnchor.constraint(equalTo: margins.widthAnchor)
         landscapeHeightAnchor =  imageView.heightAnchor.constraint(equalTo: margins.heightAnchor)
         landscapeWidthAnchor = imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 4.0/3.0)
+        centerX = imageView.centerXAnchor.constraint(equalTo: margins.centerXAnchor)
+        centerY = imageView.centerYAnchor.constraint(equalTo: margins.centerYAnchor)
+        centerX.isActive = true
+        centerY.isActive = true
     }
     
     func setView() {
         
-        setAnchors()
+     //   setAnchors()
         
         switch type {
             
@@ -95,7 +104,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             pdfView.isHidden = false
             pdfView.document = manual
             pdfView.frame = view.frame
-            setDismissButton()
+            //setDismissButton()
             
         case "Horizontally Scrolling textView":
             appDelegate.allowedOrientations = .portrait
@@ -131,11 +140,8 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             imageView.image = marqueeImage
             imageView.contentMode = .scaleAspectFit
             imageView.frame = view.frame
-            centerX.isActive = true
-            centerY.isActive = true
-            widthAnchor.isActive = true
-            heightAnchor.isActive = true
-            imageView.isHidden = false
+            setImageViewAnchors()
+            scrollView.isHidden = false
            // setDismissButton()
             
         case "flyerView", "hardwareView":
@@ -145,26 +151,43 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             imageView.image = image
             imageView.frame = view.frame
             imageView.contentMode = .scaleAspectFit
-            centerX.isActive = true
-            centerY.isActive = true
-            widthAnchor.isActive = true
-            heightAnchor.isActive = true
-            imageView.isHidden = false
+            setImageViewAnchors()
+            scrollView.isHidden = false
            // setDismissButton()
             
-        case "gameImageView":
-            //scrollView.frame = view.frame
-           //scrollView.addSubview(imageView)
-           // let imageSize = image.size
-            //scrollView.contentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height)
-            scrollView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
+        case "xgameImageView":
+            imageView.translatesAutoresizingMaskIntoConstraints = false
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
-            setGameImageAnchors()
             imageView.contentMode = .scaleToFill
-            imageView.isHidden = false
-            imageView.image = image
+            setGameImageAnchors()
             setOrientation()
+            imageView.image = image
+            scrollView.isHidden = false
+            
+        case "gameImageView":
+            appDelegate.allowedOrientations = .all
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+           // let scrollView = UIScrollView()
+            //let maxSize = CGSize(width:9999, height:9999)
+            
+//            let stringSize = text.boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font : font], context: nil)
+//            let imageFrame = CGRect(x: 0, y: 0, width: stringSize.width+50, height: stringSize.height+10)
+//            textView.frame = textFrame
+//
+            setGameImageAnchors()
+            setOrientation()
+           // scrollView.contentSize = imageView.bounds.size
+            imageView.image = image
+           
+          //  view.addSubview(scrollView)
+        //scrollView.frame = view.frame
+           // scrollView.contentSize =  CGSize(width: (self.imageView.image?.size.width ?? 100), height: (self.imageView.image?.size.height ?? 100))
+            scrollView.isHidden = false
+           
+           // scrollView.addSubview(imageView)
+       
+            
             
         default: break
         }
@@ -177,13 +200,13 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         case "Horizontal": // Force 4:3 Aspect ratio
             
             if UIDevice.current.orientation.isPortrait {
-                centerX.isActive = true
-                centerY.isActive = true
+//                centerX.isActive = true
+//                centerY.isActive = true
                 portraitWidthAnchor.isActive = true
                 portraitHeightAnchor.isActive = true
             } else {
-                centerX.isActive = true
-                centerY.isActive = true
+//                centerX.isActive = true
+//                centerY.isActive = true
                 landscapeHeightAnchor.isActive = true
                 landscapeWidthAnchor.isActive = true
             }
@@ -192,13 +215,13 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             
             if UIDevice.current.orientation.isPortrait {
                 imageView.widthAnchor.constraint(equalTo: margins.widthAnchor).isActive = true
-                centerX.isActive = true
-                centerY.isActive = true
+//                centerX.isActive = true
+//                centerY.isActive = true
                 imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 4.0/3.0).isActive = true
             }
             else {
-                centerX.isActive = true
-                centerY.isActive = true
+//                centerX.isActive = true
+//                centerY.isActive = true
                 imageView.heightAnchor.constraint(equalTo: margins.heightAnchor).isActive = true
                 imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 3.0/4.0).isActive = true
             }
@@ -220,7 +243,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     func hideAllViews() {
         pdfView.isHidden = true
         textView.isHidden = true
-        imageView.isHidden = true
+        scrollView.isHidden = true
         dismissButton.isHidden = true
     }
     
@@ -296,4 +319,16 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
+    
+    
+    
+//
+//    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+////        self.scrollView.contentSize = CGSize(width: (self.imageView.image?.size.width ?? 100 * scale), height: (self.imageView.image?.size.height ?? 100 * scale))
+////        self.contentView.frame = CGRect(x: imageView.center.x, y: imageView.center.y, width: (self.imageView.image?.size.width ?? 100 * scale), height: (self.imageView.image?.size.height ?? 100 * scale))
+//
+//
+//
+//    }
+
 }
