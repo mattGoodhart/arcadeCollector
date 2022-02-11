@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3ACBA6E23275EC34C6E46898 /* Pods_arcadeCollector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0273A0EBD8B8C0EE1544EB /* Pods_arcadeCollector.framework */; };
 		E304C2AD264F2E7F00D0597E /* ScrollingData.json in Resources */ = {isa = PBXBuildFile; fileRef = E304C2AC264F2A6400D0597E /* ScrollingData.json */; };
 		E32D434C261F8B160031B1B7 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32D434B261F8B160031B1B7 /* Networking.swift */; };
 		E34B771B260E7F1800EAE50B /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34B771A260E7F1800EAE50B /* AboutViewController.swift */; };
@@ -34,6 +35,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		ACB6B12530022E7560D30B89 /* Pods-arcadeCollector.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-arcadeCollector.release.xcconfig"; path = "Target Support Files/Pods-arcadeCollector/Pods-arcadeCollector.release.xcconfig"; sourceTree = "<group>"; };
+		CA0273A0EBD8B8C0EE1544EB /* Pods_arcadeCollector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_arcadeCollector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E304C2AC264F2A6400D0597E /* ScrollingData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = ScrollingData.json; path = arcadeCollector/Model/ScrollingData.json; sourceTree = SOURCE_ROOT; };
 		E32D434B261F8B160031B1B7 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 		E34B771A260E7F1800EAE50B /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
@@ -60,6 +63,7 @@
 		E3E6076325F15293003F1888 /* GameTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTableCell.swift; sourceTree = "<group>"; };
 		E3E6076A25F1686E003F1888 /* HardwareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareViewController.swift; sourceTree = "<group>"; };
 		E3FB7E2B264AE7C400422DFF /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		ED5B8C9FFDAF502525FD4D74 /* Pods-arcadeCollector.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-arcadeCollector.debug.xcconfig"; path = "Target Support Files/Pods-arcadeCollector/Pods-arcadeCollector.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,17 +71,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3ACBA6E23275EC34C6E46898 /* Pods_arcadeCollector.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		06C856C2B332300B0A7A05EB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CA0273A0EBD8B8C0EE1544EB /* Pods_arcadeCollector.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A5BB0C40F4F2056276F31328 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				ED5B8C9FFDAF502525FD4D74 /* Pods-arcadeCollector.debug.xcconfig */,
+				ACB6B12530022E7560D30B89 /* Pods-arcadeCollector.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		E3E6073225F04EA1003F1888 = {
 			isa = PBXGroup;
 			children = (
 				E3E6073D25F04EA1003F1888 /* arcadeCollector */,
 				E3E6073C25F04EA1003F1888 /* Products */,
+				A5BB0C40F4F2056276F31328 /* Pods */,
+				06C856C2B332300B0A7A05EB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -168,9 +192,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E3E6075025F04EA2003F1888 /* Build configuration list for PBXNativeTarget "arcadeCollector" */;
 			buildPhases = (
+				44E8D78350F9E307ECA44B86 /* [CP] Check Pods Manifest.lock */,
 				E3E6073725F04EA1003F1888 /* Sources */,
 				E3E6073825F04EA1003F1888 /* Frameworks */,
 				E3E6073925F04EA1003F1888 /* Resources */,
+				2D0A25786398B4B42BB63F31 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -227,6 +253,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2D0A25786398B4B42BB63F31 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-arcadeCollector/Pods-arcadeCollector-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-arcadeCollector/Pods-arcadeCollector-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-arcadeCollector/Pods-arcadeCollector-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		44E8D78350F9E307ECA44B86 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-arcadeCollector-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E3E6073725F04EA1003F1888 /* Sources */ = {
@@ -396,6 +464,7 @@
 		};
 		E3E6075125F04EA2003F1888 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = ED5B8C9FFDAF502525FD4D74 /* Pods-arcadeCollector.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -414,6 +483,7 @@
 		};
 		E3E6075225F04EA2003F1888 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = ACB6B12530022E7560D30B89 /* Pods-arcadeCollector.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
