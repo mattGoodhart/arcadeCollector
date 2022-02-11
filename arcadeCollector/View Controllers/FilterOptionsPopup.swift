@@ -43,6 +43,7 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         
         pickerView.delegate = self
         pickerView.dataSource = self
+      //  pickerView.col
         optionsSegmentedControl.selectedSegmentIndex = 0
         stringArrayForPicker = arrayOfUniqueOrientations
         buildMainView()
@@ -134,7 +135,7 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         contentView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         contentView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         contentView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.75).isActive = true
-        contentView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.66).isActive = true
+        contentView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5).isActive = true
         }
     
     func buildStackView() {

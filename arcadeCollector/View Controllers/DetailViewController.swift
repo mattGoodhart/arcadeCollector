@@ -26,8 +26,6 @@ class DetailViewController: UIViewController, EditGameDelegate {
     @IBOutlet weak var wantedButton: UIButton!
     @IBOutlet weak var addEditButton: UIButton!
     @IBOutlet weak var baseStackView: UIStackView!
-   // @IBOutlet weak var wantedStackView: UIStackView!
-   // @IBOutlet weak var wantedLabel: UILabel!
     
     var isInMyCollection = false
     var isWanted = false
@@ -54,8 +52,8 @@ class DetailViewController: UIViewController, EditGameDelegate {
         setOtherConstraints()
         determineCollectionsGameBelongsTo()
         
-        handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
-        handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: false)
+//        handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
+//        handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: false)
         self.title = viewedGame.title
         
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.mainImageTapped))
@@ -64,21 +62,14 @@ class DetailViewController: UIViewController, EditGameDelegate {
         configureGestureForImageView(imageView: mainImageView, gestureRecognizer: tapRecognizer)
         configureGestureForImageView(imageView: marqueeView, gestureRecognizer: marqueeTapRecognizer)
         
-        marqueeView.image = UIImage(named: "missing_marquee")
-        mainImageView.image = nil
+        marqueeView.image = UIImage(named: "missing_marquee") // do this in storyboard instead?
+        mainImageView.image = nil // there will always be some image, so a placeholder unecessary
         getDetailsIfNeeded()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         (UIApplication.shared.delegate as? AppDelegate)?.allowedOrientations = .portrait
-        
-//        if viewedGame.flyerImageURLString == "" {
-//             mainImageSwitch.selectedSegmentIndex = 0
-//        }
-//        } else {
-//        mainImageSwitch.selectedSegmentIndex = 1
-//    }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -182,16 +173,11 @@ class DetailViewController: UIViewController, EditGameDelegate {
         mainImageSwitch.topAnchor.constraint(equalTo: mainImageView.bottomAnchor, constant: 20).isActive = true
         mainImageSwitch.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
         
-        //wantedStackView.addArrangedSubview(wantedLabel)
-       // wantedStackView.addArrangedSubview(wantedSwitch)
-       // wantedStackView.axis = .vertical
-        
         baseStackView.translatesAutoresizingMaskIntoConstraints = false
-        
         if viewedGame.orientation == "Horizontal" {
             baseStackView.bottomAnchor.constraint(equalTo: viewMargins.bottomAnchor, constant: -75).isActive = true
         } else {
-            baseStackView.bottomAnchor.constraint(equalTo: viewMargins.bottomAnchor, constant: -35).isActive = true // may need to update these as functions of view height, to accomodate diff devices
+            baseStackView.bottomAnchor.constraint(equalTo: viewMargins.bottomAnchor, constant: -35).isActive = true // may need to update these as functions of view height, to accomodate diff devices?
         }
         
         //baseStackView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
@@ -225,21 +211,18 @@ class DetailViewController: UIViewController, EditGameDelegate {
     
     /// fetch collections the viewedGame belongs to
     func determineCollectionsGameBelongsTo() {
-        
         var collectionNameArray = [String]()
-        
         if let collectionOwnership = masterCollection.fetchCollectionsForGame(game: viewedGame) {
             
             for collection in collectionOwnership {
                 collectionNameArray += [collection.name!]
             }
+            
             isInMyCollection = collectionNameArray.contains("My Games")
             isWanted = collectionNameArray.contains("Wanted Games")
         }
         
-        //wantedSwitch.isOn = isWanted
-        
-        if isWanted {
+        if isWanted { // maybe refactor setimage to include the dispatch to main
             DispatchQueue.main.async {
                 self.wantedButton.setImage(UIImage(named: "icons8-favorite-filled"), for: .normal)
             }
@@ -291,13 +274,17 @@ class DetailViewController: UIViewController, EditGameDelegate {
     }
     
     func loadMarquee(at url: URL) {
+        
+       // marqueeActivityIndicator.startAnimating()
         Networking.shared.fetchData(at:url) { data in
             guard let data = data, let marqueeImage = UIImage(data: data) else {
+                self.marqueeActivityIndicator.stopAnimating()
                 return
             }
             self.viewedGame.marqueeImageData = data
             try? self.dataController.viewContext.save()
             self.marqueeView.image = marqueeImage
+            self.marqueeActivityIndicator.stopAnimating()
         }
     }
     
@@ -310,22 +297,29 @@ class DetailViewController: UIViewController, EditGameDelegate {
             guard let urlString = viewedGame.inGameImageURLString, let url = URL(string: urlString) else {
                 return
             }
-            handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
-            print("main activity indicator started")
+            //handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
+            mainImageActivityIndicator.startAnimating()
+            print("main activity indicator started for in-game image")
             
             Networking.shared.fetchData(at: url) { data in
                 guard let data = data, let inGameImage = UIImage(data: data) else {
-                    self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                    print("main activity indicator stopped")
+                    
+                    self.mainImageActivityIndicator.stopAnimating()
+                  // self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                    print("main activity indicator stopped because of in-game image failure")
                     return
                 }
                 self.viewedGame.inGameImageData = data
                 try? self.dataController.viewContext.save()
                 self.mainImageView.contentMode = .scaleToFill
                 self.mainImageView.image = inGameImage
-                self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                print("main activity indicator stopped")
+                self.mainImageActivityIndicator.stopAnimating()
+               // self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                print("main activity indicator stopped for in-game image")
             }
+        }
+        if mainImageActivityIndicator.isAnimating {
+            mainImageActivityIndicator.stopAnimating()
         }
     }
     
@@ -338,12 +332,14 @@ class DetailViewController: UIViewController, EditGameDelegate {
             guard let urlString = viewedGame.titleImageURLString, let url = URL(string: urlString) else {
                 return
             }
-           // handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
-            print("main activity indicator started")
+            mainImageActivityIndicator.startAnimating()
+            // handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
+            print("main activity indicator started for title image")
             Networking.shared.fetchData(at: url) { data in
                 guard let data = data, let titleImage = UIImage(data: data) else {
-                    self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                    print("main activity indicator stopped")
+                    self.mainImageActivityIndicator.stopAnimating()
+                    // self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                    print("main activity indicator stopped because of failed title image")
                     return
                 }
                 
@@ -351,9 +347,13 @@ class DetailViewController: UIViewController, EditGameDelegate {
                 try? self.dataController.viewContext.save()
                 self.mainImageView.contentMode = .scaleToFill
                 self.mainImageView.image = titleImage
-                self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
-                print("main activity indicator stopped")
+                //  self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                self.mainImageActivityIndicator.stopAnimating()
+                print("main activity indicator stopped for title image")
             }
+        }
+        if mainImageActivityIndicator.isAnimating {
+            mainImageActivityIndicator.stopAnimating()
         }
     }
     
@@ -364,13 +364,18 @@ class DetailViewController: UIViewController, EditGameDelegate {
             mainImageView.image = image
         } else {
             guard let urlString = viewedGame.flyerImageURLString, let url = URL(string: urlString) else {
+                self.mainImageActivityIndicator.stopAnimating()
+                //  handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                print("main activity indicator stopped for failed flyer image")
                 return
             }
             handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
             
             Networking.shared.fetchData(at: url) { data in
                 guard let data = data, let flyerImage = UIImage(data: data) else {
-                    self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                    //   self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                    self.mainImageActivityIndicator.stopAnimating()
+                    print("main activity indicator stopped for failed flyer image")
                     return
                 }
                 
@@ -378,13 +383,18 @@ class DetailViewController: UIViewController, EditGameDelegate {
                 try? self.dataController.viewContext.save()
                 self.mainImageView.contentMode = .scaleAspectFit
                 self.mainImageView.image = flyerImage
-                self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                //   self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                self.mainImageActivityIndicator.stopAnimating()
+                print("main activity indicator stopped for flyer image")
             }
+        }
+        if mainImageActivityIndicator.isAnimating {
+            mainImageActivityIndicator.stopAnimating()
         }
     }
     
 
-    func setImages() {
+    func setImages() { // put dispatch here...
         if let inGameImageData =  viewedGame.inGameImageData {
             mainImageView.image = UIImage(data: inGameImageData)
         }
@@ -395,8 +405,7 @@ class DetailViewController: UIViewController, EditGameDelegate {
         
         if viewedGame.flyerImageURLString == "" {
             mainImageSwitch.removeSegment(at: 0, animated: false)
-            mainImageSwitch.selectedSegmentIndex = 1 // doesnt seem to work
-          //  mainImageSwitch.setEnabled(true, forSegmentAt: 1) //this doesnt seem to work
+            mainImageSwitch.selectedSegmentIndex = 1
         }
     }
     
@@ -405,8 +414,10 @@ class DetailViewController: UIViewController, EditGameDelegate {
             setImages()
             return
         } else {
-            handleActivityIndicator(indicator: self.marqueeActivityIndicator, vc: self, show: true)
-            handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: true)
+           // handleActivityIndicator(indicator: self.marqueeActivityIndicator, vc: self, show: true)
+            marqueeActivityIndicator.startAnimating()
+           // handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: true)
+            mainImageActivityIndicator.startAnimating()
             toggleButtons(enabled: false)
             
             let url = URL(string: "http://adb.arcadeitalia.net/service_scraper.php?ajax=query_mame&game_name=" + viewedGame.romSetName! + "&use_parent=1")!
@@ -415,8 +426,11 @@ class DetailViewController: UIViewController, EditGameDelegate {
                 
                 guard let response = response else {
                     print("error: \(String(describing: error))")
-                    self.handleActivityIndicator(indicator: self.marqueeActivityIndicator, vc: self, show: false)
-                    self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                    
+                    self.marqueeActivityIndicator.stopAnimating()
+                    self.mainImageActivityIndicator.stopAnimating()
+//                    self.handleActivityIndicator(indicator: self.marqueeActivityIndicator, vc: self, show: false)
+//                    self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
                     return
                 }
                 
@@ -445,19 +459,23 @@ class DetailViewController: UIViewController, EditGameDelegate {
                 if self.viewedGame.flyerImageURLString == "" {
                     self.mainImageSwitch.removeSegment(at: 0, animated: false)
                 }
+                //self.handleActivityIndicator(indicator: self.mainImageActivityIndicator, vc: self, show: false)
+                self.mainImageActivityIndicator.stopAnimating()
+                self.marqueeActivityIndicator.stopAnimating()
             }
         }
-        handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: false)
     }
     
     func getMarqueeIfNeeded() {
         
         guard let urlString = viewedGame.marqueeURLString, let url = URL(string: urlString) else {
+            marqueeActivityIndicator.stopAnimating()
             return
         }
-        handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: true)
+        marqueeActivityIndicator.startAnimating()
+       // handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: true)
         loadMarquee(at: url)
-        handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
+     //   handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
     }
     
     @objc func mainImageTapped(_ sender: UIGestureRecognizer) {

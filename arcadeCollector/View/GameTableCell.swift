@@ -15,16 +15,11 @@ class GameTableCell: UITableViewCell {
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var titleText: UILabel!
     @IBOutlet weak var detailtext: UILabel!
-    
-   // let dataAsset = NSDataAsset(name: "space_invaders_icon")!
-    
-    let dataAsset = NSDataAsset(name: "space_invaders_resized")!
 
     // MARK: UICollectionReusableView
     override func prepareForReuse() {
         super.prepareForReuse()
-       // let iconImage = UIImage(named: "space_invaders_icon")
-        let iconImage = UIImage(data: dataAsset.data)
+        let iconImage = UIImage(named: "space-invaders-placeholder")
         iconImageView.image = iconImage
     }
 }

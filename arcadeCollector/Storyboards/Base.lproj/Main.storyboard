@@ -600,15 +600,15 @@ nplayers.arcadebelgium.be</string>
                                 <rect key="frame" x="47" y="185" width="280" height="210"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ntz-FS-uBs" userLabel="Marquee View">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="missing_marquee" translatesAutoresizingMaskIntoConstraints="NO" id="ntz-FS-uBs" userLabel="Marquee View">
                                 <rect key="frame" x="18" y="84" width="340" height="85"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="1iP-hh-OfY">
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="1iP-hh-OfY">
                                 <rect key="frame" x="177" y="115" width="21" height="23"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="JyI-B0-F0s">
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="JyI-B0-F0s">
                                 <rect key="frame" x="177" y="285" width="21" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
@@ -839,6 +839,7 @@ nplayers.arcadebelgium.be</string>
                                             </segmentedControl>
                                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Ct-SH-suv">
                                                 <rect key="frame" x="0.0" y="31" width="320" height="216"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </pickerView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KBN-dF-ACn">
                                                 <rect key="frame" x="0.0" y="247" width="320" height="30"/>
@@ -868,6 +869,7 @@ nplayers.arcadebelgium.be</string>
                                                 </connections>
                                             </button>
                                         </subviews>
+                                        <color key="backgroundColor" red="0.76860696080000002" green="0.90644639729999998" blue="0.90322679279999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </stackView>
                                 </subviews>
                             </view>
@@ -1118,6 +1120,7 @@ nplayers.arcadebelgium.be</string>
         <image name="icons8-up-down-arrow" width="30" height="30"/>
         <image name="icons8-youtube" width="30" height="30"/>
         <image name="menu" width="33.5" height="33.5"/>
+        <image name="missing_marquee" width="576" height="144"/>
         <image name="noHardwareDefaultImage" width="148" height="159"/>
         <image name="space-invaders-placeholder" width="32" height="32"/>
         <image name="star_circle" width="33" height="33"/>
