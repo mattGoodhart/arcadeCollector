@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32AA970D27B9E06500919253 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32AA970C27B9E06400919253 /* TestViewController.swift */; };
 		3ACBA6E23275EC34C6E46898 /* Pods_arcadeCollector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0273A0EBD8B8C0EE1544EB /* Pods_arcadeCollector.framework */; };
 		E304C2AD264F2E7F00D0597E /* ScrollingData.json in Resources */ = {isa = PBXBuildFile; fileRef = E304C2AC264F2A6400D0597E /* ScrollingData.json */; };
 		E32D434C261F8B160031B1B7 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32D434B261F8B160031B1B7 /* Networking.swift */; };
@@ -35,6 +36,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		32AA970C27B9E06400919253 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		ACB6B12530022E7560D30B89 /* Pods-arcadeCollector.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-arcadeCollector.release.xcconfig"; path = "Target Support Files/Pods-arcadeCollector/Pods-arcadeCollector.release.xcconfig"; sourceTree = "<group>"; };
 		CA0273A0EBD8B8C0EE1544EB /* Pods_arcadeCollector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_arcadeCollector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E304C2AC264F2A6400D0597E /* ScrollingData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = ScrollingData.json; path = arcadeCollector/Model/ScrollingData.json; sourceTree = SOURCE_ROOT; };
@@ -119,6 +121,7 @@
 				E3E6074D25F04EA2003F1888 /* Info.plist */,
 				E3E6073E25F04EA1003F1888 /* AppDelegate.swift */,
 				E3D124152641C7C200C17F29 /* ViewControllerExtension.swift */,
+				32AA970C27B9E06400919253 /* TestViewController.swift */,
 				E3A786AE2693722C00CDDC77 /* OtherExtensions.swift */,
 				E3A786AC2693717800CDDC77 /* HardwareViewControllerExtension.swift */,
 				E3E6076625F152C8003F1888 /* Model */,
@@ -308,6 +311,7 @@
 				E3E6075A25F07002003F1888 /* ArcadeDatabaseAPIResponse.swift in Sources */,
 				E383228D26239BF100A52BD5 /* EditGameViewController.swift in Sources */,
 				E3A786AF2693722C00CDDC77 /* OtherExtensions.swift in Sources */,
+				32AA970D27B9E06500919253 /* TestViewController.swift in Sources */,
 				E3A786AD2693717800CDDC77 /* HardwareViewControllerExtension.swift in Sources */,
 				E3D90E4B265ABF12005C86E7 /* TabBarController.swift in Sources */,
 				E3E6075C25F14A3A003F1888 /* SummaryViewController.swift in Sources */,

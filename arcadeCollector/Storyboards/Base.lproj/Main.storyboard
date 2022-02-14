@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fpv-6B-0Xm">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="l4r-se-ztL">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -489,12 +489,12 @@ nplayers.arcadebelgium.be</string>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <activityIndicatorView key="tableFooterView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" id="pOZ-yG-Mbl">
-                                    <rect key="frame" x="0.0" y="106.5" width="375" height="20"/>
+                                    <rect key="frame" x="0.0" y="95.5" width="375" height="20"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </activityIndicatorView>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="GameTableCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="GameTableCell" id="Fuw-96-Z24" customClass="GameTableCell" customModule="arcadeCollector" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="375" height="39.5"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="39.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Fuw-96-Z24" id="U2Y-lv-Xfq">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="39.5"/>
@@ -550,7 +550,7 @@ nplayers.arcadebelgium.be</string>
                     <navigationItem key="navigationItem" title="Games" id="gqd-cc-9T1">
                         <barButtonItem key="leftBarButtonItem" title="Item" id="jab-Au-287">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" id="dU2-tX-L2G">
-                                <rect key="frame" x="16" y="5.5" width="147" height="33"/>
+                                <rect key="frame" x="16" y="0.0" width="147" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="icons8-up-down-arrow">
                                     <color key="titleColor" systemColor="darkTextColor"/>
@@ -562,7 +562,7 @@ nplayers.arcadebelgium.be</string>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Item" id="TkL-Np-xiC">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="b8w-Ed-RC0">
-                                <rect key="frame" x="285" y="5.5" width="74" height="33"/>
+                                <rect key="frame" x="285" y="0.0" width="74" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="icons8-filter">
                                     <color key="titleColor" systemColor="darkTextColor"/>
@@ -740,7 +740,7 @@ nplayers.arcadebelgium.be</string>
         <scene sceneID="gfb-JZ-14T">
             <objects>
                 <viewController storyboardIdentifier="PopOverViewController" title="PopOverViewController" id="mxO-mm-E9o" customClass="PopOverViewController" customModule="arcadeCollector" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="j9H-r0-0FF">
+                    <view key="view" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="j9H-r0-0FF">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -754,7 +754,7 @@ nplayers.arcadebelgium.be</string>
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ve-le-nVU">
-                                                <rect key="frame" x="-68" y="-267" width="375" height="662"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             </imageView>
                                         </subviews>
@@ -762,12 +762,10 @@ nplayers.arcadebelgium.be</string>
                                     </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="din-Tw-8ht" firstAttribute="top" secondItem="bBu-Eb-Fb8" secondAttribute="top" id="61c-Ni-OM8"/>
-                                    <constraint firstAttribute="bottom" secondItem="din-Tw-8ht" secondAttribute="bottom" constant="20" symbolic="YES" id="Mzh-eL-CC2"/>
-                                    <constraint firstItem="din-Tw-8ht" firstAttribute="centerY" secondItem="bBu-Eb-Fb8" secondAttribute="centerY" id="Sgq-eg-lYd"/>
-                                    <constraint firstItem="din-Tw-8ht" firstAttribute="leading" secondItem="bBu-Eb-Fb8" secondAttribute="leading" id="hoI-L2-4B2"/>
-                                    <constraint firstItem="din-Tw-8ht" firstAttribute="centerX" secondItem="bBu-Eb-Fb8" secondAttribute="centerX" id="tCp-j8-zA8"/>
-                                    <constraint firstAttribute="trailing" secondItem="din-Tw-8ht" secondAttribute="trailing" id="tiv-Zc-7RI"/>
+                                    <constraint firstAttribute="trailing" secondItem="din-Tw-8ht" secondAttribute="trailing" id="UaH-MO-plS"/>
+                                    <constraint firstAttribute="bottom" secondItem="din-Tw-8ht" secondAttribute="bottom" id="fHO-St-xOa"/>
+                                    <constraint firstItem="din-Tw-8ht" firstAttribute="leading" secondItem="bBu-Eb-Fb8" secondAttribute="leading" id="p3p-iE-7XJ"/>
+                                    <constraint firstItem="din-Tw-8ht" firstAttribute="top" secondItem="bBu-Eb-Fb8" secondAttribute="top" id="rJS-tc-dW3"/>
                                 </constraints>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rT-ia-fkI">
@@ -786,25 +784,27 @@ nplayers.arcadebelgium.be</string>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <view contentMode="scaleAspectFit" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Erm-Ej-BPX" userLabel="PDFView" customClass="PDFView">
+                            <view autoresizesSubviews="NO" contentMode="scaleAspectFit" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Erm-Ej-BPX" userLabel="PDFView" customClass="PDFView">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                         </subviews>
-                        <viewLayoutGuide key="safeArea" id="XYV-bU-ZSo"/>
+                        <viewLayoutGuide key="safeArea" id="3mb-zs-4bt"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="centerX" secondItem="j9H-r0-0FF" secondAttribute="centerX" id="1iH-he-oz8"/>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="height" secondItem="j9H-r0-0FF" secondAttribute="height" id="4Hz-2T-Rur"/>
-                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="leading" secondItem="XYV-bU-ZSo" secondAttribute="leading" id="6Gy-Bf-327"/>
+                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="leading" secondItem="j9H-r0-0FF" secondAttribute="leading" id="9dF-Bk-ZF6"/>
+                            <constraint firstItem="din-Tw-8ht" firstAttribute="width" secondItem="j9H-r0-0FF" secondAttribute="width" priority="250" id="A1F-Xd-Iyb"/>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="width" secondItem="j9H-r0-0FF" secondAttribute="width" id="BTA-ml-Zv1"/>
-                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="top" secondItem="XYV-bU-ZSo" secondAttribute="top" id="C79-6N-0JS"/>
-                            <constraint firstItem="XYV-bU-ZSo" firstAttribute="bottom" secondItem="din-Tw-8ht" secondAttribute="bottom" id="DQG-wY-R61"/>
-                            <constraint firstItem="din-Tw-8ht" firstAttribute="centerY" secondItem="XYV-bU-ZSo" secondAttribute="centerY" id="YnQ-XW-Kbb"/>
-                            <constraint firstItem="XYV-bU-ZSo" firstAttribute="trailing" secondItem="bBu-Eb-Fb8" secondAttribute="trailing" id="c14-qc-KQY"/>
+                            <constraint firstAttribute="bottom" secondItem="din-Tw-8ht" secondAttribute="bottom" id="DQG-wY-R61"/>
+                            <constraint firstItem="din-Tw-8ht" firstAttribute="centerY" secondItem="j9H-r0-0FF" secondAttribute="centerY" id="YnQ-XW-Kbb"/>
                             <constraint firstItem="bGe-mT-5c0" firstAttribute="centerY" secondItem="j9H-r0-0FF" secondAttribute="centerY" id="l6P-Vh-UmN"/>
-                            <constraint firstItem="XYV-bU-ZSo" firstAttribute="bottom" secondItem="bBu-Eb-Fb8" secondAttribute="bottom" id="y9E-0f-led"/>
+                            <constraint firstItem="din-Tw-8ht" firstAttribute="height" secondItem="j9H-r0-0FF" secondAttribute="height" priority="250" id="lIP-j5-Yan"/>
+                            <constraint firstAttribute="bottom" secondItem="bBu-Eb-Fb8" secondAttribute="bottom" id="qal-oh-prg"/>
+                            <constraint firstItem="bBu-Eb-Fb8" firstAttribute="top" secondItem="j9H-r0-0FF" secondAttribute="top" id="rjW-1z-kqS"/>
+                            <constraint firstAttribute="trailing" secondItem="bBu-Eb-Fb8" secondAttribute="trailing" id="woE-fN-A6x"/>
                         </constraints>
                     </view>
                     <connections>
@@ -1022,7 +1022,7 @@ nplayers.arcadebelgium.be</string>
                                         <rect key="frame" x="0.0" y="507" width="375" height="34"/>
                                         <subviews>
                                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Cabinet Artwork" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2PF-0H-1QP">
-                                                <rect key="frame" x="0.0" y="0.0" width="158" height="34"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="159" height="34"/>
                                                 <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
@@ -1097,6 +1097,65 @@ nplayers.arcadebelgium.be</string>
             </objects>
             <point key="canvasLocation" x="920.79999999999995" y="681.40929535232385"/>
         </scene>
+        <!--My View Controller-->
+        <scene sceneID="bWf-Ba-MPE">
+            <objects>
+                <viewController id="l4r-se-ztL" customClass="MyViewController" customModule="arcadeCollector" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="jbV-U5-4nS">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sZk-ov-xM9">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZGB-Fv-RyD" userLabel="contentView">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/titre" translatesAutoresizingMaskIntoConstraints="NO" id="bHF-p9-TkT">
+                                                <rect key="frame" x="37.5" y="183.5" width="300" height="300"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="300" id="9iu-fa-G7I"/>
+                                                    <constraint firstAttribute="width" constant="300" id="WAG-YJ-jNT"/>
+                                                </constraints>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstItem="bHF-p9-TkT" firstAttribute="centerX" secondItem="ZGB-Fv-RyD" secondAttribute="centerX" id="gRR-yG-MUf"/>
+                                            <constraint firstItem="bHF-p9-TkT" firstAttribute="centerY" secondItem="ZGB-Fv-RyD" secondAttribute="centerY" id="yfZ-Wh-AkD"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="ZGB-Fv-RyD" firstAttribute="leading" secondItem="sZk-ov-xM9" secondAttribute="leading" id="Hp2-pE-vrU"/>
+                                    <constraint firstItem="ZGB-Fv-RyD" firstAttribute="top" secondItem="sZk-ov-xM9" secondAttribute="top" id="gco-UV-Ton"/>
+                                    <constraint firstAttribute="bottom" secondItem="ZGB-Fv-RyD" secondAttribute="bottom" id="kDN-dK-VDR"/>
+                                    <constraint firstAttribute="trailing" secondItem="ZGB-Fv-RyD" secondAttribute="trailing" id="oWB-ok-dt0"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="k66-Qr-MnL"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="oof-ic-Drb"/>
+                            </scrollView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="GVJ-ma-f8z"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ZGB-Fv-RyD" firstAttribute="height" secondItem="jbV-U5-4nS" secondAttribute="height" priority="250" id="4St-24-fkS"/>
+                            <constraint firstItem="sZk-ov-xM9" firstAttribute="top" secondItem="GVJ-ma-f8z" secondAttribute="top" id="DmA-sa-8tC"/>
+                            <constraint firstItem="sZk-ov-xM9" firstAttribute="leading" secondItem="GVJ-ma-f8z" secondAttribute="leading" id="HyM-Af-w2j"/>
+                            <constraint firstItem="ZGB-Fv-RyD" firstAttribute="width" secondItem="jbV-U5-4nS" secondAttribute="width" priority="250" id="HzI-Gz-B5j"/>
+                            <constraint firstItem="GVJ-ma-f8z" firstAttribute="trailing" secondItem="sZk-ov-xM9" secondAttribute="trailing" id="Xrv-yI-t1U"/>
+                            <constraint firstItem="GVJ-ma-f8z" firstAttribute="bottom" secondItem="sZk-ov-xM9" secondAttribute="bottom" id="aPd-e1-b90"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="imageView" destination="bHF-p9-TkT" id="mcV-GP-IJw"/>
+                        <outlet property="scrollView" destination="sZk-ov-xM9" id="9YJ-sz-Pcp"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="N9I-UK-KEP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2686" y="669"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="5vb-vC-DK9"/>
@@ -1134,6 +1193,9 @@ nplayers.arcadebelgium.be</string>
         <image name="noHardwareDefaultImage" width="148" height="159"/>
         <image name="space-invaders-placeholder" width="32" height="32"/>
         <image name="star_circle" width="33" height="33"/>
+        <systemColor name="darkTextColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="darkTextColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

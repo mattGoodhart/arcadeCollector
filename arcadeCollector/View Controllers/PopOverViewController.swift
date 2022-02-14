@@ -78,15 +78,19 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func setGameImageAnchors() {
-      //  imageView.translatesAutoresizingMaskIntoConstraints = false
-        portraitHeightAnchor = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 3.0/4.0)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         portraitWidthAnchor = imageView.widthAnchor.constraint(equalTo: margins.widthAnchor)
+        portraitHeightAnchor = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 3.0/4.0)
         landscapeHeightAnchor =  imageView.heightAnchor.constraint(equalTo: margins.heightAnchor)
         landscapeWidthAnchor = imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 4.0/3.0)
-        centerX = imageView.centerXAnchor.constraint(equalTo: margins.centerXAnchor)
-        centerY = imageView.centerYAnchor.constraint(equalTo: margins.centerYAnchor)
-        centerX.isActive = true
-        centerY.isActive = true
+//        centerX = imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)
+//        centerY = imageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+//        centerX.isActive = true
+//        centerY.isActive = true
+        imageView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
     }
     
     func setView() {
@@ -155,7 +159,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             scrollView.isHidden = false
            // setDismissButton()
             
-        case "xgameImageView":
+        case "gameImageView":
             imageView.translatesAutoresizingMaskIntoConstraints = false
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
@@ -165,7 +169,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             imageView.image = image
             scrollView.isHidden = false
             
-        case "gameImageView":
+        case "xgameImageView":
             appDelegate.allowedOrientations = .all
             imageView.translatesAutoresizingMaskIntoConstraints = false
            // let scrollView = UIScrollView()
