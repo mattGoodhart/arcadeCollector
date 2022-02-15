@@ -12,7 +12,7 @@ import CoreData
 @UIApplicationMain class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-    var allowedOrientations: UIInterfaceOrientationMask = .all
+    var allowedOrientations: UIInterfaceOrientationMask = .portrait
   
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         

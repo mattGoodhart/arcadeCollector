@@ -51,9 +51,7 @@ class DetailViewController: UIViewController, EditGameDelegate {
         setImageViewAspectRatio()
         setOtherConstraints()
         determineCollectionsGameBelongsTo()
-        
-//        handleActivityIndicator(indicator: marqueeActivityIndicator, vc: self, show: false)
-//        handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: false)
+
         self.title = viewedGame.title
         
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.mainImageTapped))
@@ -62,7 +60,7 @@ class DetailViewController: UIViewController, EditGameDelegate {
         configureGestureForImageView(imageView: mainImageView, gestureRecognizer: tapRecognizer)
         configureGestureForImageView(imageView: marqueeView, gestureRecognizer: marqueeTapRecognizer)
         
-        marqueeView.image = UIImage(named: "missing_marquee") // do this in storyboard instead?
+      //  marqueeView.image = UIImage(named: "missing_marquee")
         mainImageView.image = nil // there will always be some image, so a placeholder unecessary
         getDetailsIfNeeded()
     }
@@ -491,22 +489,34 @@ class DetailViewController: UIViewController, EditGameDelegate {
     }
     
     func photoTapped(imageView: UIImageView) {
-        let popOverViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
-        popOverViewController.modalTransitionStyle = .crossDissolve
+        
+        let zoomableImageViewController = storyboard!.instantiateViewController(withIdentifier: "ZoomableImageViewController") as! ZoomableImageViewController
+        zoomableImageViewController.modalTransitionStyle = .crossDissolve
         
         if imageView == mainImageView && mainImageSwitch.selectedSegmentIndex != 0 {
-            setImageForPopOver(viewController: popOverViewController, imageView: imageView, viewType: "gameImageView")
+            setImageForPopOver(viewController: zoomableImageViewController, imageView: imageView, isInGameImage: true)
+        } else {
+            setImageForPopOver(viewController: zoomableImageViewController, imageView: imageView, isInGameImage: false)
         }
+        present(zoomableImageViewController, animated: true, completion: nil)
         
-        if imageView == mainImageView && mainImageSwitch.selectedSegmentIndex == 0 {
-            setImageForPopOver(viewController: popOverViewController, imageView: imageView, viewType: "flyerView")
-        }
         
-        if imageView == self.marqueeView {
-            setImageForPopOver(viewController: popOverViewController, imageView: imageView, viewType: "marqueeView")
-        }
-        
-        present(popOverViewController, animated: true, completion: nil)
+//        let popOverViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
+//        popOverViewController.modalTransitionStyle = .crossDissolve
+//
+//        if imageView == mainImageView && mainImageSwitch.selectedSegmentIndex != 0 {
+//            setImageForPopOver(viewController: popOverViewController, imageView: imageView, viewType: "gameImageView")
+//        }
+//
+//        if imageView == mainImageView && mainImageSwitch.selectedSegmentIndex == 0 {
+//            setImageForPopOver(viewController: popOverViewController, imageView: imageView, viewType: "flyerView")
+//        }
+//
+//        if imageView == self.marqueeView {
+//            setImageForPopOver(viewController: popOverViewController, imageView: imageView, viewType: "marqueeView")
+//        }
+//
+//        present(popOverViewController, animated: true, completion: nil)
     }
     
     func configureGestureForImageView(imageView: UIImageView, gestureRecognizer: UIGestureRecognizer) {
@@ -514,18 +524,25 @@ class DetailViewController: UIViewController, EditGameDelegate {
         imageView.isUserInteractionEnabled = true
     }
     
-    func setImageForPopOver(viewController: PopOverViewController, imageView: UIImageView, viewType: String) {
-       
-        if viewType != "marqueeView" {
-            viewController.image = imageView.image
-        } else {
-            viewController.marqueeImage = imageView.image
-        }
-        viewController.type = viewType
-        guard viewType == "gameImageView" else {
-            return
-        }
+    func setImageForPopOver(viewController: ZoomableImageViewController, imageView: UIImageView, isInGameImage: Bool) {
+        viewController.image = imageView.image
+        viewController.isInGameImage = isInGameImage
         viewController.orientation = viewedGame.orientation
+        
+        
+        
+        
+        
+//        if viewType != "marqueeView" {
+//            viewController.image = imageView.image
+//        } else {
+//            viewController.marqueeImage = imageView.image
+//        }
+//        viewController.type = viewType
+//        guard viewType == "gameImageView" else {
+//            return
+//        }
+//        viewController.orientation = viewedGame.orientation
     }
     
     // MARK: EditGameDelegate

@@ -820,6 +820,32 @@ nplayers.arcadebelgium.be</string>
             </objects>
             <point key="canvasLocation" x="1725.5999999999999" y="682.3088455772114"/>
         </scene>
+        <!--Zoomable Image View Controller-->
+        <scene sceneID="TOZ-4d-9cR">
+            <objects>
+                <viewController storyboardIdentifier="ZoomableImageViewController" id="ykb-E4-de9" userLabel="Zoomable Image View Controller" customClass="ZoomableImageViewController" customModule="arcadeCollector" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="c5c-xH-rrV">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jiy-07-Osk">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <viewLayoutGuide key="contentLayoutGuide" id="zgy-r8-iJp"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="lqO-e5-PaJ"/>
+                            </scrollView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="EyV-d7-XGV"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <connections>
+                        <outlet property="scrollView" destination="Jiy-07-Osk" id="BcA-Jg-kho"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hJ8-NP-T0r" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2516" y="680.5097451274363"/>
+        </scene>
         <!--Filter Options Popup-->
         <scene sceneID="zfJ-hP-eWy">
             <objects>

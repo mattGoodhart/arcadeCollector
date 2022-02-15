@@ -155,7 +155,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             scrollView.isHidden = false
            // setDismissButton()
             
-        case "xgameImageView":
+        case "gameImageView":
             imageView.translatesAutoresizingMaskIntoConstraints = false
             appDelegate.allowedOrientations = .all
             view.backgroundColor = UIColor.black
@@ -165,7 +165,7 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             imageView.image = image
             scrollView.isHidden = false
             
-        case "gameImageView":
+        case "xgameImageView":
             appDelegate.allowedOrientations = .all
             imageView.translatesAutoresizingMaskIntoConstraints = false
            // let scrollView = UIScrollView()
