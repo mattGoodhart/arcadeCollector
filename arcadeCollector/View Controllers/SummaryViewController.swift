@@ -21,6 +21,9 @@ class SummaryViewController: UIViewController {
     @IBOutlet weak var nonWorkingBoardsLabel: UILabel!
     @IBOutlet weak var boardsStatus: UILabel!
     
+    @IBOutlet weak var boardsPieChart: PieChartView!
+    @IBOutlet weak var allHardwarePieChart: PieChartView!
+    
     let masterCollection = CollectionManager.shared
     let dataController = DataController.shared
     var workingBoardsCount = 0
@@ -30,16 +33,109 @@ class SummaryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Summary"
+       
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
-        (UIApplication.shared.delegate as? AppDelegate)?.allowedOrientations = .portrait
-        setBoardFunctionalityCounts()
+       // (UIApplication.shared.delegate as? AppDelegate)?.allowedOrientations = .portrait
+        //setBoardFunctionalityCounts()
+        masterCollection.getBoardsByWorkingCondition()
         masterCollection.getCabinetHardware()
-        masterCollection.getAllHardwareCount()
-        setGameCollectionCounts()
+      //  masterCollection.getAllHardware()
+        setWantedGamesCount()
+        buildDataForCharts()
+       // setGameCollectionCounts()
     }
+    
+        
+    func buildDataForCharts() {
+        buildBoardChart()
+       
+        buildAllHardwareChart()
+      
+    }
+    
+    
+    func buildBoardChart() {
+        masterCollection.getBoardsByWorkingCondition()
+        
+        if masterCollection.boardsInCollection.count != 1 {
+            self.boardsStatus.text = String(masterCollection.boardsInCollection.count) + " Boards in Collection"
+        } else {
+            self.boardsStatus.text = String(masterCollection.boardsInCollection.count) + " Board in Collection"
+        }
+        
+        let boardConditionArray = ["Working", "Booting", "Not Working"]
+        let boardConditionCounts = [Double(masterCollection.workingBoards.count), Double(masterCollection.partiallyWorkingBoards.count), Double(masterCollection.nonWorkingBoards.count)]
+        
+        let boardConditionDictionary: [String : Double] = Dictionary(uniqueKeysWithValues: zip(boardConditionArray, boardConditionCounts))
+    
+        
+        var boardDataEntries: [ChartDataEntry] = []
+        
+            for entry in boardConditionDictionary {
+                let boardDataEntry = PieChartDataEntry(value: entry.value, label: entry.key, data: entry.key)
+                boardDataEntries.append(boardDataEntry)
+            } // this is where the data array seems to get out of order (so colors not assigning correctly)
+        
+        let boardPieChartDataSet = PieChartDataSet(boardDataEntries)
+        boardPieChartDataSet.colors = [UIColor.green, UIColor.yellow, UIColor.red]
+        
+        let boardPieChartData = PieChartData(dataSet: boardPieChartDataSet)
+        
+        let format = NumberFormatter()
+        format.numberStyle = .none
+        let formatter = DefaultValueFormatter(formatter: format)
+        boardPieChartData.setValueFormatter(formatter)
+        
+        boardsPieChart.data = boardPieChartData
+        
+   //     masterCollection.hardwareCountsDictionary["Boards"] = Double(masterCollection.boardsInCollection.count)
+        
+        if masterCollection.boardsInCollection.count == 0 {
+            boardsPieChart.isHidden = true
+        }
+    }
+    
+    func buildAllHardwareChart() {
+       
+        masterCollection.getCabinetHardware()
+     //   masterCollection.hardwareCountsDictionary["Boards"] = Double(masterCollection.boardsInCollection.count)
+        
+        var allHardwareDataEntries: [ChartDataEntry] = []
+        
+        for entry in masterCollection.hardwareCountsDictionary {
+            let hardwareDataEntry = PieChartDataEntry(value: entry.value, label: entry.key, data: entry.key)
+            allHardwareDataEntries.append(hardwareDataEntry)
+        }
+        
+        let allHardwareChartDataSet = PieChartDataSet(allHardwareDataEntries)
+        let allHardwareChartData = PieChartData(dataSet: allHardwareChartDataSet)
+        
+        allHardwareChartDataSet.colors = [UIColor.green, UIColor.yellow, UIColor.red]
+        
+        let format = NumberFormatter()
+        format.numberStyle = .none
+        let formatter = DefaultValueFormatter(formatter: format)
+        allHardwareChartData.setValueFormatter(formatter)
+        
+        allHardwarePieChart.data = allHardwareChartData
+        
+        if masterCollection.hardwareCountsDictionary.isEmpty {
+            allHardwarePieChart.isHidden = true
+        }
+    }
+    
+    func setWantedGamesCount() {
+        if masterCollection.wantedGames.count != 1 {
+            self.wantedGamesLabel.text = "\(masterCollection.wantedGames.count) Wanted Games"
+        } else {
+            self.wantedGamesLabel.text = "\(masterCollection.wantedGames.count) Wanted Game"
+        }
+    }
+    
     
     func setGameCollectionCounts() {
         self.allGamesLabel.text = "\(masterCollection.allGames.count) Unique Games in Reference"

@@ -33,6 +33,8 @@ class CollectionManager {
     var collectedCabinetHardWare: [Game] = []
     var boardsInCollection: [Game] = []
     var allHardwareInCollection: [Game] = []
+    var hardwareCountsDictionary: [String: Double] = [:]
+    var cabinetHardwareCountsDictionary: [String: Double] = [:]
     
     // MARK: - Initialization
 
@@ -199,9 +201,18 @@ class CollectionManager {
             }
         }
         collectedCabinetHardWare = cabinets + monitors + controls + bezels + controlPanelOverlays + artworks + marquees
+        
+        //let monitorsDouble = Double(monitors.count)
+        
+        
+        hardwareCountsDictionary = ["Boards" : Double(boardsInCollection.count), "Monitors" : Double(monitors.count), "Controls" : Double(controls.count), "Bezels" : Double(bezels.count), "CPOs": Double(controlPanelOverlays.count), "Art" : Double(artworks.count), "Marquees" : Double(marquees.count)]
+        
+     
+        
+
     }
     
-    func getAllHardwareCount() {
+    func getAllHardware() {
         allHardwareInCollection = boardsInCollection + collectedCabinetHardWare
     }
 }
