@@ -61,24 +61,20 @@ class SummaryViewController: UIViewController {
     func buildBoardChart() {
         masterCollection.getBoardsByWorkingCondition()
         
-        if masterCollection.boardsInCollection.count != 1 {
-            self.boardsStatus.text = String(masterCollection.boardsInCollection.count) + " Boards in Collection"
-        } else {
-            self.boardsStatus.text = String(masterCollection.boardsInCollection.count) + " Board in Collection"
-        }
-        
         let boardConditionArray = ["Working", "Booting", "Not Working"]
         let boardConditionCounts = [Double(masterCollection.workingBoards.count), Double(masterCollection.partiallyWorkingBoards.count), Double(masterCollection.nonWorkingBoards.count)]
         
         let boardConditionDictionary: [String : Double] = Dictionary(uniqueKeysWithValues: zip(boardConditionArray, boardConditionCounts))
     
-        
         var boardDataEntries: [ChartDataEntry] = []
         
-            for entry in boardConditionDictionary {
+        for entry in boardConditionDictionary {
+            
+            if entry.value != 0 {
                 let boardDataEntry = PieChartDataEntry(value: entry.value, label: entry.key, data: entry.key)
                 boardDataEntries.append(boardDataEntry)
-            } // this is where the data array seems to get out of order (so colors not assigning correctly)
+            }
+        } // this is where the data array seems to get out of order (so colors not assigning correctly)
         
         let boardPieChartDataSet = PieChartDataSet(boardDataEntries)
         boardPieChartDataSet.colors = [UIColor.green, UIColor.yellow, UIColor.red]
@@ -87,10 +83,15 @@ class SummaryViewController: UIViewController {
         
         let format = NumberFormatter()
         format.numberStyle = .none
+      // format.zeroSymbol = ""
         let formatter = DefaultValueFormatter(formatter: format)
         boardPieChartData.setValueFormatter(formatter)
         
         boardsPieChart.data = boardPieChartData
+        
+        boardsPieChart.centerText = "Boards"
+     //   boardsPieChart.legend.drawInside = true
+        boardsPieChart.legend.enabled = false
         
    //     masterCollection.hardwareCountsDictionary["Boards"] = Double(masterCollection.boardsInCollection.count)
         
@@ -100,15 +101,18 @@ class SummaryViewController: UIViewController {
     }
     
     func buildAllHardwareChart() {
-       
+        
         masterCollection.getCabinetHardware()
-     //   masterCollection.hardwareCountsDictionary["Boards"] = Double(masterCollection.boardsInCollection.count)
+        //   masterCollection.hardwareCountsDictionary["Boards"] = Double(masterCollection.boardsInCollection.count)
         
         var allHardwareDataEntries: [ChartDataEntry] = []
         
         for entry in masterCollection.hardwareCountsDictionary {
-            let hardwareDataEntry = PieChartDataEntry(value: entry.value, label: entry.key, data: entry.key)
-            allHardwareDataEntries.append(hardwareDataEntry)
+            if entry.value != 0.0 {
+                
+                let hardwareDataEntry = PieChartDataEntry(value: entry.value, label: entry.key, data: entry.key)
+                allHardwareDataEntries.append(hardwareDataEntry)
+            }
         }
         
         let allHardwareChartDataSet = PieChartDataSet(allHardwareDataEntries)
@@ -123,9 +127,11 @@ class SummaryViewController: UIViewController {
         
         allHardwarePieChart.data = allHardwareChartData
         
-        if masterCollection.hardwareCountsDictionary.isEmpty {
-            allHardwarePieChart.isHidden = true
-        }
+        allHardwarePieChart.legend.enabled = false
+        
+//        if masterCollection.hardwareCountsDictionary.isEmpty {
+//            allHardwarePieChart.isHidden = true
+//        }
     }
     
     func setWantedGamesCount() {
