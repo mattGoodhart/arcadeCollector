@@ -23,18 +23,21 @@ class CollectionManager {
     var allGamesCollection: CollectionEntity!
     var myGamesCollection: CollectionEntity!
     var wantedGamesCollection: CollectionEntity!
-    var arrayOfUniqueYears: [String] = []
+   // var arrayOfUniqueYears: [String] = []
     var allGames: [Game] = []
     var myGames: [Game] = []
     var wantedGames: [Game] = []
-    var workingBoards: [Game] = []
-    var partiallyWorkingBoards: [Game] = []
-    var nonWorkingBoards: [Game] = []
-    var collectedCabinetHardWare: [Game] = []
-    var boardsInCollection: [Game] = []
-    var allHardwareInCollection: [Game] = []
+    var numberOfWorkingBoards: Int = 0
+    var numberOfBootingBoards: Int = 0
+    var numberOfNonWorkingBoards: Int = 0
+//    var workingBoards: [Game] = []
+//    var partiallyWorkingBoards: [Game] = []
+//    var nonWorkingBoards: [Game] = []
+   // var collectedCabinetHardWare: [Game] = []
+    var numberOfBoardsInCollection: Int = 0
+  //  var allHardwareInCollection: [Game] = []
     var hardwareCountsDictionary: [String: Double] = [:]
-    var cabinetHardwareCountsDictionary: [String: Double] = [:]
+   // var cabinetHardwareCountsDictionary: [String: Double] = [:]
     
     // MARK: - Initialization
 
@@ -158,9 +161,9 @@ class CollectionManager {
     }
     
     func getBoardsByWorkingCondition() {
-        workingBoards = []
-        partiallyWorkingBoards = []
-        nonWorkingBoards = []
+        var workingBoards : [Game] = []
+        var partiallyWorkingBoards : [Game] = []
+        var nonWorkingBoards : [Game] = []
         
         for board in myGames {
             switch Int(board.functionalCondition) {
@@ -174,11 +177,14 @@ class CollectionManager {
                 break
             }
         }
-        boardsInCollection = workingBoards + partiallyWorkingBoards + nonWorkingBoards
+        numberOfWorkingBoards = workingBoards.count
+        numberOfBootingBoards = partiallyWorkingBoards.count
+        numberOfNonWorkingBoards = nonWorkingBoards.count
+        numberOfBoardsInCollection = workingBoards.count + partiallyWorkingBoards.count + nonWorkingBoards.count
     }
     
     func getCabinetHardware() {
-        collectedCabinetHardWare = []
+      //  collectedCabinetHardWare = []
         
         var cabinets = [Game]()
         var monitors = [Game]()
@@ -200,19 +206,14 @@ class CollectionManager {
             if game.hasMarquee { marquees += [game] }
             }
         }
-        collectedCabinetHardWare = cabinets + monitors + controls + bezels + controlPanelOverlays + artworks + marquees
-        
-        //let monitorsDouble = Double(monitors.count)
-        
-        
-        hardwareCountsDictionary = ["Boards" : Double(boardsInCollection.count), "Monitors" : Double(monitors.count), "Controls" : Double(controls.count), "Bezels" : Double(bezels.count), "CPOs": Double(controlPanelOverlays.count), "Art" : Double(artworks.count), "Marquees" : Double(marquees.count)]
-        
      
+        //collectedCabinetHardWare = cabinets + monitors + controls + bezels + controlPanelOverlays + artworks + marquees
         
-
+        hardwareCountsDictionary = ["Boards" : Double(numberOfBoardsInCollection), "Monitors" : Double(monitors.count), "Controls" : Double(controls.count), "Bezels" : Double(bezels.count), "CPOs": Double(controlPanelOverlays.count), "Art" : Double(artworks.count), "Marquees" : Double(marquees.count)]
+        
     }
     
-    func getAllHardware() {
-        allHardwareInCollection = boardsInCollection + collectedCabinetHardWare
-    }
+//    func getAllHardware() {
+//        allHardwareInCollection = boardsInCollection + collectedCabinetHardWare
+//    }
 }
