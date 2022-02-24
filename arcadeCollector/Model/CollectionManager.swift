@@ -23,18 +23,14 @@ class CollectionManager {
     var allGamesCollection: CollectionEntity!
     var myGamesCollection: CollectionEntity!
     var wantedGamesCollection: CollectionEntity!
-    var arrayOfUniqueYears: [String] = []
     var allGames: [Game] = []
     var myGames: [Game] = []
     var wantedGames: [Game] = []
     var workingBoards: [Game] = []
     var partiallyWorkingBoards: [Game] = []
     var nonWorkingBoards: [Game] = []
-    var collectedCabinetHardWare: [Game] = []
     var boardsInCollection: [Game] = []
-    var allHardwareInCollection: [Game] = []
     var hardwareCountsDictionary: [String: Double] = [:]
-    var cabinetHardwareCountsDictionary: [String: Double] = [:]
     
     // MARK: - Initialization
 
@@ -68,10 +64,9 @@ class CollectionManager {
         initializeAllGames()
     }
     
-    private func fetchCollectionsFromCoreData() -> [CollectionEntity]? {
-        let fetchRequest: NSFetchRequest<CollectionEntity> = CollectionEntity.fetchRequest()
-        let fetchResult = try? dataController.viewContext.fetch(fetchRequest)
-        return fetchResult
+    private func collection(from collections: [CollectionEntity],
+                            with name: CollectionName) -> CollectionEntity? {
+        return collections.first(where: { $0.name == name.rawValue })
     }
     
     private func load(from collections: [CollectionEntity]) {
@@ -109,7 +104,8 @@ class CollectionManager {
                 gameEntity.hasBoard = false
                 gameEntity.hasCabinet = false
                 gameEntity.hasCabinetArt = false
-                gameEntity.hasCabinetHardware = false
+                gameEntity.hasMarquee = false
+               // gameEntity.hasCabinetHardware = false
                 gameEntity.hasControlPanelOverlay = false
                 gameEntity.hasControls = false
                 gameEntity.hasMonitorFlag = false
@@ -128,13 +124,14 @@ class CollectionManager {
         parse(jsonData: readLocalFile(forName: "ScrollingData")!)
     }
     
-    private func collection(from collections: [CollectionEntity],
-                            with name: CollectionName) -> CollectionEntity? {
-        return collections.first(where: { $0.name == name.rawValue })
-    }
-    
     // MARK: - Fetching
 
+    private func fetchCollectionsFromCoreData() -> [CollectionEntity]? {
+        let fetchRequest: NSFetchRequest<CollectionEntity> = CollectionEntity.fetchRequest()
+        let fetchResult = try? dataController.viewContext.fetch(fetchRequest)
+        return fetchResult
+    }
+    
     func fetchGamesForCollection(collection: CollectionEntity) -> [Game]? {
         let fetchRequest: NSFetchRequest<Game> = Game.fetchRequest()
         let predicate = NSPredicate(format: "collection CONTAINS %@", collection)
@@ -157,28 +154,32 @@ class CollectionManager {
         self.wantedGames += fetchGamesForCollection(collection: wantedGamesCollection) ?? []
     }
     
+    //MARK: - Other Methods
+    
     func getBoardsByWorkingCondition() {
         workingBoards = []
         partiallyWorkingBoards = []
         nonWorkingBoards = []
         
-        for board in myGames {
-            switch Int(board.functionalCondition) {
-            case 0:
-                workingBoards += [board]
-            case 1:
-                partiallyWorkingBoards += [board]
-            case 2:
-                nonWorkingBoards += [board]
-            default:
-                break
+        for game in myGames {
+            if game.hasBoard {
+                switch Int(game.functionalCondition) {
+                case 0:
+                    workingBoards += [game]
+                case 1:
+                    partiallyWorkingBoards += [game]
+                case 2:
+                    nonWorkingBoards += [game]
+                default:
+                    break
+                }
             }
+            //   boardsInCollection += board
         }
         boardsInCollection = workingBoards + partiallyWorkingBoards + nonWorkingBoards
     }
     
     func getCabinetHardware() {
-        collectedCabinetHardWare = []
         
         var cabinets = [Game]()
         var monitors = [Game]()
@@ -189,7 +190,7 @@ class CollectionManager {
         var marquees = [Game]()
         
         for game in myGames {
-            if game.hasCabinetHardware {
+            
                 
             if game.hasCabinet { cabinets += [game] }
             if game.hasMonitorFlag { monitors += [game] }
@@ -198,21 +199,9 @@ class CollectionManager {
             if game.hasControlPanelOverlay { controlPanelOverlays += [game] }
             if game.hasCabinetArt { artworks += [game] }
             if game.hasMarquee { marquees += [game] }
-            }
+            
         }
-        collectedCabinetHardWare = cabinets + monitors + controls + bezels + controlPanelOverlays + artworks + marquees
         
-        //let monitorsDouble = Double(monitors.count)
-        
-        
-        hardwareCountsDictionary = ["Boards" : Double(boardsInCollection.count), "Monitors" : Double(monitors.count), "Controls" : Double(controls.count), "Bezels" : Double(bezels.count), "CPOs": Double(controlPanelOverlays.count), "Art" : Double(artworks.count), "Marquees" : Double(marquees.count)]
-        
-     
-        
-
-    }
-    
-    func getAllHardware() {
-        allHardwareInCollection = boardsInCollection + collectedCabinetHardWare
+        hardwareCountsDictionary = ["Boards" : Double(boardsInCollection.count), "Monitors" : Double(monitors.count), "Controls" : Double(controls.count), "Bezels" : Double(bezels.count), "CPOs": Double(controlPanelOverlays.count), "Art" : Double(artworks.count), "Marquees" : Double(marquees.count), "Cabinets": Double(cabinets.count)]
     }
 }

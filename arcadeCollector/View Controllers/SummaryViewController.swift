@@ -12,15 +12,12 @@ import Charts
 
 class SummaryViewController: UIViewController {
     
-    @IBOutlet weak var allGamesLabel: UILabel!
-    @IBOutlet weak var myCollectionLabel: UILabel!
+
     @IBOutlet weak var wantedGamesLabel: UILabel!
     @IBOutlet weak var aboutButton: UIButton!
-    @IBOutlet weak var workingBoardsLabel: UILabel!
-    @IBOutlet weak var partiallyWorkingBoardsLabel: UILabel!
-    @IBOutlet weak var nonWorkingBoardsLabel: UILabel!
-    @IBOutlet weak var boardsStatus: UILabel!
-    
+
+    @IBOutlet weak var chartsStackView: UIStackView!
+    @IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet weak var boardsPieChart: PieChartView!
     @IBOutlet weak var allHardwarePieChart: PieChartView!
     
@@ -30,36 +27,39 @@ class SummaryViewController: UIViewController {
     var partiallyWorkingBoardsCount = 0
     var nonWorkingBoardsCount = 0
     
+    let chartGreen = UIColor(displayP3Red: 0, green: (104/255), blue: (56/255), alpha: 1)
+    let chartYellow = UIColor(displayP3Red: (202/255), green: (179/255), blue: (74/255), alpha: 1)
+    let chartBlue = UIColor(displayP3Red: (183/255), green: (237/255), blue: (224/255), alpha: 1)
+    let chartLightGreen = UIColor(displayP3Red: (42/255), green: (134/255), blue: (74/255), alpha: 1)
+    let chartLightYellow = UIColor(displayP3Red: 1, green: (223/255), blue: (93/255), alpha: 1)
+    let chartOrange = UIColor(displayP3Red: (248/255), green: (155/255), blue: (101/255), alpha: 1)
+    let chartSeaFoam = UIColor(displayP3Red: (100/255), green: (177/255), blue: (148/255), alpha: 1)
+    let chartPink = UIColor(displayP3Red: (245/255), green: (151/255), blue: (180/255), alpha: 1)
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Summary"
-       
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
-       // (UIApplication.shared.delegate as? AppDelegate)?.allowedOrientations = .portrait
-        //setBoardFunctionalityCounts()
         masterCollection.getBoardsByWorkingCondition()
         masterCollection.getCabinetHardware()
-      //  masterCollection.getAllHardware()
         setWantedGamesCount()
         buildDataForCharts()
-       // setGameCollectionCounts()
     }
     
         
     func buildDataForCharts() {
         buildBoardChart()
-       
         buildAllHardwareChart()
-      
+        boardsPieChart.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
+        allHardwarePieChart.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
     }
     
-    
     func buildBoardChart() {
-        masterCollection.getBoardsByWorkingCondition()
+    //    masterCollection.getBoardsByWorkingCondition()
         
         let boardConditionArray = ["Working", "Booting", "Not Working"]
         let boardConditionCounts = [Double(masterCollection.workingBoards.count), Double(masterCollection.partiallyWorkingBoards.count), Double(masterCollection.nonWorkingBoards.count)]
@@ -77,23 +77,28 @@ class SummaryViewController: UIViewController {
         } // this is where the data array seems to get out of order (so colors not assigning correctly)
         
         let boardPieChartDataSet = PieChartDataSet(boardDataEntries)
-        boardPieChartDataSet.colors = [UIColor.green, UIColor.yellow, UIColor.red]
+        boardPieChartDataSet.colors = [chartGreen, chartLightYellow, UIColor.red]
+        
+        boardPieChartDataSet.valueLinePart1OffsetPercentage = 0.5
+        boardPieChartDataSet.valueLinePart1Length = 0.2
+        boardPieChartDataSet.valueLinePart2Length = 0.4
+        boardPieChartDataSet.yValuePosition = .outsideSlice
         
         let boardPieChartData = PieChartData(dataSet: boardPieChartDataSet)
         
         let format = NumberFormatter()
         format.numberStyle = .none
-      // format.zeroSymbol = ""
         let formatter = DefaultValueFormatter(formatter: format)
         boardPieChartData.setValueFormatter(formatter)
         
         boardsPieChart.data = boardPieChartData
+        boardsPieChart.data?.setValueTextColor(.black)
         
         boardsPieChart.centerText = "Boards"
-     //   boardsPieChart.legend.drawInside = true
         boardsPieChart.legend.enabled = false
+         
+        boardsPieChart.backgroundColor = .orange
         
-   //     masterCollection.hardwareCountsDictionary["Boards"] = Double(masterCollection.boardsInCollection.count)
         
         if masterCollection.boardsInCollection.count == 0 {
             boardsPieChart.isHidden = true
@@ -102,8 +107,9 @@ class SummaryViewController: UIViewController {
     
     func buildAllHardwareChart() {
         
-        masterCollection.getCabinetHardware()
-        //   masterCollection.hardwareCountsDictionary["Boards"] = Double(masterCollection.boardsInCollection.count)
+        // masterCollection.getCabinetHardware()
+        
+        var hardwareCountsTotal: Double = 0.0
         
         var allHardwareDataEntries: [ChartDataEntry] = []
         
@@ -112,13 +118,19 @@ class SummaryViewController: UIViewController {
                 
                 let hardwareDataEntry = PieChartDataEntry(value: entry.value, label: entry.key, data: entry.key)
                 allHardwareDataEntries.append(hardwareDataEntry)
+                hardwareCountsTotal += entry.value
             }
+        }
+        
+        guard hardwareCountsTotal != 0.0 else {
+            allHardwarePieChart.isHidden = true
+            return
         }
         
         let allHardwareChartDataSet = PieChartDataSet(allHardwareDataEntries)
         let allHardwareChartData = PieChartData(dataSet: allHardwareChartDataSet)
         
-        allHardwareChartDataSet.colors = [UIColor.green, UIColor.yellow, UIColor.red]
+        allHardwareChartDataSet.colors = [chartGreen, chartLightGreen, chartSeaFoam, chartBlue, chartLightYellow, chartYellow, chartOrange, chartPink]
         
         let format = NumberFormatter()
         format.numberStyle = .none
@@ -128,8 +140,13 @@ class SummaryViewController: UIViewController {
         allHardwarePieChart.data = allHardwareChartData
         
         allHardwarePieChart.legend.enabled = false
+        allHardwarePieChart.centerText = "Hardware"
         
-//        if masterCollection.hardwareCountsDictionary.isEmpty {
+        allHardwarePieChart.backgroundColor = .blue
+        
+        
+        //
+//        if hardwareCountsTotal == 0.0 {
 //            allHardwarePieChart.isHidden = true
 //        }
     }
@@ -142,47 +159,6 @@ class SummaryViewController: UIViewController {
         }
     }
     
-    
-    func setGameCollectionCounts() {
-        self.allGamesLabel.text = "\(masterCollection.allGames.count) Unique Games in Reference"
-        
-        if masterCollection.allHardwareInCollection.count != 1 { self.myCollectionLabel.text = "\(masterCollection.allHardwareInCollection.count) Pieces of Hardware in Collection" }
-        else { self.myCollectionLabel.text = "\(masterCollection.allHardwareInCollection.count) Piece of Hardware in Collection" }
-        
-        if masterCollection.wantedGames.count != 1 {
-            self.wantedGamesLabel.text = "\(masterCollection.wantedGames.count) Wanted Games"
-        } else {
-            self.wantedGamesLabel.text = "\(masterCollection.wantedGames.count) Wanted Game"
-        }
-    }
-    
-    func setBoardFunctionalityCounts() {
-        masterCollection.getBoardsByWorkingCondition()
-        
-        if masterCollection.workingBoards.count != 1 {
-            self.workingBoardsLabel.text = String(masterCollection.workingBoards.count) + " Fully Working Boards"
-        } else {
-            self.workingBoardsLabel.text = String(masterCollection.workingBoards.count) + " Fully Working Board"
-        }
-        
-        if masterCollection.partiallyWorkingBoards.count != 1 {
-            self.partiallyWorkingBoardsLabel.text = String(masterCollection.partiallyWorkingBoards.count) + " Partially Working Boards"
-        } else {
-            self.partiallyWorkingBoardsLabel.text = String(masterCollection.partiallyWorkingBoards.count) + " Partially Working Board"
-        }
-        
-        if masterCollection.nonWorkingBoards.count != 1{
-            self.nonWorkingBoardsLabel.text = String(masterCollection.nonWorkingBoards.count) + " Non-Working Boards"
-        } else {
-            self.nonWorkingBoardsLabel.text = String(masterCollection.nonWorkingBoards.count) + " Non-Working Board"
-        }
-        
-        if masterCollection.boardsInCollection.count != 1 {
-            self.boardsStatus.text = String(masterCollection.boardsInCollection.count) + " Boards in Collection"
-        } else {
-            self.boardsStatus.text = String(masterCollection.boardsInCollection.count) + " Board in Collection"
-        }
-    }
 
     @IBAction func aboutButtonPressed(_sender: UIButton) {
         performSegue(withIdentifier: "AboutSegue", sender: _sender)

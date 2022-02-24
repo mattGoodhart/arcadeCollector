@@ -42,28 +42,29 @@
                                 <rect key="frame" x="0.0" y="44" width="375" height="574"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="OPP-48-AFC" userLabel="Charts Stack View">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="387"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="416"/>
                                         <subviews>
-                                            <stackView opaque="NO" contentMode="scaleAspectFit" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="A9p-Mw-8Rd" userLabel="Board Status Stack View">
-                                                <rect key="frame" x="0.0" y="0.0" width="375" height="189.5"/>
+                                            <stackView opaque="NO" contentMode="scaleAspectFit" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="5RU-Xo-6yw" userLabel="Cabinet Hardware Stack View">
+                                                <rect key="frame" x="0.0" y="0.0" width="375" height="204"/>
                                                 <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noHardwareDefaultImage" translatesAutoresizingMaskIntoConstraints="NO" id="V6h-D0-wb8">
-                                                        <rect key="frame" x="0.0" y="0.0" width="187.5" height="189.5"/>
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Cab" translatesAutoresizingMaskIntoConstraints="NO" id="Skm-KL-UrK">
+                                                        <rect key="frame" x="0.0" y="0.0" width="187.5" height="204"/>
                                                     </imageView>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QH6-Bx-xqo" customClass="PieChartView" customModule="Charts">
-                                                        <rect key="frame" x="187.5" y="0.0" width="187.5" height="189.5"/>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Ja-rF-aT8" customClass="PieChartView" customModule="Charts">
+                                                        <rect key="frame" x="187.5" y="0.0" width="187.5" height="204"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     </view>
                                                 </subviews>
                                             </stackView>
-                                            <stackView opaque="NO" contentMode="scaleAspectFit" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="5RU-Xo-6yw" userLabel="Cabinet Hardware Stack View">
-                                                <rect key="frame" x="0.0" y="197.5" width="375" height="189.5"/>
+                                            <stackView opaque="NO" contentMode="scaleAspectFit" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="A9p-Mw-8Rd" userLabel="Board Status Stack View">
+                                                <rect key="frame" x="0.0" y="212" width="375" height="204"/>
                                                 <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Cab" translatesAutoresizingMaskIntoConstraints="NO" id="Skm-KL-UrK">
-                                                        <rect key="frame" x="0.0" y="0.0" width="187.5" height="189.5"/>
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noHardwareDefaultImage" translatesAutoresizingMaskIntoConstraints="NO" id="V6h-D0-wb8">
+                                                        <rect key="frame" x="0.0" y="0.0" width="187.5" height="204"/>
+                                                        <color key="tintColor" red="1" green="0.0" blue="0.13725490196078433" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </imageView>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Ja-rF-aT8" customClass="PieChartView" customModule="Charts">
-                                                        <rect key="frame" x="187.5" y="0.0" width="187.5" height="189.5"/>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QH6-Bx-xqo" customClass="PieChartView" customModule="Charts">
+                                                        <rect key="frame" x="187.5" y="0.0" width="187.5" height="204"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     </view>
                                                 </subviews>
@@ -71,13 +72,13 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleAspectFit" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="RoG-Qa-ztg" userLabel="Wanted Stack View">
-                                        <rect key="frame" x="131" y="395" width="113.5" height="57.5"/>
+                                        <rect key="frame" x="131" y="424" width="113.5" height="54"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Heart" translatesAutoresizingMaskIntoConstraints="NO" id="q8r-em-7jb">
-                                                <rect key="frame" x="0.0" y="0.0" width="46.5" height="57.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="46.5" height="54"/>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="250" text="Wanted" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EHQ-6Z-ecI">
-                                                <rect key="frame" x="54.5" y="0.0" width="59" height="57.5"/>
+                                                <rect key="frame" x="54.5" y="0.0" width="59" height="54"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -85,28 +86,26 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleAspectFill" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9iG-Dh-7em">
-                                        <rect key="frame" x="172.5" y="460.5" width="30" height="113.5"/>
+                                        <rect key="frame" x="172.5" y="486" width="30" height="88"/>
                                         <state key="normal" image="icons8-info"/>
                                         <connections>
                                             <action selector="aboutButtonPressedWith_sender:" destination="BYZ-38-t0r" eventType="touchUpInside" id="XlZ-qO-47x"/>
                                         </connections>
                                     </button>
                                 </subviews>
-                                <constraints>
-                                    <constraint firstItem="5RU-Xo-6yw" firstAttribute="height" secondItem="KIB-Fc-56s" secondAttribute="height" multiplier="0.33" id="amb-Ti-6EA"/>
-                                </constraints>
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <constraints>
                             <constraint firstItem="Wll-9G-dlj" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="7QW-zT-5tU"/>
                             <constraint firstItem="Wll-9G-dlj" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="CJt-5B-ShU"/>
-                            <constraint firstItem="A9p-Mw-8Rd" firstAttribute="height" secondItem="6Tk-OE-BBY" secondAttribute="height" multiplier="0.33" id="CcK-Z4-Sy5"/>
                             <constraint firstItem="KIB-Fc-56s" firstAttribute="height" secondItem="6Tk-OE-BBY" secondAttribute="height" id="M1E-wD-P5H"/>
+                            <constraint firstItem="A9p-Mw-8Rd" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.33" id="Mpa-k9-g1L"/>
                             <constraint firstItem="KIB-Fc-56s" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="SiS-e1-koO"/>
                             <constraint firstItem="KIB-Fc-56s" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="VEP-NM-RnR"/>
                             <constraint firstItem="Wll-9G-dlj" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" id="egD-Zj-ERk"/>
                             <constraint firstItem="KIB-Fc-56s" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="n24-ua-H2M"/>
+                            <constraint firstItem="5RU-Xo-6yw" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.33" id="qbV-9a-Njx"/>
                             <constraint firstItem="Wll-9G-dlj" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="ztW-4A-Odc"/>
                         </constraints>
                     </view>
@@ -116,6 +115,8 @@
                         <outlet property="aboutButton" destination="9iG-Dh-7em" id="Wfv-3f-hIv"/>
                         <outlet property="allHardwarePieChart" destination="6Ja-rF-aT8" id="LeK-7T-NNT"/>
                         <outlet property="boardsPieChart" destination="QH6-Bx-xqo" id="FYR-P4-d6n"/>
+                        <outlet property="chartsStackView" destination="OPP-48-AFC" id="xf3-Uq-xxP"/>
+                        <outlet property="mainStackView" destination="KIB-Fc-56s" id="c7o-TF-Icu"/>
                         <outlet property="wantedGamesLabel" destination="EHQ-6Z-ecI" id="XIg-r0-XNF"/>
                         <segue destination="pwW-Ib-jT5" kind="show" identifier="AboutSegue" id="kpX-Gv-4fo"/>
                     </connections>
@@ -967,9 +968,6 @@ nplayers.arcadebelgium.be</string>
                                             </textField>
                                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="naG-yA-OYd">
                                                 <rect key="frame" x="326" y="0.0" width="51" height="31"/>
-                                                <connections>
-                                                    <action selector="cabinetHardwareSwitchTapped:" destination="zwu-wC-BfZ" eventType="valueChanged" id="cx2-AF-Mfa"/>
-                                                </connections>
                                             </switch>
                                         </subviews>
                                     </stackView>
@@ -983,7 +981,7 @@ nplayers.arcadebelgium.be</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="XsJ-vi-XP0">
+                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="XsJ-vi-XP0">
                                                 <rect key="frame" x="326" y="0.0" width="51" height="31"/>
                                             </switch>
                                         </subviews>
@@ -998,7 +996,7 @@ nplayers.arcadebelgium.be</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Er8-FG-MlM">
+                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Er8-FG-MlM">
                                                 <rect key="frame" x="326" y="0.0" width="51" height="31"/>
                                             </switch>
                                         </subviews>
@@ -1013,7 +1011,7 @@ nplayers.arcadebelgium.be</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="NOD-ac-j9w">
+                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="NOD-ac-j9w">
                                                 <rect key="frame" x="326" y="0.0" width="51" height="31"/>
                                             </switch>
                                         </subviews>
@@ -1028,7 +1026,7 @@ nplayers.arcadebelgium.be</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Dna-In-CKb">
+                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Dna-In-CKb">
                                                 <rect key="frame" x="326" y="0.0" width="51" height="31"/>
                                             </switch>
                                         </subviews>
@@ -1043,7 +1041,7 @@ nplayers.arcadebelgium.be</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Z6n-mr-PAA">
+                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Z6n-mr-PAA">
                                                 <rect key="frame" x="326" y="0.0" width="51" height="31"/>
                                             </switch>
                                         </subviews>

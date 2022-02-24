@@ -47,11 +47,11 @@ class EditGameViewController: UIViewController {
     
     @IBAction func dismissButtonTapped(_ sender: UIButton) {
         getGameAttributeValuesFromSwitches()
-        if (viewedGame.hasBoard || viewedGame.hasCabinetHardware) && !masterCollection.myGames.contains(viewedGame) {
+        if (viewedGame.hasBoard || viewedGame.hasCabinet) && !masterCollection.myGames.contains(viewedGame) {
             masterCollection.myGames.append(viewedGame)
             masterCollection.myGamesCollection.addToGames(viewedGame)
             
-        } else if !viewedGame.hasBoard && !viewedGame.hasCabinetHardware, let removalIndex = masterCollection.myGames.firstIndex(of: viewedGame) {
+        } else if !viewedGame.hasBoard && !viewedGame.hasCabinet, let removalIndex = masterCollection.myGames.firstIndex(of: viewedGame) {
             masterCollection.myGames.remove(at: removalIndex)
             masterCollection.myGamesCollection.removeFromGames(viewedGame)
         }
@@ -69,35 +69,33 @@ class EditGameViewController: UIViewController {
         }
     }
     
-    @IBAction func cabinetHardwareSwitchTapped(_ sender: UISwitch) {
-        if sender.isOn {
-            enableCabinetTraits(state: true)
-        } else {
-            enableCabinetTraits(state: false)
-        }
-    }
+//    @IBAction func cabinetHardwareSwitchTapped(_ sender: UISwitch) {
+//        if sender.isOn {
+//            enableCabinetTraits(state: true)
+//        } else {
+//            enableCabinetTraits(state: false)
+//        }
+//    }
     
     func enableBoardTraits(state: Bool) {
         authenticity.isEnabled = state
-       // authenticity.isHidden = !state
         functionalCondition.isEnabled = state
-       // functionalCondition.isHidden = !state
     }
     
-    func enableCabinetTraits(state: Bool) {
-        //hasCabinet.isEnabled = state
-        hasMonitorFlag.isEnabled = state
-        //monitorStack.isHidden = !state
-        hasControls.isEnabled = state
-        //controlsStack.isHidden = !state
-        hasBezel.isEnabled = state
-       // bezelStack.isHidden = !state
-        hasControlPanelOverlay.isEnabled = state
-       // controlPanelOverlayStack.isHidden = !state
-        hasCabinetArt.isEnabled = state
-        //cabinetArtworkStack.isHidden = !state
-       // hasMarquee.isEnabled = state
-    }
+//    func enableCabinetTraits(state: Bool) {
+//        //hasCabinet.isEnabled = state
+//        hasMonitorFlag.isEnabled = state
+//        //monitorStack.isHidden = !state
+//        hasControls.isEnabled = state
+//        //controlsStack.isHidden = !state
+//        hasBezel.isEnabled = state
+//       // bezelStack.isHidden = !state
+//        hasControlPanelOverlay.isEnabled = state
+//       // controlPanelOverlayStack.isHidden = !state
+//        hasCabinetArt.isEnabled = state
+//        //cabinetArtworkStack.isHidden = !state
+//       // hasMarquee.isEnabled = state
+//    }
     
     func getGameAttributeValuesFromSwitches() {
         viewedGame.hasBoard = hasBoard.isOn
@@ -109,6 +107,7 @@ class EditGameViewController: UIViewController {
         viewedGame.hasCabinet = hasCabinet.isOn
         viewedGame.hasBezel = hasBezel.isOn
         viewedGame.hasMonitorFlag = hasMonitorFlag.isOn
+        viewedGame.hasMarquee = hasMarquee.isOn
         viewedGame.functionalCondition = Int16(functionalCondition.selectedSegmentIndex)
     }
     
