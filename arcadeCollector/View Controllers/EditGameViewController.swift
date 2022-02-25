@@ -47,11 +47,13 @@ class EditGameViewController: UIViewController {
     
     @IBAction func dismissButtonTapped(_ sender: UIButton) {
         getGameAttributeValuesFromSwitches()
-        if (viewedGame.hasBoard || viewedGame.hasCabinet) && !masterCollection.myGames.contains(viewedGame) {
+        if (viewedGame.hasBoard || viewedGame.hasCabinet || viewedGame.hasMarquee || viewedGame.hasMonitorFlag || viewedGame.hasControls || viewedGame.hasControlPanelOverlay || viewedGame.hasCabinetArt || viewedGame.hasBezel) && !masterCollection.myGames.contains(viewedGame) {
+            
             masterCollection.myGames.append(viewedGame)
             masterCollection.myGamesCollection.addToGames(viewedGame)
             
-        } else if !viewedGame.hasBoard && !viewedGame.hasCabinet, let removalIndex = masterCollection.myGames.firstIndex(of: viewedGame) {
+        } else if (!viewedGame.hasBoard && !viewedGame.hasCabinet && !viewedGame.hasMarquee && !viewedGame.hasMonitorFlag && !viewedGame.hasControls && !viewedGame.hasControlPanelOverlay && !viewedGame.hasCabinetArt && !viewedGame.hasBezel), let removalIndex = masterCollection.myGames.firstIndex(of: viewedGame) {
+            
             masterCollection.myGames.remove(at: removalIndex)
             masterCollection.myGamesCollection.removeFromGames(viewedGame)
         }
