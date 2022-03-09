@@ -102,6 +102,8 @@ class SummaryViewController: UIViewController {
         
         if masterCollection.boardsInCollection.count == 0 {
             boardsPieChart.isHidden = true
+        } else {
+            boardsPieChart.isHidden = false
         }
     }
     
@@ -127,6 +129,8 @@ class SummaryViewController: UIViewController {
             return
         }
         
+        allHardwarePieChart.isHidden = false
+        
         let allHardwareChartDataSet = PieChartDataSet(allHardwareDataEntries)
         let allHardwareChartData = PieChartData(dataSet: allHardwareChartDataSet)
         
@@ -145,7 +149,7 @@ class SummaryViewController: UIViewController {
         allHardwarePieChart.backgroundColor = .blue
         
         
-        //
+        
 //        if hardwareCountsTotal == 0.0 {
 //            allHardwarePieChart.isHidden = true
 //        }
