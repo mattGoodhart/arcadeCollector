@@ -60,13 +60,26 @@ class SummaryViewController: UIViewController {
     
     func buildBoardChart() {
     //    masterCollection.getBoardsByWorkingCondition()
+        boardsPieChart.isHidden = false
+        var boardDataEntries: [ChartDataEntry] = []
+     //   let boardPieChartDataSet = PieChartDataSet()
+        var boardPieChartData = PieChartData()
+        
+        guard masterCollection.boardsInCollection.count != 0 else {
+            
+            boardsPieChart.noDataText = "No Boards in Collection Yet!"
+           // boardsPieChart.isHidden = true
+            return
+        }
+        
+       
         
         let boardConditionArray = ["Working", "Booting", "Not Working"]
         let boardConditionCounts = [Double(masterCollection.workingBoards.count), Double(masterCollection.partiallyWorkingBoards.count), Double(masterCollection.nonWorkingBoards.count)]
         
         let boardConditionDictionary: [String : Double] = Dictionary(uniqueKeysWithValues: zip(boardConditionArray, boardConditionCounts))
     
-        var boardDataEntries: [ChartDataEntry] = []
+       // var boardDataEntries: [ChartDataEntry] = []
         
         for entry in boardConditionDictionary {
             
@@ -84,7 +97,7 @@ class SummaryViewController: UIViewController {
         boardPieChartDataSet.valueLinePart2Length = 0.4
         boardPieChartDataSet.yValuePosition = .outsideSlice
         
-        let boardPieChartData = PieChartData(dataSet: boardPieChartDataSet)
+        boardPieChartData = PieChartData(dataSet: boardPieChartDataSet)
         
         let format = NumberFormatter()
         format.numberStyle = .none
@@ -96,23 +109,28 @@ class SummaryViewController: UIViewController {
         
         boardsPieChart.centerText = "Boards"
         boardsPieChart.legend.enabled = false
-         
-        boardsPieChart.backgroundColor = .orange
+       
         
         
-        if masterCollection.boardsInCollection.count == 0 {
-            boardsPieChart.isHidden = true
-        } else {
-            boardsPieChart.isHidden = false
-        }
+        //this is hacky and im not sure how to size the image according to the radius of center hole when using an attributed string
+        let attachment = NSTextAttachment()
+        let boardImage = UIImage(named: "noHardwareDefaultImage")
+       // let edgeInsets = UIEdgeInsets(top: 500, left: 500, bottom: 500, right: 500)
+     //   let centeredboardImage = boardImage?.resizableImage(withCapInsets: edgeInsets)
+      //  attachment.image = centeredboardImage
+        
+        let attachmentString = NSAttributedString(attachment: attachment)
+        let labelImg = NSMutableAttributedString(string: "")
+        labelImg.append(attachmentString)
+        boardsPieChart.centerAttributedText = labelImg
+        
+        
+        
     }
     
     func buildAllHardwareChart() {
         
-        // masterCollection.getCabinetHardware()
-        
         var hardwareCountsTotal: Double = 0.0
-        
         var allHardwareDataEntries: [ChartDataEntry] = []
         
         for entry in masterCollection.hardwareCountsDictionary {
@@ -123,14 +141,14 @@ class SummaryViewController: UIViewController {
                 hardwareCountsTotal += entry.value
             }
         }
-        
-        guard hardwareCountsTotal != 0.0 else {
-            allHardwarePieChart.isHidden = true
-            return
-        }
-        
         allHardwarePieChart.isHidden = false
         
+        guard hardwareCountsTotal != 0.0 else {
+            allHardwarePieChart.noDataText = "No Hardware in Collection Yet!"
+          //  allHardwarePieChart.isHidden = true
+            return
+        }
+    
         let allHardwareChartDataSet = PieChartDataSet(allHardwareDataEntries)
         let allHardwareChartData = PieChartData(dataSet: allHardwareChartDataSet)
         
@@ -140,19 +158,11 @@ class SummaryViewController: UIViewController {
         format.numberStyle = .none
         let formatter = DefaultValueFormatter(formatter: format)
         allHardwareChartData.setValueFormatter(formatter)
-        
+
         allHardwarePieChart.data = allHardwareChartData
-        
         allHardwarePieChart.legend.enabled = false
         allHardwarePieChart.centerText = "Hardware"
-        
-        allHardwarePieChart.backgroundColor = .blue
-        
-        
-        
-//        if hardwareCountsTotal == 0.0 {
-//            allHardwarePieChart.isHidden = true
-//        }
+      
     }
     
     func setWantedGamesCount() {
