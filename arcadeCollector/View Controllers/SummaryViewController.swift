@@ -112,13 +112,14 @@ class SummaryViewController: UIViewController {
        
         
         
-        //this is hacky and im not sure how to size the image according to the radius of center hole when using an attributed string
+        //this is hacky
         let attachment = NSTextAttachment()
-        let boardImage = UIImage(named: "noHardwareDefaultImage")
-       // let edgeInsets = UIEdgeInsets(top: 500, left: 500, bottom: 500, right: 500)
-     //   let centeredboardImage = boardImage?.resizableImage(withCapInsets: edgeInsets)
-      //  attachment.image = centeredboardImage
+        let boardImage = UIImage(named: "noHardwareDefaultImage")!
+        let centerSize = CGSize(width: (UIScreen.main.bounds.width/7), height: (UIScreen.main.bounds.height/10))
         
+        let centeredBoardImage = resizeImage(image: boardImage, newSize: centerSize)
+        attachment.image = centeredBoardImage
+
         let attachmentString = NSAttributedString(attachment: attachment)
         let labelImg = NSMutableAttributedString(string: "")
         labelImg.append(attachmentString)
@@ -171,6 +172,14 @@ class SummaryViewController: UIViewController {
         } else {
             self.wantedGamesLabel.text = "\(masterCollection.wantedGames.count) Wanted Game"
         }
+    }
+    
+    func resizeImage(image: UIImage, newSize: CGSize) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(x: 0.0, y: 0.0, width: newSize.width, height: newSize.height))
+        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? image
+        UIGraphicsEndImageContext()
+        return newImage
     }
     
 
