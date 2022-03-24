@@ -92,10 +92,10 @@ class SummaryViewController: UIViewController {
         let boardPieChartDataSet = PieChartDataSet(boardDataEntries)
         boardPieChartDataSet.colors = [chartGreen, chartLightYellow, UIColor.red]
         
-        boardPieChartDataSet.valueLinePart1OffsetPercentage = 0.5
-        boardPieChartDataSet.valueLinePart1Length = 0.2
-        boardPieChartDataSet.valueLinePart2Length = 0.4
-        boardPieChartDataSet.yValuePosition = .outsideSlice
+//        boardPieChartDataSet.valueLinePart1OffsetPercentage = 0.5
+//        boardPieChartDataSet.valueLinePart1Length = 0.2
+//        boardPieChartDataSet.valueLinePart2Length = 0.4
+//        boardPieChartDataSet.yValuePosition = .outsideSlice
         
         boardPieChartData = PieChartData(dataSet: boardPieChartDataSet)
         
@@ -105,7 +105,7 @@ class SummaryViewController: UIViewController {
         boardPieChartData.setValueFormatter(formatter)
         
         boardsPieChart.data = boardPieChartData
-        boardsPieChart.data?.setValueTextColor(.black)
+       // boardsPieChart.data?.setValueTextColor(.black)
         
         boardsPieChart.centerText = "Boards"
         boardsPieChart.legend.enabled = false

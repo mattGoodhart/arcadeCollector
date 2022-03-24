@@ -33,7 +33,7 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
         imageView = UIImageView(image: image)
         
         contentView = UIView(frame: imageView.frame)
-        contentView.backgroundColor = UIColor.blue
+        //contentView.backgroundColor = UIColor.blue
         contentView.addSubview(imageView)
         
         scrollView.delegate = self
@@ -79,22 +79,31 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
     
     /// Forces image to a 4:3 (Yoko) or 3:4 (Tate)  aspect ratio, regardless of image resolution
     func resizeInGameImageSoPanningWorks() {
+        let newWidth = UIScreen.main.bounds.size.width
+        var newHeight = CGFloat()
         var newSize: CGSize
         
-        switch orientation {
-        
-            
-        case "Horizontal": //force 4:3
-            let newWidth = UIScreen.main.bounds.size.width//view.intrinsicContentSize.width
-            let newHeight = newWidth * (3/4)
-             newSize = CGSize(width: newWidth, height: newHeight)
-        case "Vertical": //Force 3:4
-            let newWidth = image.size.width / 3
-            let newHeight = image.size.height / 4
-            
-             newSize = CGSize(width: newWidth, height: newHeight)
-        default: return
+        if orientation == "Horizontal" {
+            newHeight = newWidth * (3/4)
+        } else if orientation == "Vertical" {
+            newHeight = newWidth * (4/3)
         }
+        newSize = CGSize(width: newWidth, height: newHeight)
+        
+//        switch orientation {
+//
+//
+//        case "Horizontal": //force 4:3
+//          //  let newWidth = UIScreen.main.bounds.size.width
+//            let newHeight = newWidth * (3/4)
+//             newSize = CGSize(width: newWidth, height: newHeight)
+//        case "Vertical": //Force 3:4
+//            let newWidth = image.size.width / 3
+//            let newHeight = image.size.height / 4
+//
+            
+//        default: return
+
         
         
         
