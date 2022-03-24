@@ -13,7 +13,7 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var scrollView: UIScrollView! // at this point do I even need it in Storyboard?
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    var image: UIImage?
+    var image: UIImage!
     var orientation: String?
     var isInGameImage: Bool = true //will need to force aspect ratio if it is
     var imageView: UIImageView!
@@ -28,16 +28,20 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func initializeView() {
+        view.backgroundColor = backgroundColor
+        
+        imageView = UIImageView(image: image)
+        
+        contentView = UIView(frame: imageView.frame)
+        contentView.backgroundColor = UIColor.blue
+        contentView.addSubview(imageView)
+        
         scrollView.delegate = self
         scrollView.minimumZoomScale = 1.0
         scrollView.maximumZoomScale = 5.0
         scrollView.zoomScale = 1.0
-        imageView = UIImageView(image: image)
-        contentView = UIView(frame: imageView.frame)
-        contentView.backgroundColor = UIColor.blue
-        view.backgroundColor = backgroundColor
-        contentView.addSubview(imageView)
         scrollView.addSubview(contentView)
+        
     }
     
     func setConstraints() {
@@ -55,14 +59,52 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
         contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
         contentView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         contentView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-    
-        if !isInGameImage {
-            self.imageView.frame = view.frame
-            self.imageView.contentMode = .scaleAspectFit
-   
-        } else {
-            forceAspectForInGameImage()
+        
+        self.imageView.frame = view.frame
+        self.imageView.contentMode = .scaleAspectFit
+        
+        if isInGameImage {
+            resizeInGameImageSoPanningWorks()
         }
+        
+    
+//        if !isInGameImage {
+//            self.imageView.frame = view.frame
+//            self.imageView.contentMode = .scaleAspectFit
+//
+//        } else {
+//            forceAspectForInGameImage()
+//        }
+    }
+    
+    /// Forces image to a 4:3 (Yoko) or 3:4 (Tate)  aspect ratio, regardless of image resolution
+    func resizeInGameImageSoPanningWorks() {
+        var newSize: CGSize
+        
+        switch orientation {
+        
+            
+        case "Horizontal": //force 4:3
+            let newWidth = UIScreen.main.bounds.size.width//view.intrinsicContentSize.width
+            let newHeight = newWidth * (3/4)
+             newSize = CGSize(width: newWidth, height: newHeight)
+        case "Vertical": //Force 3:4
+            let newWidth = image.size.width / 3
+            let newHeight = image.size.height / 4
+            
+             newSize = CGSize(width: newWidth, height: newHeight)
+        default: return
+        }
+        
+        
+        
+        
+        
+    // let centerSize = CGSize(width: (UIScreen.main.bounds.width/6.5), height: (UIScreen.main.bounds.height/10))
+        
+        //unbung
+        let resizedImage = image.resizeImage(image: image, newSize: newSize)
+        imageView.image = resizedImage
     }
     
     func forceAspectForInGameImage() {

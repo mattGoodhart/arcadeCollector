@@ -59,8 +59,7 @@ class DetailViewController: UIViewController, EditGameDelegate {
         
         configureGestureForImageView(imageView: mainImageView, gestureRecognizer: tapRecognizer)
         configureGestureForImageView(imageView: marqueeView, gestureRecognizer: marqueeTapRecognizer)
-        
-      //  marqueeView.image = UIImage(named: "missing_marquee")
+    
         mainImageView.image = nil // there will always be some image, so a placeholder unecessary
         getDetailsIfNeeded()
     }

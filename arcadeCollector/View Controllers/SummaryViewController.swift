@@ -109,24 +109,30 @@ class SummaryViewController: UIViewController {
         
         boardsPieChart.centerText = "Boards"
         boardsPieChart.legend.enabled = false
-       
         
         
-        //this is hacky
+        attachImageToCenterOfPieChart(imageName: "noHardwareDefaultImage", pieChart: boardsPieChart)
+        
+        
+        
+    }
+    
+    func attachImageToCenterOfPieChart(imageName: String, pieChart: PieChartView) {
+        
+        //this is hacky --
         let attachment = NSTextAttachment()
-        let boardImage = UIImage(named: "noHardwareDefaultImage")!
-        let centerSize = CGSize(width: (UIScreen.main.bounds.width/7), height: (UIScreen.main.bounds.height/10))
+        let boardImage = UIImage(named: imageName)! // can this be not bung
+        let centerSize = CGSize(width: (UIScreen.main.bounds.width/6.5), height: (UIScreen.main.bounds.height/10))
         
-        let centeredBoardImage = resizeImage(image: boardImage, newSize: centerSize)
+        
+        
+        let centeredBoardImage = boardImage.resizeImage(image: boardImage, newSize: centerSize)
         attachment.image = centeredBoardImage
 
         let attachmentString = NSAttributedString(attachment: attachment)
         let labelImg = NSMutableAttributedString(string: "")
         labelImg.append(attachmentString)
-        boardsPieChart.centerAttributedText = labelImg
-        
-        
-        
+        pieChart.centerAttributedText = labelImg
     }
     
     func buildAllHardwareChart() {
@@ -163,6 +169,8 @@ class SummaryViewController: UIViewController {
         allHardwarePieChart.data = allHardwareChartData
         allHardwarePieChart.legend.enabled = false
         allHardwarePieChart.centerText = "Hardware"
+        
+        attachImageToCenterOfPieChart(imageName: "Cab", pieChart: allHardwarePieChart)
       
     }
     
@@ -174,13 +182,15 @@ class SummaryViewController: UIViewController {
         }
     }
     
-    func resizeImage(image: UIImage, newSize: CGSize) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
-        image.draw(in: CGRect(x: 0.0, y: 0.0, width: newSize.width, height: newSize.height))
-        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? image
-        UIGraphicsEndImageContext()
-        return newImage
-    }
+    // make this a UIImage extension
+//    func resizeImage(image: UIImage, newSize: CGSize) -> UIImage {
+//
+//        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+//        image.draw(in: CGRect(x: 0.0, y: 0.0, width: newSize.width, height: newSize.height))
+//        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? image
+//        UIGraphicsEndImageContext()
+//        return newImage
+//    }
     
 
     @IBAction func aboutButtonPressed(_sender: UIButton) {
