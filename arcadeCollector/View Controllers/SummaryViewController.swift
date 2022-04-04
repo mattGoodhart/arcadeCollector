@@ -12,12 +12,8 @@ import Charts
 
 class SummaryViewController: UIViewController {
     
-
     @IBOutlet weak var wantedGamesLabel: UILabel!
     @IBOutlet weak var aboutButton: UIButton!
-
-    @IBOutlet weak var chartsStackView: UIStackView!
-    @IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet weak var boardsPieChart: PieChartView!
     @IBOutlet weak var allHardwarePieChart: PieChartView!
     
@@ -35,6 +31,7 @@ class SummaryViewController: UIViewController {
     let chartOrange = UIColor(displayP3Red: (248/255), green: (155/255), blue: (101/255), alpha: 1)
     let chartSeaFoam = UIColor(displayP3Red: (100/255), green: (177/255), blue: (148/255), alpha: 1)
     let chartPink = UIColor(displayP3Red: (245/255), green: (151/255), blue: (180/255), alpha: 1)
+    let chartLightOrange = UIColor(displayP3Red: (231/255), green: 148/255, blue: 33/255, alpha: 1)
     
     
     override func viewDidLoad() {
@@ -50,7 +47,7 @@ class SummaryViewController: UIViewController {
         buildDataForCharts()
     }
     
-        
+
     func buildDataForCharts() {
         buildBoardChart()
         buildAllHardwareChart()
@@ -59,62 +56,69 @@ class SummaryViewController: UIViewController {
     }
     
     func buildBoardChart() {
-    //    masterCollection.getBoardsByWorkingCondition()
         boardsPieChart.isHidden = false
         var boardDataEntries: [ChartDataEntry] = []
-     //   let boardPieChartDataSet = PieChartDataSet()
         var boardPieChartData = PieChartData()
+        var boardConditionsInCollection : [String] = []
+        var colorsForBoards: [UIColor] = []
         
         guard masterCollection.boardsInCollection.count != 0 else {
             
             boardsPieChart.noDataText = "No Boards in Collection Yet!"
-           // boardsPieChart.isHidden = true
             return
         }
-        
-       
         
         let boardConditionArray = ["Working", "Booting", "Not Working"]
         let boardConditionCounts = [Double(masterCollection.workingBoards.count), Double(masterCollection.partiallyWorkingBoards.count), Double(masterCollection.nonWorkingBoards.count)]
         
         let boardConditionDictionary: [String : Double] = Dictionary(uniqueKeysWithValues: zip(boardConditionArray, boardConditionCounts))
-    
-       // var boardDataEntries: [ChartDataEntry] = []
-        
+
         for entry in boardConditionDictionary {
             
             if entry.value != 0 {
                 let boardDataEntry = PieChartDataEntry(value: entry.value, label: entry.key, data: entry.key)
                 boardDataEntries.append(boardDataEntry)
+                boardConditionsInCollection.append(entry.key)
             }
-        } // this is where the data array seems to get out of order (so colors not assigning correctly)
+        }
+            
+            for condition in boardConditionsInCollection {
+                switch condition {
+                case "Working" : colorsForBoards.append(chartGreen)
+                case "Not Working": colorsForBoards.append(UIColor.red)
+                case "Booting": colorsForBoards.append(chartLightOrange)
+                default: return
+                }
+            }
         
         let boardPieChartDataSet = PieChartDataSet(boardDataEntries)
-        boardPieChartDataSet.colors = [chartGreen, chartLightYellow, UIColor.red]
+        boardPieChartDataSet.colors = colorsForBoards
         
 //        boardPieChartDataSet.valueLinePart1OffsetPercentage = 0.5
 //        boardPieChartDataSet.valueLinePart1Length = 0.2
 //        boardPieChartDataSet.valueLinePart2Length = 0.4
 //        boardPieChartDataSet.yValuePosition = .outsideSlice
-        
+//
         boardPieChartData = PieChartData(dataSet: boardPieChartDataSet)
         
         let format = NumberFormatter()
         format.numberStyle = .none
         let formatter = DefaultValueFormatter(formatter: format)
         boardPieChartData.setValueFormatter(formatter)
+    
+        
+       // boardPieChartData.setValueTextColor(UIColor.darkGray)
         
         boardsPieChart.data = boardPieChartData
-       // boardsPieChart.data?.setValueTextColor(.black)
+      //  boardsPieChart.data?.setValueTextColor(UIColor.gray)
         
         boardsPieChart.centerText = "Boards"
         boardsPieChart.legend.enabled = false
         
-        
         attachImageToCenterOfPieChart(imageName: "noHardwareDefaultImage", pieChart: boardsPieChart)
         
-        
-        
+       // boardsPieChart.backgroundColor = chartSeaFoam
+    //    boardsPieChart.holeColor = nil
     }
     
     func attachImageToCenterOfPieChart(imageName: String, pieChart: PieChartView) {
@@ -124,11 +128,9 @@ class SummaryViewController: UIViewController {
         let boardImage = UIImage(named: imageName)! // can this be not bung
         let centerSize = CGSize(width: (UIScreen.main.bounds.width/6.5), height: (UIScreen.main.bounds.height/10))
         
-        
-        
         let centeredBoardImage = boardImage.resizeImage(image: boardImage, newSize: centerSize)
         attachment.image = centeredBoardImage
-
+        
         let attachmentString = NSAttributedString(attachment: attachment)
         let labelImg = NSMutableAttributedString(string: "")
         labelImg.append(attachmentString)
@@ -152,10 +154,10 @@ class SummaryViewController: UIViewController {
         
         guard hardwareCountsTotal != 0.0 else {
             allHardwarePieChart.noDataText = "No Hardware in Collection Yet!"
-          //  allHardwarePieChart.isHidden = true
+            //  allHardwarePieChart.isHidden = true
             return
         }
-    
+        
         let allHardwareChartDataSet = PieChartDataSet(allHardwareDataEntries)
         let allHardwareChartData = PieChartData(dataSet: allHardwareChartDataSet)
         
@@ -165,13 +167,14 @@ class SummaryViewController: UIViewController {
         format.numberStyle = .none
         let formatter = DefaultValueFormatter(formatter: format)
         allHardwareChartData.setValueFormatter(formatter)
-
+        
         allHardwarePieChart.data = allHardwareChartData
         allHardwarePieChart.legend.enabled = false
         allHardwarePieChart.centerText = "Hardware"
         
         attachImageToCenterOfPieChart(imageName: "Cab", pieChart: allHardwarePieChart)
-      
+        
+       // allHardwarePieChart.holeColor = nil
     }
     
     func setWantedGamesCount() {
@@ -182,17 +185,6 @@ class SummaryViewController: UIViewController {
         }
     }
     
-    // make this a UIImage extension
-//    func resizeImage(image: UIImage, newSize: CGSize) -> UIImage {
-//
-//        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
-//        image.draw(in: CGRect(x: 0.0, y: 0.0, width: newSize.width, height: newSize.height))
-//        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? image
-//        UIGraphicsEndImageContext()
-//        return newImage
-//    }
-    
-
     @IBAction func aboutButtonPressed(_sender: UIButton) {
         performSegue(withIdentifier: "AboutSegue", sender: _sender)
     }

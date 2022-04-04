@@ -35,7 +35,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bkg_lighter-1" translatesAutoresizingMaskIntoConstraints="NO" id="Wll-9G-dlj">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bkg_darker-1" translatesAutoresizingMaskIntoConstraints="NO" id="Wll-9G-dlj">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleAspectFill" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9iG-Dh-7em">
@@ -1072,7 +1072,6 @@ nplayers.arcadebelgium.be</string>
         <image name="About Banners/wolheader" width="245" height="118"/>
         <image name="Heart" width="46.5" height="46.5"/>
         <image name="bkg_darker-1" width="360" height="648"/>
-        <image name="bkg_lighter-1" width="360" height="648"/>
         <image name="chart_bar_circle_fill" width="33.5" height="33.5"/>
         <image name="favorite" width="33.5" height="33.5"/>
         <image name="icons8-add" width="30" height="30"/>
