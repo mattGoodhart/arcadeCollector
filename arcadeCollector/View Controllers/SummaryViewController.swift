@@ -65,6 +65,8 @@ class SummaryViewController: UIViewController {
         guard masterCollection.boardsInCollection.count != 0 else {
             
             boardsPieChart.noDataText = "No Boards in Collection Yet!"
+            boardsPieChart.noDataFont = .italicSystemFont(ofSize: 18)
+            boardsPieChart.noDataTextColor = .white
             return
         }
         
@@ -92,40 +94,42 @@ class SummaryViewController: UIViewController {
             }
         
         let boardPieChartDataSet = PieChartDataSet(boardDataEntries)
-        boardPieChartDataSet.colors = colorsForBoards
         
-//        boardPieChartDataSet.valueLinePart1OffsetPercentage = 0.5
-//        boardPieChartDataSet.valueLinePart1Length = 0.2
-//        boardPieChartDataSet.valueLinePart2Length = 0.4
-//        boardPieChartDataSet.yValuePosition = .outsideSlice
-//
+        boardPieChartDataSet.colors = colorsForBoards
+        boardPieChartDataSet.entryLabelColor = .white
+        boardPieChartDataSet.entryLabelFont = .italicSystemFont(ofSize: 14)
+        boardPieChartDataSet.valueLineColor = .white
+        boardPieChartDataSet.valueLinePart1OffsetPercentage = 0.5
+        boardPieChartDataSet.valueLinePart1Length = 0.3
+        boardPieChartDataSet.valueLinePart2Length = 0.5
+        boardPieChartDataSet.xValuePosition = .outsideSlice
+        boardPieChartDataSet.yValuePosition = .outsideSlice
+        
         boardPieChartData = PieChartData(dataSet: boardPieChartDataSet)
         
         let format = NumberFormatter()
         format.numberStyle = .none
+        
         let formatter = DefaultValueFormatter(formatter: format)
         boardPieChartData.setValueFormatter(formatter)
-    
         
-       // boardPieChartData.setValueTextColor(UIColor.darkGray)
+        boardPieChartData.setValueTextColor(.white)
+        
         
         boardsPieChart.data = boardPieChartData
-      //  boardsPieChart.data?.setValueTextColor(UIColor.gray)
-        
+
         boardsPieChart.centerText = "Boards"
         boardsPieChart.legend.enabled = false
         
         attachImageToCenterOfPieChart(imageName: "noHardwareDefaultImage", pieChart: boardsPieChart)
-        
-       // boardsPieChart.backgroundColor = chartSeaFoam
-    //    boardsPieChart.holeColor = nil
+
     }
     
     func attachImageToCenterOfPieChart(imageName: String, pieChart: PieChartView) {
         
-        //this is hacky --
+        //this seems hacky --
         let attachment = NSTextAttachment()
-        let boardImage = UIImage(named: imageName)! // can this be not bung
+        let boardImage = UIImage(named: imageName) ?? UIImage()
         let centerSize = CGSize(width: (UIScreen.main.bounds.width/6.5), height: (UIScreen.main.bounds.height/10))
         
         let centeredBoardImage = boardImage.resizeImage(image: boardImage, newSize: centerSize)
@@ -154,7 +158,8 @@ class SummaryViewController: UIViewController {
         
         guard hardwareCountsTotal != 0.0 else {
             allHardwarePieChart.noDataText = "No Hardware in Collection Yet!"
-            //  allHardwarePieChart.isHidden = true
+            allHardwarePieChart.noDataFont = .italicSystemFont(ofSize: 18)
+            allHardwarePieChart.noDataTextColor = .white
             return
         }
         
@@ -162,6 +167,14 @@ class SummaryViewController: UIViewController {
         let allHardwareChartData = PieChartData(dataSet: allHardwareChartDataSet)
         
         allHardwareChartDataSet.colors = [chartGreen, chartLightGreen, chartSeaFoam, chartBlue, chartLightYellow, chartYellow, chartOrange, chartPink]
+        allHardwareChartDataSet.entryLabelColor = .white
+        allHardwareChartDataSet.entryLabelFont = .italicSystemFont(ofSize: 14)
+        allHardwareChartDataSet.valueLineColor = .white
+        allHardwareChartDataSet.valueLinePart1OffsetPercentage = 0.5
+        allHardwareChartDataSet.valueLinePart1Length = 0.3
+        allHardwareChartDataSet.valueLinePart2Length = 0.5
+        allHardwareChartDataSet.xValuePosition = .outsideSlice
+        allHardwareChartDataSet.yValuePosition = .outsideSlice
         
         let format = NumberFormatter()
         format.numberStyle = .none
