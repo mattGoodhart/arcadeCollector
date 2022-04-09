@@ -33,7 +33,6 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
         imageView = UIImageView(image: image)
         
         contentView = UIView(frame: imageView.frame)
-        //contentView.backgroundColor = UIColor.blue
         contentView.addSubview(imageView)
         
         scrollView.delegate = self
@@ -66,15 +65,6 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
         if isInGameImage {
             resizeInGameImageSoPanningWorks()
         }
-        
-    
-//        if !isInGameImage {
-//            self.imageView.frame = view.frame
-//            self.imageView.contentMode = .scaleAspectFit
-//
-//        } else {
-//            forceAspectForInGameImage()
-//        }
     }
     
     /// Forces image to a 4:3 (Yoko) or 3:4 (Tate)  aspect ratio, regardless of image resolution
@@ -89,59 +79,9 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
             newHeight = newWidth * (4/3)
         }
         newSize = CGSize(width: newWidth, height: newHeight)
-        
-//        switch orientation {
-//
-//
-//        case "Horizontal": //force 4:3
-//          //  let newWidth = UIScreen.main.bounds.size.width
-//            let newHeight = newWidth * (3/4)
-//             newSize = CGSize(width: newWidth, height: newHeight)
-//        case "Vertical": //Force 3:4
-//            let newWidth = image.size.width / 3
-//            let newHeight = image.size.height / 4
-//
-            
-//        default: return
 
-        
-        
-        
-        
-        
-    // let centerSize = CGSize(width: (UIScreen.main.bounds.width/6.5), height: (UIScreen.main.bounds.height/10))
-        
-        //unbung
         let resizedImage = image.resizeImage(image: image, newSize: newSize)
         imageView.image = resizedImage
-    }
-    
-    func forceAspectForInGameImage() {
-        
-        let margins: UILayoutGuide = view.layoutMarginsGuide
-        let yokoHeightAnchor: NSLayoutConstraint
-        let tateHeightAnchor: NSLayoutConstraint
-        
-        imageView.contentMode = .scaleToFill
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        imageView.centerXAnchor.constraint(equalTo: margins.centerXAnchor).isActive = true
-        imageView.centerYAnchor.constraint(equalTo: margins.centerYAnchor).isActive = true
-        imageView.widthAnchor.constraint(equalTo: margins.widthAnchor).isActive = true
-        
-        yokoHeightAnchor = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 3.0/4.0)
-        tateHeightAnchor = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 4.0/3.0)
-        
-        switch orientation {
-            
-        case "Horizontal":
-            yokoHeightAnchor.isActive = true
-            
-        case "Vertical":
-            tateHeightAnchor.isActive = true
-            
-        default: return
-        }
     }
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {

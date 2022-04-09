@@ -120,7 +120,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
 
-    //MARK Life Cycle and Overrides
+    //MARK: Life Cycle and Overrides
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -182,6 +182,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             present(popUpViewController, animated: true, completion: nil)
         }
     }
+    
+    //MARK: Other Methods
     
     func refreshData() {
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
@@ -260,7 +262,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         refreshData()
     }
     
-    // MARK UISearchResultsUpdating
+    //MARK: UISearchResultsUpdating
     
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
@@ -284,9 +286,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
     }
     
-    // MARK TableViewDelegate
+    //MARK: TableViewDelegate
     
-    /// Prevents the deleting of rows when viewing allGames on TableVC
+    /// Prevents the deleting of rows when viewing allGames on TableViewController
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         guard tabBarController?.selectedIndex != Tab.allGames.rawValue else {
             return false
@@ -356,6 +358,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         (view as! UITableViewHeaderFooterView).textLabel?.textColor = tableColor2
     }
+    
     /// Right-side scroll index for allGames
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         guard tabBarController?.selectedIndex == Tab.allGames.rawValue else {
@@ -406,7 +409,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             DispatchQueue.main.async {
                 self.filterButton.setImage(UIImage(named: "icons8-filter-edit"), for: .normal)
             }
-            
         }
         else {
             DispatchQueue.main.async {

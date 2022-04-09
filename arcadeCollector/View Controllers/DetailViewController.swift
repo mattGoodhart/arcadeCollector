@@ -147,6 +147,8 @@ class DetailViewController: UIViewController, EditGameDelegate {
         loadYoutube(videoID: viewedGame.youtubeVideoID ?? "")
     }
     
+    // MARK: Other Methods
+    
     func adjustImageView(height: CGFloat, multiplier: CGFloat) {
         mainImageView.translatesAutoresizingMaskIntoConstraints = false
         mainImageView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
@@ -227,7 +229,6 @@ class DetailViewController: UIViewController, EditGameDelegate {
             DispatchQueue.main.async {
                 self.addEditButton.setImage(UIImage(named: "icons8-add"), for: .normal)
             }
-            
         }
         
         let index = self.tabBarController!.selectedIndex
@@ -250,8 +251,6 @@ class DetailViewController: UIViewController, EditGameDelegate {
         }
         UIApplication.shared.open(youtubeURL, options: [:], completionHandler: nil)
     }
-    
-    // MARK: Other Methods
     
     func toggleButtons(enabled: Bool) {
         handleButtons(enabled: enabled, button: historyButton)

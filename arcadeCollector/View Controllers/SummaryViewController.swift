@@ -46,7 +46,7 @@ class SummaryViewController: UIViewController {
         setWantedGamesCount()
         buildDataForCharts()
     }
-
+    
     func buildDataForCharts() {
         buildBoardChart()
         buildAllHardwareChart()
@@ -73,7 +73,7 @@ class SummaryViewController: UIViewController {
         let boardConditionCounts = [Double(masterCollection.workingBoards.count), Double(masterCollection.partiallyWorkingBoards.count), Double(masterCollection.nonWorkingBoards.count)]
         
         let boardConditionDictionary: [String : Double] = Dictionary(uniqueKeysWithValues: zip(boardConditionArray, boardConditionCounts))
-
+        
         for entry in boardConditionDictionary {
             
             if entry.value != 0 {
@@ -82,15 +82,15 @@ class SummaryViewController: UIViewController {
                 boardConditionsInCollection.append(entry.key)
             }
         }
-            
-            for condition in boardConditionsInCollection {
-                switch condition {
-                case "Working" : colorsForBoards.append(chartGreen)
-                case "Not Working": colorsForBoards.append(UIColor.red)
-                case "Booting": colorsForBoards.append(chartLightOrange)
-                default: return
-                }
+        
+        for condition in boardConditionsInCollection {
+            switch condition {
+            case "Working" : colorsForBoards.append(chartGreen)
+            case "Not Working": colorsForBoards.append(UIColor.red)
+            case "Booting": colorsForBoards.append(chartLightOrange)
+            default: return
             }
+        }
         
         let boardPieChartDataSet = PieChartDataSet(boardDataEntries)
         
@@ -113,7 +113,7 @@ class SummaryViewController: UIViewController {
         boardPieChartData.setValueFormatter(formatter)
         
         boardPieChartData.setValueTextColor(.white)
-    
+        
         boardsPieChart.data = boardPieChartData
         boardsPieChart.centerText = "Boards"
         boardsPieChart.legend.enabled = false
