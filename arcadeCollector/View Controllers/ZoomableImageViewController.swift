@@ -10,7 +10,7 @@ import UIKit
 
 class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
     
-    @IBOutlet weak var scrollView: UIScrollView! // at this point do I even need it in Storyboard?
+    @IBOutlet weak var scrollView: UIScrollView!
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var image: UIImage!
@@ -142,16 +142,9 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
             
         default: return
         }
-        
     }
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-//
-//        if isInGameImage {
-//            return contentView
-//        } else {
-//            return imageView
-//        }
         return imageView
     }
 }

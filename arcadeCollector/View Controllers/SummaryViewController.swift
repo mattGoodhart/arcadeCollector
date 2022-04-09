@@ -46,7 +46,6 @@ class SummaryViewController: UIViewController {
         setWantedGamesCount()
         buildDataForCharts()
     }
-    
 
     func buildDataForCharts() {
         buildBoardChart()
@@ -114,15 +113,12 @@ class SummaryViewController: UIViewController {
         boardPieChartData.setValueFormatter(formatter)
         
         boardPieChartData.setValueTextColor(.white)
-        
-        
+    
         boardsPieChart.data = boardPieChartData
-
         boardsPieChart.centerText = "Boards"
         boardsPieChart.legend.enabled = false
         
         attachImageToCenterOfPieChart(imageName: "noHardwareDefaultImage", pieChart: boardsPieChart)
-
     }
     
     func attachImageToCenterOfPieChart(imageName: String, pieChart: PieChartView) {
@@ -154,6 +150,7 @@ class SummaryViewController: UIViewController {
                 hardwareCountsTotal += entry.value
             }
         }
+        
         allHardwarePieChart.isHidden = false
         
         guard hardwareCountsTotal != 0.0 else {
@@ -186,8 +183,6 @@ class SummaryViewController: UIViewController {
         allHardwarePieChart.centerText = "Hardware"
         
         attachImageToCenterOfPieChart(imageName: "Cab", pieChart: allHardwarePieChart)
-        
-       // allHardwarePieChart.holeColor = nil
     }
     
     func setWantedGamesCount() {

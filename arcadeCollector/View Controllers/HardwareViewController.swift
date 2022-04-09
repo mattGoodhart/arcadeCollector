@@ -159,11 +159,21 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     
     @objc func mainImageTapped(_ sender: UIGestureRecognizer) {
         if sender.state == .ended {
-            let popOverViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
-            popOverViewController.image = mainImageView.image
-            popOverViewController.type = "hardwareView"
-            popOverViewController.modalTransitionStyle = .coverVertical
-            present(popOverViewController, animated: true, completion: nil)
+            let zoomableImageViewController = storyboard!.instantiateViewController(withIdentifier: "ZoomableImageViewController") as! ZoomableImageViewController
+            
+            zoomableImageViewController.modalTransitionStyle = .crossDissolve
+            zoomableImageViewController.image = mainImageView.image
+            zoomableImageViewController.isInGameImage = false
+            zoomableImageViewController.orientation = viewedGame.orientation
+            
+            present(zoomableImageViewController, animated: true, completion: nil)
+            
+            
+//            let zoomableImageViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
+//            popOverViewController.image = mainImageView.image
+//            popOverViewController.type = "hardwareView"
+//            popOverViewController.modalTransitionStyle = .coverVertical
+//            present(popOverViewController, animated: true, completion: nil)
         }
     }
     

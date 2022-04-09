@@ -39,6 +39,8 @@ enum Tab: Int {
     }
 }
 
+//MARK: TableViewController
+
 class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchResultsUpdating, FilterSelectionDelegate {
 
     @IBOutlet weak var reverseButton: UIButton!
@@ -51,7 +53,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let tableColor1 = UIColor(displayP3Red: 0.45, green: 0.62, blue: 0.5, alpha: 1.0)
     let tableColor2 = UIColor(displayP3Red: 25.0/255.0, green: 100.0/255.0, blue: 100.0/255.0, alpha: 1.0)
-    
     
     var reverseActive = false
     var popUpViewController: FilterOptionsPopup!
@@ -96,6 +97,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 return doubleFilteredYears
             }
         }
+        
         guard reverseActive else {
             return uniqueYears
         }
@@ -133,26 +135,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         searchController.searchBar.barTintColor = .white
         searchController.searchBar.backgroundColor = tableColor2
         searchController.searchBar.tintColor = .white
-        
-//        let textFieldInsideSearchBar = searchController.searchBar.value(forKey: "searchField") as? UITextField
-//        textFieldInsideSearchBar?.textColor = .white
-//
-//        let textFieldInsideSearchBarLabel = textFieldInsideSearchBar!.value(forKey: "placeholderLabel") as? UILabel
-//        textFieldInsideSearchBarLabel?.textColor = .white
-//
-//        if let placeholder = searchController.searchBar.placeholder {
-//            if #available(iOS 13.0, *) {
-//                searchController.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string:placeholder, attributes: [NSAttri = UIColor.white])
-//            } else {
-//                // Fallback on earlier versions
-//                return
-//            }
-//        }
-//
+
         navigationItem.searchController = searchController
         definesPresentationContext = true
         refreshDataSource()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -205,14 +191,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         DispatchQueue.main.async {
             self.tableView.reloadData()
             self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
-            
         }
     }
     
     func refreshDataSourceIfFilterChanged() {
-//        guard isFilterOptionChosen else {
-//            return
-//        }
         
         switch filterOptionSelected {
         case "orientation":
@@ -316,7 +298,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         let section = visibleUniqueYears[indexPath.section]
-        var group = groups[section]!
+        let group = groups[section]!
         let game = group[indexPath.row]
         
         guard editingStyle == .delete else {
@@ -368,12 +350,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        //(view as! UITableViewHeaderFooterView).textLabel?.textColor = tableColor1
         return visibleUniqueYears[section]
         }
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        //(view as! UITableViewHeaderFooterView).contentView.backgroundColor = UIColor.black.withAlphaComponent(0.4)
         (view as! UITableViewHeaderFooterView).textLabel?.textColor = tableColor2
     }
     /// Right-side scroll index for allGames
@@ -395,7 +375,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         cell.backgroundColor = indexPath.row % 2 == 0 ? tableColor1 : tableColor2
         
         let section = visibleUniqueYears[indexPath.section]
-        var group = groups[section]!
+        let group = groups[section]!
         let game = group[indexPath.row]
         if let name = game.romSetName, let dataAsset = NSDataAsset(name: "icons/\(name)") {
             let iconImage = UIImage(data: dataAsset.data)
@@ -424,7 +404,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         handleButtons(enabled: true, button: filterButton)
         if isFilterOptionChosen {
             DispatchQueue.main.async {
-                self.filterButton.setImage(UIImage(named: "icons8-filter-edit"), for: .normal) // not working...
+                self.filterButton.setImage(UIImage(named: "icons8-filter-edit"), for: .normal)
             }
             
         }
