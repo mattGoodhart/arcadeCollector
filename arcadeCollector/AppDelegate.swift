@@ -29,7 +29,7 @@ import CoreData
         try? DataController.shared.viewContext.save()
     }
     
-   // APP Life Cycle
+   //MARK: APP Life Cycle
     
     func applicationDidEnterBackground(_ application: UIApplication) {
         saveViewContext()

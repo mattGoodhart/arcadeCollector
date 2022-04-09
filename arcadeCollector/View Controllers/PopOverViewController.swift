@@ -22,7 +22,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
     var text: String!
     var type: String!
     var webURL: URL!
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     //MARK: View Controller Life Cycle
     
@@ -45,7 +44,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
         switch type {
             
         case "pdfView":
-            appDelegate.allowedOrientations = .portrait
             pdfView.displayMode = .singlePageContinuous
             pdfView.autoScales = true
             pdfView.displayDirection = .vertical
@@ -55,7 +53,6 @@ class PopOverViewController: UIViewController, UIScrollViewDelegate {
             pdfView.frame = view.frame
             
         case "textView":
-            appDelegate.allowedOrientations = .portrait
             textView.isHidden = false
             textView.text = text
             textView.frame = view.frame

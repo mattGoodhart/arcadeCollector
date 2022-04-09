@@ -12,7 +12,7 @@ import CoreData
 class DataController {
     
     static let shared = DataController(modelName: "ArcadeCollector")
-    let persistentContainer:NSPersistentContainer
+    let persistentContainer: NSPersistentContainer
     
     var viewContext: NSManagedObjectContext {
         return persistentContainer.viewContext

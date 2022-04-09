@@ -50,7 +50,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     let searchController = UISearchController(searchResultsController: nil)
     let dataController = DataController.shared
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let tableColor1 = UIColor(displayP3Red: 0.45, green: 0.62, blue: 0.5, alpha: 1.0)
     let tableColor2 = UIColor(displayP3Red: 25.0/255.0, green: 100.0/255.0, blue: 100.0/255.0, alpha: 1.0)
     
@@ -143,9 +142,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
-        appDelegate.allowedOrientations = .portrait
         refreshCollectionIfNeeded()
-       
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
     }
     

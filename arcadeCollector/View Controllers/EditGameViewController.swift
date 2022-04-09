@@ -15,7 +15,6 @@ class EditGameViewController: UIViewController {
     @IBOutlet weak var hasCabinetArt: UISwitch!
     @IBOutlet weak var hasControlPanelOverlay: UISwitch!
     @IBOutlet weak var hasControls: UISwitch!
-    //@IBOutlet weak var hasCabinetHardware: UISwitch!
     @IBOutlet weak var hasCabinet: UISwitch!
     @IBOutlet weak var hasBezel: UISwitch!
     @IBOutlet weak var hasMonitorFlag: UISwitch!
@@ -31,18 +30,15 @@ class EditGameViewController: UIViewController {
     var tabBar : UITabBar!
     let dataController = DataController.shared
     let masterCollection = CollectionManager.shared
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var viewedGame: Game!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       // self.view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
         setSwitches()
     }
         
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        appDelegate.allowedOrientations = .portrait
     }
     
     @IBAction func dismissButtonTapped(_ sender: UIButton) {
@@ -71,41 +67,17 @@ class EditGameViewController: UIViewController {
         }
     }
     
-//    @IBAction func cabinetHardwareSwitchTapped(_ sender: UISwitch) {
-//        if sender.isOn {
-//            enableCabinetTraits(state: true)
-//        } else {
-//            enableCabinetTraits(state: false)
-//        }
-//    }
-    
     func enableBoardTraits(state: Bool) {
         authenticity.isEnabled = state
         functionalCondition.isEnabled = state
     }
-    
-//    func enableCabinetTraits(state: Bool) {
-//        //hasCabinet.isEnabled = state
-//        hasMonitorFlag.isEnabled = state
-//        //monitorStack.isHidden = !state
-//        hasControls.isEnabled = state
-//        //controlsStack.isHidden = !state
-//        hasBezel.isEnabled = state
-//       // bezelStack.isHidden = !state
-//        hasControlPanelOverlay.isEnabled = state
-//       // controlPanelOverlayStack.isHidden = !state
-//        hasCabinetArt.isEnabled = state
-//        //cabinetArtworkStack.isHidden = !state
-//       // hasMarquee.isEnabled = state
-//    }
-    
+
     func getGameAttributeValuesFromSwitches() {
         viewedGame.hasBoard = hasBoard.isOn
         viewedGame.isBootleg = authenticity.selectedSegmentIndex == 1//isBootleg.isOn
         viewedGame.hasCabinetArt = hasCabinetArt.isOn
         viewedGame.hasControlPanelOverlay = hasControlPanelOverlay.isOn
         viewedGame.hasControls = hasControls.isOn
-       // viewedGame.hasCabinetHardware = hasCabinetHardware.isOn
         viewedGame.hasCabinet = hasCabinet.isOn
         viewedGame.hasBezel = hasBezel.isOn
         viewedGame.hasMonitorFlag = hasMonitorFlag.isOn
@@ -124,7 +96,6 @@ class EditGameViewController: UIViewController {
         hasCabinetArt.isOn = viewedGame.hasCabinetArt
         hasControlPanelOverlay.isOn = viewedGame.hasControlPanelOverlay
         hasControls.isOn = viewedGame.hasControls
-     //   hasCabinetHardware.isOn = viewedGame.hasCabinetHardware
         hasCabinet.isOn = viewedGame.hasCabinet
         hasBezel.isOn = viewedGame.hasBezel
         hasMonitorFlag.isOn = viewedGame.hasMonitorFlag

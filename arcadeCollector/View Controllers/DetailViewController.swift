@@ -371,12 +371,12 @@ class DetailViewController: UIViewController, EditGameDelegate {
                 print("main activity indicator stopped for flyer image")
             }
         }
+        
         if mainImageActivityIndicator.isAnimating {
             mainImageActivityIndicator.stopAnimating()
         }
     }
     
-
     func setImages() { // put dispatch here...
         if let inGameImageData =  viewedGame.inGameImageData {
             mainImageView.image = UIImage(data: inGameImageData)

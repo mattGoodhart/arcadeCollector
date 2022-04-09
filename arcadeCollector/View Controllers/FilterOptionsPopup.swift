@@ -33,7 +33,6 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     var arrayOfUniqueOrientations: [String] = []
     var arrayOfUniquePlayerCounts: [String] = []
     var arrayOfUniqueManufacturers: [String] = []
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +42,6 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         
         pickerView.delegate = self
         pickerView.dataSource = self
-      //  pickerView.col
         optionsSegmentedControl.selectedSegmentIndex = 0
         stringArrayForPicker = arrayOfUniqueOrientations
         buildMainView()
@@ -51,7 +49,6 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     
     override func viewWillAppear(_ animated: Bool) {
         super .viewWillAppear(true)
-        appDelegate.allowedOrientations = .portrait
         checkForActiveFilterOption()
     }
     
@@ -117,8 +114,7 @@ class FilterOptionsPopup: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     }
     
     func buildMainView() {
-        view.backgroundColor = .gray
-        view.alpha = 0.5
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.9)
         
         setContentView()
         view.addSubview(contentView)

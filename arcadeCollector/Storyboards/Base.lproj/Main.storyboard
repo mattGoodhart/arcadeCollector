@@ -831,7 +831,7 @@ nplayers.arcadebelgium.be</string>
         <scene sceneID="kF9-Fl-ssP">
             <objects>
                 <viewController restorationIdentifier="EditGameViewController" storyboardIdentifier="EditGameViewController" id="zwu-wC-BfZ" userLabel="Edit Game Pop Over" customClass="EditGameViewController" customModule="arcadeCollector" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="tjN-b3-RMf">
+                    <view key="view" alpha="0.90000000000000002" contentMode="scaleToFill" id="tjN-b3-RMf">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -1022,7 +1022,7 @@ nplayers.arcadebelgium.be</string>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="5vb-vC-DK9"/>
+        <segue reference="v1W-Pm-HdN"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="About Banners/Gaming History Banner" width="572" height="64"/>

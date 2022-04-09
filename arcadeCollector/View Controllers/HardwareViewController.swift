@@ -12,18 +12,12 @@ import SafariServices
 
 class HardwareViewController: UIViewController, XMLParserDelegate {
     
-//    @IBOutlet weak var controlsStack : UIStackView!
-//    @IBOutlet weak var displayStack : UIStackView!
-//    @IBOutlet weak var audioStack : UIStackView!
-//    @IBOutlet weak var processorsStack : UIStackView!
     @IBOutlet weak var mainImageView: UIImageView!
     @IBOutlet weak var displayLine: UILabel!
     @IBOutlet weak var controlsLine: UILabel!
-   // @IBOutlet weak var soundHardwareLine: UILabel!
     @IBOutlet weak var processorsLine: UILabel!
     @IBOutlet weak var imageChooser: UISegmentedControl!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-  //  @IBOutlet weak var audioChannelsLine: UILabel!
     @IBOutlet weak var manualButton: UIButton!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var stackView: UIStackView!
@@ -43,7 +37,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     var viewedGame: Game!
     var soundChannels = ""
     let dataController = DataController.shared
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var currentValue: String?
     var machineDictionary: [String: String]?
     var displayDictionary: [String: String]?
@@ -59,7 +52,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         return viewedGame.pcbPhotoURLString == "" && viewedGame.cabinetImageURLString == ""
     }
 
-    //MARK View Controller Life Cycle
+    //MARK: View Controller Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,15 +65,12 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     override func viewWillAppear(_ animated: Bool) {
        super.viewWillAppear(true)
         
-        appDelegate.allowedOrientations = .portrait
-        
         if viewedGame.manualURLString == "" {
             manualButton.isEnabled = false
         }
     }
     
     @IBAction func mameNotesButtonTapped(_ sender: UIButton) {
-      //  getNotesFromMameIfNeeded()
         goToMameDriverOnGithub()
     }
 
@@ -97,7 +87,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         imageViewAspectConstraint!.isActive = true
         
         buildMainStackView()
-       // scrollView.setContentOffset(.zero, animated: true)
     }
     
     func buildMainStackView() {
@@ -111,13 +100,8 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         stackView.addArrangedSubview(displayLine)
         stackView.addArrangedSubview(audioIcon)
         stackView.addArrangedSubview(audioLine)
-        //stackView.addArrangedSubview(soundHardwareLine)
         stackView.addArrangedSubview(processorIcon)
         stackView.addArrangedSubview(processorsLine)
-//        stackView.addArrangedSubview(controlsStack)
-//        stackView.addArrangedSubview(displayStack)
-//        stackView.addArrangedSubview(audioStack)
-//        stackView.addArrangedSubview(processorsStack)
     }
     
     func prepMainImageView() {
@@ -167,23 +151,11 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
             zoomableImageViewController.orientation = viewedGame.orientation
             
             present(zoomableImageViewController, animated: true, completion: nil)
-            
-            
-//            let zoomableImageViewController = storyboard!.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
-//            popOverViewController.image = mainImageView.image
-//            popOverViewController.type = "hardwareView"
-//            popOverViewController.modalTransitionStyle = .coverVertical
-//            present(popOverViewController, animated: true, completion: nil)
         }
     }
     
     @IBAction func manualButtonTapped(_ sender: UIButton) {
         getManualIfNeeded()
-//        if let manual = viewedGame.manual {
-//            segueToManualViewController(manualData: manual)
-//        } else {
-//            getManualIfNeeded()
-//        }
     }
     
     func segueToManualViewController(manualData: Data) {
@@ -213,29 +185,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         stackView.arrangedSubviews[0].isHidden = false
     }
     
-    func getNotesFromMameIfNeeded() {
-        if viewedGame.mameNotes != nil {
-            segueToMameNotes()
-        } else {
-            
-            guard let driver = viewedGame.driver, let url = URL(string: "https://raw.githubusercontent.com/mamedev/mame/master/src/mame/drivers/" + driver) else {
-                return
-            }
-            
-            Networking.shared.fetchText(at: url) { textData in 
-                if let range = textData.range(of: "*/") {
-                    let notes = textData [..<range.upperBound]
-                    let mameNotes = String(notes)
-                    self.viewedGame.mameNotes = mameNotes
-                    try? self.dataController.viewContext.save()
-                } else {
-                    print("Substringing didn't go so well")
-                }
-                self.segueToMameNotes()
-            }
-        }
-    }
-    
     func setInfo() {
         
         var cpuLineText = ""
@@ -249,9 +198,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         }
         
         let horizontalRefresh = getMonitorResolutionType()
-//        soundHardwareLine.text = soundDevicesLineText
-//        soundHardwareLine.sizeToFit()
-//        audioChannelsLine.text = viewedGame.audioChannels ?? "?"
+
         audioLine.text = "\(viewedGame.audioChannels ?? "?")\n\(soundDevicesLineText)"
         audioLine.sizeToFit()
         processorsLine.text = cpuLineText
@@ -304,49 +251,16 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 self.setImage(image: cabinetImage)
                 self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
                 self.getBoardPhotoIfNeeded()
-               // self.getPCBPhotoButDontSetImage()
             }
         }
     }
-    
-//    func getPCBPhotoButDontSetImage () {
-//        guard viewedGame.pcbPhotoURLString != "", let inputString = self.viewedGame.romSetName,
-//            let url = URL(string: "http://adb.arcadeitalia.net/media/mame.current/pcbs/" + inputString + ".png") else {
-//
-//                self.imageChooser.isHidden = true
-//                print("no PCB image available")
-//                if hasNoAvailableImages {
-//                    setImage(image: UIImage(named: "noHardwareDefaultImage")!)
-//                }
-//                return
-//        }
-//        Networking.shared.fetchData(at: url) { data in
-//
-//            guard let data = data else {
-//                print("PCB Photo download failure.")
-//                self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
-//                self.viewedGame.pcbPhotoURLString = ""
-//                self.imageChooser.isHidden = true
-//
-//                if self.hasNoAvailableImages {
-//                    self.setImage(image: UIImage(named: "noHardwareDefaultImage")!)
-//                }
-//
-//                return
-//            }
-//            self.viewedGame.pcbImageData = data
-//            try? self.dataController.viewContext.save()
-//
-//        }
-//    }
-    
-    
+
     func getBoardPhotoIfNeeded () {
         
         if let boardPhotoData = viewedGame.pcbImageData, let image = UIImage(data: boardPhotoData) {
             setImage(image: image)
         } else {
-            //note: pcbPhotoURLString only will ever be nil or "" . maybe should update the name of this attribute and make it a bool
+            //note: pcbPhotoURLString only will ever be nil or "" . Should update the name of this attribute and make it a Bool
             guard viewedGame.pcbPhotoURLString != "", let inputString = self.viewedGame.romSetName,
                 let url = URL(string: "http://adb.arcadeitalia.net/media/mame.current/pcbs/" + inputString + ".png") else {
                     
@@ -373,6 +287,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                     
                     return
                 }
+                
                 self.viewedGame.pcbImageData = data
                 try? self.dataController.viewContext.save()
                 self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
@@ -391,6 +306,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         if (displayDictionary?["width"]) != nil {
         viewedGame.resolution = displayDictionary!["width"]! + " x " + displayDictionary!["height"]!
         } else {
+            
             viewedGame.resolution = "Unknown"
         }
         
@@ -424,10 +340,12 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         guard assetData.length >= 1024 else {
             return
         }
+        
         var pdfBytes = [UInt8]()
         pdfBytes = [0x25, 0x50, 0x44, 0x46]
         let pdfHeader = NSData(bytes: pdfBytes, length: 4)
         let a = NSData(data: assetData as Data).range(of: pdfHeader as Data, options: .anchored, in: NSMakeRange(0, 1024))
+        
         if (a.length) > 0 {
             isPDF = true
         } else {
@@ -442,7 +360,6 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
         let task = checkSession.dataTask(with: request) { (data, response, error) -> Void in
             if let httpResp = response as? HTTPURLResponse {
                 completion(httpResp.statusCode == 200) }
-        
         }
         task.resume()
     }
@@ -455,16 +372,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 manualButton.isEnabled = false
                 return
             }
-//            fileExistsAt(url: url) { response in
-//                guard let response = response else {
-//                    print("no response")
-//                }
-//                print(response)
-         //   }
-                
-           // let pdfExists = fileExistsAt(url: url, completion: <#T##(Bool) -> Void#>)
-            //let pdfExists = try?url.checkResourceIsReachable()
-            //print(pdfExists as Any)
+            
             handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
             Networking.shared.fetchData(at: url) { data in
                 guard let data = data else {
@@ -478,6 +386,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                     
                     return
                 }
+                
                 self.checkForRealPDF(assetData: NSData(data: data))
                 if !self.isPDF {
                     self.viewedGame.manualURLString = ""

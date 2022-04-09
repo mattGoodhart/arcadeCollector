@@ -10,11 +10,7 @@ import UIKit
 
 class AboutViewController: UIViewController {
     
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//No special functionality yet
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        appDelegate.allowedOrientations = .portrait
-    }
 }
     

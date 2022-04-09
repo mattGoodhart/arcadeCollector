@@ -11,11 +11,10 @@ import UIKit
 class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
     
     @IBOutlet weak var scrollView: UIScrollView!
-    
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+
     var image: UIImage!
     var orientation: String?
-    var isInGameImage: Bool = true //will need to force aspect ratio if it is
+    var isInGameImage: Bool = true //will need to resize image to force aspect ratio if it is
     var imageView: UIImageView!
     let backgroundColor = UIColor(displayP3Red: 0.45, green: 0.62, blue: 0.5, alpha: 1.0)
     var contentView: UIView!
@@ -56,6 +55,8 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
         contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
         contentView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        
+        
         contentView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         contentView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
         

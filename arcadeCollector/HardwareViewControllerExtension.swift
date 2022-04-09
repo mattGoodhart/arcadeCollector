@@ -10,7 +10,7 @@ import UIKit
 
 extension HardwareViewController {
     
-    // MARK - XML Parser
+    //MARK: - XML Parser
     
     func parserDidStartDocument(_ parser: XMLParser) {
         chipResults = [[:]]
@@ -145,7 +145,8 @@ extension HardwareViewController {
             
             let goodString = stringToProcess.replacingOccurrences(of: poorlyFormattedClock, with: replacementClockString)
             formattedStringArray += [goodString]
-        } else {
+        }
+        else {
             formattedStringArray += [stringToProcess]
         }
         if isForCPU {
