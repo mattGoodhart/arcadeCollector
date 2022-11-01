@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fpv-6B-0Xm">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fpv-6B-0Xm">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -528,74 +528,93 @@ nplayers.arcadebelgium.be</string>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bkg_darker-1" translatesAutoresizingMaskIntoConstraints="NO" id="zSB-W3-U9j">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="54q-Ij-hNz" userLabel="Main Image View">
-                                <rect key="frame" x="47" y="185" width="280" height="210"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="missing_marquee" translatesAutoresizingMaskIntoConstraints="NO" id="ntz-FS-uBs" userLabel="Marquee View">
-                                <rect key="frame" x="18" y="84" width="340" height="85"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="1iP-hh-OfY">
-                                <rect key="frame" x="177" y="115" width="21" height="23"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="JyI-B0-F0s">
+                                <rect key="frame" x="177.5" y="283" width="20" height="20"/>
                             </activityIndicatorView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="JyI-B0-F0s">
-                                <rect key="frame" x="177" y="285" width="21" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="1iP-hh-OfY">
+                                <rect key="frame" x="177.5" y="106" width="20" height="20"/>
                             </activityIndicatorView>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="dgt-ne-yRV">
-                                <rect key="frame" x="86" y="403" width="203" height="29"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <segments>
-                                    <segment title="Flyer"/>
-                                    <segment title="In-Game"/>
-                                    <segment title="Title"/>
-                                </segments>
-                                <color key="tintColor" red="0.099378444254398346" green="0.39114663004875183" blue="0.39385095238685608" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <connections>
-                                    <action selector="segmentedControlPressed" destination="lxs-nA-Z7j" eventType="valueChanged" id="JDA-oV-Mb0"/>
-                                </connections>
-                            </segmentedControl>
-                            <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" distribution="fillEqually" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
-                                <rect key="frame" x="52" y="549" width="270" height="30"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="wze-Km-eat" userLabel="Main Stack View">
+                                <rect key="frame" x="0.0" y="44" width="375" height="574"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
-                                        <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
-                                        <state key="normal" image="icons8-info"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="missing_marquee" translatesAutoresizingMaskIntoConstraints="NO" id="ntz-FS-uBs" userLabel="Marquee View">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="144"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="54q-Ij-hNz" userLabel="Main Image View">
+                                        <rect key="frame" x="47.5" y="152" width="280" height="50"/>
+                                    </imageView>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="dgt-ne-yRV">
+                                        <rect key="frame" x="78.5" y="210" width="218" height="29.5"/>
+                                        <segments>
+                                            <segment title="Flyer"/>
+                                            <segment title="In-Game"/>
+                                            <segment title="Title"/>
+                                        </segments>
+                                        <color key="tintColor" red="0.099378444254398346" green="0.39114663004875183" blue="0.39385095238685608" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <connections>
-                                            <action selector="historyButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="TUs-08-SOa"/>
+                                            <action selector="segmentedControlPressed" destination="lxs-nA-Z7j" eventType="valueChanged" id="JDA-oV-Mb0"/>
                                         </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kip-WN-wSa">
-                                        <rect key="frame" x="80" y="0.0" width="30" height="30"/>
-                                        <state key="normal" image="icons8-add"/>
-                                        <connections>
-                                            <action selector="addEditButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="d6h-Fe-b6m"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rzT-cg-1Vj" userLabel="Wanted Button">
-                                        <rect key="frame" x="160" y="0.0" width="30" height="30"/>
-                                        <state key="normal" image="icons8-favorite"/>
-                                        <connections>
-                                            <action selector="addToWantedTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="2Jo-mM-hzl"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uEO-wp-z7R">
-                                        <rect key="frame" x="240" y="0.0" width="30" height="30"/>
-                                        <state key="normal" image="icons8-youtube"/>
-                                        <connections>
-                                            <action selector="youTubeButtonPressed:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="nvY-Dr-vfU"/>
-                                        </connections>
-                                    </button>
+                                    </segmentedControl>
+                                    <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pHg-Fj-Q3x" userLabel="Centering View Bottom">
+                                        <rect key="frame" x="67.5" y="246.5" width="240" height="289.5"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
+                                        <rect key="frame" x="52.5" y="544" width="270" height="30"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
+                                                <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+                                                <state key="normal" image="icons8-info"/>
+                                                <connections>
+                                                    <action selector="historyButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="TUs-08-SOa"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kip-WN-wSa">
+                                                <rect key="frame" x="80" y="0.0" width="30" height="30"/>
+                                                <state key="normal" image="icons8-add"/>
+                                                <connections>
+                                                    <action selector="addEditButtonTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="d6h-Fe-b6m"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rzT-cg-1Vj" userLabel="Wanted Button">
+                                                <rect key="frame" x="160" y="0.0" width="30" height="30"/>
+                                                <state key="normal" image="icons8-favorite"/>
+                                                <connections>
+                                                    <action selector="addToWantedTapped:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="2Jo-mM-hzl"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uEO-wp-z7R">
+                                                <rect key="frame" x="240" y="0.0" width="30" height="30"/>
+                                                <state key="normal" image="icons8-youtube"/>
+                                                <connections>
+                                                    <action selector="youTubeButtonPressed:" destination="lxs-nA-Z7j" eventType="touchUpInside" id="nvY-Dr-vfU"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="iQ8-AK-4kX" firstAttribute="centerY" secondItem="pHg-Fj-Q3x" secondAttribute="centerY" id="NtU-4r-p8D"/>
+                                    <constraint firstItem="iQ8-AK-4kX" firstAttribute="centerX" secondItem="pHg-Fj-Q3x" secondAttribute="centerX" id="SlK-CQ-S56"/>
+                                    <constraint firstItem="pHg-Fj-Q3x" firstAttribute="top" secondItem="dgt-ne-yRV" secondAttribute="bottom" id="h9t-62-huD"/>
+                                </constraints>
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="VIa-ds-nvC"/>
                         <color key="backgroundColor" red="0.61414436029999997" green="0.84166531739999995" blue="0.67950070799999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="width" secondItem="Vke-jr-5oi" secondAttribute="width" id="4jJ-Wk-kQd"/>
+                            <constraint firstItem="1iP-hh-OfY" firstAttribute="centerY" secondItem="ntz-FS-uBs" secondAttribute="centerY" id="7Ch-Mg-AmR"/>
+                            <constraint firstItem="wze-Km-eat" firstAttribute="top" secondItem="VIa-ds-nvC" secondAttribute="top" id="7s6-Cq-Y3c"/>
+                            <constraint firstItem="wze-Km-eat" firstAttribute="bottom" secondItem="VIa-ds-nvC" secondAttribute="bottom" id="E6C-dd-sIj"/>
+                            <constraint firstItem="dgt-ne-yRV" firstAttribute="height" secondItem="VIa-ds-nvC" secondAttribute="height" multiplier="0.05" id="LT7-Zb-wxv"/>
+                            <constraint firstItem="JyI-B0-F0s" firstAttribute="centerX" secondItem="54q-Ij-hNz" secondAttribute="centerX" id="T7o-X0-NUf"/>
+                            <constraint firstItem="VIa-ds-nvC" firstAttribute="leading" secondItem="wze-Km-eat" secondAttribute="leading" id="YND-U2-802"/>
+                            <constraint firstItem="1iP-hh-OfY" firstAttribute="centerX" secondItem="ntz-FS-uBs" secondAttribute="centerX" id="Zgr-es-Cvl"/>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="height" secondItem="Vke-jr-5oi" secondAttribute="height" id="abK-MX-en1"/>
+                            <constraint firstItem="JyI-B0-F0s" firstAttribute="centerY" secondItem="54q-Ij-hNz" secondAttribute="centerY" id="ffO-oQ-vNN"/>
+                            <constraint firstItem="VIa-ds-nvC" firstAttribute="bottom" secondItem="pHg-Fj-Q3x" secondAttribute="bottom" id="lco-4t-rdm"/>
+                            <constraint firstItem="wze-Km-eat" firstAttribute="trailing" secondItem="VIa-ds-nvC" secondAttribute="trailing" id="oOT-Jw-CaJ"/>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="centerY" secondItem="Vke-jr-5oi" secondAttribute="centerY" id="xB7-8i-f2a"/>
                             <constraint firstItem="zSB-W3-U9j" firstAttribute="centerX" secondItem="VIa-ds-nvC" secondAttribute="centerX" id="yx5-A8-zkH"/>
                         </constraints>
@@ -1022,7 +1041,7 @@ nplayers.arcadebelgium.be</string>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="v1W-Pm-HdN"/>
+        <segue reference="Kxa-cf-8aS"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="About Banners/Gaming History Banner" width="572" height="64"/>

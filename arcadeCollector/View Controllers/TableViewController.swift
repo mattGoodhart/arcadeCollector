@@ -13,11 +13,11 @@ protocol FilterSelectionDelegate: AnyObject {
     func didFinish()
 }
 
-enum Tab: Int {
+enum Tab: Int, CaseIterable {
     case myGames = 1
     case allGames = 2
     case wanted = 3
-    
+
     var shouldRefresh: Bool {
         switch self {
         case .myGames, .wanted:
@@ -26,7 +26,7 @@ enum Tab: Int {
             return false
         }
     }
-    
+
     var baseGamesList: [Game] {
         switch self {
         case .myGames:
@@ -39,7 +39,7 @@ enum Tab: Int {
     }
 }
 
-//MARK: TableViewController
+// MARK: TableViewController
 
 class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchResultsUpdating, FilterSelectionDelegate {
 
@@ -47,12 +47,12 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var filterButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    
+
     let searchController = UISearchController(searchResultsController: nil)
     let dataController = DataController.shared
     let tableColor1 = UIColor(displayP3Red: 0.45, green: 0.62, blue: 0.5, alpha: 1.0)
     let tableColor2 = UIColor(displayP3Red: 25.0/255.0, green: 100.0/255.0, blue: 100.0/255.0, alpha: 1.0)
-    
+
     var reverseActive = false
     var popUpViewController: FilterOptionsPopup!
     var filterOptionSelected = "orientation"
@@ -68,7 +68,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var viewedGame: Game!
     var filteredGames: [Game] = []
     var tab: Tab!
-    
+
     var visibleGamesList: [Game] {
         switch (isFiltering, isFilterOptionChosen) {
         case (false, false):
@@ -81,9 +81,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             return doubleFilteredGames
         }
     }
-    
-    var visibleUniqueYears : [String] {
-       
+
+    var visibleUniqueYears: [String] {
+
         var uniqueYears: [String] {
             switch (isFiltering, isFilterOptionChosen) {
             case (false, false):
@@ -96,7 +96,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 return doubleFilteredYears
             }
         }
-        
+
         guard reverseActive else {
             return uniqueYears
         }
@@ -106,11 +106,11 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var isSearchBarEmpty: Bool {
         return searchController.searchBar.text?.isEmpty ?? true
     }
-    
+
     var isFiltering: Bool {
         return (searchController.isActive && !isSearchBarEmpty)
     }
-    
+
     var isFilterOptionChosen: Bool {
         if filterOptionString == "" {
             return false
@@ -119,8 +119,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
 
-    //MARK: Life Cycle and Overrides
-    
+    // MARK: Life Cycle and Overrides
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.frame = view.frame
@@ -139,22 +139,22 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         definesPresentationContext = true
         refreshDataSource()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
         refreshCollectionIfNeeded()
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
     }
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "GamesDetailSegue" {
             let detailViewController = segue.destination as! DetailViewController
             detailViewController.viewedGame = viewedGame
         }
     }
- 
-    //MARK: Actions
-    
+
+    // MARK: Actions
+
     @IBAction func reverseButtonTapped(_ sender: UIButton) {
         guard visibleGamesList.count != 0 else {return}
         reverseActive.toggle()
@@ -173,28 +173,28 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             popUpViewController.gamesList = gamesList
             popUpViewController.modalPresentationStyle = .overCurrentContext
             popUpViewController.modalTransitionStyle = .crossDissolve
-            
+
             handleButtons(enabled: false, button: filterButton)
-            
+
             present(popUpViewController, animated: true, completion: nil)
         }
     }
-    
-    //MARK: Other Methods
-    
+
+    // MARK: Other Methods
+
     func refreshData() {
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
-        
+
         self.refreshDataSource()
-        
+
         DispatchQueue.main.async {
             self.tableView.reloadData()
             self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
         }
     }
-    
+
     func refreshDataSourceIfFilterChanged() {
-        
+
         switch filterOptionSelected {
         case "orientation":
             filterOptionedGames = gamesList.filter { (game: Game) -> Bool in
@@ -213,7 +213,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         refreshData()
     }
-    
+
     func createArrayOfUniqueYears(listOfGames: [Game]) -> [String] {
         var uniqueYears = [String]()
         for game in listOfGames {
@@ -223,9 +223,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         uniqueYearsArray.sort()
         return uniqueYearsArray
     }
-    
+
     func createUniqueYearArrayForFilterConditions() {
-        
+
             switch (isFiltering, isFilterOptionChosen) {
             case (false, false):
                 arrayOfUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
@@ -237,18 +237,18 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 doubleFilteredYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
             }
     }
-    
+
     func refreshDataSource() {
         gamesList = tab.baseGamesList
         createUniqueYearArrayForFilterConditions()
-        groups = Dictionary(grouping: visibleGamesList.sorted { $0.title! < $1.title! }, by :{ $0.year! })
+        groups = Dictionary(grouping: visibleGamesList.sorted { $0.title! < $1.title! }, by: { $0.year! })
     }
-    
+
     private func refreshCollectionIfNeeded() {
         guard tab.shouldRefresh else {
             return
         }
-        
+
         let gamesSet = Set(gamesList)
         let baseGamesSet = Set(tab.baseGamesList)
         guard gamesSet != baseGamesSet else {
@@ -258,14 +258,14 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         print("Refreshing list")
         refreshData()
     }
-    
-    //MARK: UISearchResultsUpdating
-    
+
+    // MARK: UISearchResultsUpdating
+
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
         filterContentForSearchText(searchBar.text!)
     }
-    
+
     func filterContentForSearchText(_ searchText: String) {
         if !isFilterOptionChosen {
             filteredGames = gamesList.filter { (game: Game) -> Bool in
@@ -276,15 +276,15 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 return game.title!.lowercased().contains(searchText.lowercased())
             }
         }
-        
+
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
         refreshDataSource()
         tableView.reloadData()
         handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
     }
-    
-    //MARK: TableViewDelegate
-    
+
+    // MARK: TableViewDelegate
+
     /// Prevents the deleting of rows when viewing allGames on TableViewController
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         guard tabBarController?.selectedIndex != Tab.allGames.rawValue else {
@@ -292,18 +292,18 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         return true
     }
-    
+
     /// Removes game from myGames or wantedGames with delete gesture
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
+
         let section = visibleUniqueYears[indexPath.section]
         let group = groups[section]!
         let game = group[indexPath.row]
-        
+
         guard editingStyle == .delete else {
             return
         }
-        
+
         if tabBarController?.selectedIndex == Tab.myGames.rawValue {
             let removalIndex = CollectionManager.shared.myGames.firstIndex(of: game)
             CollectionManager.shared.myGames.remove(at: removalIndex!)
@@ -316,14 +316,14 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
         try? dataController.viewContext.save()
         refreshDataSource()
-        
+
         if group.count == 1 {
             tableView.deleteSections([indexPath.section], with: .fade)
         } else {
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         if visibleGamesList.isEmpty && tabBarController?.selectedIndex == 1 {
             let label = UILabel()
@@ -332,30 +332,28 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             tableView.backgroundView = label
             tableView.separatorStyle = .none
             return 0
-        }
-        else if visibleGamesList.isEmpty && tabBarController?.selectedIndex == 3 {
+        } else if visibleGamesList.isEmpty && tabBarController?.selectedIndex == 3 {
             let label = UILabel()
             label.text = "No Wanted Games!"
             label.textAlignment = .center
             tableView.backgroundView = label
             tableView.separatorStyle = .none
             return 0
-        }
-        else {
+        } else {
             tableView.backgroundView = nil
             tableView.separatorStyle = .singleLine
             return visibleUniqueYears.count
         }
     }
-    
+
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return visibleUniqueYears[section]
         }
-    
+
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         (view as! UITableViewHeaderFooterView).textLabel?.textColor = tableColor2
     }
-    
+
     /// Right-side scroll index for allGames
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         guard tabBarController?.selectedIndex == Tab.allGames.rawValue else {
@@ -363,17 +361,17 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         return visibleUniqueYears
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let year = visibleUniqueYears[section]
         let groupSection = groups[year]
         return groupSection!.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GameTableCell", for: indexPath) as! GameTableCell
         cell.backgroundColor = indexPath.row % 2 == 0 ? tableColor1 : tableColor2
-        
+
         let section = visibleUniqueYears[indexPath.section]
         let group = groups[section]!
         let game = group[indexPath.row]
@@ -385,34 +383,31 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         cell.detailtext.text = (game.manufacturer ?? "Unknown") + ", " + (game.year ?? "????")
         return cell
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let section = visibleUniqueYears[indexPath.section]
         viewedGame = groups[section]![indexPath.row]
         performSegue(withIdentifier: "GamesDetailSegue", sender: self)
     }
-    
+
     // MARK: - FilterSelectionDelegate
-    
+
     func didSelect(filter: String, filterOptionString: String) {
         filterOptionSelected = filter
         self.filterOptionString = filterOptionString
         refreshDataSourceIfFilterChanged()
     }
-    
+
     func didFinish() {
         handleButtons(enabled: true, button: filterButton)
         if isFilterOptionChosen {
             DispatchQueue.main.async {
                 self.filterButton.setImage(UIImage(named: "icons8-filter-edit"), for: .normal)
             }
-        }
-        else {
+        } else {
             DispatchQueue.main.async {
                 self.filterButton.setImage(UIImage(named: "icons8-filter"), for: .normal)
             }
         }
     }
 }
-
-

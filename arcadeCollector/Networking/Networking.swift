@@ -9,16 +9,16 @@
 import Foundation
 import UIKit
 
-class Networking { 
-    
+class Networking {
+
     static let shared = Networking()
     private init() {}
-    
+
     func taskForJSON<ResponseType: Decodable>(url: URL, responseType: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) {
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        let task = URLSession.shared.dataTask(with: request) { data, response, error  in
+        let task = URLSession.shared.dataTask(with: request) { data, _, error  in
             guard error == nil, let data = data else {
                 DispatchQueue.main.async {
                     completion(nil, error)
@@ -31,8 +31,7 @@ class Networking {
                 DispatchQueue.main.async {
                     completion(responseObject, nil)
                 }
-            }
-            catch {
+            } catch {
                 DispatchQueue.main.async {
                     completion(nil, error)
                     print(error)
@@ -41,7 +40,7 @@ class Networking {
         }
         task.resume()
     }
-    
+
     func fetchText(at url: URL, with completion: @escaping ((String) -> Void)) {
         DispatchQueue.global().async {
             guard let textData = try? String(contentsOf: url) else {
@@ -53,7 +52,7 @@ class Networking {
             }
         }
     }
-    
+
     func fetchData(at url: URL, with completion: @escaping ((Data?) -> Void)) {
         DispatchQueue.global().async {
             guard let data = try? Data(contentsOf: url) else {

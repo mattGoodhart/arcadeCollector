@@ -10,31 +10,33 @@ import UIKit
 import CoreData
 
 @UIApplicationMain class AppDelegate: UIResponder, UIApplicationDelegate {
-    
+
     var window: UIWindow?
     var allowedOrientations: UIInterfaceOrientationMask = .portrait
-  
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+
         DataController.shared.load()
+
+        // Do this in a backgrund context
         CollectionManager.shared.createCollectionsIfNeeded()
         return true
     }
-    
+
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         return allowedOrientations
     }
-    
+
     func saveViewContext() {
         try? DataController.shared.viewContext.save()
     }
-    
-   //MARK: APP Life Cycle
-    
+
+   // MARK: APP Life Cycle
+
     func applicationDidEnterBackground(_ application: UIApplication) {
         saveViewContext()
     }
-    
+
     func applicationWillTerminate(_ application: UIApplication) {
         saveViewContext()
     }

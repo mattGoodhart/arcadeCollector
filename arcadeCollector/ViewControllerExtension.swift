@@ -9,23 +9,23 @@
 import UIKit
 
 extension UIViewController {
-    func handleActivityIndicator(indicator: UIActivityIndicatorView, vc: UIViewController, show: Bool) {
+    func handleActivityIndicator(indicator: UIActivityIndicatorView, viewController: UIViewController, show: Bool) {
         if show {
             DispatchQueue.main.async {
-                indicator.bringSubviewToFront(vc.view)
-                indicator.center = vc.view.center
-                indicator.isHidden = false // could also set hidesWhenStopped to true
+                indicator.bringSubviewToFront(viewController.view)
+                indicator.center = viewController.view.center
+                indicator.isHidden = false // could also set hidesWhenStopped to true -- do this
                 indicator.startAnimating()
             }
         } else {
             DispatchQueue.main.async {
-                indicator.sendSubviewToBack(vc.view)
+                indicator.sendSubviewToBack(viewController.view)
                 indicator.isHidden = true
                 indicator.stopAnimating()
             }
         }
     }
-    
+
     func handleButtons(enabled: Bool, button: UIButton) {
         if enabled {
             DispatchQueue.main.async {
@@ -40,10 +40,3 @@ extension UIViewController {
         }
     }
 }
-
-
-
-
-
-
-

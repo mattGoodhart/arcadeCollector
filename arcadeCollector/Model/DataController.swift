@@ -10,25 +10,25 @@ import Foundation
 import CoreData
 
 class DataController {
-    
+
     static let shared = DataController(modelName: "ArcadeCollector")
     let persistentContainer: NSPersistentContainer
-    
+
     var viewContext: NSManagedObjectContext {
         return persistentContainer.viewContext
     }
-    
+
     private init(modelName: String) {
         persistentContainer = NSPersistentContainer(name: modelName)
     }
-    
+
     func configureContexts() {
         viewContext.automaticallyMergesChangesFromParent = true
         viewContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
     }
-    
+
     func load(completion: (() -> Void)? = nil) {
-        persistentContainer.loadPersistentStores { storeDescription, error in
+        persistentContainer.loadPersistentStores { _, error in
             guard error == nil else {
                 fatalError(error!.localizedDescription)
             }
@@ -37,22 +37,18 @@ class DataController {
             completion?()
         }
     }
-}
 
-// MARK: - Autosaving
-
-extension DataController {
-    func autoSave(interval: TimeInterval = 45) {        
+    func autoSave(interval: TimeInterval = 45) {
         guard interval > 0 else {
             print("cannot set negative autosave interval")
             return
         }
-        
+
         if viewContext.hasChanges {
             print("autosaving")
             try? viewContext.save()
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + interval) {
             self.autoSave(interval: interval)
         }

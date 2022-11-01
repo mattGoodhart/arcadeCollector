@@ -11,7 +11,7 @@ struct ArcadeDatabaseAPIResponse: Codable {
     let result: [RomSetResults]
 }
 
-struct RomSetResults: Codable {
+struct RomSetResults: Codable { // map from snake case to lower camel instead of Codingkeys
     let resultIndex: Int
     let title: String
     let romSetName: String

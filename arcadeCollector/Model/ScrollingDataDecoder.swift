@@ -19,7 +19,7 @@ struct ScrollingData: Codable {
     let manufacturer: String
     let players: String
     let orientation: String
-    
+
     enum CodingKeys: String, CodingKey {
         case romName
         case title = "Title"

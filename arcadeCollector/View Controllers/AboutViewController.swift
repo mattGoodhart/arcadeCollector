@@ -9,8 +9,7 @@
 import UIKit
 
 class AboutViewController: UIViewController {
-    
-//No special functionality yet
-    
+
+// No special functionality yet
+
 }
-    

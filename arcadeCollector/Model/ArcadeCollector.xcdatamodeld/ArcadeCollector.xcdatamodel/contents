@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21A559" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CollectionEntity" representedClassName="CollectionEntity" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Game" inverseName="collection" inverseEntity="Game"/>
     </entity>
     <entity name="Game" representedClassName="Game" syncable="YES" codeGenerationType="class">
         <attribute name="audioChannels" optional="YES" attributeType="String"/>
-        <attribute name="cabinetImageData" optional="YES" attributeType="Binary"/>
+        <attribute name="cabinetImageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="cabinetImageURLString" optional="YES" attributeType="String"/>
         <attribute name="cpuStringArray" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;String&gt;"/>
         <attribute name="displayType" optional="YES" attributeType="String"/>
         <attribute name="driver" optional="YES" attributeType="String"/>
         <attribute name="emulationStatus" optional="YES" attributeType="String"/>
-        <attribute name="flyerImageData" optional="YES" attributeType="Binary"/>
+        <attribute name="flyerImageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="flyerImageURLString" optional="YES" attributeType="String"/>
         <attribute name="functionalCondition" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="genre" optional="YES" attributeType="String"/>
@@ -27,7 +27,7 @@
         <attribute name="hasMonitorFlag" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="history" optional="YES" attributeType="String"/>
         <attribute name="hRefresh" optional="YES" attributeType="String"/>
-        <attribute name="inGameImageData" optional="YES" attributeType="Binary"/>
+        <attribute name="inGameImageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="inGameImageURLString" optional="YES" attributeType="String"/>
         <attribute name="inputButtons" optional="YES" attributeType="String"/>
         <attribute name="inputControls" optional="YES" attributeType="String"/>

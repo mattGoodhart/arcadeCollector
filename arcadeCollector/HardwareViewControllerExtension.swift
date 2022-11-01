@@ -9,25 +9,23 @@
 import UIKit
 
 extension HardwareViewController {
-    
-    //MARK: - XML Parser
-    
+
+    // MARK: - XML Parser
+
     func parserDidStartDocument(_ parser: XMLParser) {
         chipResults = [[:]]
     }
-    
-    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
-        
+
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String: String] = [:]) {
+
         if elementName == "machine" {
             machineDictionary = [:]
             if let sourcefile = attributeDict["sourcefile"] {
                 machineDictionary!["driver"] = sourcefile
             }
-        }
-            
-        else if elementName == "chip" {
+        } else if elementName == "chip" {
             chipDictionary = [:]
-            
+
             if let type = attributeDict["type"] {
                 chipDictionary!["type"] = type
             }
@@ -40,12 +38,10 @@ extension HardwareViewController {
             if let clock = attributeDict["clock"] {
                 chipDictionary!["clock"] = clock
             }
-        }
-            
-        else if elementName == "display" {
+        } else if elementName == "display" {
             displayDictionary = [:]
-            
-            if let type = attributeDict["type"]{
+
+            if let type = attributeDict["type"] {
                 displayDictionary!["type"] = type
             }
             if let rotate = attributeDict["rotate"] {
@@ -60,48 +56,44 @@ extension HardwareViewController {
             if let refresh = attributeDict["refresh"] {
                 displayDictionary!["refresh"] = refresh
             }
-            if let vtotal = attributeDict["vtotal"]{
+            if let vtotal = attributeDict["vtotal"] {
                 displayDictionary!["vtotal"] = vtotal
             }
-        }
-            
-        else if elementName == "sound", let channels = attributeDict["channels"] {
+        } else if elementName == "sound", let channels = attributeDict["channels"] {
             soundChannels = "Audio Channels: \(channels)"
-        }
-            
-        else if machineElementKeys.contains(elementName) {
+        } else if machineElementKeys.contains(elementName) {
             currentValue = ""
         }
     }
-    
+
     func parser(_ parser: XMLParser, foundCharacters string: String) {
         currentValue? += string
     }
-    
+
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         if elementName == "chip" {
             chipResults!.append(chipDictionary!)
             chipDictionary = nil
         }
-        
+
         if machineElementKeys.contains(elementName) {
             machineDictionary![elementName] = currentValue
             currentValue = nil
         }
     }
-    
+
     func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
         print(parseError)
         currentValue = nil
         machineDictionary = nil
         chipResults = nil
     }
-    
+
     func parseHardwareData() {
         guard let results = chipResults else {
             return
         }
-        
+
         for chip in results {
             if chip["type"] == "cpu" {
                 if chip["tag"] == "maincpu" {
@@ -111,15 +103,14 @@ extension HardwareViewController {
                 } else {
                     cpuStringArray += ["\(chip["name"] ?? ""), " + "\(chip["clock"] ?? "")"]
                 }
-            }
-            else if (chip["type"] == "audio") && chip["name"] != "Speaker" && (chip["clock"] != nil){
+            } else if (chip["type"] == "audio") && chip["name"] != "Speaker" && (chip["clock"] != nil) {
                 soundDeviceStringArray += ["\(chip["name"] ?? ""), " + "\(chip["clock"] ?? "")"] // remove comma for case where device has no clock
-                
-            }else if (chip["type"] == "audio") && chip["name"] != "Speaker"{
+
+            } else if (chip["type"] == "audio") && chip["name"] != "Speaker"{
                 soundDeviceStringArray += ["\(chip["name"] ?? "")"]
             }
         }
-        
+
         for cpuString in cpuStringArray {
             improveClockFormatting(stringToProcess: cpuString, stringArrayToUpdate: cpuStringArray, isForCPU: true)
         }
@@ -130,29 +121,27 @@ extension HardwareViewController {
             viewedGame.soundDeviceStringArray = formattedSoundStringArray
             try? dataController.viewContext.save()
         }
-    
+
     func improveClockFormatting(stringToProcess: String, stringArrayToUpdate: [String], isForCPU: Bool) {
-        
+
         var formattedStringArray = [String]()
-        
+
         let split = stringToProcess.split(separator: " ")
         let poorlyFormattedClock = String(split.suffix(1).joined(separator: [" "]))
-        
+
         if let poorlyFormattedClockDouble = (Double(poorlyFormattedClock)) {
             let adjust = Double(poorlyFormattedClockDouble / 1000000)
             let rounded = Double(round(100 * adjust)/100)
             let replacementClockString = String(rounded)  + " MHz"
-            
+
             let goodString = stringToProcess.replacingOccurrences(of: poorlyFormattedClock, with: replacementClockString)
             formattedStringArray += [goodString]
-        }
-        else {
+        } else {
             formattedStringArray += [stringToProcess]
         }
         if isForCPU {
             formattedCPUStringArray += formattedStringArray
-        }
-        else {
+        } else {
             formattedSoundStringArray += formattedStringArray
         }
     }
