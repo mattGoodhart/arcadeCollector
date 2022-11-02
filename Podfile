@@ -7,6 +7,5 @@ target 'arcadeCollector' do
 
   # Pods for arcadeCollector
   pod 'Charts'
-  pod 'SwiftLint'
 
 end

@@ -177,7 +177,7 @@ class DetailViewController: UIViewController, EditGameDelegate {
         mainImageSwitch.translatesAutoresizingMaskIntoConstraints = false
         mainImageSwitch.topAnchor.constraint(equalTo: mainImageView.bottomAnchor, constant: 20).isActive = true
         mainImageSwitch.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
-        
+
         baseStackView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
         baseStackView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
     }
@@ -355,7 +355,7 @@ class DetailViewController: UIViewController, EditGameDelegate {
                 print("main activity indicator stopped for failed flyer image")
                 return
             }
-            handleActivityIndicator(indicator: mainImageActivityIndicator, vc: self, show: true)
+            handleActivityIndicator(indicator: mainImageActivityIndicator, viewController: self, show: true)
 
             Networking.shared.fetchData(at: url) { data in
                 guard let data = data, let flyerImage = UIImage(data: data) else {

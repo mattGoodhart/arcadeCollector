@@ -143,7 +143,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
         refreshCollectionIfNeeded()
-        handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
+        handleActivityIndicator(indicator: activityIndicator, viewController: self, show: false)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -183,13 +183,13 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     // MARK: Other Methods
 
     func refreshData() {
-        handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
+        handleActivityIndicator(indicator: activityIndicator, viewController: self, show: true)
 
         self.refreshDataSource()
 
         DispatchQueue.main.async {
             self.tableView.reloadData()
-            self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+            self.handleActivityIndicator(indicator: self.activityIndicator, viewController: self, show: false)
         }
     }
 
@@ -277,10 +277,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
         }
 
-        handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
+        handleActivityIndicator(indicator: activityIndicator, viewController: self, show: true)
         refreshDataSource()
         tableView.reloadData()
-        handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
+        handleActivityIndicator(indicator: activityIndicator, viewController: self, show: false)
     }
 
     // MARK: TableViewDelegate

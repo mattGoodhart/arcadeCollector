@@ -105,7 +105,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
     }
 
     func prepMainImageView() {
-        handleActivityIndicator(indicator: activityIndicator, vc: self, show: false)
+        handleActivityIndicator(indicator: activityIndicator, viewController: self, show: false)
         mainImageView.image = nil
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.mainImageTapped))
         mainImageView.addGestureRecognizer(tapRecognizer)
@@ -236,12 +236,12 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 return
             }
 
-            handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
+            handleActivityIndicator(indicator: activityIndicator, viewController: self, show: true)
 
             Networking.shared.fetchData(at: url) { data in
 
                 guard let data = data, let cabinetImage = UIImage(data: data) else {
-                    self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                    self.handleActivityIndicator(indicator: self.activityIndicator, viewController: self, show: false)
                     self.getBoardPhotoIfNeeded()
                     return
                 }
@@ -249,7 +249,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 self.viewedGame.cabinetImageData = data
                 try? self.dataController.viewContext.save()
                 self.setImage(image: cabinetImage)
-                self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                self.handleActivityIndicator(indicator: self.activityIndicator, viewController: self, show: false)
                 self.getBoardPhotoIfNeeded()
             }
         }
@@ -272,12 +272,12 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                     return
             }
 
-            handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
+            handleActivityIndicator(indicator: activityIndicator, viewController: self, show: true)
             Networking.shared.fetchData(at: url) { data in
 
                 guard let data = data, let pcbImage = UIImage(data: data) else {
                     print("PCB Photo download failure.")
-                    self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                    self.handleActivityIndicator(indicator: self.activityIndicator, viewController: self, show: false)
                     self.viewedGame.pcbPhotoURLString = ""
                     self.imageChooser.isHidden = true
 
@@ -290,7 +290,7 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
 
                 self.viewedGame.pcbImageData = data
                 try? self.dataController.viewContext.save()
-                self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                self.handleActivityIndicator(indicator: self.activityIndicator, viewController: self, show: false)
                 if self.viewedGame.cabinetImageURLString == "" {
                     self.setImage(image: pcbImage)
                 }
@@ -373,12 +373,12 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                 return
             }
 
-            handleActivityIndicator(indicator: activityIndicator, vc: self, show: true)
+            handleActivityIndicator(indicator: activityIndicator, viewController: self, show: true)
             Networking.shared.fetchData(at: url) { data in
                 guard let data = data else {
                     print("manual download failure.")
 
-                        self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                    self.handleActivityIndicator(indicator: self.activityIndicator, viewController: self, show: false)
                         self.manualButton.isEnabled = false
                        // self.manualButton.isHidden = true
                         self.viewedGame.manualURLString = ""
@@ -392,13 +392,13 @@ class HardwareViewController: UIViewController, XMLParserDelegate {
                     self.viewedGame.manualURLString = ""
                     self.viewedGame.manual = nil
                     self.manualButton.isEnabled = false
-                    self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                    self.handleActivityIndicator(indicator: self.activityIndicator, viewController: self, show: false)
                     try? self.dataController.viewContext.save()
                     return
                 } else {
                     self.viewedGame.manual = data
                     try? self.dataController.viewContext.save()
-                    self.handleActivityIndicator(indicator: self.activityIndicator, vc: self, show: false)
+                    self.handleActivityIndicator(indicator: self.activityIndicator, viewController: self, show: false)
                     self.segueToManualViewController(manualData: data)
                 }
 
