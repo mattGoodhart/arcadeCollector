@@ -2,7 +2,7 @@
 //  CollectionManager.swift
 //  arcadeCollector
 //
-//  Created by TrixxMac on 3/17/21.
+//  Created by Matt Goodhart on 3/17/21.
 //  Copyright © 2021 CatBoiz. All rights reserved.
 //
 
@@ -12,6 +12,7 @@ enum CollectionName: String {
     case allGames = "All Games"
     case myGames = "My Games"
     case wantedGames = "Wanted Games"
+    case repairLogs = "Repair Logs"
 }
 
 class CollectionManager {
@@ -100,15 +101,7 @@ class CollectionManager {
                 gameEntity.manufacturer = game.manufacturer
                 gameEntity.players = game.players
                 gameEntity.orientation = game.orientation
-                gameEntity.hasBezel = false
                 gameEntity.hasBoard = false
-                gameEntity.hasCabinet = false
-                gameEntity.hasCabinetArt = false
-                gameEntity.hasMarquee = false
-               // gameEntity.hasCabinetHardware = false
-                gameEntity.hasControlPanelOverlay = false
-                gameEntity.hasControls = false
-                gameEntity.hasMonitorFlag = false
                 gameEntity.isBootleg = false
                 gameEntity.functionalCondition = 0
                 self.allGames.append(gameEntity)
@@ -174,36 +167,13 @@ class CollectionManager {
                     break
                 }
             }
-            //   boardsInCollection += board
         }
         boardsInCollection = workingBoards + partiallyWorkingBoards + nonWorkingBoards
     }
 
-    func getCabinetHardware() {
-
-        var cabinets = [Game]()
-        var monitors = [Game]()
-        var controls = [Game]()
-        var bezels = [Game]()
-        var controlPanelOverlays = [Game]()
-        var artworks = [Game]()
-        var marquees = [Game]()
-
-        for game in myGames {
-            if game.hasCabinet { cabinets += [game] }
-            if game.hasMonitorFlag { monitors += [game] }
-            if game.hasControls { controls += [game] }
-            if game.hasBezel { bezels += [game] }
-            if game.hasControlPanelOverlay { controlPanelOverlays += [game] }
-            if game.hasCabinetArt { artworks += [game] }
-            if game.hasMarquee { marquees += [game] }
-        }
-
-        hardwareCountsDictionary = ["Boards": Double(boardsInCollection.count), "Monitors": Double(monitors.count), "Controls": Double(controls.count), "Bezels": Double(bezels.count), "CPOs": Double(controlPanelOverlays.count), "Art": Double(artworks.count), "Marquees": Double(marquees.count), "Cabinets": Double(cabinets.count)]
-    }
-
     func countOfOwnedGameBy(_ property: KeyPath<Game, Bool>) -> Int {
         // TODO can we use entity description instead of magic string?
+        // Don't remember what I was doing with this exactly. Maybe a good jumping off point for a second pie chart with a breakdown of reapir log issues e.g. audio, video, controls, boot, extended play etc. Would need to include these properties in the Game entity, of course
         let request = NSFetchRequest<NSFetchRequestResult>.init(entityName: "Game")
 
         let sumDescription = NSExpressionDescription()

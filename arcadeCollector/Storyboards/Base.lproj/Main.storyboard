@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fpv-6B-0Xm">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fpv-6B-0Xm">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -63,10 +63,6 @@
                                 <rect key="frame" x="0.0" y="44" width="375" height="229.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Ja-rF-aT8" customClass="PieChartView" customModule="Charts">
-                                <rect key="frame" x="0.0" y="273.5" width="375" height="229.5"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <constraints>
@@ -76,16 +72,12 @@
                             <constraint firstItem="QH6-Bx-xqo" firstAttribute="width" secondItem="6Tk-OE-BBY" secondAttribute="width" id="BZX-pC-wVA"/>
                             <constraint firstItem="Wll-9G-dlj" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="CJt-5B-ShU"/>
                             <constraint firstItem="9iG-Dh-7em" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="I5P-Fs-jLo"/>
-                            <constraint firstItem="6Ja-rF-aT8" firstAttribute="top" secondItem="QH6-Bx-xqo" secondAttribute="bottom" id="dmH-cw-TWS"/>
                             <constraint firstItem="RoG-Qa-ztg" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="eYT-ar-a2J"/>
                             <constraint firstItem="Wll-9G-dlj" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" id="egD-Zj-ERk"/>
-                            <constraint firstItem="6Ja-rF-aT8" firstAttribute="width" secondItem="6Tk-OE-BBY" secondAttribute="width" id="fwg-u6-R4d"/>
-                            <constraint firstItem="6Ja-rF-aT8" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="gtn-hc-WTs"/>
-                            <constraint firstItem="6Ja-rF-aT8" firstAttribute="height" secondItem="6Tk-OE-BBY" secondAttribute="height" multiplier="0.4" id="imH-b8-JWX"/>
+                            <constraint firstItem="RoG-Qa-ztg" firstAttribute="top" secondItem="QH6-Bx-xqo" secondAttribute="bottom" constant="239.5" id="fEN-Ad-XHC"/>
                             <constraint firstItem="QH6-Bx-xqo" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="j89-AB-n1f"/>
                             <constraint firstItem="QH6-Bx-xqo" firstAttribute="height" secondItem="6Tk-OE-BBY" secondAttribute="height" multiplier="0.4" id="ozI-Ru-hoK"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="9iG-Dh-7em" secondAttribute="bottom" constant="10" id="tjg-9n-ScS"/>
-                            <constraint firstItem="RoG-Qa-ztg" firstAttribute="top" secondItem="6Ja-rF-aT8" secondAttribute="bottom" constant="10" id="vjA-D7-dNb"/>
                             <constraint firstItem="Wll-9G-dlj" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="ztW-4A-Odc"/>
                         </constraints>
                     </view>
@@ -93,7 +85,6 @@
                     <navigationItem key="navigationItem" id="fBG-4s-87M"/>
                     <connections>
                         <outlet property="aboutButton" destination="9iG-Dh-7em" id="Wfv-3f-hIv"/>
-                        <outlet property="allHardwarePieChart" destination="6Ja-rF-aT8" id="LeK-7T-NNT"/>
                         <outlet property="boardsPieChart" destination="QH6-Bx-xqo" id="FYR-P4-d6n"/>
                         <outlet property="wantedGamesLabel" destination="EHQ-6Z-ecI" id="XIg-r0-XNF"/>
                         <segue destination="pwW-Ib-jT5" kind="show" identifier="AboutSegue" id="kpX-Gv-4fo"/>
@@ -115,7 +106,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="1652"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="gQN-pF-6dD" userLabel="Credits Stack View">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1603.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1453"/>
                                         <subviews>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="App by Matt Goodhart - 2021" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rGT-gY-bkD" userLabel="About This App">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="40"/>
@@ -126,65 +117,65 @@
                                                 <rect key="frame" x="0.0" y="48" width="375" height="300"/>
                                             </imageView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" verticalCompressionResistancePriority="748" scrollEnabled="NO" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="0Nk-K6-RTG" userLabel="ADB Text">
-                                                <rect key="frame" x="0.0" y="356" width="375" height="102"/>
+                                                <rect key="frame" x="0.0" y="356" width="375" height="59"/>
                                                 <string key="text">The Arcade Database, created and maintained by Motoschifo, is the host of all of the media fetched by this App.
 adb.arcadeitalia.net</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/Progetto-snaps banner" translatesAutoresizingMaskIntoConstraints="NO" id="yra-SG-ncK">
-                                                <rect key="frame" x="0.0" y="466" width="375" height="101"/>
+                                                <rect key="frame" x="0.0" y="423" width="375" height="101"/>
                                             </imageView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" verticalCompressionResistancePriority="747" scrollEnabled="NO" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="wPz-mO-oxT" userLabel="Progetto Text">
-                                                <rect key="frame" x="0.0" y="575" width="375" height="102"/>
+                                                <rect key="frame" x="0.0" y="532" width="375" height="59"/>
                                                 <string key="text">Game, marquee, flyer, cabinet and PCB images as well as manuals provided courtesy of AntoPisa and ProgettoSnaps
 progettosnaps.net</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/logo-mame" translatesAutoresizingMaskIntoConstraints="NO" id="xA8-mo-3LA">
-                                                <rect key="frame" x="0.0" y="685" width="375" height="199"/>
+                                                <rect key="frame" x="0.0" y="599" width="375" height="199"/>
                                             </imageView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="747" scrollEnabled="NO" editable="NO" text="All driver information from MAME. mamedev.org" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="b5Y-zX-rFo" userLabel="MAME text">
-                                                <rect key="frame" x="0.0" y="892" width="375" height="59"/>
+                                                <rect key="frame" x="0.0" y="806" width="375" height="59"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/Gaming History Banner" translatesAutoresizingMaskIntoConstraints="NO" id="O3S-NK-gh5">
-                                                <rect key="frame" x="0.0" y="959" width="375" height="64"/>
+                                                <rect key="frame" x="0.0" y="873" width="375" height="64"/>
                                             </imageView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="747" scrollEnabled="NO" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="KPK-g7-322" userLabel="History Text">
-                                                <rect key="frame" x="0.0" y="1031" width="375" height="80.5"/>
+                                                <rect key="frame" x="0.0" y="945" width="375" height="59"/>
                                                 <string key="text">Game information provided by Alexis Bousiges and Gaming History
 arcade-history.com</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/wolheader" translatesAutoresizingMaskIntoConstraints="NO" id="rNt-67-uSM">
-                                                <rect key="frame" x="0.0" y="1119.5" width="375" height="118"/>
+                                                <rect key="frame" x="0.0" y="1012" width="375" height="118"/>
                                             </imageView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="BUg-fG-Kr6" userLabel="WorldOfLongplaysText">
-                                                <rect key="frame" x="0.0" y="1245.5" width="375" height="80.5"/>
+                                                <rect key="frame" x="0.0" y="1138" width="375" height="59"/>
                                                 <string key="text">Longplay videos provided by the World of Longplays.
 longplays.org</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/MAMUIconsBanner" translatesAutoresizingMaskIntoConstraints="NO" id="qaJ-gf-HSu" userLabel="MAMEIconsBanner">
-                                                <rect key="frame" x="0.0" y="1334" width="375" height="39"/>
+                                                <rect key="frame" x="0.0" y="1205" width="375" height="39"/>
                                             </imageView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="V0V-Ej-Elp" userLabel="MAMEIconsText">
-                                                <rect key="frame" x="0.0" y="1381" width="375" height="59"/>
+                                                <rect key="frame" x="0.0" y="1252" width="375" height="59"/>
                                                 <string key="text">Game icons provided by MAMU
 icons.mameworld.info</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="About Banners/titre" translatesAutoresizingMaskIntoConstraints="NO" id="17i-Mf-I49">
-                                                <rect key="frame" x="0.0" y="1448" width="375" height="67"/>
+                                                <rect key="frame" x="0.0" y="1319" width="375" height="67"/>
                                             </imageView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="1000" scrollEnabled="NO" editable="NO" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gaj-xa-VVp" userLabel="NPlayersText">
-                                                <rect key="frame" x="0.0" y="1523" width="375" height="80.5"/>
+                                                <rect key="frame" x="0.0" y="1394" width="375" height="59"/>
                                                 <string key="text">Most player support information from the nplayers.ini provided by Nomax
 nplayers.arcadebelgium.be</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
@@ -421,12 +412,12 @@ nplayers.arcadebelgium.be</string>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <activityIndicatorView key="tableFooterView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" id="pOZ-yG-Mbl">
-                                    <rect key="frame" x="0.0" y="106.5" width="375" height="20"/>
+                                    <rect key="frame" x="0.0" y="117.5" width="375" height="20"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </activityIndicatorView>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="GameTableCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="GameTableCell" id="Fuw-96-Z24" customClass="GameTableCell" customModule="arcadeCollector" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="375" height="39.5"/>
+                                        <rect key="frame" x="0.0" y="50" width="375" height="39.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Fuw-96-Z24" id="U2Y-lv-Xfq">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="39.5"/>
@@ -867,7 +858,7 @@ nplayers.arcadebelgium.be</string>
                                         </connections>
                                     </button>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="uKe-Lf-UVe" userLabel="Board Stack View">
-                                        <rect key="frame" x="0.0" y="59" width="375" height="38.5"/>
+                                        <rect key="frame" x="0.0" y="209" width="375" height="38.5"/>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Board" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="J2c-H8-lV8">
                                                 <rect key="frame" x="0.0" y="0.0" width="90" height="38.5"/>
@@ -885,14 +876,14 @@ nplayers.arcadebelgium.be</string>
                                         </subviews>
                                     </stackView>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="sKe-W5-gm8" userLabel="Authenticity">
-                                        <rect key="frame" x="0.0" y="126.5" width="375" height="32"/>
+                                        <rect key="frame" x="0.0" y="426" width="375" height="32"/>
                                         <segments>
                                             <segment title="Original"/>
                                             <segment title="Bootleg"/>
                                         </segments>
                                     </segmentedControl>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="i5J-jH-T9Z">
-                                        <rect key="frame" x="0.0" y="186.5" width="375" height="32"/>
+                                        <rect key="frame" x="0.0" y="636" width="375" height="32"/>
                                         <segments>
                                             <segment title="Working"/>
                                             <segment title="Boots"/>
@@ -900,111 +891,6 @@ nplayers.arcadebelgium.be</string>
                                         </segments>
                                         <color key="tintColor" red="0.099378444254398346" green="0.39114663004875183" blue="0.39385095238685608" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </segmentedControl>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="zD4-88-PwV" userLabel="Marquee Stack View">
-                                        <rect key="frame" x="0.0" y="246.5" width="375" height="38.5"/>
-                                        <subviews>
-                                            <textField opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Marquee" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9vJ-oH-ulD">
-                                                <rect key="frame" x="0.0" y="0.0" width="120" height="38.5"/>
-                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="wuN-Ta-1e3">
-                                                <rect key="frame" x="326" y="0.0" width="51" height="31"/>
-                                            </switch>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="top" spacing="182" translatesAutoresizingMaskIntoConstraints="NO" id="iGG-lR-hMN" userLabel="Cabinet Stack View">
-                                        <rect key="frame" x="0.0" y="314" width="375" height="38.5"/>
-                                        <subviews>
-                                            <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Cabinet" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="TEU-D3-GMa">
-                                                <rect key="frame" x="0.0" y="0.0" width="109" height="38.5"/>
-                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="naG-yA-OYd">
-                                                <rect key="frame" x="326" y="0.0" width="51" height="31"/>
-                                            </switch>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="top" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="SK8-0M-Z6e" userLabel="Monitor Stack View">
-                                        <rect key="frame" x="0.0" y="381" width="375" height="34"/>
-                                        <subviews>
-                                            <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Monitor" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yTI-D0-Aaq">
-                                                <rect key="frame" x="0.0" y="0.0" width="90" height="34"/>
-                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="XsJ-vi-XP0">
-                                                <rect key="frame" x="326" y="0.0" width="51" height="31"/>
-                                            </switch>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="top" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="SRU-jQ-fFr" userLabel="Controls Stack View">
-                                        <rect key="frame" x="0.0" y="444" width="375" height="34"/>
-                                        <subviews>
-                                            <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Controls" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="I7o-Mo-2so">
-                                                <rect key="frame" x="0.0" y="0.0" width="96" height="34"/>
-                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Er8-FG-MlM">
-                                                <rect key="frame" x="326" y="0.0" width="51" height="31"/>
-                                            </switch>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="top" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="s6a-D1-9HH" userLabel="Cabinet Art Stack View">
-                                        <rect key="frame" x="0.0" y="507" width="375" height="34"/>
-                                        <subviews>
-                                            <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Cabinet Artwork" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2PF-0H-1QP">
-                                                <rect key="frame" x="0.0" y="0.0" width="158" height="34"/>
-                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="NOD-ac-j9w">
-                                                <rect key="frame" x="326" y="0.0" width="51" height="31"/>
-                                            </switch>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="NgU-PU-5tg" userLabel="Bezel Stack View">
-                                        <rect key="frame" x="0.0" y="570" width="375" height="34"/>
-                                        <subviews>
-                                            <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Bezel" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="g5S-X1-Pdv">
-                                                <rect key="frame" x="0.0" y="0.0" width="72" height="34"/>
-                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Dna-In-CKb">
-                                                <rect key="frame" x="326" y="0.0" width="51" height="31"/>
-                                            </switch>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="WVV-AH-o7W" userLabel="CPO Stack View">
-                                        <rect key="frame" x="0.0" y="633" width="375" height="34"/>
-                                        <subviews>
-                                            <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Control Panel Overlay" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="tlu-Yn-cE9">
-                                                <rect key="frame" x="0.0" y="0.0" width="201" height="34"/>
-                                                <color key="backgroundColor" red="0.097899116580000001" green="0.39216488599999999" blue="0.39215195180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Z6n-mr-PAA">
-                                                <rect key="frame" x="326" y="0.0" width="51" height="31"/>
-                                            </switch>
-                                        </subviews>
-                                    </stackView>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -1019,20 +905,8 @@ nplayers.arcadebelgium.be</string>
                     </view>
                     <connections>
                         <outlet property="authenticity" destination="sKe-W5-gm8" id="5Vz-Xd-yNS"/>
-                        <outlet property="bezelStack" destination="NgU-PU-5tg" id="GrD-Vk-dZ0"/>
-                        <outlet property="cabinetArtworkStack" destination="s6a-D1-9HH" id="hBs-Qw-sUx"/>
-                        <outlet property="controlPanelOverlayStack" destination="WVV-AH-o7W" id="L0R-Z4-QYL"/>
-                        <outlet property="controlsStack" destination="SRU-jQ-fFr" id="mxS-uv-zTC"/>
                         <outlet property="functionalCondition" destination="i5J-jH-T9Z" id="ddp-8N-SLd"/>
-                        <outlet property="hasBezel" destination="Dna-In-CKb" id="79y-bZ-u7D"/>
                         <outlet property="hasBoard" destination="bfH-94-ZAn" id="lAq-QG-uvG"/>
-                        <outlet property="hasCabinet" destination="naG-yA-OYd" id="V1g-ND-6mO"/>
-                        <outlet property="hasCabinetArt" destination="NOD-ac-j9w" id="2Rv-yy-0zV"/>
-                        <outlet property="hasControlPanelOverlay" destination="Z6n-mr-PAA" id="URU-Ud-N7a"/>
-                        <outlet property="hasControls" destination="Er8-FG-MlM" id="vql-H9-rC0"/>
-                        <outlet property="hasMarquee" destination="wuN-Ta-1e3" id="AuT-fF-XCn"/>
-                        <outlet property="hasMonitorFlag" destination="XsJ-vi-XP0" id="JHZ-c2-1gL"/>
-                        <outlet property="monitorStack" destination="SK8-0M-Z6e" id="fen-bs-moc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IEA-ap-Ycv" userLabel="First Responder" sceneMemberID="firstResponder"/>

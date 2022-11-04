@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="21G115" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CollectionEntity" representedClassName="CollectionEntity" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Game" inverseName="collection" inverseEntity="Game"/>
@@ -16,15 +16,7 @@
         <attribute name="flyerImageURLString" optional="YES" attributeType="String"/>
         <attribute name="functionalCondition" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="genre" optional="YES" attributeType="String"/>
-        <attribute name="hasBezel" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="hasBoard" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="hasCabinet" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="hasCabinetArt" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="hasCabinetHardware" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="hasControlPanelOverlay" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="hasControls" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="hasMarquee" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="hasMonitorFlag" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="history" optional="YES" attributeType="String"/>
         <attribute name="hRefresh" optional="YES" attributeType="String"/>
         <attribute name="inGameImageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
@@ -58,8 +50,4 @@
         <attribute name="youtubeVideoID" optional="YES" attributeType="String"/>
         <relationship name="collection" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CollectionEntity" inverseName="games" inverseEntity="CollectionEntity"/>
     </entity>
-    <elements>
-        <element name="CollectionEntity" positionX="-317.27734375" positionY="-19.36328125" width="129.328125" height="75"/>
-        <element name="Game" positionX="-34.20703125" positionY="-125.28125" width="102.18359375" height="809"/>
-    </elements>
 </model>

@@ -37,22 +37,6 @@
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "61BCDC6D-61D9-4361-9C85-FE47476F3537"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "arcadeCollector/Model/CollectionManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "96"
-            endingLineNumber = "96"
-            landmarkName = "parse(jsonData:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.SwiftErrorBreakpoint">
          <BreakpointContent
             uuid = "2BABA850-564E-4374-8646-40D347FCC713"
@@ -64,16 +48,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "EC18BA99-97B4-4777-8B3E-3963C8EC446D"
-            shouldBeEnabled = "Yes"
+            uuid = "AFF0631E-5E24-4D80-BA7F-33924347E571"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "arcadeCollector/Model/CollectionManager.swift"
+            filePath = "arcadeCollector/View Controllers/DetailViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "119"
-            endingLineNumber = "119"
-            landmarkName = "parse(jsonData:)"
+            startingLineNumber = "370"
+            endingLineNumber = "370"
+            landmarkName = "getFlyerImageIfNeeded()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

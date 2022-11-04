@@ -2,7 +2,7 @@
 //  SummaryViewController.swift
 //  arcadeCollector
 //
-//  Created by TrixxMac on 3/4/21.
+//  Created by Matt Goodhart on 3/4/21.
 //  Copyright © 2021 CatBoiz. All rights reserved.
 //
 
@@ -15,7 +15,6 @@ class SummaryViewController: UIViewController {
     @IBOutlet weak var wantedGamesLabel: UILabel!
     @IBOutlet weak var aboutButton: UIButton!
     @IBOutlet weak var boardsPieChart: PieChartView!
-    @IBOutlet weak var allHardwarePieChart: PieChartView!
 
     let masterCollection = CollectionManager.shared
     let dataController = DataController.shared
@@ -36,25 +35,20 @@ class SummaryViewController: UIViewController {
 
     required init?(coder: NSCoder) { // why is this better than self.title = ... ?
         super.init(coder: coder)
-
         title = "Summary"
-
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         masterCollection.getBoardsByWorkingCondition()
-        masterCollection.getCabinetHardware()
         setWantedGamesCount()
-        buildDataForCharts()
+        buildDataForChart()
     }
 
-    func buildDataForCharts() {
+    func buildDataForChart() {
         buildBoardChart()
-        buildAllHardwareChart()
         boardsPieChart.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
-        allHardwarePieChart.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
     }
 
     func buildBoardChart() {
@@ -64,24 +58,14 @@ class SummaryViewController: UIViewController {
         var boardConditionsInCollection: [String] = []
         var colorsForBoards: [UIColor] = []
 
-        // isEmpty
         guard !masterCollection.boardsInCollection.isEmpty else {
-
             boardsPieChart.noDataText = "No Boards in Collection Yet!"
             boardsPieChart.noDataFont = .italicSystemFont(ofSize: 18)
             boardsPieChart.noDataTextColor = .white
             return
         }
 
-//        struct Thing {
-//            let name: String
-//            let count: Int
-//        let color:
-//        }
-//
-//        [Thing]
-
-        // i would make structs for these
+        // maybe make structs for these
         let boardConditionArray = ["Working", "Booting", "Not Working"]
         let boardConditionCounts = [Double(masterCollection.workingBoards.count), Double(masterCollection.partiallyWorkingBoards.count), Double(masterCollection.nonWorkingBoards.count)]
 
@@ -148,58 +132,6 @@ class SummaryViewController: UIViewController {
         let labelImg = NSMutableAttributedString(string: "")
         labelImg.append(attachmentString)
         pieChart.centerAttributedText = labelImg
-    }
-
-    func buildAllHardwareChart() { // review this closer.. compare to older versions
-
-        let (hardwareCountsTotal, allHardwareDataEntries) = masterCollection
-            .hardwareCountsDictionary
-            .reduce((Double(0), [PieChartDataEntry]())) { partialResult, entry in
-                guard entry.value != 0.0 else {
-                    return partialResult
-                }
-
-                let (count, entires) = partialResult
-
-                let entry = PieChartDataEntry(value: entry.value,
-                                              label: entry.key,
-                                              data: entry.key)
-
-                return (count + entry.value, entires + [entry])
-            }
-
-        allHardwarePieChart.isHidden = false
-
-        guard hardwareCountsTotal != 0.0 else {
-            allHardwarePieChart.noDataText = "No Hardware in Collection Yet!"
-            allHardwarePieChart.noDataFont = .italicSystemFont(ofSize: 18)
-            allHardwarePieChart.noDataTextColor = .white
-            return
-        }
-
-        let allHardwareChartDataSet = PieChartDataSet(allHardwareDataEntries)
-        let allHardwareChartData = PieChartData(dataSet: allHardwareChartDataSet)
-
-        allHardwareChartDataSet.colors = [chartGreen, chartLightGreen, chartSeaFoam, chartBlue, chartLightYellow, chartYellow, chartOrange, chartPink]
-        allHardwareChartDataSet.entryLabelColor = .white
-        allHardwareChartDataSet.entryLabelFont = .italicSystemFont(ofSize: 14)
-        allHardwareChartDataSet.valueLineColor = .white
-        allHardwareChartDataSet.valueLinePart1OffsetPercentage = 0.5
-        allHardwareChartDataSet.valueLinePart1Length = 0.3
-        allHardwareChartDataSet.valueLinePart2Length = 0.5
-        allHardwareChartDataSet.xValuePosition = .outsideSlice
-        allHardwareChartDataSet.yValuePosition = .outsideSlice
-
-        let format = NumberFormatter()
-        format.numberStyle = .none
-        let formatter = DefaultValueFormatter(formatter: format)
-        allHardwareChartData.setValueFormatter(formatter)
-
-        allHardwarePieChart.data = allHardwareChartData
-        allHardwarePieChart.legend.enabled = false
-        allHardwarePieChart.centerText = "Hardware"
-
-        attachImageToCenterOfPieChart(imageName: "Cab", pieChart: allHardwarePieChart)
     }
 
     func setWantedGamesCount() {

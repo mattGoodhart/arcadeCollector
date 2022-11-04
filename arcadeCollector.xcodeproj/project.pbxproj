@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3ACBA6E23275EC34C6E46898 /* Pods_arcadeCollector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0273A0EBD8B8C0EE1544EB /* Pods_arcadeCollector.framework */; };
 		74FCCE7327BAE696001FEA48 /* ZoomableImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FCCE7227BAE695001FEA48 /* ZoomableImageViewController.swift */; };
 		E304C2AD264F2E7F00D0597E /* ScrollingData.json in Resources */ = {isa = PBXBuildFile; fileRef = E304C2AC264F2A6400D0597E /* ScrollingData.json */; };
 		E32D434C261F8B160031B1B7 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32D434B261F8B160031B1B7 /* Networking.swift */; };
@@ -38,7 +37,6 @@
 /* Begin PBXFileReference section */
 		74FCCE7227BAE695001FEA48 /* ZoomableImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableImageViewController.swift; sourceTree = "<group>"; };
 		ACB6B12530022E7560D30B89 /* Pods-arcadeCollector.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-arcadeCollector.release.xcconfig"; path = "Target Support Files/Pods-arcadeCollector/Pods-arcadeCollector.release.xcconfig"; sourceTree = "<group>"; };
-		CA0273A0EBD8B8C0EE1544EB /* Pods_arcadeCollector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_arcadeCollector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E304C2AC264F2A6400D0597E /* ScrollingData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = ScrollingData.json; path = arcadeCollector/Model/ScrollingData.json; sourceTree = SOURCE_ROOT; };
 		E32D434B261F8B160031B1B7 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 		E34B771A260E7F1800EAE50B /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
@@ -73,21 +71,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3ACBA6E23275EC34C6E46898 /* Pods_arcadeCollector.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		06C856C2B332300B0A7A05EB /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				CA0273A0EBD8B8C0EE1544EB /* Pods_arcadeCollector.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		A5BB0C40F4F2056276F31328 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -103,7 +92,6 @@
 				E3E6073D25F04EA1003F1888 /* arcadeCollector */,
 				E3E6073C25F04EA1003F1888 /* Products */,
 				A5BB0C40F4F2056276F31328 /* Pods */,
-				06C856C2B332300B0A7A05EB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
