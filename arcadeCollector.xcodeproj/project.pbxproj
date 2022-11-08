@@ -32,6 +32,8 @@
 		E3E6076425F15293003F1888 /* GameTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E6076325F15293003F1888 /* GameTableCell.swift */; };
 		E3E6076B25F1686E003F1888 /* HardwareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E6076A25F1686E003F1888 /* HardwareViewController.swift */; };
 		E3FB7E2C264AE7C400422DFF /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3FB7E2B264AE7C400422DFF /* TableViewController.swift */; };
+		E46660DD2915A8880056FCDD /* RepairLogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46660DC2915A8880056FCDD /* RepairLogCell.swift */; };
+		E46660DF291AEAED0056FCDD /* RepairLogDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46660DE291AEAED0056FCDD /* RepairLogDetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +65,8 @@
 		E3E6076325F15293003F1888 /* GameTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTableCell.swift; sourceTree = "<group>"; };
 		E3E6076A25F1686E003F1888 /* HardwareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareViewController.swift; sourceTree = "<group>"; };
 		E3FB7E2B264AE7C400422DFF /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		E46660DC2915A8880056FCDD /* RepairLogCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairLogCell.swift; sourceTree = "<group>"; };
+		E46660DE291AEAED0056FCDD /* RepairLogDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairLogDetailViewController.swift; sourceTree = "<group>"; };
 		ED5B8C9FFDAF502525FD4D74 /* Pods-arcadeCollector.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-arcadeCollector.debug.xcconfig"; path = "Target Support Files/Pods-arcadeCollector/Pods-arcadeCollector.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -143,6 +147,7 @@
 				E34B771A260E7F1800EAE50B /* AboutViewController.swift */,
 				E3D90E4A265ABF12005C86E7 /* TabBarController.swift */,
 				E370BB8F268A4F6000D91D9E /* FilterOptionsPopup.swift */,
+				E46660DE291AEAED0056FCDD /* RepairLogDetailViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -151,6 +156,7 @@
 			isa = PBXGroup;
 			children = (
 				E3E6076325F15293003F1888 /* GameTableCell.swift */,
+				E46660DC2915A8880056FCDD /* RepairLogCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -317,9 +323,11 @@
 				E3BFF79C260286FF00EF34C4 /* CollectionManager.swift in Sources */,
 				E3E6075A25F07002003F1888 /* ArcadeDatabaseAPIResponse.swift in Sources */,
 				E383228D26239BF100A52BD5 /* EditGameViewController.swift in Sources */,
+				E46660DF291AEAED0056FCDD /* RepairLogDetailViewController.swift in Sources */,
 				E3A786AF2693722C00CDDC77 /* OtherExtensions.swift in Sources */,
 				E3A786AD2693717800CDDC77 /* HardwareViewControllerExtension.swift in Sources */,
 				E3D90E4B265ABF12005C86E7 /* TabBarController.swift in Sources */,
+				E46660DD2915A8880056FCDD /* RepairLogCell.swift in Sources */,
 				E3E6075C25F14A3A003F1888 /* SummaryViewController.swift in Sources */,
 				E32D434C261F8B160031B1B7 /* Networking.swift in Sources */,
 				E3E6074125F04EA1003F1888 /* DetailViewController.swift in Sources */,

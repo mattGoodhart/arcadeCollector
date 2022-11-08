@@ -356,6 +356,7 @@ nplayers.arcadebelgium.be</string>
                             <constraint firstItem="LIP-wD-4nA" firstAttribute="centerX" secondItem="c1J-YA-Ncd" secondAttribute="centerX" id="p8c-60-qev"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="I8H-Tq-d7L"/>
                     <size key="freeformSize" width="375" height="1200"/>
                     <connections>
                         <outlet property="activityIndicator" destination="LIP-wD-4nA" id="gSH-bg-HWc"/>
@@ -379,6 +380,28 @@ nplayers.arcadebelgium.be</string>
             </objects>
             <point key="canvasLocation" x="1726" y="1626"/>
         </scene>
+        <!--Repair Log View Controller-->
+        <scene sceneID="76V-rs-i3J">
+            <objects>
+                <viewController storyboardIdentifier="RepairLogDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ifN-ue-kbD" userLabel="Repair Log View Controller" customClass="RepairLogDetailViewController" customModule="arcadeCollector" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="sqH-UC-4WG">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pi6-aB-b2M" userLabel="Image View - Tap to add /  update">
+                                <rect key="frame" x="24" y="20" width="327" height="188"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="wuY-i7-i4g"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="QRF-qJ-D2i"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="snh-NR-K1r" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2548" y="1387"/>
+        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="Yuc-of-w7v">
             <objects>
@@ -393,6 +416,7 @@ nplayers.arcadebelgium.be</string>
                         <segue destination="W4k-3l-HeT" kind="relationship" relationship="viewControllers" id="Ioz-ed-vVr"/>
                         <segue destination="QSZ-nf-1Ne" kind="relationship" relationship="viewControllers" id="x2z-LP-Fv7"/>
                         <segue destination="Gta-u3-awy" kind="relationship" relationship="viewControllers" id="TPG-MK-DLr"/>
+                        <segue destination="2c5-Tk-1LY" kind="relationship" relationship="viewControllers" id="gCM-v7-NaU"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="t5p-x5-xWL" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -412,7 +436,7 @@ nplayers.arcadebelgium.be</string>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <activityIndicatorView key="tableFooterView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" id="pOZ-yG-Mbl">
-                                    <rect key="frame" x="0.0" y="117.5" width="375" height="20"/>
+                                    <rect key="frame" x="0.0" y="161" width="375" height="20"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </activityIndicatorView>
                                 <prototypes>
@@ -458,10 +482,49 @@ nplayers.arcadebelgium.be</string>
                                                 <constraint firstItem="GH8-rA-ehF" firstAttribute="leading" secondItem="ahj-sN-o2v" secondAttribute="trailing" constant="4" id="qXx-Lc-VKL"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" red="0.35833314059999999" green="0.643707633" blue="0.61016064879999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <connections>
                                             <outlet property="detailtext" destination="TKA-Dd-mSy" id="ttO-3h-ITt"/>
                                             <outlet property="iconImageView" destination="ahj-sN-o2v" id="HxY-4m-THY"/>
                                             <outlet property="titleText" destination="GH8-rA-ehF" id="OTC-Dr-DRh"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="Usr-bq-Di9" userLabel="RepairLogCell" customClass="RepairLogCell" customModule="arcadeCollector" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="89.5" width="375" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Usr-bq-Di9" id="hp6-fG-zQk">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="xY6-gI-GZu">
+                                                    <rect key="frame" x="166" y="1.5" width="82.5" height="41"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Game PCB" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="le5-NN-4AJ">
+                                                            <rect key="frame" x="0.0" y="0.0" width="82.5" height="20.5"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ul-SH-FQ1" userLabel="Log Title - Date">
+                                                            <rect key="frame" x="0.0" y="20.5" width="82.5" height="20.5"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </stackView>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="noHardwareDefaultImage" translatesAutoresizingMaskIntoConstraints="NO" id="mw6-1A-c6S">
+                                                    <rect key="frame" x="0.0" y="-58" width="43.5" height="159.5"/>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="xY6-gI-GZu" firstAttribute="centerY" secondItem="hp6-fG-zQk" secondAttribute="centerY" id="8WT-4s-Nn2"/>
+                                                <constraint firstItem="xY6-gI-GZu" firstAttribute="centerY" secondItem="mw6-1A-c6S" secondAttribute="centerY" id="ird-ni-aeI"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="pcbIconImageView" destination="mw6-1A-c6S" id="Y2O-ql-9CR"/>
+                                            <outlet property="titleText" destination="9ul-SH-FQ1" id="D7W-QD-yjg"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -506,7 +569,7 @@ nplayers.arcadebelgium.be</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Ea-PK-ubl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="62" y="1387"/>
+            <point key="canvasLocation" x="61.600000000000001" y="1386.656671664168"/>
         </scene>
         <!--Games Detail View Controller-->
         <scene sceneID="nzf-Bh-n9h">
@@ -858,7 +921,7 @@ nplayers.arcadebelgium.be</string>
                                         </connections>
                                     </button>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="uKe-Lf-UVe" userLabel="Board Stack View">
-                                        <rect key="frame" x="0.0" y="209" width="375" height="38.5"/>
+                                        <rect key="frame" x="0.0" y="155.5" width="375" height="38.5"/>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Board" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="J2c-H8-lV8">
                                                 <rect key="frame" x="0.0" y="0.0" width="90" height="38.5"/>
@@ -868,7 +931,7 @@ nplayers.arcadebelgium.be</string>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
                                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="bfH-94-ZAn">
-                                                <rect key="frame" x="326" y="3.5" width="51" height="31"/>
+                                                <rect key="frame" x="326" y="4" width="51" height="31"/>
                                                 <connections>
                                                     <action selector="boardSwitchTapped:" destination="zwu-wC-BfZ" eventType="valueChanged" id="n69-xF-shT"/>
                                                 </connections>
@@ -876,14 +939,14 @@ nplayers.arcadebelgium.be</string>
                                         </subviews>
                                     </stackView>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="sKe-W5-gm8" userLabel="Authenticity">
-                                        <rect key="frame" x="0.0" y="426" width="375" height="32"/>
+                                        <rect key="frame" x="0.0" y="319.5" width="375" height="32"/>
                                         <segments>
                                             <segment title="Original"/>
                                             <segment title="Bootleg"/>
                                         </segments>
                                     </segmentedControl>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="i5J-jH-T9Z">
-                                        <rect key="frame" x="0.0" y="636" width="375" height="32"/>
+                                        <rect key="frame" x="0.0" y="476" width="375" height="32"/>
                                         <segments>
                                             <segment title="Working"/>
                                             <segment title="Boots"/>
@@ -891,6 +954,14 @@ nplayers.arcadebelgium.be</string>
                                         </segments>
                                         <color key="tintColor" red="0.099378444254398346" green="0.39114663004875183" blue="0.39385095238685608" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </segmentedControl>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MmD-3M-Wu6">
+                                        <rect key="frame" x="0.0" y="632.5" width="375" height="34.5"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" image="list.bullet.below.rectangle" catalog="system" title="Start Repair Log"/>
+                                        <connections>
+                                            <action selector="repairLogButtonTapped:" destination="zwu-wC-BfZ" eventType="touchUpInside" id="7TW-il-M3j"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -907,15 +978,38 @@ nplayers.arcadebelgium.be</string>
                         <outlet property="authenticity" destination="sKe-W5-gm8" id="5Vz-Xd-yNS"/>
                         <outlet property="functionalCondition" destination="i5J-jH-T9Z" id="ddp-8N-SLd"/>
                         <outlet property="hasBoard" destination="bfH-94-ZAn" id="lAq-QG-uvG"/>
+                        <outlet property="repairLogButton" destination="MmD-3M-Wu6" id="QiQ-Mx-Qda"/>
+                        <segue destination="ifN-ue-kbD" kind="show" identifier="RepairLogSegue" id="EtQ-QE-RwY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IEA-ap-Ycv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="920.79999999999995" y="681.40929535232385"/>
         </scene>
+        <!--Repair Logs-->
+        <scene sceneID="wGJ-Or-8Q3">
+            <objects>
+                <navigationController id="2c5-Tk-1LY" userLabel="Repair Logs" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Repair Logs" image="list.clipboard.fill" catalog="system" id="Poj-zX-rmD"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="kc0-0m-O9s">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="tzh-ei-Hb8" kind="relationship" relationship="rootViewController" id="E5f-sm-AvG"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="I73-55-12h" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-738" y="-21"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Kxa-cf-8aS"/>
+        <segue reference="E5f-sm-AvG"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="About Banners/Gaming History Banner" width="572" height="64"/>
@@ -942,8 +1036,11 @@ nplayers.arcadebelgium.be</string>
         <image name="icons8-retro-tv" width="30" height="30"/>
         <image name="icons8-up-down-arrow" width="30" height="30"/>
         <image name="icons8-youtube" width="30" height="30"/>
+        <image name="list.bullet.below.rectangle" catalog="system" width="128" height="110"/>
+        <image name="list.clipboard.fill" catalog="system" width="103" height="128"/>
         <image name="menu" width="33.5" height="33.5"/>
         <image name="missing_marquee" width="576" height="144"/>
+        <image name="noHardwareDefaultImage" width="148" height="159"/>
         <image name="space-invaders-placeholder" width="32" height="32"/>
         <image name="star_circle" width="33" height="33"/>
         <systemColor name="darkTextColor">

@@ -12,6 +12,7 @@ class EditGameViewController: UIViewController {
     @IBOutlet weak var hasBoard: UISwitch!
     @IBOutlet weak var authenticity: UISegmentedControl!
     @IBOutlet weak var functionalCondition: UISegmentedControl!
+    @IBOutlet weak var repairLogButton: UIButton!
 
     weak var delegate: EditGameDelegate?
 
@@ -51,6 +52,14 @@ class EditGameViewController: UIViewController {
         }
     }
 
+    
+    @IBAction func repairLogButtonTapped(_ sender: UIButton) {
+        let popOverViewController = storyboard!.instantiateViewController(withIdentifier: "RepairLogDetailViewController") as! RepairLogDetailViewController
+        popOverViewController.modalTransitionStyle = .coverVertical
+        present(popOverViewController, animated: true, completion: nil)
+    }
+    
+    
     func enableBoardTraits(state: Bool) {
         authenticity.isEnabled = state
         functionalCondition.isEnabled = state
@@ -71,5 +80,7 @@ class EditGameViewController: UIViewController {
             authenticity.selectedSegmentIndex = 0
         }
         functionalCondition.selectedSegmentIndex = Int(viewedGame.functionalCondition)
+        
+        //check for existence of repair log here
     }
 }

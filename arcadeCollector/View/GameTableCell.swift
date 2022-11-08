@@ -2,22 +2,12 @@
 //  GameTableCell.swift
 //  arcadeCollector
 //
-//  Created by TrixxMac on 3/4/21.
+//  Created by Matt Goodhart on 3/4/21.
 //  Copyright © 2021 CatBoiz. All rights reserved.
 //
 
 import UIKit
 
-// Move me to my own file!
-protocol Identifiable {
-    static var reuseIdentifier: String { get }
-}
-
-extension Identifiable where Self: UITableViewCell {
-    static var reuseIdentifier: String {
-        return String(describing: self)
-    }
-}
 
 class GameTableCell: UITableViewCell, Identifiable {
 
@@ -27,13 +17,11 @@ class GameTableCell: UITableViewCell, Identifiable {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
         reset()
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-
         reset()
     }
 

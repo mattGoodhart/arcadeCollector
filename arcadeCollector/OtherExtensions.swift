@@ -2,7 +2,7 @@
 //  OtherExtensions.swift
 //  arcadeCollector
 //
-//  Created by TrixxMac on 7/5/21.
+//  Created by Matt Goodhart on 7/5/21.
 //  Copyright © 2021 CatBoiz. All rights reserved.
 //
 
@@ -20,3 +20,14 @@ extension UIImage {
         return newImage
     }
 }
+
+protocol Identifiable {
+    static var reuseIdentifier: String { get }
+}
+
+extension Identifiable where Self: UITableViewCell {
+    static var reuseIdentifier: String {
+        return String(describing: self)
+    }
+}
+

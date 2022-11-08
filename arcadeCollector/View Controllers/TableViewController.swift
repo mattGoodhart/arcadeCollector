@@ -17,10 +17,11 @@ enum Tab: Int, CaseIterable {
     case myGames = 1
     case allGames = 2
     case wanted = 3
+    case repairLogs = 4
 
     var shouldRefresh: Bool {
         switch self {
-        case .myGames, .wanted:
+        case .myGames, .wanted, .repairLogs:
             return true
         default:
             return false
@@ -35,6 +36,8 @@ enum Tab: Int, CaseIterable {
             return CollectionManager.shared.allGames
         case .wanted:
             return CollectionManager.shared.wantedGames
+        case .repairLogs:
+            return CollectionManager.shared.repairLogs
         }
     }
 }
@@ -225,17 +228,17 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
 
     func createUniqueYearArrayForFilterConditions() {
-
-            switch (isFiltering, isFilterOptionChosen) {
-            case (false, false):
-                arrayOfUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
-            case (true, false):
-                filteredUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
-            case (false, true):
-                 filterOptionedUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
-            case (true, true):
-                doubleFilteredYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
-            }
+        
+        switch (isFiltering, isFilterOptionChosen) {
+        case (false, false):
+            arrayOfUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
+        case (true, false):
+            filteredUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
+        case (false, true):
+            filterOptionedUniqueYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
+        case (true, true):
+            doubleFilteredYears = createArrayOfUniqueYears(listOfGames: visibleGamesList)
+        }
     }
 
     func refreshDataSource() {
@@ -323,18 +326,27 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
-
+    
+    // TODO: Update this to switch over a tuple
     func numberOfSections(in tableView: UITableView) -> Int {
-        if visibleGamesList.isEmpty && tabBarController?.selectedIndex == 1 {
+        if visibleGamesList.isEmpty && tabBarController?.selectedIndex == Tab.myGames.rawValue {
             let label = UILabel()
             label.text = "No Games in Collection Yet!"
             label.textAlignment = .center
             tableView.backgroundView = label
             tableView.separatorStyle = .none
             return 0
-        } else if visibleGamesList.isEmpty && tabBarController?.selectedIndex == 3 {
+        } else if visibleGamesList.isEmpty && tabBarController?.selectedIndex == Tab.wanted.rawValue {
             let label = UILabel()
             label.text = "No Wanted Games!"
+            label.textAlignment = .center
+            tableView.backgroundView = label
+            tableView.separatorStyle = .none
+            return 0
+        }
+        else if visibleGamesList.isEmpty && tabBarController?.selectedIndex == Tab.repairLogs.rawValue {
+            let label = UILabel()
+            label.text = "No Games in Repair!"
             label.textAlignment = .center
             tableView.backgroundView = label
             tableView.separatorStyle = .none
@@ -347,8 +359,12 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return visibleUniqueYears[section]
+        if tabBarController?.selectedIndex != Tab.repairLogs.rawValue {
+            return visibleUniqueYears[section]
+        } else {
+            return nil
         }
+    }
 
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         (view as! UITableViewHeaderFooterView).textLabel?.textColor = tableColor2
@@ -363,15 +379,28 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let year = visibleUniqueYears[section]
-        let groupSection = groups[year]
-        return groupSection!.count
+        if tabBarController?.selectedIndex != Tab.repairLogs.rawValue {
+            let year = visibleUniqueYears[section]
+            let groupSection = groups[year]
+            return groupSection!.count
+        } else {
+            return 1
+        }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard tabBarController?.selectedIndex != Tab.repairLogs.rawValue else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "RepairLogCell", for: indexPath) as! RepairLogCell
+            
+            // TODO:update to personal PCB photo if exists
+            
+          // TODO:  cell.titleText = game.repairLogDate
+            return cell
+        }
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "GameTableCell", for: indexPath) as! GameTableCell
         cell.backgroundColor = indexPath.row % 2 == 0 ? tableColor1 : tableColor2
-
+ 
         let section = visibleUniqueYears[indexPath.section]
         let group = groups[section]!
         let game = group[indexPath.row]
