@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RepairLogCell: UITableViewCell, Identifiable {
+class RepairLogTableCell: UITableViewCell, Identifiable {
     
     @IBOutlet weak var pcbIconImageView: UIImageView!
     @IBOutlet weak var titleText: UILabel!

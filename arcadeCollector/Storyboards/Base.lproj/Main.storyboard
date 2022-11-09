@@ -385,22 +385,147 @@ nplayers.arcadebelgium.be</string>
             <objects>
                 <viewController storyboardIdentifier="RepairLogDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ifN-ue-kbD" userLabel="Repair Log View Controller" customClass="RepairLogDetailViewController" customModule="arcadeCollector" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sqH-UC-4WG">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="1180"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pi6-aB-b2M" userLabel="Image View - Tap to add /  update">
-                                <rect key="frame" x="24" y="20" width="327" height="188"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noHardwareDefaultImage" translatesAutoresizingMaskIntoConstraints="NO" id="pi6-aB-b2M" userLabel="Image View - Tap to add /  update">
+                                <rect key="frame" x="9.5" y="20" width="356" height="180"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="180" id="kX9-zX-Bae"/>
+                                </constraints>
                             </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="camera.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="8q4-rd-PgQ">
+                                <rect key="frame" x="293" y="160.5" width="33" height="33"/>
+                            </imageView>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J8Z-I1-Jye">
+                                <rect key="frame" x="12" y="308" width="160" height="46"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            </pickerView>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xSR-Oc-V37">
+                                <rect key="frame" x="12" y="362" width="160" height="46"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            </pickerView>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FbY-Wn-Mo3">
+                                <rect key="frame" x="107" y="254" width="160" height="46"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            </pickerView>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WWo-yA-uK7">
+                                <rect key="frame" x="203" y="362" width="160" height="46"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            </pickerView>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c3O-DY-g2W">
+                                <rect key="frame" x="203" y="308" width="160" height="46"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            </pickerView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Controls" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F4c-UF-9f1">
+                                <rect key="frame" x="24" y="352" width="65" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Boot Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kxd-wV-SBe">
+                                <rect key="frame" x="118" y="243" width="89" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Extended Play" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yfP-oK-itC">
+                                <rect key="frame" x="214" y="352" width="108" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Video" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="quN-7Z-dLi">
+                                <rect key="frame" x="214" y="298" width="44" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Audio" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mSO-8H-eff">
+                                <rect key="frame" x="24" y="298" width="44" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u0M-lD-jLs" userLabel="RepairLogView" customClass="RepairLogView" customModule="arcadeCollector" customModuleProvider="target">
+                                <rect key="frame" x="-148" y="416" width="671" height="211"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="FRV-7e-hkG">
+                                        <rect key="frame" x="106" y="-19.5" width="459" height="122.5"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a7l-vW-cjf">
+                                                <rect key="frame" x="167" y="0.0" width="125" height="34.5"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system" title="New Entry"/>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UBa-Mo-VKz">
+                                                <rect key="frame" x="211.5" y="34.5" width="36" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" text="This is a repair log entry yo. Here's a photo of the issIssue I described" translatesAutoresizingMaskIntoConstraints="NO" id="IrN-Mw-pdD">
+                                                <rect key="frame" x="0.0" y="55" width="459" height="33"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <color key="textColor" systemColor="labelColor"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textView>
+                                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="v52-rP-1ej">
+                                                <rect key="frame" x="109.5" y="88" width="240" height="0.0"/>
+                                            </imageView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1G-fy-eju">
+                                                <rect key="frame" x="162.5" y="88" width="134.5" height="34.5"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" image="photo" catalog="system" title="Add Photo"/>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="FRV-7e-hkG" firstAttribute="height" secondItem="u0M-lD-jLs" secondAttribute="height" multiplier="1.47393" id="Etr-Rd-8N5"/>
+                                    <constraint firstItem="FRV-7e-hkG" firstAttribute="centerY" secondItem="u0M-lD-jLs" secondAttribute="centerY" id="eiW-CF-9rw"/>
+                                    <constraint firstItem="FRV-7e-hkG" firstAttribute="centerX" secondItem="u0M-lD-jLs" secondAttribute="centerX" id="jde-aN-dKq"/>
+                                    <constraint firstItem="FRV-7e-hkG" firstAttribute="width" secondItem="u0M-lD-jLs" secondAttribute="width" multiplier="0.683761" id="xfw-kx-ozV"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="addPhotoButton" destination="R1G-fy-eju" id="V3i-zG-r0c"/>
+                                    <outlet property="date" destination="UBa-Mo-VKz" id="O1L-NH-cof"/>
+                                    <outlet property="logNotes" destination="IrN-Mw-pdD" id="tVT-Ob-5bF"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="wuY-i7-i4g"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="pi6-aB-b2M" firstAttribute="top" secondItem="wuY-i7-i4g" secondAttribute="top" constant="20" id="Bnm-XU-aEA"/>
+                            <constraint firstItem="pi6-aB-b2M" firstAttribute="centerX" secondItem="wuY-i7-i4g" secondAttribute="centerX" id="RWL-My-eNr"/>
+                            <constraint firstItem="8q4-rd-PgQ" firstAttribute="leading" secondItem="pi6-aB-b2M" secondAttribute="trailing" constant="31.5" id="S7e-nj-xR0"/>
+                            <constraint firstItem="u0M-lD-jLs" firstAttribute="centerX" secondItem="wuY-i7-i4g" secondAttribute="centerX" id="Ztc-EA-NR0"/>
+                            <constraint firstItem="u0M-lD-jLs" firstAttribute="width" secondItem="sqH-UC-4WG" secondAttribute="width" multiplier="1.78933" id="tga-QN-9uj"/>
+                            <constraint firstItem="pi6-aB-b2M" firstAttribute="width" secondItem="wuY-i7-i4g" secondAttribute="width" multiplier="0.95" id="ubh-lh-cgX"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="QRF-qJ-D2i"/>
+                    <size key="freeformSize" width="375" height="1200"/>
+                    <connections>
+                        <outlet property="audioPickerView" destination="J8Z-I1-Jye" id="P4K-s2-ezC"/>
+                        <outlet property="bootPickerView" destination="FbY-Wn-Mo3" id="ne5-hF-Hg4"/>
+                        <outlet property="controlsPickerView" destination="xSR-Oc-V37" id="mi6-tB-B81"/>
+                        <outlet property="extendedPlayPickerView" destination="WWo-yA-uK7" id="jaJ-nA-69f"/>
+                        <outlet property="myBoardPhotoView" destination="pi6-aB-b2M" id="ocS-Lw-qQl"/>
+                        <outlet property="videoPickerView" destination="c3O-DY-g2W" id="Yk9-n4-VE9"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="snh-NR-K1r" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2548" y="1387"/>
+            <point key="canvasLocation" x="2548" y="1386.2068965517242"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="Yuc-of-w7v">
@@ -499,13 +624,13 @@ nplayers.arcadebelgium.be</string>
                                                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="xY6-gI-GZu">
                                                     <rect key="frame" x="166" y="1.5" width="82.5" height="41"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Game PCB" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="le5-NN-4AJ">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Game PCB" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="le5-NN-4AJ">
                                                             <rect key="frame" x="0.0" y="0.0" width="82.5" height="20.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ul-SH-FQ1" userLabel="Log Title - Date">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Log Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ul-SH-FQ1" userLabel="Log Title - Date">
                                                             <rect key="frame" x="0.0" y="20.5" width="82.5" height="20.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
@@ -1021,6 +1146,7 @@ nplayers.arcadebelgium.be</string>
         <image name="About Banners/wolheader" width="245" height="118"/>
         <image name="Heart" width="46.5" height="46.5"/>
         <image name="bkg_darker-1" width="360" height="648"/>
+        <image name="camera.fill" catalog="system" width="128" height="93"/>
         <image name="chart_bar_circle_fill" width="33.5" height="33.5"/>
         <image name="favorite" width="33.5" height="33.5"/>
         <image name="icons8-add" width="30" height="30"/>
@@ -1041,10 +1167,15 @@ nplayers.arcadebelgium.be</string>
         <image name="menu" width="33.5" height="33.5"/>
         <image name="missing_marquee" width="576" height="144"/>
         <image name="noHardwareDefaultImage" width="148" height="159"/>
+        <image name="photo" catalog="system" width="128" height="93"/>
+        <image name="plus" catalog="system" width="128" height="113"/>
         <image name="space-invaders-placeholder" width="32" height="32"/>
         <image name="star_circle" width="33" height="33"/>
         <systemColor name="darkTextColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="labelColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

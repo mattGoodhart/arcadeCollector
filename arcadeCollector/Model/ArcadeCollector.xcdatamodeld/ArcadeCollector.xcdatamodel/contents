@@ -35,6 +35,7 @@
         <attribute name="marqueeImageData" optional="YES" attributeType="Binary"/>
         <attribute name="marqueeURLString" optional="YES" attributeType="String"/>
         <attribute name="monitorResolutionType" optional="YES" attributeType="String"/>
+        <attribute name="myPCBPhoto" optional="YES" attributeType="Binary"/>
         <attribute name="nPlayers" optional="YES" attributeType="String"/>
         <attribute name="orientation" optional="YES" attributeType="String"/>
         <attribute name="pcbImageData" optional="YES" attributeType="Binary"/>
@@ -54,5 +55,14 @@
         <attribute name="year" optional="YES" attributeType="String"/>
         <attribute name="youtubeVideoID" optional="YES" attributeType="String"/>
         <relationship name="collection" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CollectionEntity" inverseName="games" inverseEntity="CollectionEntity"/>
+        <relationship name="repairlogs" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RepairLog" inverseName="game" inverseEntity="RepairLog"/>
+    </entity>
+    <entity name="RepairLog" representedClassName="RepairLog" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="entryPhoto1" optional="YES" attributeType="Binary"/>
+        <attribute name="entryPhoto2" optional="YES" attributeType="Binary"/>
+        <attribute name="entryPhoto3" optional="YES" attributeType="Binary"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
+        <relationship name="game" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="repairlogs" inverseEntity="Game"/>
     </entity>
 </model>

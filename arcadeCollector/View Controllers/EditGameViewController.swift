@@ -56,6 +56,7 @@ class EditGameViewController: UIViewController {
     @IBAction func repairLogButtonTapped(_ sender: UIButton) {
         let popOverViewController = storyboard!.instantiateViewController(withIdentifier: "RepairLogDetailViewController") as! RepairLogDetailViewController
         popOverViewController.modalTransitionStyle = .coverVertical
+        popOverViewController.viewedGame = viewedGame
         present(popOverViewController, animated: true, completion: nil)
     }
     

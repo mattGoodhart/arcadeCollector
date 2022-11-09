@@ -390,7 +390,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard tabBarController?.selectedIndex != Tab.repairLogs.rawValue else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "RepairLogCell", for: indexPath) as! RepairLogCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "RepairLogCell", for: indexPath) as! RepairLogTableCell
             
             // TODO:update to personal PCB photo if exists
             
