@@ -35,6 +35,7 @@
 		E44A2362291C408000CCA70E /* RepairLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44A2361291C408000CCA70E /* RepairLogView.swift */; };
 		E46660DD2915A8880056FCDD /* RepairLogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46660DC2915A8880056FCDD /* RepairLogCell.swift */; };
 		E46660DF291AEAED0056FCDD /* RepairLogDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46660DE291AEAED0056FCDD /* RepairLogDetailViewController.swift */; };
+		E4AA8534291C563F0084BE3D /* StatusPickerPopUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AA8533291C563F0084BE3D /* StatusPickerPopUp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,7 @@
 		E44A2361291C408000CCA70E /* RepairLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairLogView.swift; sourceTree = "<group>"; };
 		E46660DC2915A8880056FCDD /* RepairLogCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairLogCell.swift; sourceTree = "<group>"; };
 		E46660DE291AEAED0056FCDD /* RepairLogDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairLogDetailViewController.swift; sourceTree = "<group>"; };
+		E4AA8533291C563F0084BE3D /* StatusPickerPopUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusPickerPopUp.swift; sourceTree = "<group>"; };
 		ED5B8C9FFDAF502525FD4D74 /* Pods-arcadeCollector.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-arcadeCollector.debug.xcconfig"; path = "Target Support Files/Pods-arcadeCollector/Pods-arcadeCollector.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -150,6 +152,7 @@
 				E3D90E4A265ABF12005C86E7 /* TabBarController.swift */,
 				E370BB8F268A4F6000D91D9E /* FilterOptionsPopup.swift */,
 				E46660DE291AEAED0056FCDD /* RepairLogDetailViewController.swift */,
+				E4AA8533291C563F0084BE3D /* StatusPickerPopUp.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -330,6 +333,7 @@
 				E46660DF291AEAED0056FCDD /* RepairLogDetailViewController.swift in Sources */,
 				E3A786AF2693722C00CDDC77 /* OtherExtensions.swift in Sources */,
 				E3A786AD2693717800CDDC77 /* HardwareViewControllerExtension.swift in Sources */,
+				E4AA8534291C563F0084BE3D /* StatusPickerPopUp.swift in Sources */,
 				E3D90E4B265ABF12005C86E7 /* TabBarController.swift in Sources */,
 				E46660DD2915A8880056FCDD /* RepairLogCell.swift in Sources */,
 				E3E6075C25F14A3A003F1888 /* SummaryViewController.swift in Sources */,
@@ -493,6 +497,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = arcadeCollector/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -512,6 +517,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = arcadeCollector/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

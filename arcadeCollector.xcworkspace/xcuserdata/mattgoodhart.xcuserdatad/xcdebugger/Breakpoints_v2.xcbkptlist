@@ -64,15 +64,47 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6DAFC7E1-95A3-4535-810F-F1C402D02840"
+            uuid = "9F65A12D-076F-4212-A920-08A81D1BE152"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "arcadeCollector/View Controllers/RepairLogDetailViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
+            landmarkName = "bootStatusButtonTapped(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4B817D3F-3747-4092-95C3-62EE013D5BF4"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "arcadeCollector/View Controllers/StatusPickerPopUp.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
+            landmarkName = "pickerView(_:titleForRow:forComponent:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E6B069F1-23E5-40A7-8C2E-5AF49A693959"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "arcadeCollector/View Controllers/StatusPickerPopUp.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
             landmarkName = "setPickerValues()"
             landmarkType = "7">
          </BreakpointContent>
@@ -80,48 +112,48 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "0274989D-1E6D-4DFE-A288-AC8D8E6BE551"
+            uuid = "871BD71D-72F8-42F7-8308-58D76333E750"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "arcadeCollector/View Controllers/RepairLogDetailViewController.swift"
+            filePath = "arcadeCollector/View Controllers/StatusPickerPopUp.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
-            landmarkName = "pickerView(_:numberOfRowsInComponent:)"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "setPickerValues()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D70159B3-CD89-49F0-BAA0-235660C0B585"
+            uuid = "F0D4C9C7-7A1D-4671-8003-0FC7AAC943BC"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "arcadeCollector/View Controllers/RepairLogDetailViewController.swift"
+            filePath = "arcadeCollector/View Controllers/StatusPickerPopUp.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "132"
-            endingLineNumber = "132"
-            landmarkName = "pickerView(_:numberOfRowsInComponent:)"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
+            landmarkName = "setPickerValues()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "601055A0-9A16-4B4A-9C9F-AD3207E33B54"
+            uuid = "A9F62B62-9799-4D19-BF33-69D78252393D"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "arcadeCollector/View Controllers/RepairLogDetailViewController.swift"
+            filePath = "arcadeCollector/View Controllers/StatusPickerPopUp.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
-            landmarkName = "pickerView(_:titleForRow:forComponent:)"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
+            landmarkName = "setPickerValues()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
