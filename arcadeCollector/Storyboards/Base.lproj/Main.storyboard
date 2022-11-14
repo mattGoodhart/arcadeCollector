@@ -394,93 +394,129 @@ nplayers.arcadebelgium.be</string>
                                     <constraint firstAttribute="height" constant="180" id="kX9-zX-Bae"/>
                                 </constraints>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="camera.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="8q4-rd-PgQ">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="camera.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="8q4-rd-PgQ">
                                 <rect key="frame" x="293" y="160.5" width="33" height="33"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J8Z-I1-Jye">
-                                <rect key="frame" x="12" y="308" width="160" height="46"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            </pickerView>
-                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xSR-Oc-V37">
-                                <rect key="frame" x="12" y="362" width="160" height="46"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            </pickerView>
-                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FbY-Wn-Mo3">
-                                <rect key="frame" x="107" y="254" width="160" height="46"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            </pickerView>
-                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WWo-yA-uK7">
-                                <rect key="frame" x="203" y="362" width="160" height="46"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            </pickerView>
-                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c3O-DY-g2W">
-                                <rect key="frame" x="203" y="308" width="160" height="46"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            </pickerView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Controls" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F4c-UF-9f1">
-                                <rect key="frame" x="24" y="352" width="65" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Boot Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kxd-wV-SBe">
-                                <rect key="frame" x="118" y="243" width="89" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Extended Play" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yfP-oK-itC">
-                                <rect key="frame" x="214" y="352" width="108" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Video" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="quN-7Z-dLi">
-                                <rect key="frame" x="214" y="298" width="44" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Audio" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mSO-8H-eff">
-                                <rect key="frame" x="24" y="298" width="44" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u0M-lD-jLs" userLabel="RepairLogView" customClass="RepairLogView" customModule="arcadeCollector" customModuleProvider="target">
-                                <rect key="frame" x="-148" y="416" width="671" height="211"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="bFD-ON-DRC" userLabel="Status Stack View">
+                                <rect key="frame" x="9.5" y="200" width="356" height="384"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="FRV-7e-hkG">
-                                        <rect key="frame" x="106" y="-19.5" width="459" height="122.5"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="ilP-be-K8l" userLabel="Boot Status Stack View">
+                                        <rect key="frame" x="104.5" y="0.0" width="147" height="128"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a7l-vW-cjf">
-                                                <rect key="frame" x="167" y="0.0" width="125" height="34.5"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system" title="New Entry"/>
-                                            </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UBa-Mo-VKz">
-                                                <rect key="frame" x="211.5" y="34.5" width="36" height="20.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Boot Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kxd-wV-SBe">
+                                                <rect key="frame" x="0.0" y="54" width="89" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" text="This is a repair log entry yo. Here's a photo of the issIssue I described" translatesAutoresizingMaskIntoConstraints="NO" id="IrN-Mw-pdD">
-                                                <rect key="frame" x="0.0" y="55" width="459" height="33"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tOU-z0-TL5" userLabel="Boot Status View">
+                                                <rect key="frame" x="97" y="0.0" width="50" height="128"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="kst-eL-YJC" userLabel="A/V Stack View">
+                                        <rect key="frame" x="61" y="128" width="234" height="128"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="yWt-l9-hXv" userLabel="Audio Stack View">
+                                                <rect key="frame" x="0.0" y="0.0" width="101.5" height="128"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Audio" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mSO-8H-eff">
+                                                        <rect key="frame" x="0.0" y="54" width="43.5" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p9f-j5-WkT" userLabel="Audio Status View">
+                                                        <rect key="frame" x="51.5" y="0.0" width="50" height="128"/>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                    </view>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="qEy-Z4-7BU" userLabel="Video Stack View">
+                                                <rect key="frame" x="101.5" y="0.0" width="132.5" height="128"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Video" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="quN-7Z-dLi">
+                                                        <rect key="frame" x="0.0" y="54" width="44" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ury-Oi-UqV" userLabel="Video Status View">
+                                                        <rect key="frame" x="52" y="0.0" width="80.5" height="128"/>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                    </view>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="7RJ-0a-UUp" userLabel="Controls and Longplay Stack View">
+                                        <rect key="frame" x="34" y="256" width="288.5" height="128"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="d3X-VK-UCP" userLabel="Controls Stack View">
+                                                <rect key="frame" x="0.0" y="0.0" width="122.5" height="128"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Controls" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F4c-UF-9f1">
+                                                        <rect key="frame" x="0.0" y="54" width="64.5" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lm3-kX-YtR" userLabel="Controls Status View">
+                                                        <rect key="frame" x="72.5" y="0.0" width="50" height="128"/>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                    </view>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dJt-QU-4M3" userLabel="Extended Play Stack View">
+                                                <rect key="frame" x="122.5" y="0.0" width="166" height="128"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Extended Play" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yfP-oK-itC">
+                                                        <rect key="frame" x="0.0" y="54" width="108" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OPh-0k-Y52" userLabel="Extended Play Status View">
+                                                        <rect key="frame" x="116" y="0.0" width="50" height="128"/>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                    </view>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u0M-lD-jLs" userLabel="RepairLogView" customClass="RepairLogView" customModule="arcadeCollector" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="416" width="375" height="211"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="FRV-7e-hkG">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="34.5"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a7l-vW-cjf">
+                                                <rect key="frame" x="125" y="0.0" width="125" height="34.5"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system" title="New Entry"/>
+                                            </button>
+                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UBa-Mo-VKz">
+                                                <rect key="frame" x="169.5" y="0.0" width="36" height="0.0"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" text="This is a repair log entry yo. Here's a photo of the issIssue I described" translatesAutoresizingMaskIntoConstraints="NO" id="IrN-Mw-pdD">
+                                                <rect key="frame" x="-42" y="0.0" width="459" height="0.0"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <color key="textColor" systemColor="labelColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="v52-rP-1ej">
-                                                <rect key="frame" x="109.5" y="88" width="240" height="0.0"/>
+                                                <rect key="frame" x="67.5" y="0.0" width="240" height="0.0"/>
                                             </imageView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1G-fy-eju">
-                                                <rect key="frame" x="162.5" y="88" width="134.5" height="34.5"/>
+                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1G-fy-eju">
+                                                <rect key="frame" x="120.5" y="0.0" width="134.5" height="0.0"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" image="photo" catalog="system" title="Add Photo"/>
                                             </button>
@@ -489,10 +525,9 @@ nplayers.arcadebelgium.be</string>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstItem="FRV-7e-hkG" firstAttribute="height" secondItem="u0M-lD-jLs" secondAttribute="height" multiplier="1.47393" id="Etr-Rd-8N5"/>
-                                    <constraint firstItem="FRV-7e-hkG" firstAttribute="centerY" secondItem="u0M-lD-jLs" secondAttribute="centerY" id="eiW-CF-9rw"/>
+                                    <constraint firstItem="FRV-7e-hkG" firstAttribute="top" secondItem="u0M-lD-jLs" secondAttribute="top" multiplier="1.05" id="AjS-g7-q5o"/>
                                     <constraint firstItem="FRV-7e-hkG" firstAttribute="centerX" secondItem="u0M-lD-jLs" secondAttribute="centerX" id="jde-aN-dKq"/>
-                                    <constraint firstItem="FRV-7e-hkG" firstAttribute="width" secondItem="u0M-lD-jLs" secondAttribute="width" multiplier="0.683761" id="xfw-kx-ozV"/>
+                                    <constraint firstItem="FRV-7e-hkG" firstAttribute="width" secondItem="u0M-lD-jLs" secondAttribute="width" id="xfw-kx-ozV"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="addPhotoButton" destination="R1G-fy-eju" id="V3i-zG-r0c"/>
@@ -504,28 +539,26 @@ nplayers.arcadebelgium.be</string>
                         <viewLayoutGuide key="safeArea" id="wuY-i7-i4g"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="bFD-ON-DRC" firstAttribute="centerX" secondItem="wuY-i7-i4g" secondAttribute="centerX" id="4iP-xG-SFM"/>
                             <constraint firstItem="pi6-aB-b2M" firstAttribute="top" secondItem="wuY-i7-i4g" secondAttribute="top" constant="20" id="Bnm-XU-aEA"/>
                             <constraint firstItem="pi6-aB-b2M" firstAttribute="centerX" secondItem="wuY-i7-i4g" secondAttribute="centerX" id="RWL-My-eNr"/>
-                            <constraint firstItem="8q4-rd-PgQ" firstAttribute="leading" secondItem="pi6-aB-b2M" secondAttribute="trailing" constant="31.5" id="S7e-nj-xR0"/>
+                            <constraint firstItem="bFD-ON-DRC" firstAttribute="width" secondItem="wuY-i7-i4g" secondAttribute="width" multiplier="0.95" id="VcW-D3-EWY"/>
                             <constraint firstItem="u0M-lD-jLs" firstAttribute="centerX" secondItem="wuY-i7-i4g" secondAttribute="centerX" id="Ztc-EA-NR0"/>
-                            <constraint firstItem="u0M-lD-jLs" firstAttribute="width" secondItem="sqH-UC-4WG" secondAttribute="width" multiplier="1.78933" id="tga-QN-9uj"/>
+                            <constraint firstItem="u0M-lD-jLs" firstAttribute="top" secondItem="bFD-ON-DRC" secondAttribute="bottom" id="cNM-ga-2sD"/>
+                            <constraint firstItem="bFD-ON-DRC" firstAttribute="top" secondItem="pi6-aB-b2M" secondAttribute="bottom" id="dmu-g8-7uF"/>
+                            <constraint firstItem="u0M-lD-jLs" firstAttribute="width" secondItem="sqH-UC-4WG" secondAttribute="width" id="tga-QN-9uj"/>
                             <constraint firstItem="pi6-aB-b2M" firstAttribute="width" secondItem="wuY-i7-i4g" secondAttribute="width" multiplier="0.95" id="ubh-lh-cgX"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="QRF-qJ-D2i"/>
                     <size key="freeformSize" width="375" height="1200"/>
                     <connections>
-                        <outlet property="audioPickerView" destination="J8Z-I1-Jye" id="P4K-s2-ezC"/>
-                        <outlet property="bootPickerView" destination="FbY-Wn-Mo3" id="ne5-hF-Hg4"/>
-                        <outlet property="controlsPickerView" destination="xSR-Oc-V37" id="mi6-tB-B81"/>
-                        <outlet property="extendedPlayPickerView" destination="WWo-yA-uK7" id="jaJ-nA-69f"/>
                         <outlet property="myBoardPhotoView" destination="pi6-aB-b2M" id="ocS-Lw-qQl"/>
-                        <outlet property="videoPickerView" destination="c3O-DY-g2W" id="Yk9-n4-VE9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="snh-NR-K1r" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2548" y="1386.2068965517242"/>
+            <point key="canvasLocation" x="2516" y="1625"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="Yuc-of-w7v">
