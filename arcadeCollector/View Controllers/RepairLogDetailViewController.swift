@@ -8,74 +8,87 @@
 
 import UIKit
 
-enum AudioStatuses: String, CaseIterable {
-    case untested = "Untested"
-    case noAudio = "No Audio"
-    case someAudio = "Some Audio"
-    case working = "Working"
+
+protocol StatusSelectionDelegate: AnyObject {
+    func didSelect(statusType: StatusType, status: Int)
 }
 
-enum VideoStatuses: String, CaseIterable {
-    case untested = "Untested"
-    case noVideo = "No Video"
-    case someVideo = "Some Video"
-    case working = "Working"
-}
-
-enum ControlsStatuses : String, CaseIterable {
-    case untested = "Untested"
-    case noControls = "No Controls"
-    case someControl = "Some Controls"
-    case working = "Working"
-}
-
-enum BootStatuses : String, CaseIterable {
-    case untested = "Untested"
-    case nonBooting = "Non-Booting"
-    case watchdog = "Boot Error / Watchdog"
-    case working = "Booting"
-}
-
-enum ExtendedPlayStatuses : String, CaseIterable {
-    case untested = "Untested"
-    case crashing = "Crashing"
-    case playthrough = "Playthrough Tested"
-    case extended = "Extended Test - 8Hrs+"
-}
-
-class RepairLogDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+class RepairLogDetailViewController: UIViewController, StatusSelectionDelegate {
 
     
     
     @IBOutlet weak var myBoardPhotoView: UIImageView!
-    @IBOutlet weak var controlsPickerView: UIPickerView!
-    @IBOutlet weak var audioPickerView: UIPickerView!
-    @IBOutlet weak var videoPickerView: UIPickerView!
-    @IBOutlet weak var bootPickerView: UIPickerView!
-    @IBOutlet weak var extendedPlayPickerView: UIPickerView!
-
+    @IBOutlet weak var bootStatusButton: UIButton!
+    @IBOutlet weak var controlsStatusButton: UIButton!
+    @IBOutlet weak var audioStatusButton: UIButton!
+    @IBOutlet weak var videoStatusButton: UIButton!
+    @IBOutlet weak var extendedPlayStatusButton: UIButton!
+    
     var dataController = DataController.shared
     var viewedGame: Game!
     var repairLogs: [RepairLog]!
-    //var stringArrayForPicker: [String] = []
-    var arrayOfExtendedPlayStatuses: [String] = []
-    var arrayOfBootStatuses: [String] = []
-    var arrayOfAudioStatuses: [String] = []
-    var arrayOfControlsStatuses: [String] = []
-    var arrayOfVideoStatuses: [String] = []
+
     
     override func viewDidLoad() {
-        setPickerValues()
+     
         
         // buildViewController()
         // init with defaults
-        // setPickers, Board photo
+        // setStatus, Board photo
         // setLogs / scroll view height
+    }
+    
+    @IBAction func bootStatusButtonTapped(_ sender: UIButton) {
+        let statusPickerPopup = storyboard!.instantiateViewController(withIdentifier: "StatusPickerViewController") as! StatusPickerViewController
+        statusPickerPopup.statusType = .bootStatus
+        statusPickerPopup.delegate = self
+        statusPickerPopup.setPickerValues()
+        statusPickerPopup.modalTransitionStyle = .crossDissolve
+        present(statusPickerPopup, animated: true, completion: nil)
+        
+//        let popOverVC = storyboard!.instantiateViewController(withIdentifier: "EditGameViewController") as! EditGameViewController
+//        popOverVC.viewedGame = viewedGame
+//        popOverVC.delegate = self
+//        popOverVC.modalTransitionStyle = .flipHorizontal
+//        present(popOverVC, animated: true, completion: nil)
+        
+        
+        
+        
+//        if let popOver = popUpViewController {
+//            handleButtons(enabled: false, button: filterButton)
+//            present(popOver, animated: true, completion: nil)
+//        } else {
+//            popUpViewController = storyboard!.instantiateViewController(withIdentifier: "FilterOptionsPopup") as? FilterOptionsPopup
+//            popUpViewController.delegate = self
+//            popUpViewController.gamesList = gamesList
+//            popUpViewController.modalPresentationStyle = .overCurrentContext
+//            popUpViewController.modalTransitionStyle = .crossDissolve
+//
+//            handleButtons(enabled: false, button: filterButton)
+//
+//            present(popUpViewController, animated: true, completion: nil)
+    }
+    
+    @IBAction func audioStatusButtonTapped(_ sender: UIButton) {
+        
+    }
+    
+    @IBAction func videoStatusButtonTapped(_ sender: UIButton) {
+        
+    }
+    
+    @IBAction func controlsStatusButtonTapped(_ sender: UIButton) {
+        
+    }
+    
+    @IBAction func extendedPlayStatusButtonTapped(_ sender: UIButton) {
+        
     }
     
     func buildViewController() {
         setMainPhoto()
-        setPickerValues()
+
     }
     
     func setMainPhoto() {
@@ -86,71 +99,58 @@ class RepairLogDetailViewController: UIViewController, UIPickerViewDelegate, UIP
         myBoardPhotoView.image = boardPhoto
     }
     
-    func setPickerValues() {
+    func newLog() {
         
-        for audioStatus in AudioStatuses.allCases {
-            arrayOfAudioStatuses+=[audioStatus.rawValue]
-        }
+        //need to programatically adjust scroll height and push new log to top of the main stackview
         
-        for videoStatus in VideoStatuses.allCases {
-            arrayOfVideoStatuses+=[videoStatus.rawValue]
-        }
-        
-        for controlsStatus in ControlsStatuses.allCases {
-            arrayOfControlsStatuses+=[controlsStatus.rawValue]
-        }
-        
-        for bootStatus in BootStatuses.allCases {
-            arrayOfBootStatuses+=[bootStatus.rawValue]
-        }
-        
-        for playStatus in ExtendedPlayStatuses.allCases {
-            arrayOfExtendedPlayStatuses+=[playStatus.rawValue]
-        }
-        
-//        bootPickerView.selectRow(0, inComponent: 0, animated: false)
-//        audioPickerView.selectRow(0, inComponent: 0, animated: false)
-//        videoPickerView.selectRow(0, inComponent: 0, animated: false)
-//        controlsPickerView.selectRow(0, inComponent: 0, animated: false)
-//        extendedPlayPickerView.selectRow(0, inComponent: 0, animated: false)
     }
     
-
+    func updateStatusButtonAppearance(statusType: StatusType, status: Int) {
+        let buttonToUpdate : UIButton
+        
+        switch statusType {
+        case .bootStatus: buttonToUpdate = bootStatusButton
+        case .extendedPlay: buttonToUpdate = extendedPlayStatusButton
+        case .controls: buttonToUpdate = controlsStatusButton
+        case .audio: buttonToUpdate = audioStatusButton
+        case .video: buttonToUpdate = videoStatusButton
+        }
+        
+        DispatchQueue.main.async {
+            switch status{
+            case 0: buttonToUpdate.setImage(UIImage(named: "star_circle"), for: .normal)
+                buttonToUpdate.tintColor = .systemBlue
+            case 1: buttonToUpdate.setImage(UIImage(named: "circle.fill"), for: .normal)
+                buttonToUpdate.tintColor = .red
+//            case 2: buttonToUpdate.setImage(UIImage(systemName: "circle.fill"), for: .normal)
+//                buttonToUpdate.tintColor = .yellow
+//            case 3: buttonToUpdate.setImage(UIImage(systemName: "circle.fill"), for: .normal)
+//                buttonToUpdate.tintColor = .green
+            default:
+                return
+            }
+        }
+    }
     
-    // func newLog()
-    
-        //need to programatically adjust scroll height and scroll to bottom
-    
-    // dismissAndSave
+    func dismissAndSave() {
         // check for changes and save, no matter how dismissed
-    
+    }
+        
     //MARK: PickerViewDataSource
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
-
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        switch pickerView{
-        case bootPickerView: return arrayOfBootStatuses.count
-        case audioPickerView: return arrayOfAudioStatuses.count
-        case videoPickerView: return arrayOfVideoStatuses.count
-        case controlsPickerView: return arrayOfControlsStatuses.count
-        case extendedPlayPickerView: return arrayOfExtendedPlayStatuses.count
-        default: return 4
-        }
-    }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        switch pickerView{
-        case bootPickerView: return arrayOfBootStatuses[row]
-        case audioPickerView: return arrayOfAudioStatuses[row]
-        case videoPickerView: return arrayOfVideoStatuses[row]
-        case controlsPickerView: return arrayOfControlsStatuses[row]
-        case extendedPlayPickerView: return arrayOfExtendedPlayStatuses[row]
-        default: return "LoL"
-        }
+    //MARK: StatusSelectionDelegate
+    func didSelect(statusType: StatusType, status: Int) {
+        updateStatusButtonAppearance(statusType: statusType, status: status)
+        //button status changes to reflect selection.
+        
+        
+       // save
     }
 }
+
 
 
 

@@ -32,6 +32,7 @@
 		E3E6076425F15293003F1888 /* GameTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E6076325F15293003F1888 /* GameTableCell.swift */; };
 		E3E6076B25F1686E003F1888 /* HardwareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E6076A25F1686E003F1888 /* HardwareViewController.swift */; };
 		E3FB7E2C264AE7C400422DFF /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3FB7E2B264AE7C400422DFF /* TableViewController.swift */; };
+		E426AEC32922B1F100B5C2C9 /* StatusPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E426AEC22922B1F100B5C2C9 /* StatusPickerViewController.swift */; };
 		E44A2362291C408000CCA70E /* RepairLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44A2361291C408000CCA70E /* RepairLogView.swift */; };
 		E46660DD2915A8880056FCDD /* RepairLogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46660DC2915A8880056FCDD /* RepairLogCell.swift */; };
 		E46660DF291AEAED0056FCDD /* RepairLogDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46660DE291AEAED0056FCDD /* RepairLogDetailViewController.swift */; };
@@ -66,6 +67,7 @@
 		E3E6076325F15293003F1888 /* GameTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTableCell.swift; sourceTree = "<group>"; };
 		E3E6076A25F1686E003F1888 /* HardwareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareViewController.swift; sourceTree = "<group>"; };
 		E3FB7E2B264AE7C400422DFF /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		E426AEC22922B1F100B5C2C9 /* StatusPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusPickerViewController.swift; sourceTree = "<group>"; };
 		E44A2361291C408000CCA70E /* RepairLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairLogView.swift; sourceTree = "<group>"; };
 		E46660DC2915A8880056FCDD /* RepairLogCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairLogCell.swift; sourceTree = "<group>"; };
 		E46660DE291AEAED0056FCDD /* RepairLogDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairLogDetailViewController.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				E3D90E4A265ABF12005C86E7 /* TabBarController.swift */,
 				E370BB8F268A4F6000D91D9E /* FilterOptionsPopup.swift */,
 				E46660DE291AEAED0056FCDD /* RepairLogDetailViewController.swift */,
+				E426AEC22922B1F100B5C2C9 /* StatusPickerViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -344,6 +347,7 @@
 				E3E6073F25F04EA1003F1888 /* AppDelegate.swift in Sources */,
 				74FCCE7327BAE696001FEA48 /* ZoomableImageViewController.swift in Sources */,
 				E34B771B260E7F1800EAE50B /* AboutViewController.swift in Sources */,
+				E426AEC32922B1F100B5C2C9 /* StatusPickerViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
