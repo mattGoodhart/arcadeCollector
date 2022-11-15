@@ -55,9 +55,9 @@
         <attribute name="year" optional="YES" attributeType="String"/>
         <attribute name="youtubeVideoID" optional="YES" attributeType="String"/>
         <relationship name="collection" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CollectionEntity" inverseName="games" inverseEntity="CollectionEntity"/>
-        <relationship name="repairlogs" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RepairLog" inverseName="game" inverseEntity="RepairLog"/>
+        <relationship name="repairlogs" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RepairLogEntry" inverseName="game" inverseEntity="RepairLogEntry"/>
     </entity>
-    <entity name="RepairLog" representedClassName="RepairLog" syncable="YES" codeGenerationType="class">
+    <entity name="RepairLogEntry" representedClassName="RepairLogEntry" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="entryPhoto1" optional="YES" attributeType="Binary"/>
         <attribute name="entryPhoto2" optional="YES" attributeType="Binary"/>

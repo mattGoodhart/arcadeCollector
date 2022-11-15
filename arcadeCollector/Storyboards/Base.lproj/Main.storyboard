@@ -416,11 +416,17 @@ nplayers.arcadebelgium.be</string>
                                                 <rect key="frame" x="0.0" y="0.0" width="68" height="34.5"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title="Audio"/>
+                                                <connections>
+                                                    <action selector="audioStatusButtonTapped:" destination="ifN-ue-kbD" eventType="touchUpInside" id="7GX-0H-hdp"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IcE-SL-x68" userLabel="Video Status">
                                                 <rect key="frame" x="68" y="0.0" width="68" height="34.5"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title="Video"/>
+                                                <connections>
+                                                    <action selector="videoStatusButtonTapped:" destination="ifN-ue-kbD" eventType="touchUpInside" id="Et0-k1-852"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -431,17 +437,23 @@ nplayers.arcadebelgium.be</string>
                                                 <rect key="frame" x="0.0" y="0.0" width="132" height="34.5"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title="Controls"/>
+                                                <connections>
+                                                    <action selector="controlsStatusButtonTapped:" destination="ifN-ue-kbD" eventType="touchUpInside" id="7Ir-Pp-mkN"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WeZ-j0-aM1" userLabel="Extended Play Status">
                                                 <rect key="frame" x="132" y="0.0" width="132" height="34.5"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title="Extended Play"/>
+                                                <connections>
+                                                    <action selector="extendedPlayStatusButtonTapped:" destination="ifN-ue-kbD" eventType="touchUpInside" id="Mnv-HI-b9x"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u0M-lD-jLs" userLabel="RepairLogView" customClass="RepairLogView" customModule="arcadeCollector" customModuleProvider="target">
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u0M-lD-jLs" userLabel="RepairLogEntryView" customClass="RepairLogView" customModule="arcadeCollector" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="416" width="375" height="211"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="FRV-7e-hkG">

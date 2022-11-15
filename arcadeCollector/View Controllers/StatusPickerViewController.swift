@@ -34,11 +34,15 @@ class StatusPickerViewController: UIViewController, UIPickerViewDelegate, UIPick
         setPickerValues()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        if isBeingDismissed{
+            delegate?.didSelect(statusType: statusType, status: pickerView.selectedRow(inComponent: 0))
+        }
+    }
+    
     @IBAction func dismissButtonTapped(_sender: UIButton) {
-        //chosenStatus = pickerView.selectedRow(inComponent: 0)
-        delegate?.didSelect(statusType: statusType, status: pickerView.selectedRow(inComponent: 0))
         dismiss(animated: true)
-        
+    }
         
 //        getGameAttributeValuesFromSwitches()
 //        if (viewedGame.hasBoard && !masterCollection.myGames.contains(viewedGame)) {
@@ -55,7 +59,7 @@ class StatusPickerViewController: UIViewController, UIPickerViewDelegate, UIPick
 //        try? dataController.viewContext.save()
 //        delegate?.didFinishEditingGame()
 //        dismiss(animated: true, completion: nil)
-    }
+    
 
 
     

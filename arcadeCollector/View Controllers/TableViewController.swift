@@ -37,7 +37,7 @@ enum Tab: Int, CaseIterable {
         case .wanted:
             return CollectionManager.shared.wantedGames
         case .repairLogs:
-            return CollectionManager.shared.repairLogs
+            return CollectionManager.shared.gamesInRepair
         }
     }
 }

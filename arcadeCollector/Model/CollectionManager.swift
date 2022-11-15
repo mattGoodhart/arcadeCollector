@@ -24,7 +24,7 @@ class CollectionManager {
     var allGamesCollection: CollectionEntity! // Can these not be bung?
     var myGamesCollection: CollectionEntity!
     var wantedGamesCollection: CollectionEntity!
-    var repairLogsCollection: CollectionEntity!
+    var gamesInRepairCollection: CollectionEntity!
     var allGames: [Game] = []
     var myGames: [Game] = []
     var wantedGames: [Game] = []
@@ -32,7 +32,7 @@ class CollectionManager {
     var partiallyWorkingBoards: [Game] = []
     var nonWorkingBoards: [Game] = []
     var boardsInCollection: [Game] = []
-    var repairLogs: [Game] = []
+    var gamesInRepair: [Game] = []
 
     // make me a struct
     var hardwareCountsDictionary: [String: Double] = [:]
@@ -53,18 +53,18 @@ class CollectionManager {
         let allGamesCollection = CollectionEntity(context: dataController.viewContext)
         let myGamesCollection = CollectionEntity(context: dataController.viewContext)
         let wantedGamesCollection = CollectionEntity(context: dataController.viewContext)
-        let repairLogsCollection = CollectionEntity(context: dataController.viewContext)
+        let gamesInRepairCollection = CollectionEntity(context: dataController.viewContext)
 
         allGamesCollection.name = CollectionName.allGames.rawValue
         myGamesCollection.name = CollectionName.myGames.rawValue
         wantedGamesCollection.name = CollectionName.wantedGames.rawValue
-        repairLogsCollection.name = CollectionName.repairLogs.rawValue
+        gamesInRepairCollection.name = CollectionName.repairLogs.rawValue
 
         self.allGamesCollection = allGamesCollection
         self.myGamesCollection = myGamesCollection
         self.wantedGamesCollection = wantedGamesCollection
-        self.repairLogsCollection = repairLogsCollection
-        collections = [allGamesCollection, myGamesCollection, wantedGamesCollection, repairLogsCollection]
+        self.gamesInRepairCollection = gamesInRepairCollection
+        collections = [allGamesCollection, myGamesCollection, wantedGamesCollection, gamesInRepairCollection]
 
         try? dataController.viewContext.save()
         initializeAllGames()
@@ -79,7 +79,7 @@ class CollectionManager {
         allGamesCollection = collection(from: collections, with: .allGames)
         myGamesCollection = collection(from: collections, with: .myGames)
         wantedGamesCollection = collection(from: collections, with: .wantedGames)
-        repairLogsCollection = collection(from: collections, with: .repairLogs)
+        gamesInRepairCollection = collection(from: collections, with: .repairLogs)
     }
 
     // MARK: - Parsing
@@ -155,7 +155,7 @@ class CollectionManager {
         self.myGames += fetchGamesForCollection(collection: myGamesCollection) ?? []
         self.allGames += fetchGamesForCollection(collection: allGamesCollection) ?? []
         self.wantedGames += fetchGamesForCollection(collection: wantedGamesCollection) ?? []
-        self.repairLogs += fetchGamesForCollection(collection: repairLogsCollection) ?? []
+        self.gamesInRepair += fetchGamesForCollection(collection: gamesInRepairCollection) ?? []
     }
 
     // MARK: - Other Methods
