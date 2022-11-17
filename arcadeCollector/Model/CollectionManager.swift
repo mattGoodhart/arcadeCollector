@@ -114,6 +114,7 @@ class CollectionManager {
                 gameEntity.audioStatus = 0
                 gameEntity.bootStatus = 0
                 gameEntity.controlsStatus = 0
+                gameEntity.videoStatus = 0
                 self.allGames.append(gameEntity)
                 allGamesCollection.addToGames(gameEntity)
             }
@@ -146,6 +147,14 @@ class CollectionManager {
     func fetchCollectionsForGame(game: Game) -> [CollectionEntity]? {
         let fetchRequest: NSFetchRequest<CollectionEntity> = CollectionEntity.fetchRequest()
         let predicate = NSPredicate(format: "(ANY games == %@)", game)
+        fetchRequest.predicate = predicate
+        let result = try? DataController.shared.viewContext.fetch(fetchRequest)
+        return result
+    }
+    
+    func fetchRepairLogEntriesForGame(game: Game) -> [RepairLogEntry]? {
+        let fetchRequest: NSFetchRequest<RepairLogEntry> = RepairLogEntry.fetchRequest()
+        let predicate = NSPredicate(format: "(ANY game == %@)", game)
         fetchRequest.predicate = predicate
         let result = try? DataController.shared.viewContext.fetch(fetchRequest)
         return result
