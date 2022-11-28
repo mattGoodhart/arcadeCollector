@@ -385,11 +385,11 @@ nplayers.arcadebelgium.be</string>
             <objects>
                 <viewController storyboardIdentifier="RepairLogDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ifN-ue-kbD" userLabel="Repair Log View Controller" customClass="RepairLogDetailViewController" customModule="arcadeCollector" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sqH-UC-4WG">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="1180"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="1151"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noHardwareDefaultImage" translatesAutoresizingMaskIntoConstraints="NO" id="pi6-aB-b2M" userLabel="Image View - Tap to add /  update">
-                                <rect key="frame" x="9.5" y="20" width="356" height="180"/>
+                                <rect key="frame" x="9.5" y="64" width="356" height="180"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="180" id="kX9-zX-Bae"/>
                                 </constraints>
@@ -399,7 +399,7 @@ nplayers.arcadebelgium.be</string>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="bFD-ON-DRC" userLabel="Status Stack View">
-                                <rect key="frame" x="9.5" y="200" width="356" height="103.5"/>
+                                <rect key="frame" x="9.5" y="244" width="356" height="103.5"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5iX-WB-VeX" userLabel="Boot Status">
                                         <rect key="frame" x="121.5" y="0.0" width="113" height="34.5"/>
@@ -463,6 +463,9 @@ nplayers.arcadebelgium.be</string>
                                                 <rect key="frame" x="125" y="0.0" width="125" height="34.5"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system" title="New Entry"/>
+                                                <connections>
+                                                    <action selector="newRepairLogEntryTapped" destination="ifN-ue-kbD" eventType="touchUpInside" id="CHS-L9-3aN"/>
+                                                </connections>
                                             </button>
                                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UBa-Mo-VKz">
                                                 <rect key="frame" x="169.5" y="0.0" width="36" height="0.0"/>
@@ -654,7 +657,7 @@ nplayers.arcadebelgium.be</string>
                                             <outlet property="titleText" destination="GH8-rA-ehF" id="OTC-Dr-DRh"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="Usr-bq-Di9" userLabel="RepairLogCell" customClass="RepairLogCell" customModule="arcadeCollector" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="RepairLogTableCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="RepairLogTableCell" id="Usr-bq-Di9" userLabel="RepairLogTableCell" customClass="RepairLogTableCell" customModule="arcadeCollector" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="89.5" width="375" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Usr-bq-Di9" id="hp6-fG-zQk">
@@ -680,6 +683,9 @@ nplayers.arcadebelgium.be</string>
                                                 </stackView>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="noHardwareDefaultImage" translatesAutoresizingMaskIntoConstraints="NO" id="mw6-1A-c6S">
                                                     <rect key="frame" x="0.0" y="-58" width="43.5" height="159.5"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="43.5" id="RVD-kR-OkN"/>
+                                                    </constraints>
                                                 </imageView>
                                             </subviews>
                                             <constraints>
@@ -689,6 +695,7 @@ nplayers.arcadebelgium.be</string>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="pcbIconImageView" destination="mw6-1A-c6S" id="Y2O-ql-9CR"/>
+                                            <outlet property="pcbName" destination="le5-NN-4AJ" id="yPM-M3-L8d"/>
                                             <outlet property="titleText" destination="9ul-SH-FQ1" id="D7W-QD-yjg"/>
                                         </connections>
                                     </tableViewCell>
@@ -730,6 +737,7 @@ nplayers.arcadebelgium.be</string>
                         <outlet property="reverseButton" destination="dU2-tX-L2G" id="5jT-hB-CZy"/>
                         <outlet property="tableView" destination="V05-Ao-i18" id="tng-WY-BIe"/>
                         <segue destination="lxs-nA-Z7j" kind="show" identifier="GamesDetailSegue" id="Iyc-i3-pyh"/>
+                        <segue destination="ifN-ue-kbD" kind="show" identifier="RepairLogDetailSegue" id="YIt-dd-y55"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Ea-PK-ubl" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1175,6 +1183,7 @@ nplayers.arcadebelgium.be</string>
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="E5f-sm-AvG"/>
+        <segue reference="YIt-dd-y55"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="About Banners/Gaming History Banner" width="572" height="64"/>

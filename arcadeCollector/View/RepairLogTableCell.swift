@@ -8,10 +8,11 @@
 
 import UIKit
 
-class RepairLogTableCell: UITableViewCell, Identifiable {
+class RepairLogTableCell: UITableViewCell {
     
     @IBOutlet weak var pcbIconImageView: UIImageView!
     @IBOutlet weak var titleText: UILabel!
+    @IBOutlet weak var pcbName: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -25,6 +26,7 @@ class RepairLogTableCell: UITableViewCell, Identifiable {
 
     func reset() {
         titleText.text = nil
+        pcbName.text = nil
         let iconImage = UIImage(named: "noHardwareDefaultImage")
         pcbIconImageView.image = iconImage
     }

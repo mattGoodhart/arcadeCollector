@@ -153,6 +153,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         if segue.identifier == "GamesDetailSegue" {
             let detailViewController = segue.destination as! DetailViewController
             detailViewController.viewedGame = viewedGame
+        } else if segue.identifier == "RepairLogDetailSegue" {
+            let repairLogViewController = segue.destination as! RepairLogDetailViewController
+            repairLogViewController.viewedGame = viewedGame
         }
     }
 
@@ -390,7 +393,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard tabBarController?.selectedIndex != Tab.repairLogs.rawValue else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "RepairLogCell", for: indexPath) as! RepairLogTableCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "RepairLogTableCell", for: indexPath) as! RepairLogTableCell
+            
             
             // TODO:update to personal PCB photo if exists
             
@@ -416,6 +420,11 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let section = visibleUniqueYears[indexPath.section]
         viewedGame = groups[section]![indexPath.row]
+        
+        guard tabBarController?.selectedIndex != Tab.repairLogs.rawValue else {
+            performSegue(withIdentifier: "RepairLogDetailSegue", sender: self)
+            return
+        }
         performSegue(withIdentifier: "GamesDetailSegue", sender: self)
     }
 
