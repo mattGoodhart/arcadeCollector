@@ -388,15 +388,11 @@ nplayers.arcadebelgium.be</string>
                         <rect key="frame" x="0.0" y="0.0" width="375" height="1151"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noHardwareDefaultImage" translatesAutoresizingMaskIntoConstraints="NO" id="pi6-aB-b2M" userLabel="Image View - Tap to add /  update">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noHardwareDefaultImage" translatesAutoresizingMaskIntoConstraints="NO" id="pi6-aB-b2M" userLabel="PCB Image View">
                                 <rect key="frame" x="9.5" y="64" width="356" height="180"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="180" id="kX9-zX-Bae"/>
                                 </constraints>
-                            </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="camera.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="8q4-rd-PgQ">
-                                <rect key="frame" x="293" y="160.5" width="33" height="33"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="bFD-ON-DRC" userLabel="Status Stack View">
                                 <rect key="frame" x="9.5" y="244" width="356" height="138"/>
@@ -466,6 +462,14 @@ nplayers.arcadebelgium.be</string>
                                     </button>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JPb-eE-dUh">
+                                <rect key="frame" x="300" y="144" width="75" height="100"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="camera.fill" catalog="system" title="uh"/>
+                                <connections>
+                                    <action selector="cameraButtonTapped:" destination="ifN-ue-kbD" eventType="touchUpInside" id="FlR-6s-2dQ"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="wuY-i7-i4g"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -475,6 +479,8 @@ nplayers.arcadebelgium.be</string>
                             <constraint firstItem="pi6-aB-b2M" firstAttribute="centerX" secondItem="wuY-i7-i4g" secondAttribute="centerX" id="RWL-My-eNr"/>
                             <constraint firstItem="bFD-ON-DRC" firstAttribute="width" secondItem="wuY-i7-i4g" secondAttribute="width" multiplier="0.95" id="VcW-D3-EWY"/>
                             <constraint firstItem="bFD-ON-DRC" firstAttribute="top" secondItem="pi6-aB-b2M" secondAttribute="bottom" id="dmu-g8-7uF"/>
+                            <constraint firstItem="JPb-eE-dUh" firstAttribute="bottom" secondItem="pi6-aB-b2M" secondAttribute="bottom" id="mvS-c5-bNe"/>
+                            <constraint firstItem="JPb-eE-dUh" firstAttribute="leading" secondItem="wuY-i7-i4g" secondAttribute="leading" constant="300" id="os6-hy-50i"/>
                             <constraint firstItem="pi6-aB-b2M" firstAttribute="width" secondItem="wuY-i7-i4g" secondAttribute="width" multiplier="0.95" id="ubh-lh-cgX"/>
                         </constraints>
                     </view>
@@ -491,7 +497,7 @@ nplayers.arcadebelgium.be</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="snh-NR-K1r" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2516" y="1625"/>
+            <point key="canvasLocation" x="2516" y="1624.5877061469266"/>
         </scene>
         <!--Status Picker View Controller-->
         <scene sceneID="Mhn-g4-Zi4">

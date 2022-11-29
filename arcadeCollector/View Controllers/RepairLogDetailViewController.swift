@@ -13,7 +13,7 @@ protocol StatusSelectionDelegate: AnyObject {
     func didSelect(statusType: StatusType, status: Int)
 }
 
-class RepairLogDetailViewController: UIViewController, StatusSelectionDelegate {
+class RepairLogDetailViewController: UIViewController, StatusSelectionDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
     @IBOutlet weak var myBoardPhotoView: UIImageView!
     @IBOutlet weak var bootStatusButton: UIButton!
@@ -77,6 +77,14 @@ class RepairLogDetailViewController: UIViewController, StatusSelectionDelegate {
     
     @IBAction func newRepairLogEntryTapped() {
         newLog()
+    }
+    
+    @IBAction func cameraButtonTapped(_ sender: UIButton) {
+        let viewController = UIImagePickerController()
+        viewController.sourceType = .camera
+        viewController.allowsEditing = true
+        viewController.delegate = self
+        present(viewController, animated: true)
     }
     
     func initializeStatusButtons() {
@@ -213,4 +221,20 @@ class RepairLogDetailViewController: UIViewController, StatusSelectionDelegate {
         updateStatusButtonAppearance(statusType: statusType, status: status)
         try? dataController.viewContext.save()
     }
+    
+    //MARK: ImagePickerDelegate
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true)
+
+        guard let image = info[.editedImage] as? UIImage else {
+            print("No image found")
+            return
+        }
+        myBoardPhotoView.image = image
+        let imageData = image.pngData()
+        viewedGame.myPCBPhoto = imageData
+        try? dataController.viewContext.save()
+    }
+    
+    
 }
