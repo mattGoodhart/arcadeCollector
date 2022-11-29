@@ -630,8 +630,8 @@ nplayers.arcadebelgium.be</string>
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="xY6-gI-GZu">
-                                                    <rect key="frame" x="166" y="1.5" width="82.5" height="41"/>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="xY6-gI-GZu">
+                                                    <rect key="frame" x="43.5" y="1.5" width="82.5" height="41"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Game PCB" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="le5-NN-4AJ">
                                                             <rect key="frame" x="0.0" y="0.0" width="82.5" height="20.5"/>
@@ -641,13 +641,13 @@ nplayers.arcadebelgium.be</string>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Log Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ul-SH-FQ1" userLabel="Log Title - Date">
                                                             <rect key="frame" x="0.0" y="20.5" width="82.5" height="20.5"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
                                                 </stackView>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="noHardwareDefaultImage" translatesAutoresizingMaskIntoConstraints="NO" id="mw6-1A-c6S">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noHardwareDefaultImage" translatesAutoresizingMaskIntoConstraints="NO" id="mw6-1A-c6S">
                                                     <rect key="frame" x="0.0" y="-58" width="43.5" height="159.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="43.5" id="RVD-kR-OkN"/>
@@ -656,7 +656,9 @@ nplayers.arcadebelgium.be</string>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="xY6-gI-GZu" firstAttribute="centerY" secondItem="hp6-fG-zQk" secondAttribute="centerY" id="8WT-4s-Nn2"/>
+                                                <constraint firstItem="mw6-1A-c6S" firstAttribute="leading" secondItem="hp6-fG-zQk" secondAttribute="leading" id="VBN-NG-mf1"/>
                                                 <constraint firstItem="xY6-gI-GZu" firstAttribute="centerY" secondItem="mw6-1A-c6S" secondAttribute="centerY" id="ird-ni-aeI"/>
+                                                <constraint firstItem="xY6-gI-GZu" firstAttribute="leading" secondItem="mw6-1A-c6S" secondAttribute="trailing" id="z6t-2u-2pd"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
