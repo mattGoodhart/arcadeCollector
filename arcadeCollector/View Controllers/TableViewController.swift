@@ -392,22 +392,28 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let section = visibleUniqueYears[indexPath.section]
+        let group = groups[section]!
+        let game = group[indexPath.row]
+        
         guard tabBarController?.selectedIndex != Tab.repairLogs.rawValue else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "RepairLogTableCell", for: indexPath) as! RepairLogTableCell
             
-            
             // TODO:update to personal PCB photo if exists
             
-          // TODO:  cell.titleText = game.repairLogDate
+            if let lastRepairDate = game.lastRepairLogDate{
+                cell.titleText.text = String(describing: lastRepairDate)
+            } else {
+                cell.titleText.text = "Nothing Logged Yet"
+            }
+            cell.pcbName.text = game.title
             return cell
         }
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "GameTableCell", for: indexPath) as! GameTableCell
         cell.backgroundColor = indexPath.row % 2 == 0 ? tableColor1 : tableColor2
  
-        let section = visibleUniqueYears[indexPath.section]
-        let group = groups[section]!
-        let game = group[indexPath.row]
+     
         if let name = game.romSetName, let dataAsset = NSDataAsset(name: "icons/\(name)") {
             let iconImage = UIImage(data: dataAsset.data)
             cell.iconImageView.image = iconImage

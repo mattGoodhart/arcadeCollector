@@ -29,6 +29,7 @@ class RepairLogDetailViewController: UIViewController, StatusSelectionDelegate {
     var hasAnyInfo: Bool = false
     
     override func viewDidLoad() {
+        initializeStatusButtons()
         setRepairLogEntriesForViewedGame()
         checkForAnyInfo()
         
@@ -76,6 +77,15 @@ class RepairLogDetailViewController: UIViewController, StatusSelectionDelegate {
     
     @IBAction func newRepairLogEntryTapped() {
         newLog()
+    }
+    
+    func initializeStatusButtons() {
+        let resizedImage = UIImage(named: "whiteLED")?.resizeImage(newSize: CGSize(width: 33, height: 33))
+        bootStatusButton.imageView?.image = resizedImage
+        audioStatusButton.imageView?.image = resizedImage
+        videoStatusButton.imageView?.image = resizedImage
+        controlsStatusButton.imageView?.image = resizedImage
+        extendedPlayStatusButton.imageView?.image = resizedImage
     }
     
     func presentStatusPickerPopUp(statusType: StatusType) {
@@ -151,6 +161,8 @@ class RepairLogDetailViewController: UIViewController, StatusSelectionDelegate {
     func newLog() {
         
         
+        // set today's date at top in Bold, and set game.lastRepairDate 
+        
         
         //need to programatically adjust scroll height and push new log to top of the main stackview
         
@@ -174,14 +186,16 @@ class RepairLogDetailViewController: UIViewController, StatusSelectionDelegate {
         
         DispatchQueue.main.async { //ToDo - update minimum iOS version to 13.0 so I can use UIImage(systemName:) orr add images to asset catalog
             switch status{
-            case 0: buttonToUpdate.setImage(UIImage(named: "circle"), for: .normal)
-                buttonToUpdate.tintColor = .systemBlue
-            case 1: buttonToUpdate.setImage(UIImage(named: "circle.fill"), for: .normal)
-                buttonToUpdate.tintColor = .red
-            case 2: buttonToUpdate.setImage(UIImage(named: "circle.fill"), for: .normal)
-                buttonToUpdate.tintColor = .yellow
-            case 3: buttonToUpdate.setImage(UIImage(named: "circle.fill"), for: .normal)
-                buttonToUpdate.tintColor = .green
+            case 0:
+                let resizedImage = UIImage(named: "whiteLED")?.resizeImage(newSize: CGSize(width: 33, height: 33))
+                buttonToUpdate.setImage(resizedImage, for: .normal)
+            case 1:
+                let resizedImage = UIImage(named: "redLED")?.resizeImage(newSize: CGSize(width: 33, height: 33))
+                buttonToUpdate.setImage(resizedImage, for: .normal)
+            case 2: let resizedImage = UIImage(named: "yellowLED")?.resizeImage(newSize: CGSize(width: 33, height: 33))
+                buttonToUpdate.setImage(resizedImage, for: .normal)
+            case 3: let resizedImage = UIImage(named: "greenLED")?.resizeImage(newSize: CGSize(width: 33, height: 33))
+                buttonToUpdate.setImage(resizedImage, for: .normal)
             default:
                 return
             }

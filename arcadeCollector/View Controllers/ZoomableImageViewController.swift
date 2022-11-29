@@ -79,7 +79,7 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
         }
         newSize = CGSize(width: newWidth, height: newHeight)
 
-        let resizedImage = image.resizeImage(image: image, newSize: newSize)
+        let resizedImage = image.resizeImage(newSize: newSize)
         imageView.image = resizedImage
     }
 

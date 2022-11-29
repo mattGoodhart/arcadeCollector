@@ -125,7 +125,7 @@ class SummaryViewController: UIViewController {
         let boardImage = UIImage(named: imageName) ?? UIImage()
         let centerSize = CGSize(width: (UIScreen.main.bounds.width/6.5), height: (UIScreen.main.bounds.height/10))
 
-        let centeredBoardImage = boardImage.resizeImage(image: boardImage, newSize: centerSize)
+        let centeredBoardImage = boardImage.resizeImage(newSize: centerSize)
         attachment.image = centeredBoardImage
 
         let attachmentString = NSAttributedString(attachment: attachment)

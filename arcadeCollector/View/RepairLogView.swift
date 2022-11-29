@@ -10,9 +10,18 @@ import UIKit
 
 class RepairLogView: UIView {
     
-    @IBOutlet weak var date: UILabel!
-    @IBOutlet weak var logNotes: UITextView!
-    @IBOutlet weak var addPhotoButton: UIButton!
+    var date: UILabel!
+    var logNotes: UITextView!
+    var addPhotoButton: UIButton!
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        let date = Date()
+        self.date.text = String(describing: date)
+        self.date.isHidden = false
+        self.logNotes.isHidden = false
+        self.addPhotoButton.isHidden = false
+    }
     
     //logNotes.sizeToFit()
 //    init(date: UILabel!, logNotes: UITextView!, addPhotoButton: UIButton!) {
