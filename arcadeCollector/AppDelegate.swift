@@ -9,6 +9,24 @@
 import UIKit
 import CoreData
 
+/* TODOs
+ 
+ Update to Swift 5
+ Update to Clean MVVM Architecture
+ Repair Log Feature
+    -
+    -
+ Write Unit Tests
+ UI Tests?
+ Update Scrolling Data
+  - keep latest version on github
+  - Add ability to check for updated gameslist on launch
+  - allow all videogames from MAME (to support repair logs for games with no full MAME driver)
+  - Maybe make MAME-working games the default filter in All Games tab to keep trim
+ 
+ */
+
+
 @UIApplicationMain class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
