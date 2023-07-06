@@ -1,19 +1,11 @@
 ## Arcade Collector
 
-Arcade Collector is an arcade video game collection tracker and reference for iOS
+Arcade Collector is an arcade video game collection tracker, hardware reference,  and repair logger for iOS
 
 ## Features
 
-- Keep track of your arcade game collection
-- Track specific game hardware including:
-    -  Game PCB
-    -  Cabinet
-    -  Monitor
-    -  Controls
-    -  Control Panel Overlay
-    -  Bezel
-    -  Artwork
-    -  Marquee
+- Keep track of your arcade game PCB collection
+
 
 - Reference comprehensive game info and media including:
     - In-game images (displayed in correct aspect ratios!)
@@ -22,7 +14,7 @@ Arcade Collector is an arcade video game collection tracker and reference for iO
     - longplay video
     - PCB image
     - Cabinet image
-    - MAME Driver notes
+    - MAME Driver
     - Game Manual
     - Controls, display, audio, and processor information
 
@@ -40,7 +32,6 @@ App is in Beta, using placeholder assets
 
 ## Usage
 The Summary Screen shows:
-    - Amount of hardware in collection
     - PCBs in collection and working condition
     - Number of games wanted
     
