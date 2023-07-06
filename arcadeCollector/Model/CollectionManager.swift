@@ -21,10 +21,10 @@ class CollectionManager {
 
     let dataController = DataController.shared
     var collections: [CollectionEntity] = []
-    var allGamesCollection: CollectionEntity! // Can these not be bung?
-    var myGamesCollection: CollectionEntity!
-    var wantedGamesCollection: CollectionEntity!
-    var gamesInRepairCollection: CollectionEntity!
+    var allGamesCollection = CollectionEntity()
+    var myGamesCollection = CollectionEntity()
+    var wantedGamesCollection = CollectionEntity()
+    var gamesInRepairCollection = CollectionEntity()
     var allGames: [Game] = []
     var myGames: [Game] = []
     var wantedGames: [Game] = []
@@ -71,8 +71,8 @@ class CollectionManager {
     }
 
     private func collection(from collections: [CollectionEntity],
-                            with name: CollectionName) -> CollectionEntity? {
-        return collections.first(where: { $0.name == name.rawValue })
+                            with name: CollectionName) -> CollectionEntity {
+        return collections.first(where: { $0.name == name.rawValue }) ?? CollectionEntity()
     }
 
     private func load(from collections: [CollectionEntity]) {

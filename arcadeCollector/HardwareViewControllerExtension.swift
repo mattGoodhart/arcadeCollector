@@ -112,17 +112,17 @@ extension HardwareViewController {
         }
 
         for cpuString in cpuStringArray {
-            improveClockFormatting(stringToProcess: cpuString, stringArrayToUpdate: cpuStringArray, isForCPU: true)
+            improveClockFormatting(stringToProcess: cpuString, isForCPU: true)
         }
             for soundString in soundDeviceStringArray {
-                improveClockFormatting(stringToProcess: soundString, stringArrayToUpdate: soundDeviceStringArray, isForCPU: false)
+                improveClockFormatting(stringToProcess: soundString, isForCPU: false)
         }
             viewedGame.cpuStringArray = formattedCPUStringArray
             viewedGame.soundDeviceStringArray = formattedSoundStringArray
             try? dataController.viewContext.save()
         }
 
-    func improveClockFormatting(stringToProcess: String, stringArrayToUpdate: [String], isForCPU: Bool) {
+    func improveClockFormatting(stringToProcess: String, isForCPU: Bool) {
 
         var formattedStringArray = [String]()
 

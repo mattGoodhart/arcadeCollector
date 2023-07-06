@@ -33,14 +33,13 @@ class SummaryViewController: UIViewController {
     let chartPink = UIColor(displayP3Red: (245/255), green: (151/255), blue: (180/255), alpha: 1)
     let chartLightOrange = UIColor(displayP3Red: (231/255), green: 148/255, blue: 33/255, alpha: 1)
 
-    required init?(coder: NSCoder) { // why is this better than self.title = ... ?
+    required init?(coder: NSCoder) {
         super.init(coder: coder)
         title = "Summary"
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
         masterCollection.getBoardsByWorkingCondition()
         setWantedGamesCount()
         buildDataForChart()

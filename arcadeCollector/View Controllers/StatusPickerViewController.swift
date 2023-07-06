@@ -43,25 +43,6 @@ class StatusPickerViewController: UIViewController, UIPickerViewDelegate, UIPick
     @IBAction func dismissButtonTapped(_sender: UIButton) {
         dismiss(animated: true)
     }
-        
-//        getGameAttributeValuesFromSwitches()
-//        if (viewedGame.hasBoard && !masterCollection.myGames.contains(viewedGame)) {
-//
-//            masterCollection.myGames.append(viewedGame)
-//            masterCollection.myGamesCollection.addToGames(viewedGame)
-//
-//        } else if !viewedGame.hasBoard, let removalIndex = masterCollection.myGames.firstIndex(of: viewedGame) {
-//
-//            masterCollection.myGames.remove(at: removalIndex)
-//            masterCollection.myGamesCollection.removeFromGames(viewedGame)
-//        }
-//
-//        try? dataController.viewContext.save()
-//        delegate?.didFinishEditingGame()
-//        dismiss(animated: true, completion: nil)
-    
-
-
     
     
     func setPickerValues() {
@@ -106,7 +87,6 @@ class StatusPickerViewController: UIViewController, UIPickerViewDelegate, UIPick
         return arrayOfStringsForPicker[row]
     }
 }
-
 
 
 enum AudioStatuses: String, CaseIterable {

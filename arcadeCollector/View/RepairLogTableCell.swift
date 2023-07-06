@@ -27,7 +27,7 @@ class RepairLogTableCell: UITableViewCell {
     func reset() {
         titleText.text = nil
         pcbName.text = nil
-        let iconImage = UIImage(named: "noHardwareDefaultImage")
+        let iconImage = UIImage(named: "noHardwareDefaultImage") //update filename
         pcbIconImageView.image = iconImage
     }
 }

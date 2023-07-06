@@ -23,6 +23,7 @@ import CoreData
   - Add ability to check for updated gameslist on launch
   - allow all videogames from MAME (to support repair logs for games with no full MAME driver)
   - Maybe make MAME-working games the default filter in All Games tab to keep trim
+    -Add color to gameTable cell to indicatue MAME working
  
  */
 
@@ -36,7 +37,7 @@ import CoreData
 
         DataController.shared.load()
 
-        // Do this in a backgrund context
+        // Do this in a background context
         CollectionManager.shared.createCollectionsIfNeeded()
         return true
     }

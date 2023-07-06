@@ -156,21 +156,14 @@ class DetailViewController: UIViewController, EditGameDelegate {
 
     func adjustImageView(height: CGFloat, multiplier: CGFloat) {
         mainImageView.translatesAutoresizingMaskIntoConstraints = false
-     //   mainImageView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
-     //   mainImageView.topAnchor.constraint(equalTo: marqueeView.bottomAnchor, constant: 20).isActive = true
         mainImageView.heightAnchor.constraint(equalToConstant: height).isActive = true
         mainImageView.widthAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: multiplier).isActive = true
     }
 
     func setMarqueeView() {
         marqueeView.translatesAutoresizingMaskIntoConstraints = false
-       // marqueeView.contentMode = .scaleAspectFit
-       // marqueeView.topAnchor.constraint(equalTo: viewMargins.topAnchor, constant: 10).isActive = true
-        // marqueeView.centerXAnchor.constraint(equalTo: viewMargins.centerXAnchor).isActive = true
         marqueeView.widthAnchor.constraint(equalTo: viewMargins.widthAnchor).isActive = true
         marqueeView.heightAnchor.constraint(equalTo: marqueeView.widthAnchor, multiplier: 0.25).isActive = true
-
-        // marqueeView.heightAnchor.constraint(equalToConstant: 85).isActive = true
     }
 
     func setOtherConstraints() {

@@ -71,7 +71,8 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
         let newWidth = UIScreen.main.bounds.size.width
         var newHeight = CGFloat()
         var newSize: CGSize
-
+        
+        // Use an enum instead of magic strings
         if orientation == "Horizontal" {
             newHeight = newWidth * (3/4)
         } else if orientation == "Vertical" {
