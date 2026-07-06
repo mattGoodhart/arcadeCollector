@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fpv-6B-0Xm">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fpv-6B-0Xm">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -16,7 +16,7 @@
                 <navigationController storyboardIdentifier="Summary" id="Fnu-BP-cIQ" userLabel="Summary Nav" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Summary" id="1SP-LR-4Vp"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="P4h-XW-Zbo">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -46,7 +46,7 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleAspectFit" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="RoG-Qa-ztg" userLabel="Wanted Stack View">
-                                <rect key="frame" x="130.5" y="513" width="114" height="46.5"/>
+                                <rect key="frame" x="130.5" y="525" width="114" height="46.5"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Heart" translatesAutoresizingMaskIntoConstraints="NO" id="q8r-em-7jb">
                                         <rect key="frame" x="0.0" y="0.0" width="47" height="46.5"/>
@@ -60,7 +60,7 @@
                                 </subviews>
                             </stackView>
                             <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="QH6-Bx-xqo" customClass="PieChartView" customModule="Charts">
-                                <rect key="frame" x="0.0" y="44" width="375" height="229.5"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="221.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
                         </subviews>
@@ -232,7 +232,7 @@ nplayers.arcadebelgium.be</string>
                 <navigationController id="W4k-3l-HeT" userLabel="My Collection" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="My Collection" image="star_circle" id="vvt-vU-rvL" userLabel="My Collection"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Szm-uQ-UCq">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" red="0.51431902385160577" green="0.91053112770148359" blue="0.76181578307793407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <textAttributes key="titleTextAttributes">
@@ -341,7 +341,7 @@ nplayers.arcadebelgium.be</string>
                                 </constraints>
                             </scrollView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="LIP-wD-4nA">
-                                <rect key="frame" x="0.0" y="209" width="375" height="20"/>
+                                <rect key="frame" x="0.0" y="229" width="375" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="MjL-2v-Q69"/>
@@ -389,13 +389,13 @@ nplayers.arcadebelgium.be</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noHardwareDefaultImage" translatesAutoresizingMaskIntoConstraints="NO" id="pi6-aB-b2M" userLabel="PCB Image View">
-                                <rect key="frame" x="9.5" y="64" width="356" height="180"/>
+                                <rect key="frame" x="9.5" y="84" width="356" height="180"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="180" id="kX9-zX-Bae"/>
                                 </constraints>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="bFD-ON-DRC" userLabel="Status Stack View">
-                                <rect key="frame" x="9.5" y="244" width="356" height="138"/>
+                                <rect key="frame" x="9.5" y="264" width="356" height="138"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5iX-WB-VeX" userLabel="Boot Status">
                                         <rect key="frame" x="121.5" y="0.0" width="113" height="34.5"/>
@@ -512,7 +512,7 @@ nplayers.arcadebelgium.be</string>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             </pickerView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EdK-eq-nL9">
-                                <rect key="frame" x="0.0" y="75" width="108" height="35"/>
+                                <rect key="frame" x="0.0" y="95" width="108" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="xmark.app" catalog="system" title="Dismiss"/>
                                 <connections>
@@ -727,10 +727,10 @@ nplayers.arcadebelgium.be</string>
                                 <rect key="frame" x="177.5" y="283" width="20" height="20"/>
                             </activityIndicatorView>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="1iP-hh-OfY">
-                                <rect key="frame" x="177.5" y="106" width="20" height="20"/>
+                                <rect key="frame" x="177.5" y="126" width="20" height="20"/>
                             </activityIndicatorView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="wze-Km-eat" userLabel="Main Stack View">
-                                <rect key="frame" x="0.0" y="44" width="375" height="574"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="missing_marquee" translatesAutoresizingMaskIntoConstraints="NO" id="ntz-FS-uBs" userLabel="Marquee View">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="144"/>
@@ -739,7 +739,7 @@ nplayers.arcadebelgium.be</string>
                                         <rect key="frame" x="47.5" y="152" width="280" height="50"/>
                                     </imageView>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="dgt-ne-yRV">
-                                        <rect key="frame" x="78.5" y="210" width="218" height="29.5"/>
+                                        <rect key="frame" x="78.5" y="210" width="218" height="28.5"/>
                                         <segments>
                                             <segment title="Flyer"/>
                                             <segment title="In-Game"/>
@@ -751,11 +751,11 @@ nplayers.arcadebelgium.be</string>
                                         </connections>
                                     </segmentedControl>
                                     <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pHg-Fj-Q3x" userLabel="Centering View Bottom">
-                                        <rect key="frame" x="67.5" y="246.5" width="240" height="289.5"/>
+                                        <rect key="frame" x="67.5" y="245.5" width="240" height="270.5"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="iQ8-AK-4kX" userLabel=" Horizontal Stack View">
-                                        <rect key="frame" x="52.5" y="544" width="270" height="30"/>
+                                        <rect key="frame" x="52.5" y="524" width="270" height="30"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="991-6b-6CQ">
                                                 <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
@@ -845,7 +845,7 @@ nplayers.arcadebelgium.be</string>
                 <navigationController id="QSZ-nf-1Ne" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="All Games" image="menu" id="ZNi-1G-t5O"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="RTe-3i-Z0P">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" red="0.35678580399999998" green="0.64314663409999995" blue="0.61176025869999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <textAttributes key="titleTextAttributes">
@@ -867,7 +867,7 @@ nplayers.arcadebelgium.be</string>
                 <navigationController id="Gta-u3-awy" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Wanted Games" image="favorite" id="dvv-y6-WvG"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="RtL-uk-mUN">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" red="1" green="0.26352580577756013" blue="0.48727542652159705" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                         <textAttributes key="titleTextAttributes">
@@ -1050,7 +1050,7 @@ nplayers.arcadebelgium.be</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="OKa-iv-9T8" userLabel="Main Vertical Stack View">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gSK-MQ-yJk" userLabel="Save and Return to Game View Button">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="30"/>
@@ -1062,7 +1062,7 @@ nplayers.arcadebelgium.be</string>
                                         </connections>
                                     </button>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="uKe-Lf-UVe" userLabel="Board Stack View">
-                                        <rect key="frame" x="0.0" y="155.5" width="375" height="38.5"/>
+                                        <rect key="frame" x="0.0" y="150.5" width="375" height="38.5"/>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Board" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="J2c-H8-lV8">
                                                 <rect key="frame" x="0.0" y="0.0" width="90" height="38.5"/>
@@ -1080,14 +1080,14 @@ nplayers.arcadebelgium.be</string>
                                         </subviews>
                                     </stackView>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="sKe-W5-gm8" userLabel="Authenticity">
-                                        <rect key="frame" x="0.0" y="319.5" width="375" height="32"/>
+                                        <rect key="frame" x="0.0" y="309.5" width="375" height="32"/>
                                         <segments>
                                             <segment title="Original"/>
                                             <segment title="Bootleg"/>
                                         </segments>
                                     </segmentedControl>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="i5J-jH-T9Z">
-                                        <rect key="frame" x="0.0" y="476" width="375" height="32"/>
+                                        <rect key="frame" x="0.0" y="461" width="375" height="32"/>
                                         <segments>
                                             <segment title="Working"/>
                                             <segment title="Boots"/>
@@ -1096,7 +1096,7 @@ nplayers.arcadebelgium.be</string>
                                         <color key="tintColor" red="0.099378444254398346" green="0.39114663004875183" blue="0.39385095238685608" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </segmentedControl>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MmD-3M-Wu6">
-                                        <rect key="frame" x="0.0" y="632.5" width="375" height="34.5"/>
+                                        <rect key="frame" x="0.0" y="612.5" width="375" height="34.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" image="list.bullet.below.rectangle" catalog="system" title="Start Repair Log"/>
                                         <connections>
@@ -1133,7 +1133,7 @@ nplayers.arcadebelgium.be</string>
                 <navigationController id="2c5-Tk-1LY" userLabel="Repair Logs" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Repair Logs" image="list.clipboard.fill" catalog="system" id="Poj-zX-rmD"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="kc0-0m-O9s">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <textAttributes key="titleTextAttributes">
@@ -1150,7 +1150,7 @@ nplayers.arcadebelgium.be</string>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="E5f-sm-AvG"/>
+        <segue reference="Kxa-cf-8aS"/>
         <segue reference="YIt-dd-y55"/>
     </inferredMetricsTieBreakers>
     <resources>

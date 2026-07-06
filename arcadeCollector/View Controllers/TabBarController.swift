@@ -24,7 +24,7 @@ class TabBarController: UITabBarController {
         let controllersToTabs = zip(tableControllers, Tab.allCases)
 
         controllersToTabs.forEach { controller, tab in
-            controller.tab = tab
+            controller.collectionTab = tab
         }
     }
 }

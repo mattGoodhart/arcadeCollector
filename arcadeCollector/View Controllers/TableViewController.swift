@@ -70,7 +70,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var gamesList = [Game]()
     var viewedGame: Game!
     var filteredGames: [Game] = []
-    var tab: Tab!
+    var collectionTab: Tab!
 
     var visibleGamesList: [Game] {
         switch (isFiltering, isFilterOptionChosen) {
@@ -245,18 +245,18 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
 
     func refreshDataSource() {
-        gamesList = tab.baseGamesList
+        gamesList = collectionTab.baseGamesList
         createUniqueYearArrayForFilterConditions()
         groups = Dictionary(grouping: visibleGamesList.sorted { $0.title! < $1.title! }, by: { $0.year! })
     }
 
     private func refreshCollectionIfNeeded() {
-        guard tab.shouldRefresh else {
+        guard collectionTab.shouldRefresh else {
             return
         }
 
         let gamesSet = Set(gamesList)
-        let baseGamesSet = Set(tab.baseGamesList)
+        let baseGamesSet = Set(collectionTab.baseGamesList)
         guard gamesSet != baseGamesSet else {
             print("No refresh needed")
             return

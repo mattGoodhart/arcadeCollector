@@ -192,7 +192,7 @@ class RepairLogDetailViewController: UIViewController, StatusSelectionDelegate, 
             viewedGame.videoStatus = Int16(status)
         }
         
-        DispatchQueue.main.async { //ToDo - update minimum iOS version to 13.0 so I can use UIImage(systemName:) orr add images to asset catalog
+        DispatchQueue.main.async { //ToDo - update minimum iOS version to 13.0 so I can use UIImage(systemName:) orr add images to asset catalog. Also need to resize these based on device.
             switch status{
             case 0:
                 let resizedImage = UIImage(named: "whiteLED")?.resizeImage(newSize: CGSize(width: 33, height: 33))
