@@ -16,6 +16,7 @@ struct GameDetailView: View {
     var body: some View {
         List {
             metadataSection
+            hardwareLinkSection
             ownershipSection
             componentStatusSection
             artworkSection
@@ -53,6 +54,16 @@ struct GameDetailView: View {
             LabeledContent("Orientation", value: game.orientation.displayName)
             if !game.genre.isEmpty {
                 LabeledContent("Genre", value: game.genre)
+            }
+        }
+    }
+
+    private var hardwareLinkSection: some View {
+        Section {
+            NavigationLink {
+                HardwareDetailView(game: game)
+            } label: {
+                Label("Hardware", systemImage: "cpu")
             }
         }
     }

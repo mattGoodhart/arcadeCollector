@@ -17,6 +17,8 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
         let year: String
         let genre: String
         let orientation: String
+
+        // Media
         let cabinetImageURL: URL?
         let flyerImageURL: URL?
         let inGameImageURL: URL?
@@ -24,6 +26,13 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
         let titleImageURL: URL?
         let youtubeVideoID: String?
         let shortPlayURL: URL?
+
+        // Hardware / emulation specs
+        let emulationStatus: String
+        let emulatorName: String
+        let inputControls: String
+        let inputButtons: Int?
+        let screenResolution: String
     }
 
     enum Failure: Error, LocalizedError {
@@ -105,6 +114,11 @@ private nonisolated struct ScraperResponse: Decodable {
         let urlImageTitle: String?
         let youtubeVideoID: String?
         let urlVideoShortplay: String?
+        let emulationStatus: String?
+        let emulatorName: String?
+        let inputControls: String?
+        let inputButtons: Int?
+        let screenResolution: String?
 
         enum CodingKeys: String, CodingKey {
             case gameName = "game_name"
@@ -121,6 +135,11 @@ private nonisolated struct ScraperResponse: Decodable {
             case urlImageTitle = "url_image_title"
             case youtubeVideoID = "youtube_video_id"
             case urlVideoShortplay = "url_video_shortplay"
+            case emulationStatus = "status"
+            case emulatorName = "emulator_name"
+            case inputControls = "input_controls"
+            case inputButtons = "input_buttons"
+            case screenResolution = "screen_resolution"
         }
 
         func asMetadata() -> ArcadeDatabaseClient.GameMetadata {
@@ -137,7 +156,12 @@ private nonisolated struct ScraperResponse: Decodable {
                 marqueeImageURL: urlImageMarquee.flatMap(URL.init(string:)),
                 titleImageURL: urlImageTitle.flatMap(URL.init(string:)),
                 youtubeVideoID: youtubeVideoID?.nonEmpty,
-                shortPlayURL: urlVideoShortplay.flatMap(URL.init(string:))
+                shortPlayURL: urlVideoShortplay.flatMap(URL.init(string:)),
+                emulationStatus: emulationStatus ?? "",
+                emulatorName: emulatorName ?? "",
+                inputControls: inputControls ?? "",
+                inputButtons: inputButtons,
+                screenResolution: screenResolution ?? ""
             )
         }
     }

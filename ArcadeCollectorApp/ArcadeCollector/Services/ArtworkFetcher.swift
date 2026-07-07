@@ -51,6 +51,22 @@ actor ArtworkFetcher {
         if game.shortPlayURL == nil, let shortPlay = metadata.shortPlayURL {
             game.shortPlayURL = shortPlay
         }
+        if game.emulationStatus.isEmpty, !metadata.emulationStatus.isEmpty {
+            game.emulationStatus = metadata.emulationStatus
+        }
+        if game.driver.isEmpty, !metadata.emulatorName.isEmpty {
+            // `Game.driver` holds the MAME driver / emulator identifier.
+            game.driver = metadata.emulatorName
+        }
+        if game.inputControls.isEmpty, !metadata.inputControls.isEmpty {
+            game.inputControls = metadata.inputControls
+        }
+        if game.inputButtons.isEmpty, let buttons = metadata.inputButtons {
+            game.inputButtons = String(buttons)
+        }
+        if game.resolution.isEmpty, !metadata.screenResolution.isEmpty {
+            game.resolution = metadata.screenResolution
+        }
 
         for (kind, url) in plan {
             // Best-effort per image — a single 404 (e.g. missing PCB image)

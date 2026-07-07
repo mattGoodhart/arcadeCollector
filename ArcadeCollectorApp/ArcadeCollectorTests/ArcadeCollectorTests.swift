@@ -263,6 +263,30 @@ struct ArtworkFetcherTests {
         let updatedGame = try #require(context.fetch(FetchDescriptor<Game>()).first)
         #expect(updatedGame.manufacturer.contains("Namco"))
         #expect(updatedGame.year == "1980")
+
+        // Hardware specs back-filled
+        #expect(updatedGame.emulationStatus == "GOOD")
+        #expect(!updatedGame.driver.isEmpty, "Expected driver / emulator_name to be back-filled")
+        #expect(updatedGame.inputControls.contains("joystick"))
+        #expect(!updatedGame.resolution.isEmpty, "Expected screen_resolution to be back-filled")
+    }
+}
+
+@Suite("ArcadeDatabaseClient hardware fields")
+struct ArcadeDatabaseHardwareFieldsTests {
+    @Test func metadataIncludesHardwareSpecs() async throws {
+        let client = ArcadeDatabaseClient()
+        let metadata: ArcadeDatabaseClient.GameMetadata
+        do {
+            metadata = try await client.metadata(for: "pacman")
+        } catch {
+            Issue.record("Skipping: live API unreachable — \(error)")
+            return
+        }
+        #expect(metadata.emulationStatus == "GOOD")
+        #expect(metadata.emulatorName.hasPrefix("Mame"))
+        #expect(metadata.inputControls.contains("joystick"))
+        #expect(metadata.screenResolution.contains("Hz"))
     }
 }
 
