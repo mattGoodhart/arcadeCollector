@@ -2,9 +2,14 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## The Two-Project Setup
+## The Two-Workspace Setup
 
-This repo holds **two apps side-by-side** during an incremental UIKit → SwiftUI migration. Always open `ArcadeCollectorApp.xcworkspace` at the repo root — it references all three sub-projects.
+This repo holds **two apps side-by-side** during an incremental UIKit → SwiftUI migration. They live in **separate workspaces** — never combined — because macOS's case-insensitive filesystem otherwise collides `arcadeCollector.app` with `ArcadeCollector.app` in a shared DerivedData Products dir (see Journal.md for the war story).
+
+| Workspace | Contains | Use when |
+|---|---|---|
+| `ArcadeCollectorApp.xcworkspace` | `ArcadeCollectorApp/ArcadeCollector.xcodeproj` (new SwiftUI app) | Building/running/testing the new app |
+| `arcadeCollector.xcworkspace` | Legacy UIKit `arcadeCollector.xcodeproj` + `Pods.xcodeproj` (CocoaPods-managed) | Building/running the legacy UIKit app |
 
 | Location | Project | Purpose |
 |---|---|---|

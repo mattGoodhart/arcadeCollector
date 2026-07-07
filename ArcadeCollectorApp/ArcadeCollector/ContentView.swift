@@ -9,59 +9,73 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @Query(sort: \Game.title) private var games: [Game]
+    @State private var sort: GameSort = .title
+    @State private var filter = GameListFilter()
 
     var body: some View {
         NavigationStack {
-            List(games) { game in
-                NavigationLink(value: game) {
-                    GameRow(game: game)
+            GameListView(sort: sort.descriptor, filter: filter)
+                .navigationTitle("Games")
+                .searchable(text: $filter.search, prompt: "Search title")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        listMenu
+                    }
                 }
-            }
-            .navigationTitle("Games")
-            .navigationDestination(for: Game.self) { game in
-                GameDetailView(game: game)
-            }
-            .overlay {
-                if games.isEmpty {
-                    ContentUnavailableView(
-                        "No Games Yet",
-                        systemImage: "gamecontroller",
-                        description: Text("Seed data has not been loaded.")
-                    )
+                .navigationDestination(for: Game.self) { game in
+                    GameDetailView(game: game)
                 }
-            }
         }
     }
-}
 
-private struct GameRow: View {
-    let game: Game
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: game.functionalCondition.symbolName)
-                .foregroundStyle(game.functionalCondition.color)
-                .accessibilityHidden(true)
-
-            VStack(alignment: .leading) {
-                Text(game.title)
-                    .font(.headline)
-                HStack(spacing: 6) {
-                    Text(game.romSetName)
-                    if !game.year.isEmpty {
-                        Text("·")
-                        Text(game.year)
+    private var listMenu: some View {
+        Menu {
+            Section("Sort by") {
+                Picker(selection: $sort) {
+                    ForEach(GameSort.allCases) { option in
+                        Text(option.displayName).tag(option)
                     }
-                    if !game.manufacturer.isEmpty {
-                        Text("·")
-                        Text(game.manufacturer)
-                            .lineLimit(1)
+                } label: {
+                    Text("Sort")
+                }
+                .pickerStyle(.inline)
+            }
+
+            Section("Ownership") {
+                Picker(selection: $filter.ownership) {
+                    Text("All").tag(OwnershipStatus?.none)
+                    ForEach(OwnershipStatus.allCases) { status in
+                        Text(status.displayName).tag(Optional(status))
+                    }
+                } label: {
+                    Text("Ownership")
+                }
+                .pickerStyle(.inline)
+            }
+
+            Section("Orientation") {
+                Picker(selection: $filter.orientation) {
+                    Text("All").tag(ScreenOrientation?.none)
+                    ForEach(ScreenOrientation.allCases) { value in
+                        Text(value.displayName).tag(Optional(value))
+                    }
+                } label: {
+                    Text("Orientation")
+                }
+                .pickerStyle(.inline)
+            }
+
+            if filter.isActive {
+                Section {
+                    Button("Clear Filters", role: .destructive) {
+                        filter = GameListFilter()
                     }
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
             }
+        } label: {
+            Image(systemName: filter.isActive
+                  ? "line.3.horizontal.decrease.circle.fill"
+                  : "line.3.horizontal.decrease.circle")
         }
     }
 }

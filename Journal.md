@@ -132,6 +132,28 @@ The new project template ships with **default MainActor isolation** enabled at t
 
 **Lesson**: in Swift 6 mode, small helper types used off-main-thread need `nonisolated`. Sendable alone isn't enough — you need the *conformance* to be nonisolated, and `nonisolated` on the type declaration achieves that.
 
+### 2026-07-06 — The Case-Collision Saga (and Why We Have Two Workspaces)
+
+Xcode threw a scary-sounding error on the legacy scheme:
+
+> The project item "arcadeCollector.xcodeproj/Products/arcadeCollector.app" refers to the path "arcadeCollector.app", but the capitalization on disk is "ArcadeCollector.app".
+
+Root cause: `ArcadeCollectorApp.xcworkspace` used to contain **both** projects (legacy + new SwiftUI). Xcode workspaces share one DerivedData Products dir by default. The new app writes `ArcadeCollector.app` (uppercase, from its target name), and the legacy target expects to write `arcadeCollector.app` (lowercase). On APFS's case-insensitive filesystem, these two paths refer to the *same* file — whichever built last set the capitalization on disk, and Xcode's project-item checker screamed when the .pbxproj expectation didn't match.
+
+**Attempt #1 (didn't work)**: Set `CONFIGURATION_BUILD_DIR` on the legacy target to a `Legacy/` subfolder to isolate its Products. Worked for the legacy app bundle itself, but the CocoaPods `[CP] Embed Pods Frameworks` script uses `$BUILT_PRODUCTS_DIR/Charts/Charts.framework` and Pods targets don't inherit our override — the framework was still built to the *standard* location, so the embed script's `install_framework` couldn't find its source. Build died with `source: unbound variable`. Reverted.
+
+**The fix that stuck**: **Give each app its own workspace.**
+- `ArcadeCollectorApp.xcworkspace` → new SwiftUI app only
+- `arcadeCollector.xcworkspace` → legacy UIKit + Pods (CocoaPods-managed, unchanged from before)
+
+Because they never share DerivedData, they can never collide. This also aligns with the CLAUDE.md guidance that legacy stays touched-only-when-necessary — no more accidentally rebuilding it via the new workspace.
+
+**Lesson 1**: On macOS, two build products in the same directory whose names differ only in case are a ticking time bomb. Solve it at the *workspace boundary*, not with build-setting overrides.
+
+**Lesson 2**: CocoaPods' `install_framework` script assumes `BUILT_PRODUCTS_DIR` and `PODS_CONFIGURATION_BUILD_DIR` share a build tree. If you override one and not the other, the script fails silently with an `unbound variable` error deep inside a helper function — very hard to debug from Xcode's summary. Look at the actual `StandardOutputAndStandardError.txt` inside the `.xcresult` bundle for the real message.
+
+**Lesson 3**: `PhaseScriptExecution failed with a nonzero exit code` is Xcode-speak for "some shell script phase died — go read the log yourself." Not helpful. Learn to fish it out of the diagnostics folder.
+
 ### 2026-07-06 — First Real Screen: Game Detail
 
 Built the game detail view — the moment the app crossed from "a list of names" into "an inventory tool." Five sections: Overview (LabeledContent rows), Ownership (segmented `None / Owned / Wanted` picker + PCB toggle), Component Status (6 rows of LED-style pickers with colored SF Symbols), Artwork (placeholder + fetch button), Repair Log (placeholder).

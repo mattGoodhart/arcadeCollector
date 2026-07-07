@@ -116,6 +116,116 @@ struct GameSeederTests {
     }
 }
 
+@Suite("GameListFilter")
+struct GameListFilterTests {
+    private func makeContainer() throws -> ModelContainer {
+        let schema = Schema([
+            Game.self,
+            GameArtwork.self,
+            RepairLog.self,
+            RepairLogPhoto.self,
+            GameCollection.self,
+        ])
+        return try ModelContainer(
+            for: schema,
+            configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+        )
+    }
+
+    private func seed(_ context: ModelContext) throws {
+        let games: [(String, String, ScreenOrientation, OwnershipStatus)] = [
+            ("pacman",   "Pac-Man",              .vertical,   .owned),
+            ("sf2",      "Street Fighter II",    .horizontal, .wanted),
+            ("galaga",   "Galaga",               .vertical,   .none),
+            ("frogger",  "Frogger",              .vertical,   .owned),
+            ("outrun",   "Out Run",              .horizontal, .none),
+        ]
+        for (rom, title, orientation, ownership) in games {
+            context.insert(Game(
+                romSetName: rom,
+                title: title,
+                orientation: orientation,
+                ownership: ownership
+            ))
+        }
+        try context.save()
+    }
+
+    // MARK: - Text search (SwiftData predicate path)
+
+    @Test func emptyFilterReturnsNilSearchPredicateAndInactive() {
+        let filter = GameListFilter()
+        #expect(filter.searchPredicate == nil)
+        #expect(filter.isActive == false)
+        #expect(filter.hasEnumFilters == false)
+    }
+
+    @Test func searchFiltersByTitleCaseInsensitively() async throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        try seed(context)
+
+        var filter = GameListFilter()
+        filter.search = "man"
+        let predicate = try #require(filter.searchPredicate)
+
+        let matches = try context.fetch(FetchDescriptor<Game>(predicate: predicate))
+        #expect(matches.map(\.title).sorted() == ["Pac-Man"])
+    }
+
+    // MARK: - Enum filters (in-memory path)
+
+    @Test func matchesEnumFiltersAllowsEverythingWhenInactive() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        try seed(context)
+
+        let filter = GameListFilter()
+        let games = try context.fetch(FetchDescriptor<Game>())
+        #expect(games.allSatisfy(filter.matchesEnumFilters))
+    }
+
+    @Test func matchesEnumFiltersRespectsOwnership() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        try seed(context)
+
+        var filter = GameListFilter()
+        filter.ownership = .owned
+
+        let games = try context.fetch(FetchDescriptor<Game>())
+        let filtered = games.filter(filter.matchesEnumFilters)
+        #expect(Set(filtered.map(\.romSetName)) == ["pacman", "frogger"])
+    }
+
+    @Test func matchesEnumFiltersCombinesOwnershipAndOrientation() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        try seed(context)
+
+        var filter = GameListFilter()
+        filter.ownership = .owned
+        filter.orientation = .vertical
+
+        let games = try context.fetch(FetchDescriptor<Game>())
+        let filtered = games.filter(filter.matchesEnumFilters)
+        #expect(Set(filtered.map(\.romSetName)) == ["pacman", "frogger"])
+    }
+
+    @Test func matchesEnumFiltersOrientationOnly() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        try seed(context)
+
+        var filter = GameListFilter()
+        filter.orientation = .horizontal
+
+        let games = try context.fetch(FetchDescriptor<Game>())
+        let filtered = games.filter(filter.matchesEnumFilters)
+        #expect(Set(filtered.map(\.romSetName)) == ["sf2", "outrun"])
+    }
+}
+
 @Suite("ArtworkFetcher")
 struct ArtworkFetcherTests {
     @Test func fetchesAndPersistsArtworkForPacman() async throws {
