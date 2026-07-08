@@ -56,11 +56,27 @@ struct GameRow: View {
     let game: Game
     var isDarkRow = false
 
+    private var iconImage: UIImage? {
+        NSDataAsset(name: "icons/\(game.romSetName)")
+            .flatMap { UIImage(data: $0.data) }
+    }
+
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: game.functionalCondition.symbolName)
-                .foregroundStyle(game.functionalCondition.color)
-                .accessibilityHidden(true)
+            Group {
+                if let iconImage {
+                    Image(uiImage: iconImage)
+                        .resizable()
+                        .interpolation(.high)
+                } else {
+                    Image("space-invaders-placeholder")
+                        .resizable()
+                }
+            }
+            .scaledToFit()
+            .frame(width: 32, height: 32)
+            .clipShape(RoundedRectangle(cornerRadius: 4))
+            .accessibilityHidden(true)
 
             VStack(alignment: .leading) {
                 Text(game.title)
