@@ -12,6 +12,7 @@ struct GameDetailView: View {
 
     @State private var isFetchingArtwork = false
     @State private var fetchError: Error?
+    @State private var selectedArtwork: GameArtwork?
 
     var body: some View {
         List {
@@ -38,6 +39,11 @@ struct GameDetailView: View {
         } message: {
             if let fetchError {
                 Text(fetchError.localizedDescription)
+            }
+        }
+        .fullScreenCover(item: $selectedArtwork) { art in
+            if let uiImage = art.imageData.flatMap(UIImage.init(data:)) {
+                ZoomableImageView(image: uiImage, title: art.kind.displayName)
             }
         }
     }
@@ -101,12 +107,17 @@ struct GameDetailView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(alignment: .top, spacing: 12) {
                         ForEach(sortedArtwork) { art in
-                            VStack(spacing: 4) {
-                                ArtworkThumbnailView(artwork: art)
-                                Text(art.kind.displayName)
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                            Button {
+                                selectedArtwork = art
+                            } label: {
+                                VStack(spacing: 4) {
+                                    ArtworkThumbnailView(artwork: art)
+                                    Text(art.kind.displayName)
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
+                            .buttonStyle(.plain)
                         }
                     }
                     .padding(.vertical, 4)

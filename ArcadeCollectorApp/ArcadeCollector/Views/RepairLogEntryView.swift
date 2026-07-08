@@ -11,6 +11,7 @@ struct RepairLogEntryView: View {
     @Bindable var log: RepairLog
     @Environment(\.modelContext) private var modelContext
     @State private var selectedPhotos: [PhotosPickerItem] = []
+    @State private var zoomedPhoto: RepairLogPhoto?
 
     private var sortedPhotos: [RepairLogPhoto] {
         log.photos.sorted { $0.order < $1.order }
@@ -38,16 +39,21 @@ struct RepairLogEntryView: View {
                         HStack(spacing: 12) {
                             ForEach(sortedPhotos) { photo in
                                 if let data = photo.imageData, let uiImage = UIImage(data: data) {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 100, height: 100)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        .contextMenu {
-                                            Button("Delete Photo", role: .destructive) {
-                                                deletePhoto(photo)
-                                            }
+                                    Button {
+                                        zoomedPhoto = photo
+                                    } label: {
+                                        Image(uiImage: uiImage)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 100, height: 100)
+                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    }
+                                    .buttonStyle(.plain)
+                                    .contextMenu {
+                                        Button("Delete Photo", role: .destructive) {
+                                            deletePhoto(photo)
                                         }
+                                    }
                                 }
                             }
                         }
@@ -73,6 +79,11 @@ struct RepairLogEntryView: View {
         .toolbarBackground(Color.arcadeToolbar, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
+        .fullScreenCover(item: $zoomedPhoto) { photo in
+            if let uiImage = photo.imageData.flatMap(UIImage.init(data:)) {
+                ZoomableImageView(image: uiImage, title: "Photo")
+            }
+        }
     }
 
     private func loadPhotos() async {
