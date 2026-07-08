@@ -22,20 +22,61 @@ struct GameListView: View {
         self.mode = filter.mode
     }
 
+    private struct YearGroup: Identifiable {
+        let year: String
+        let games: [Game]
+        let startIndex: Int
+        var id: String { year }
+    }
+
+    private func groupedByYear(_ games: [Game]) -> [YearGroup] {
+        let dict = Dictionary(grouping: games) { $0.year.isEmpty ? "Unknown" : $0.year }
+        let sorted = dict.sorted { $0.key < $1.key }
+        var groups: [YearGroup] = []
+        var running = 0
+        for (year, yearGames) in sorted {
+            groups.append(YearGroup(year: year, games: yearGames, startIndex: running))
+            running += yearGames.count
+        }
+        return groups
+    }
+
     var body: some View {
         let visible = filter.hasEnumFilters
             ? games.filter(filter.matchesEnumFilters)
             : games
 
-        List {
-            ForEach(Array(visible.enumerated()), id: \.element.id) { index, game in
-                NavigationLink(value: game) {
-                    GameRow(game: game, isDarkRow: !index.isMultiple(of: 2))
+        let groups = groupedByYear(visible)
+
+        ScrollViewReader { proxy in
+            ZStack(alignment: .trailing) {
+                List {
+                    ForEach(groups) { group in
+                        Section {
+                            ForEach(Array(group.games.enumerated()), id: \.element.id) { localIndex, game in
+                                let globalIndex = group.startIndex + localIndex
+                                NavigationLink(value: game) {
+                                    GameRow(game: game, isDarkRow: !globalIndex.isMultiple(of: 2))
+                                }
+                                .listRowBackground(globalIndex.isMultiple(of: 2) ? Color.arcadeRowEven : Color.arcadeRowOdd)
+                            }
+                        } header: {
+                            Text(group.year)
+                                .font(.subheadline.bold())
+                                .foregroundStyle(Color.arcadeRowOdd)
+                        }
+                        .id(group.year)
+                    }
                 }
-                .listRowBackground(index.isMultiple(of: 2) ? Color.arcadeRowEven : Color.arcadeRowOdd)
+                .listStyle(.plain)
+
+                if groups.count > 1 {
+                    SectionIndexOverlay(sections: groups.map(\.year)) { year in
+                        proxy.scrollTo(year, anchor: .top)
+                    }
+                }
             }
         }
-        .listStyle(.plain)
         .overlay {
             if visible.isEmpty {
                 if !filter.search.isEmpty {
@@ -51,6 +92,48 @@ struct GameListView: View {
         }
     }
 }
+
+// MARK: - Section Index
+
+private struct SectionIndexOverlay: View {
+    let sections: [String]
+    let onSelect: (String) -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ForEach(sections, id: \.self) { section in
+                indexLabel(for: section)
+            }
+        }
+        .frame(width: 18)
+        .padding(.vertical, 4)
+        .background(Color.arcadeRowOdd.opacity(0.85), in: RoundedRectangle(cornerRadius: 6))
+        .padding(.trailing, 2)
+        .contentShape(Rectangle())
+        .gesture(dragGesture)
+        .accessibilityHidden(true)
+    }
+
+    private func indexLabel(for section: String) -> some View {
+        let label = section.count >= 4 ? String(section.suffix(2)) : String(section.prefix(2))
+        return Text(label)
+            .font(.system(size: 9, weight: .semibold, design: .rounded))
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var dragGesture: some Gesture {
+        DragGesture(minimumDistance: 0, coordinateSpace: .local)
+            .onChanged { value in
+                let screenHeight = UIScreen.main.bounds.height * 0.7
+                let index = Int(value.location.y / screenHeight * CGFloat(sections.count))
+                let clamped = max(0, min(sections.count - 1, index))
+                onSelect(sections[clamped])
+            }
+    }
+}
+
+// MARK: - Game Row
 
 struct GameRow: View {
     let game: Game
