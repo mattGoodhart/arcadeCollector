@@ -14,15 +14,12 @@ struct GameDetailView: View {
     @State private var fetchError: Error?
     @State private var selectedArtwork: GameArtwork?
 
-    @Query(sort: \GameCollection.sortOrder) private var allCollections: [GameCollection]
-
     var body: some View {
         List {
             metadataSection
             hardwareLinkSection
             ownershipSection
             componentStatusSection
-            collectionsSection
             artworkSection
             repairLogSection
         }
@@ -101,31 +98,6 @@ struct GameDetailView: View {
             StatusPickerRow(label: "Video",         selection: $game.videoStatus)
             StatusPickerRow(label: "Controls",      selection: $game.controlsStatus)
             StatusPickerRow(label: "Extended Play", selection: $game.extendedPlayStatus)
-        }
-    }
-
-    private var collectionsSection: some View {
-        Section("Collections") {
-            if allCollections.isEmpty {
-                Text("No collections yet")
-                    .foregroundStyle(.secondary)
-            } else {
-                ForEach(allCollections) { collection in
-                    Toggle(
-                        collection.name,
-                        isOn: Binding(
-                            get: { game.collections.contains(where: { $0.id == collection.id }) },
-                            set: { included in
-                                if included {
-                                    collection.games.append(game)
-                                } else {
-                                    collection.games.removeAll { $0.id == game.id }
-                                }
-                            }
-                        )
-                    )
-                }
-            }
         }
     }
 
