@@ -11,6 +11,7 @@ import SwiftData
 struct ContentView: View {
     @State private var sort: GameSort = .title
     @State private var filter = GameListFilter()
+    @State private var showingAbout = false
 
     var body: some View {
         NavigationStack {
@@ -18,8 +19,25 @@ struct ContentView: View {
                 .navigationTitle("Games")
                 .searchable(text: $filter.search, prompt: "Search title")
                 .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            showingAbout = true
+                        } label: {
+                            Image(systemName: "info.circle")
+                        }
+                    }
                     ToolbarItem(placement: .topBarTrailing) {
                         listMenu
+                    }
+                }
+                .sheet(isPresented: $showingAbout) {
+                    NavigationStack {
+                        AboutView()
+                            .toolbar {
+                                ToolbarItem(placement: .confirmationAction) {
+                                    Button("Done") { showingAbout = false }
+                                }
+                            }
                     }
                 }
                 .navigationDestination(for: Game.self) { game in
