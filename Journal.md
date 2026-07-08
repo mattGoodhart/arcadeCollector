@@ -66,7 +66,7 @@ arcadeCollector/                     # Legacy UIKit app — treat as read-only-i
 ArcadeCollectorApp/                  # New SwiftUI app — active development
 └── ArcadeCollector/
     ├── ArcadeCollectorApp.swift     # @main, ModelContainer, seed trigger
-    ├── ContentView.swift            # Root list of games
+    ├── ContentView.swift            # TabView root: Summary, All Games, My Collection, Wanted, Repair Logs
     ├── Models/                      # All @Model classes and enums
     │   ├── Game.swift
     │   ├── GameArtwork.swift
@@ -74,7 +74,21 @@ ArcadeCollectorApp/                  # New SwiftUI app — active development
     │   ├── GameEnums.swift          # ComponentStatus, ScreenOrientation, etc.
     │   ├── RepairLog.swift
     │   └── RepairLogPhoto.swift
+    ├── Views/
+    │   ├── AboutView.swift          # Data-source credits with banner images
+    │   ├── GameDetailView.swift     # Full game detail: metadata, ownership, status, artwork, repair log
+    │   ├── GameListFilter.swift     # GameListMode, GameSort, GameListFilter predicate/enum filtering
+    │   ├── GameListTab.swift        # Per-tab wrapper: NavigationStack, sort/filter, search, toolbar
+    │   ├── GameListView.swift       # Year-grouped list with section index, alternating rows, game icons
+    │   ├── HardwareDetailView.swift # API-driven hardware specs sheet
+    │   ├── RepairLogEntryView.swift # Edit entry: date, notes, PhotosPicker for photos
+    │   ├── RepairLogListView.swift  # Repair entries for a game, add/delete
+    │   ├── SummaryView.swift        # Collection stats, donut chart, component status bars
+    │   ├── Theme.swift              # Color palette extensions (arcadeRowEven/Odd, arcadeToolbar, etc.)
+    │   └── ZoomableImageView.swift  # Full-screen pinch-to-zoom image viewer
     ├── Services/
+    │   ├── ArcadeDatabaseClient.swift # API client for adb.arcadeitalia.net
+    │   ├── ArtworkFetcher.swift     # @ModelActor: downloads artwork, back-fills metadata
     │   └── GameSeeder.swift         # @ModelActor for first-launch seeding
     └── Resources/
         └── ScrollingData.json       # Copy of the legacy seed, bundled
@@ -195,6 +209,97 @@ The bundle-resource test failed on first run — I'd been claiming "~5,500 games
 Needed to bundle `ScrollingData.json` (~760KB) as a resource. Old Xcode workflow: drag file into project navigator, tick the target box, hope it landed in "Copy Bundle Resources". New Xcode 26 default: **PBXFileSystemSynchronizedRootGroup**. Any file placed in the source folder tree is auto-detected during build. I `cp`'d the file into `Resources/`, built the project, and the JSON was already in `ArcadeCollector.app`. No project.pbxproj edits, no build-phase adjustments.
 
 **Lesson**: don't fight modern Xcode's synced groups. If the file's in the folder, it's in the build.
+
+### 2026-07-07 — About View and the Legacy Color Scheme
+
+Built the About view — a scrolling list of data-source credits with banner images (Arcade Database, MAME, Progetto-SNAPS, Gaming-History, World of Longplays, MAME Icons, NPlayers). Each row links out to the source's website. The banners were already in the legacy asset catalog, so we copied them into the new app's `Assets.xcassets/About Banners/` folder.
+
+Then came the color scheme pass. The legacy app has a very distinctive teal/green palette — alternating sage green (`0.45, 0.62, 0.50`) and dark teal (`0.098, 0.392, 0.392`) table rows, a deep teal accent (`0.099, 0.391, 0.394`), and green-tinted nav bars. Ported it all:
+
+- **AccentColor.colorset** set to the legacy deep teal, with a brighter variant for dark mode.
+- **Toolbar backgrounds** use `.toolbarBackground(Color.arcadeToolbar)` + `.toolbarColorScheme(.dark)` for white-on-green nav bars across every view.
+- **Alternating row colors** in the game list via `.listRowBackground()`, with `isDarkRow` passed down to `GameRow` so text flips to white on the dark teal rows.
+- **Theme.swift** centralizes the palette as `Color` extensions.
+
+**Design call**: the legacy app was light-mode only. For the new app, we added a brighter dark-mode accent color but kept the row colors the same in both modes. The teal-on-teal look is the app's identity — it should feel like the same app regardless of system appearance.
+
+### 2026-07-07 — Repair Log CRUD
+
+The model layer (`RepairLog`, `RepairLogPhoto`) had been defined since day one but had no UI. Built two views:
+
+- **RepairLogListView** — shows all entries for a game sorted newest-first, swipe-to-delete, plus button to create. Empty state uses `ContentUnavailableView` with a wrench icon.
+- **RepairLogEntryView** — `Form` with editable date picker, multi-line `TextEditor` for notes, and a `PhotosPicker` for attaching images. Photos show as a horizontal scroll of 100×100 thumbnails with long-press context menu to delete.
+
+All edits are live via `@Bindable` on the `RepairLog` — SwiftData's implicit auto-save means no manual save button. The `Game.lastRepairLogDate` timestamp is kept in sync on add/delete/date-change so the Repair Logs tab can filter without traversing relationships.
+
+**Why `PhotosPicker` over camera**: `UIImagePickerController` with `.camera` source requires a `UIViewControllerRepresentable` bridge and camera permission handling. `PhotosPicker` is pure SwiftUI, supports multi-select, and covers the 90% case. Camera capture can come later as an enhancement.
+
+### 2026-07-07 — Tab-Based Navigation
+
+The legacy app uses a `UITabBarController` with five tabs: Summary, My Collection, All Games, Wanted Games, Repair Logs. Each tab is a `TableViewController` instance with a `collectionTab` enum that determines its data source.
+
+For the new app, the challenge was: how do you reuse the same list view across tabs that differ only in their filter? The solution: a `GameListMode` enum (`.allGames`, `.myCollection`, `.wanted`, `.repairLogs`) and a `GameListTab` view that wraps `GameListView` with its own `NavigationStack`, sort/filter state, and About sheet. Each tab is independent — its own navigation stack, its own search bar, its own filter state.
+
+The mode drives three things:
+1. **Filtering** — `GameListFilter.matchesEnumFilters` checks the mode first (e.g., `.myCollection` requires `ownership == .owned`), then applies user-selected filters on top.
+2. **Menu visibility** — the Ownership picker is hidden on tabs where it's redundant.
+3. **Empty state** — each mode has its own title and description ("Mark games as Owned to add them here").
+
+**Why not a single list with tab-bar-driven filter?** Independent `NavigationStack`s per tab means navigating into a game detail on one tab doesn't blow away your scroll position on another. This is the iOS convention and users expect it.
+
+### 2026-07-08 — Summary Tab with Swift Charts
+
+Added the Summary tab — the legacy app's first tab, which showed a pie chart of board conditions and a wanted-games count. The new version uses Apple's **Swift Charts** framework (no more CocoaPods `Charts` dependency):
+
+- **Collection counts section** — stat rows for total games, owned, wanted, in repair, boards owned.
+- **Board condition chart** — `SectorMark` donut chart with Working/Issues/Broken/Untested segments. Count annotations overlay each slice, custom legend at the bottom.
+- **Component status breakdown** — horizontal stacked bars for boot/audio/video/controls/extended-play across owned games, each bar color-coded by `ComponentStatus`.
+
+Hit one build hiccup: `import Charts` initially caused a linker error because stale DerivedData from the legacy workspace's CocoaPods `Charts` framework was confusing the linker. A clean build resolved it — the system Swift Charts framework auto-links fine.
+
+**Lesson**: when two workspaces in the same repo both use something called "Charts" (one CocoaPods, one system framework), stale DerivedData can cross-contaminate. Clean builds are cheap insurance.
+
+### 2026-07-08 — Zoomable Image Viewer
+
+The legacy app has a `ZoomableImageViewController` backed by a `UIScrollView` with `minimumZoomScale = 1.0` and `maximumZoomScale = 5.0`. Built the SwiftUI equivalent as `ZoomableImageView`:
+
+- **Pinch-to-zoom** via `MagnifyGesture`, clamped 1×–5×.
+- **Drag-to-pan** via simultaneous `DragGesture`, only active when zoomed past 1×.
+- **Double-tap** toggles between 1× and 3×.
+- Black background with a dark translucent toolbar.
+- Presented as `.fullScreenCover` from both artwork thumbnails (GameDetailView) and repair log photos (RepairLogEntryView).
+
+**Why `MagnifyGesture` + `DragGesture` instead of wrapping `UIScrollView`?** Fewer lines, no `UIViewRepresentable` boilerplate, and the gesture composition API handles the simultaneous pinch+drag case cleanly. The tradeoff: `UIScrollView` has bounce physics and content-inset handling built in. For a simple image viewer, the SwiftUI gestures are good enough.
+
+### 2026-07-08 — Collections: Built, Then Removed
+
+Built a full Collections UI — `CollectionsListView` (create/rename/delete collections), `CollectionDetailView` (view games, swipe to remove), and a toggles section in `GameDetailView` for managing collection membership. Added a Collections tab.
+
+With six tabs, iOS pushed the last one into a "More" ellipsis menu — not great for discoverability. More importantly, the `GameCollection` model was designed for *user-authored groupings*, but the primary use case ("My Collection") was already handled by the `ownership == .owned` filter on the My Collection tab.
+
+**Removed the tab and all three view files.** The `GameCollection` model stays in the schema (removing it would require a migration), but nothing references it in the UI. If users later need custom groupings ("games to bring to the meetup"), we can resurface it without a schema change.
+
+**Lesson**: building something end-to-end before deciding to cut it is a valid design process. The ten minutes of code taught us that the tab bar was already at capacity and that the model's design was sound even if the UI wasn't needed yet.
+
+### 2026-07-08 — Game Icons from the Legacy Asset Catalog
+
+The legacy app's game list shows a small icon for each game, loaded from `NSDataAsset(name: "icons/\(romSetName)")` — 3,762 `.ico` files bundled as data assets. Copied the entire `icons/` folder (31MB) plus the `space-invaders-placeholder.imageset` fallback into the new app's asset catalog.
+
+Updated `GameRow` to load the icon via `NSDataAsset` and render it as a 32×32 rounded thumbnail, falling back to the Space Invaders placeholder when no matching icon exists. This replaced the `ComponentStatus` circle that was previously the leading element in each row.
+
+**Why `NSDataAsset` instead of `UIImage(named:)`?** The icons are `.ico` files, not standard image assets. Xcode's asset catalog stores them as **data assets** (`.dataset`), not image sets (`.imageset`). `NSDataAsset` reads the raw bytes, then `UIImage(data:)` decodes the ICO format. `UIImage(named:)` would look for an imageset and find nothing.
+
+### 2026-07-08 — Year-Grouped Sections with Section Index
+
+The legacy app groups games by year with section headers and a right-side alphabetical index for fast scrubbing — critical UX for navigating 4,166 games. SwiftUI's `List` with `.listStyle(.plain)` doesn't provide an automatic section index like UIKit's `sectionIndexTitles(for:)`, so we built one.
+
+The implementation groups visible games into `YearGroup` structs (year string + games array + starting global index for alternating row colors), renders them as `Section` views with bold year headers, and overlays a custom `SectionIndexOverlay` on the trailing edge. The overlay is a `VStack` of 2-digit year labels inside a dark teal pill; dragging along it computes which section the finger is over and calls `ScrollViewReader.scrollTo()`.
+
+**Global row index tracking**: alternating row colors need to continue across section boundaries (row 0 = sage green, row 1 = dark teal, regardless of which year section they're in). Each `YearGroup` stores its `startIndex` — the sum of all games in preceding groups — and the local `ForEach` index is added to it.
+
+**Compiler type-check timeout**: the first draft of `SectionIndexOverlay.body` was a single expression with inline gesture handling and conditional text formatting. Swift's type checker gave up. Breaking `indexLabel(for:)` and `dragGesture` into separate computed properties fixed it instantly.
+
+**Lesson**: when SwiftUI gives "unable to type-check this expression in reasonable time," the fix is almost always to extract sub-expressions into named properties or methods. The compiler's exponential type inference doesn't scale past ~3 levels of generic nesting.
 
 ---
 
