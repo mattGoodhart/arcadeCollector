@@ -6,6 +6,50 @@
 import Foundation
 import SwiftData
 
+enum GameListMode: Hashable {
+    case allGames, myCollection, wanted, repairLogs
+
+    var title: String {
+        switch self {
+        case .allGames:     return "All Games"
+        case .myCollection: return "My Collection"
+        case .wanted:       return "Wanted"
+        case .repairLogs:   return "Repair Logs"
+        }
+    }
+
+    var tabIcon: String {
+        switch self {
+        case .allGames:     return "list.bullet"
+        case .myCollection: return "star.circle"
+        case .wanted:       return "heart.circle"
+        case .repairLogs:   return "list.clipboard"
+        }
+    }
+
+    var emptyTitle: String {
+        switch self {
+        case .allGames:     return "No Games"
+        case .myCollection: return "No Games in Collection"
+        case .wanted:       return "No Wanted Games"
+        case .repairLogs:   return "No Repair Logs"
+        }
+    }
+
+    var emptyDescription: String {
+        switch self {
+        case .allGames:     return "Games will appear here once seeded."
+        case .myCollection: return "Mark games as Owned to add them here."
+        case .wanted:       return "Mark games as Wanted to add them here."
+        case .repairLogs:   return "Games with repair entries will appear here."
+        }
+    }
+
+    var showsOwnershipFilter: Bool {
+        self == .allGames
+    }
+}
+
 /// Sort options exposed in the games list toolbar.
 enum GameSort: String, CaseIterable, Identifiable {
     case title
@@ -56,8 +100,10 @@ struct GameListFilter: Equatable {
     }
 
     var hasEnumFilters: Bool {
-        ownership != nil || orientation != nil
+        ownership != nil || orientation != nil || mode != .allGames
     }
+
+    var mode: GameListMode = .allGames
 
     /// SwiftData-friendly predicate covering the text-search portion.
     /// Returns nil when the search field is empty, letting SwiftData skip
@@ -70,9 +116,18 @@ struct GameListFilter: Equatable {
         }
     }
 
-    /// Post-fetch filter for enum-typed properties.
+    /// Post-fetch filter for enum-typed properties and tab mode.
     func matchesEnumFilters(_ game: Game) -> Bool {
-        if let ownership, game.ownership != ownership { return false }
+        switch mode {
+        case .myCollection:
+            if game.ownership != .owned { return false }
+        case .wanted:
+            if game.ownership != .wanted { return false }
+        case .repairLogs:
+            if game.lastRepairLogDate == nil { return false }
+        case .allGames:
+            if let ownership, game.ownership != ownership { return false }
+        }
         if let orientation, game.orientation != orientation { return false }
         return true
     }

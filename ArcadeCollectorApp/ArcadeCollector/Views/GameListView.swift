@@ -14,10 +14,12 @@ import SwiftData
 struct GameListView: View {
     @Query private var games: [Game]
     private let filter: GameListFilter
+    private let mode: GameListMode
 
     init(sort: SortDescriptor<Game>, filter: GameListFilter) {
         self._games = Query(filter: filter.searchPredicate, sort: [sort])
         self.filter = filter
+        self.mode = filter.mode
     }
 
     var body: some View {
@@ -36,7 +38,15 @@ struct GameListView: View {
         .listStyle(.plain)
         .overlay {
             if visible.isEmpty {
-                ContentUnavailableView.search
+                if !filter.search.isEmpty {
+                    ContentUnavailableView.search
+                } else {
+                    ContentUnavailableView(
+                        mode.emptyTitle,
+                        systemImage: mode.tabIcon,
+                        description: Text(mode.emptyDescription)
+                    )
+                }
             }
         }
     }
