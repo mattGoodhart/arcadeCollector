@@ -11,6 +11,9 @@ import SwiftData
 struct ContentView: View {
     var body: some View {
         TabView {
+            SummaryView()
+                .tabItem { Label("Summary", systemImage: "chart.pie") }
+
             GameListTab(mode: .allGames)
                 .tabItem { Label("All Games", systemImage: "list.bullet") }
 
