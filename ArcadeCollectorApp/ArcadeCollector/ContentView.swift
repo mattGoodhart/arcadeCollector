@@ -30,6 +30,9 @@ struct ContentView: View {
                         listMenu
                     }
                 }
+                .toolbarBackground(Color.arcadeToolbar, for: .navigationBar)
+                .toolbarBackground(.visible, for: .navigationBar)
+                .toolbarColorScheme(.dark, for: .navigationBar)
                 .sheet(isPresented: $showingAbout) {
                     NavigationStack {
                         AboutView()
@@ -38,6 +41,9 @@ struct ContentView: View {
                                     Button("Done") { showingAbout = false }
                                 }
                             }
+                            .toolbarBackground(Color.arcadeToolbar, for: .navigationBar)
+                            .toolbarBackground(.visible, for: .navigationBar)
+                            .toolbarColorScheme(.dark, for: .navigationBar)
                     }
                 }
                 .navigationDestination(for: Game.self) { game in

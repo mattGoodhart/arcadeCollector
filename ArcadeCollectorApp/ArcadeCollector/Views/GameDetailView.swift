@@ -24,6 +24,9 @@ struct GameDetailView: View {
         }
         .navigationTitle(game.title)
         .navigationBarTitleDisplayMode(.large)
+        .toolbarBackground(Color.arcadeToolbar, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .alert(
             "Couldn't fetch artwork",
             isPresented: Binding(

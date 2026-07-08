@@ -31,6 +31,9 @@ struct HardwareDetailView: View {
         }
         .navigationTitle("Hardware")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.arcadeToolbar, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
     }
 
     // MARK: Sections

@@ -14,6 +14,8 @@ struct AboutView: View {
         }
         .navigationTitle("About")
         .navigationBarTitleDisplayMode(.inline)
+        .scrollContentBackground(.hidden)
+        .background(Color.arcadeAboutBackground)
     }
 
     private var appSection: some View {

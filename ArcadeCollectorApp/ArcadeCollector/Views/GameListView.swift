@@ -25,11 +25,15 @@ struct GameListView: View {
             ? games.filter(filter.matchesEnumFilters)
             : games
 
-        List(visible) { game in
-            NavigationLink(value: game) {
-                GameRow(game: game)
+        List {
+            ForEach(Array(visible.enumerated()), id: \.element.id) { index, game in
+                NavigationLink(value: game) {
+                    GameRow(game: game, isDarkRow: !index.isMultiple(of: 2))
+                }
+                .listRowBackground(index.isMultiple(of: 2) ? Color.arcadeRowEven : Color.arcadeRowOdd)
             }
         }
+        .listStyle(.plain)
         .overlay {
             if visible.isEmpty {
                 ContentUnavailableView.search
@@ -40,6 +44,7 @@ struct GameListView: View {
 
 struct GameRow: View {
     let game: Game
+    var isDarkRow = false
 
     var body: some View {
         HStack(spacing: 12) {
@@ -50,6 +55,7 @@ struct GameRow: View {
             VStack(alignment: .leading) {
                 Text(game.title)
                     .font(.headline)
+                    .foregroundStyle(isDarkRow ? .white : .primary)
                 HStack(spacing: 6) {
                     Text(game.romSetName)
                     if !game.year.isEmpty {
@@ -63,7 +69,7 @@ struct GameRow: View {
                     }
                 }
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(isDarkRow ? Color.white.opacity(0.7) : .secondary)
             }
         }
     }
