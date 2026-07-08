@@ -25,6 +25,11 @@ struct ContentView: View {
 
             GameListTab(mode: .repairLogs)
                 .tabItem { Label("Repair Logs", systemImage: "list.clipboard") }
+
+            NavigationStack {
+                CollectionsListView()
+            }
+            .tabItem { Label("Collections", systemImage: "folder") }
         }
         .tint(.accentColor)
     }
