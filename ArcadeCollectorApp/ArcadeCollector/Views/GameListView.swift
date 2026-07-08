@@ -99,6 +99,8 @@ private struct SectionIndexOverlay: View {
     let sections: [String]
     let onSelect: (String) -> Void
 
+    @State private var overlayHeight: CGFloat = 1
+
     var body: some View {
         VStack(spacing: 0) {
             ForEach(sections, id: \.self) { section in
@@ -107,7 +109,14 @@ private struct SectionIndexOverlay: View {
         }
         .frame(width: 18)
         .padding(.vertical, 4)
-        .background(Color.arcadeRowOdd.opacity(0.85), in: RoundedRectangle(cornerRadius: 6))
+        .background {
+            GeometryReader { geo in
+                Color.arcadeRowOdd.opacity(0.85)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .onAppear { overlayHeight = geo.size.height }
+                    .onChange(of: geo.size.height) { _, h in overlayHeight = h }
+            }
+        }
         .padding(.trailing, 2)
         .contentShape(Rectangle())
         .gesture(dragGesture)
@@ -125,8 +134,7 @@ private struct SectionIndexOverlay: View {
     private var dragGesture: some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .local)
             .onChanged { value in
-                let screenHeight = UIScreen.main.bounds.height * 0.7
-                let index = Int(value.location.y / screenHeight * CGFloat(sections.count))
+                let index = Int(value.location.y / overlayHeight * CGFloat(sections.count))
                 let clamped = max(0, min(sections.count - 1, index))
                 onSelect(sections[clamped])
             }

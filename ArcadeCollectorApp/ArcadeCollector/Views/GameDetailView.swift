@@ -18,6 +18,9 @@ struct GameDetailView: View {
         List {
             metadataSection
             hardwareLinkSection
+            if hasExternalLinks {
+                externalLinksSection
+            }
             ownershipSection
             componentStatusSection
             artworkSection
@@ -73,6 +76,38 @@ struct GameDetailView: View {
                 HardwareDetailView(game: game)
             } label: {
                 Label("Hardware", systemImage: "cpu")
+            }
+        }
+    }
+
+    @Environment(\.openURL) private var openURL
+
+    private var hasExternalLinks: Bool {
+        !game.youtubeVideoID.isEmpty || game.shortPlayURL != nil || game.manualURL != nil
+    }
+
+    private var externalLinksSection: some View {
+        Section("Links") {
+            if !game.youtubeVideoID.isEmpty {
+                Button {
+                    openURL(URL(string: "https://www.youtube.com/watch?v=\(game.youtubeVideoID)")!)
+                } label: {
+                    Label("YouTube Gameplay", systemImage: "play.rectangle")
+                }
+            }
+            if let shortPlayURL = game.shortPlayURL {
+                Button {
+                    openURL(shortPlayURL)
+                } label: {
+                    Label("Short Play", systemImage: "arcade.stick")
+                }
+            }
+            if let manualURL = game.manualURL {
+                Button {
+                    openURL(manualURL)
+                } label: {
+                    Label("Manual", systemImage: "book")
+                }
             }
         }
     }
