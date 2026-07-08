@@ -16,6 +16,7 @@ struct GameDetailView: View {
     var body: some View {
         List {
             metadataSection
+            hardwareLinkSection
             ownershipSection
             componentStatusSection
             artworkSection
@@ -23,6 +24,9 @@ struct GameDetailView: View {
         }
         .navigationTitle(game.title)
         .navigationBarTitleDisplayMode(.large)
+        .toolbarBackground(Color.arcadeToolbar, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .alert(
             "Couldn't fetch artwork",
             isPresented: Binding(
@@ -53,6 +57,16 @@ struct GameDetailView: View {
             LabeledContent("Orientation", value: game.orientation.displayName)
             if !game.genre.isEmpty {
                 LabeledContent("Genre", value: game.genre)
+            }
+        }
+    }
+
+    private var hardwareLinkSection: some View {
+        Section {
+            NavigationLink {
+                HardwareDetailView(game: game)
+            } label: {
+                Label("Hardware", systemImage: "cpu")
             }
         }
     }
@@ -123,11 +137,18 @@ struct GameDetailView: View {
 
     private var repairLogSection: some View {
         Section("Repair Log") {
-            if game.repairLogs.isEmpty {
-                Text("No repair entries yet")
-                    .foregroundStyle(.secondary)
-            } else {
-                Text("\(game.repairLogs.count) entries")
+            NavigationLink {
+                RepairLogListView(game: game)
+            } label: {
+                HStack {
+                    Label("Entries", systemImage: "wrench.and.screwdriver")
+                    Spacer()
+                    Text("\(game.repairLogs.count)")
+                        .foregroundStyle(.secondary)
+                }
+            }
+            if let lastDate = game.lastRepairLogDate {
+                LabeledContent("Last Entry", value: lastDate, format: .dateTime.month(.abbreviated).day().year())
             }
         }
     }
