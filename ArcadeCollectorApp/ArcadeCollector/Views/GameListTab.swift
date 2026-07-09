@@ -12,11 +12,11 @@ struct GameListTab: View {
     @State private var filter = GameListFilter()
     @State private var showingAbout = false
 
+    private var showsSearch: Bool { mode == .allGames }
+
     var body: some View {
         NavigationStack {
-            GameListView(sort: sort.descriptor, filter: activeFilter)
-                .navigationTitle(mode.title)
-                .searchable(text: $filter.search, prompt: "Search title")
+            gameList
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
@@ -48,6 +48,18 @@ struct GameListTab: View {
                 .navigationDestination(for: Game.self) { game in
                     GameDetailView(game: game)
                 }
+        }
+    }
+
+    @ViewBuilder
+    private var gameList: some View {
+        let list = GameListView(sort: sort.descriptor, filter: activeFilter)
+            .navigationTitle(mode.title)
+            .navigationBarTitleDisplayMode(.inline)
+        if showsSearch {
+            list.searchable(text: $filter.search, prompt: "Search title")
+        } else {
+            list
         }
     }
 

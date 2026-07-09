@@ -27,6 +27,7 @@ struct SummaryView: View {
                 componentBreakdownSection
             }
             .navigationTitle("Summary")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {

@@ -33,7 +33,7 @@ struct GameDetailView: View {
             repairLogSection
         }
         .navigationTitle(game.title)
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.arcadeToolbar, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
