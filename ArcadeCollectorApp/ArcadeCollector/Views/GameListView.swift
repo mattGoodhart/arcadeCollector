@@ -70,7 +70,7 @@ struct GameListView: View {
                 }
                 .listStyle(.plain)
 
-                if groups.count > 1 {
+                if mode == .allGames, groups.count > 1 {
                     SectionIndexOverlay(sections: groups.map(\.year)) { year in
                         proxy.scrollTo(year, anchor: .top)
                     }

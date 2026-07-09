@@ -301,6 +301,57 @@ The implementation groups visible games into `YearGroup` structs (year string + 
 
 **Lesson**: when SwiftUI gives "unable to type-check this expression in reasonable time," the fix is almost always to extract sub-expressions into named properties or methods. The compiler's exponential type inference doesn't scale past ~3 levels of generic nesting.
 
+### 2026-07-08 — Hero Header and Detail View Redesign
+
+(Done in a separate session.) Replaced the horizontal artwork thumbnail scroll + manual "Fetch Artwork" button with a legacy-style hero header at the top of `GameDetailView`:
+
+- **Marquee banner** (full-width, 4:1 aspect). Falls back to a `missing_marquee` placeholder image imported from the legacy asset catalog. Overlays a `ProgressView` while artwork is in flight.
+- **Main image** below with a 5-segment picker (Title / In-Game / Cabinet / Flyer / PCB), matching the legacy `DetailViewController`.
+- **Auto-fetch on `.task`**: if the game is missing either marquee or title artwork, calls `ArtworkFetcher.fetch` on appear — ~1s round trip, matches legacy behavior.
+- **Refresh** moved to a toolbar `arrow.clockwise` button for force-refetching missing kinds.
+
+Also cleaned up the external links section: YouTube URLs now built via `URLComponents` instead of raw string interpolation (the video ID could contain characters that break `URL(string:)`), and a `linkRow(title:systemImage:url:)` helper replaced three near-identical button blocks.
+
+The section index overlay got a precision fix: a named coordinate space anchored on the labels `VStack` (not the padded outer frame), so the drag gesture maps directly to label positions without dead zones at top and bottom.
+
+### 2026-07-09 — Camera Integration for Repair Logs
+
+Added the ability to take photos directly from the camera in `RepairLogEntryView`, complementing the existing `PhotosPicker` for choosing from the library:
+
+- **CameraPicker.swift** — `UIViewControllerRepresentable` wrapping `UIImagePickerController` with `.camera` source. The coordinator handles `didFinishPickingMediaWithInfo` and `imagePickerControllerDidCancel`, dismissing via `@Environment(\.dismiss)`.
+- **RepairLogEntryView** — Photos section now has two buttons: "Choose from Library" (existing `PhotosPicker`) and "Take Photo" (new). The camera button only appears when `UIImagePickerController.isSourceTypeAvailable(.camera)` is true, so it's hidden in the Simulator.
+- **Info.plist** — Added `NSCameraUsageDescription` via `INFOPLIST_KEY_NSCameraUsageDescription` in both Debug and Release build settings: *"Take photos of arcade PCBs and repairs to attach to repair log entries."*
+
+Captured photos are compressed to JPEG at 80% quality before being stored as `RepairLogPhoto` rows with `@Attribute(.externalStorage)`.
+
+### 2026-07-09 — Bulk Artwork Fetching
+
+Added a "Fetch All Missing Artwork" action to the Summary tab so users don't have to open each game individually to trigger artwork downloads:
+
+- **BulkArtworkFetcher.swift** — a `@ModelActor` that fetches all owned games missing any of the 6 artwork kinds, then iterates through them calling the existing `ArtworkFetcher.fetch(for:)`. Reports progress via a callback struct (`completed`/`total`/`currentTitle`). Supports cancellation via `Task.checkCancellation()` between games. Per-game failures are swallowed — the API may not have artwork for every ROM. Returns the count so the UI can distinguish "nothing to fetch" from "fetched some."
+- **SummaryView** — new "Artwork" section with four states: idle (fetch button), in-progress (`ProgressView` bar + cancel button), complete (green checkmark), and nothing-to-fetch ("All owned games have artwork"). Fetch errors flash for 3 seconds before auto-dismissing.
+
+**Why not parallel downloads?** The Arcade Database is a community server, not a CDN. Serial per-game fetches (~6 images each) keep us from hammering it with concurrent connections. For a typical collection of 20–50 owned games, the total fetch time is a few minutes — fine for a background operation you kick off once.
+
+### 2026-07-09 — Ownership Model Simplified
+
+Removed the segmented `None / Owned / Wanted` picker from `GameDetailView`. The new model is simpler and more physical:
+
+- **"Have the PCB"** toggle → game goes into My Collection. Toggling it on sets `ownership = .owned`; toggling off sets it back to `.none`.
+- **Heart button** in the toolbar → marks a game as wanted. Empty heart = not wanted, filled heart = wanted. Only visible when the game is *not* owned (you don't "want" something you already have).
+- The `OwnershipStatus` enum and filter logic are unchanged — they're just driven by two focused controls instead of a three-way picker.
+
+Also updated the empty-state descriptions on the My Collection and Wanted tabs to match the new interaction ("Toggle 'Have the PCB' on a game to add it here" / "Tap the heart on a game to add it here").
+
+### 2026-07-09 — UI Polish Pass
+
+Several small refinements to reduce visual clutter:
+
+- **Inline nav titles everywhere.** Switched `GameDetailView`, all `GameListTab` tabs, and `SummaryView` from large to inline navigation bar titles. The large title block was eating ~100pt of vertical space on every screen — space better used for content, especially on smaller devices.
+- **Search bar scoped to All Games only.** The My Collection, Wanted, and Repair Logs tabs no longer show a search bar. These lists are small enough (user's own collection) that scrolling is faster than searching. Implemented by extracting the `GameListView` into a `@ViewBuilder` computed property with conditional `.searchable()`.
+- **Section index scoped to All Games only.** The year-scrubber overlay on the right edge is useful for navigating 4,166 games but unnecessary on the smaller filtered tabs.
+- **Default main image** changed from Title to In-Game in the detail view hero section — in-game screenshots are more recognizable at a glance.
+
 ---
 
 ## Engineer's Wisdom
