@@ -16,9 +16,8 @@ struct GameDetailView: View {
     @State private var selectedArtwork: GameArtwork?
     @State private var mainImageKind: ArtworkKind = .inGame
 
-    /// Kinds surfaced in the main-image segmented picker, in order.
-    /// Matches the five segments of the legacy `DetailViewController`.
-    private static let mainKinds: [ArtworkKind] = [.title, .inGame, .cabinet, .flyer, .pcb]
+    /// Priority order for the main image area and segmented picker.
+    private static let mainKinds: [ArtworkKind] = [.inGame, .title, .cabinet, .flyer, .pcb]
 
     var body: some View {
         List {
@@ -130,41 +129,68 @@ struct GameDetailView: View {
         }
     }
 
+    private var availableKinds: [ArtworkKind] {
+        Self.mainKinds.filter { kind in
+            game.artwork(kind)?.imageData != nil
+        }
+    }
+
     private var mainImageWithPicker: some View {
         VStack(spacing: 10) {
             mainImage
                 .frame(maxWidth: .infinity)
                 .frame(maxHeight: 300)
 
-            Picker("Artwork", selection: $mainImageKind) {
-                ForEach(Self.mainKinds) { kind in
-                    Text(kind.displayName).tag(kind)
+            if availableKinds.count > 1 {
+                Picker("Artwork", selection: $mainImageKind) {
+                    ForEach(availableKinds) { kind in
+                        Text(kind.displayName).tag(kind)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .onChange(of: availableKinds) {
+                    if !availableKinds.contains(mainImageKind),
+                       let first = availableKinds.first {
+                        mainImageKind = first
+                    }
                 }
             }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
         }
+    }
+
+    private var bestAvailableArtwork: (artwork: GameArtwork, image: UIImage)? {
+        let selected = game.artwork(mainImageKind)
+        if let selected, let img = selected.imageData.flatMap(UIImage.init(data:)) {
+            return (selected, img)
+        }
+        for kind in Self.mainKinds where kind != mainImageKind {
+            if let art = game.artwork(kind),
+               let img = art.imageData.flatMap(UIImage.init(data:)) {
+                return (art, img)
+            }
+        }
+        return nil
     }
 
     private var mainImage: some View {
         Group {
-            if let art = game.artwork(mainImageKind),
-               let uiImage = art.imageData.flatMap(UIImage.init(data:)) {
-                Image(uiImage: uiImage)
+            if let best = bestAvailableArtwork {
+                Image(uiImage: best.image)
                     .resizable()
                     .scaledToFit()
-                    .onTapGesture { selectedArtwork = art }
+                    .onTapGesture { selectedArtwork = best.artwork }
                     .accessibilityAddTraits(.isImage)
-                    .accessibilityLabel(mainImageKind.displayName)
+                    .accessibilityLabel(best.artwork.kind.displayName)
             } else if isFetchingArtwork {
                 ProgressView()
                     .controlSize(.large)
                     .frame(height: 200)
             } else {
                 ContentUnavailableView(
-                    "No \(mainImageKind.displayName) Image",
+                    "No Artwork Available",
                     systemImage: "photo",
-                    description: Text("The Arcade Database may not have this artwork for \(game.romSetName).")
+                    description: Text("The Arcade Database may not have artwork for \(game.title).")
                 )
                 .frame(maxHeight: 240)
             }
