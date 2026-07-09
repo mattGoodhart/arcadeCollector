@@ -14,7 +14,7 @@ struct GameDetailView: View {
     @State private var isFetchingArtwork = false
     @State private var fetchError: Error?
     @State private var selectedArtwork: GameArtwork?
-    @State private var mainImageKind: ArtworkKind = .title
+    @State private var mainImageKind: ArtworkKind = .inGame
 
     /// Kinds surfaced in the main-image segmented picker, in order.
     /// Matches the five segments of the legacy `DetailViewController`.
@@ -28,7 +28,7 @@ struct GameDetailView: View {
             if hasExternalLinks {
                 externalLinksSection
             }
-            ownershipSection
+            pcbSection
             componentStatusSection
             repairLogSection
         }
@@ -38,6 +38,17 @@ struct GameDetailView: View {
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if !game.hasBoard {
+                    Button {
+                        let isWanted = game.ownership == .wanted
+                        game.ownership = isWanted ? .none : .wanted
+                    } label: {
+                        Image(systemName: game.ownership == .wanted ? "heart.fill" : "heart")
+                    }
+                    .accessibilityLabel(game.ownership == .wanted ? "Remove from wanted" : "Add to wanted")
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     Task { await fetchArtwork(force: true) }
@@ -227,18 +238,14 @@ struct GameDetailView: View {
         }
     }
 
-    // MARK: - Ownership / status / repair
+    // MARK: - PCB / status / repair
 
-    private var ownershipSection: some View {
-        Section("Ownership") {
-            Picker("Status", selection: $game.ownership) {
-                ForEach(OwnershipStatus.allCases) { status in
-                    Text(status.displayName).tag(status)
-                }
-            }
-            .pickerStyle(.segmented)
-
+    private var pcbSection: some View {
+        Section {
             Toggle("Have the PCB", isOn: $game.hasBoard)
+                .onChange(of: game.hasBoard) { _, hasPCB in
+                    game.ownership = hasPCB ? .owned : .none
+                }
         }
     }
 

@@ -39,8 +39,8 @@ enum GameListMode: Hashable {
     var emptyDescription: String {
         switch self {
         case .allGames:     return "Games will appear here once seeded."
-        case .myCollection: return "Mark games as Owned to add them here."
-        case .wanted:       return "Mark games as Wanted to add them here."
+        case .myCollection: return "Toggle \"Have the PCB\" on a game to add it here."
+        case .wanted:       return "Tap the heart on a game to add it here."
         case .repairLogs:   return "Games with repair entries will appear here."
         }
     }

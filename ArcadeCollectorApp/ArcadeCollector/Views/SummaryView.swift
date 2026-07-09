@@ -9,12 +9,20 @@ import Charts
 
 struct SummaryView: View {
     @Query private var games: [Game]
+    @Environment(\.modelContext) private var modelContext
     @State private var showingAbout = false
+    @State private var bulkFetchTask: Task<Void, Never>?
+    @State private var bulkProgress: BulkArtworkFetcher.Progress?
+    @State private var nothingToFetch = false
+    @State private var bulkFetchError: String?
+
+    private var isBulkFetching: Bool { bulkFetchTask != nil }
 
     var body: some View {
         NavigationStack {
             List {
                 collectionCountsSection
+                bulkArtworkSection
                 boardConditionSection
                 componentBreakdownSection
             }
@@ -62,6 +70,78 @@ struct SummaryView: View {
             StatRow(label: "In Repair", value: gamesInRepair.count, icon: "wrench.and.screwdriver")
             StatRow(label: "Boards Owned", value: boardsOwned.count, icon: "cpu")
         }
+    }
+
+    // MARK: - Bulk Artwork Fetch
+
+    private var bulkArtworkSection: some View {
+        Section("Artwork") {
+            if let progress = bulkProgress, isBulkFetching {
+                VStack(alignment: .leading, spacing: 8) {
+                    ProgressView(
+                        value: Double(progress.completed),
+                        total: Double(max(progress.total, 1))
+                    )
+                    Text("\(progress.completed) of \(progress.total) — \(progress.currentTitle)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+                .padding(.vertical, 4)
+
+                Button(role: .destructive) {
+                    cancelBulkFetch()
+                } label: {
+                    Label("Cancel", systemImage: "xmark.circle")
+                }
+            } else if let progress = bulkProgress, progress.completed == progress.total {
+                Label("All artwork fetched", systemImage: "checkmark.circle")
+                    .foregroundStyle(.green)
+            } else if nothingToFetch {
+                Label("All owned games have artwork", systemImage: "checkmark.circle")
+                    .foregroundStyle(.green)
+            } else if let error = bulkFetchError {
+                Label(error, systemImage: "exclamationmark.triangle")
+                    .foregroundStyle(.red)
+            } else {
+                Button {
+                    startBulkFetch()
+                } label: {
+                    Label("Fetch All Missing Artwork", systemImage: "arrow.down.circle")
+                }
+                .disabled(ownedGames.isEmpty)
+            }
+        }
+    }
+
+    private func startBulkFetch() {
+        nothingToFetch = false
+        let container = modelContext.container
+        bulkFetchTask = Task {
+            let fetcher = BulkArtworkFetcher(modelContainer: container)
+            do {
+                let count = try await fetcher.fetchAllMissing { progress in
+                    Task { @MainActor in
+                        bulkProgress = progress
+                    }
+                }
+                if count == 0 {
+                    nothingToFetch = true
+                }
+            } catch is CancellationError {
+                // User cancelled
+            } catch {
+                bulkFetchError = error.localizedDescription
+                try? await Task.sleep(for: .seconds(3))
+                bulkFetchError = nil
+            }
+            bulkFetchTask = nil
+        }
+    }
+
+    private func cancelBulkFetch() {
+        bulkFetchTask?.cancel()
+        bulkFetchTask = nil
     }
 
     // MARK: - Board Condition Chart
