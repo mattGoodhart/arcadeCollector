@@ -12,6 +12,7 @@ struct RepairLogEntryView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var zoomedPhoto: RepairLogPhoto?
+    @State private var showingCamera = false
 
     private var sortedPhotos: [RepairLogPhoto] {
         log.photos.sorted { $0.order < $1.order }
@@ -67,10 +68,18 @@ struct RepairLogEntryView: View {
                     maxSelectionCount: 10,
                     matching: .images
                 ) {
-                    Label("Add Photos", systemImage: "photo.badge.plus")
+                    Label("Choose from Library", systemImage: "photo.badge.plus")
                 }
                 .onChange(of: selectedPhotos) {
                     Task { await loadPhotos() }
+                }
+
+                if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                    Button {
+                        showingCamera = true
+                    } label: {
+                        Label("Take Photo", systemImage: "camera")
+                    }
                 }
             }
         }
@@ -83,6 +92,12 @@ struct RepairLogEntryView: View {
             if let uiImage = photo.imageData.flatMap(UIImage.init(data:)) {
                 ZoomableImageView(image: uiImage, title: "Photo")
             }
+        }
+        .fullScreenCover(isPresented: $showingCamera) {
+            CameraPicker { image in
+                addCapturedPhoto(image)
+            }
+            .ignoresSafeArea()
         }
     }
 
@@ -97,6 +112,13 @@ struct RepairLogEntryView: View {
             log.photos.append(photo)
         }
         selectedPhotos.removeAll()
+    }
+
+    private func addCapturedPhoto(_ image: UIImage) {
+        guard let data = image.jpegData(compressionQuality: 0.8) else { return }
+        let nextOrder = (log.photos.map(\.order).max() ?? -1) + 1
+        let photo = RepairLogPhoto(order: nextOrder, imageData: data)
+        log.photos.append(photo)
     }
 
     private func deletePhoto(_ photo: RepairLogPhoto) {
