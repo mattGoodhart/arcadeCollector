@@ -46,6 +46,9 @@ actor ArtworkFetcher {
         if game.genre.isEmpty, !metadata.genre.isEmpty {
             game.genre = metadata.genre
         }
+        if game.history.isEmpty, !metadata.history.isEmpty {
+            game.history = metadata.history
+        }
         if game.youtubeVideoID.isEmpty, let ytID = metadata.youtubeVideoID {
             game.youtubeVideoID = ytID
         }

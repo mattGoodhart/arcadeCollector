@@ -27,6 +27,9 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
         let youtubeVideoID: String?
         let shortPlayURL: URL?
 
+        // History
+        let history: String
+
         // Hardware / emulation specs
         let emulationStatus: String
         let emulatorName: String
@@ -119,6 +122,7 @@ private nonisolated struct ScraperResponse: Decodable {
         let inputControls: String?
         let inputButtons: Int?
         let screenResolution: String?
+        let history: String?
 
         enum CodingKeys: String, CodingKey {
             case gameName = "game_name"
@@ -140,6 +144,7 @@ private nonisolated struct ScraperResponse: Decodable {
             case inputControls = "input_controls"
             case inputButtons = "input_buttons"
             case screenResolution = "screen_resolution"
+            case history
         }
 
         func asMetadata() -> ArcadeDatabaseClient.GameMetadata {
@@ -157,6 +162,7 @@ private nonisolated struct ScraperResponse: Decodable {
                 titleImageURL: urlImageTitle.flatMap(URL.init(string:)),
                 youtubeVideoID: youtubeVideoID?.nonEmpty,
                 shortPlayURL: urlVideoShortplay.flatMap(URL.init(string:)),
+                history: history ?? "",
                 emulationStatus: emulationStatus ?? "",
                 emulatorName: emulatorName ?? "",
                 inputControls: inputControls ?? "",

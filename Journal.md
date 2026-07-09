@@ -352,6 +352,25 @@ Several small refinements to reduce visual clutter:
 - **Section index scoped to All Games only.** The year-scrubber overlay on the right edge is useful for navigating 4,166 games but unnecessary on the smaller filtered tabs.
 - **Default main image** changed from Title to In-Game in the detail view hero section — in-game screenshots are more recognizable at a glance.
 
+### 2026-07-09 — All-Black Image Detection and Artwork Fallback
+
+The Arcade Database sometimes returns all-black placeholder PNGs instead of real artwork — a valid HTTP 200 with image data, but visually useless. Added an `isEffectivelyBlack(_:)` check in `ArtworkFetcher` that renders each downloaded image into an 8×8 sRGB bitmap and computes the average brightness. If it's below 5/255, the image is skipped and the `GameArtwork` row is never created.
+
+On the display side, the detail view's main image area now falls back through a priority list — In-Game → Title → Cabinet → Flyer → PCB — to always show the best available artwork rather than a placeholder. The segmented picker dynamically hides kinds that have no imagery, so users never tap a segment that leads to "No Artwork Available." If only one kind came back, the picker is hidden entirely.
+
+### 2026-07-09 — Game History from Arcade Database
+
+The legacy app had a "History" button that displayed a block of text from the `history` field in the scraper API response — arcade history and trivia sourced from the Arcade History project. Ported it to the new app:
+
+- Added `history: String = ""` to the `Game` model (inline default for migration safety).
+- Added the `history` key to `ArcadeDatabaseClient`'s decoder and `GameMetadata` struct.
+- `ArtworkFetcher` back-fills `game.history` alongside the other metadata fields.
+- `GameDetailView` shows a "History" section between Overview and Hardware when history text is available.
+
+**SwiftData migration gotcha**: the first attempt used `var history: String` without an inline default. On launch, the `ModelContainer` initializer hit a `fatalError` because SQLite can't add a `NOT NULL` column without a default value to an existing table. Changing it to `var history: String = ""` let lightweight migration succeed. Deleted the corrupted simulator store to recover.
+
+**Lesson**: every new non-optional property on a SwiftData `@Model` must have an inline default value, or the app will crash on devices with an existing store. This is easy to miss during development because a clean install always works.
+
 ---
 
 ## Engineer's Wisdom
@@ -365,6 +384,10 @@ Several small refinements to reduce visual clutter:
 **Computed views > persisted views.** If the shape of a collection is "everything in table X where condition Y holds," it's a query, not a row. Save the row for things a user actually authored.
 
 **Case-insensitive filesystems are lava.** Two siblings that differ only in case is a code smell that will bite you.
+
+**Filter garbage at the boundary, not the view layer.** The Arcade Database sometimes returns all-black placeholder PNGs instead of real artwork. Catching that in the fetcher (before it becomes a `GameArtwork` row) is cleaner than teaching every view to detect and hide bad images.
+
+**New SwiftData fields need inline defaults.** Adding a non-optional `String` property to an existing `@Model` without `= ""` creates a `NOT NULL` column with no default — SQLite can't add that to a table with existing rows. The app crashes in the `ModelContainer` initializer. Always give new stored properties an inline default so lightweight migration can add the column.
 
 ---
 

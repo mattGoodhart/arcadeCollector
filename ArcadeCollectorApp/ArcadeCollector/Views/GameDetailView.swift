@@ -22,7 +22,11 @@ struct GameDetailView: View {
     var body: some View {
         List {
             heroSection
+                .listSectionSeparator(.hidden, edges: .top)
             metadataSection
+            if !game.history.isEmpty {
+                historySection
+            }
             hardwareLinkSection
             if hasExternalLinks {
                 externalLinksSection
@@ -93,11 +97,12 @@ struct GameDetailView: View {
                 marqueeBanner
                 mainImageWithPicker
             }
-            .padding(.vertical, 8)
+            .padding(.bottom, 8)
         }
         .listRowInsets(EdgeInsets())
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
+        .listSectionSpacing(0)
     }
 
     private var marqueeBanner: some View {
@@ -215,6 +220,13 @@ struct GameDetailView: View {
             if !game.genre.isEmpty {
                 LabeledContent("Genre", value: game.genre)
             }
+        }
+    }
+
+    private var historySection: some View {
+        Section("History") {
+            Text(game.history)
+                .font(.subheadline)
         }
     }
 

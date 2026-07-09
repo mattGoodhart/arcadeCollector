@@ -48,6 +48,7 @@ final class Game {
     var soundDevices: [String]
 
     // MARK: Notes & external media
+    var history: String = ""
     var mameNotes: String
     var youtubeVideoID: String
     var shortPlayURL: URL?
@@ -110,6 +111,7 @@ final class Game {
         self.audioChannels = ""
         self.cpus = []
         self.soundDevices = []
+        self.history = ""
         self.mameNotes = ""
         self.youtubeVideoID = ""
     }
