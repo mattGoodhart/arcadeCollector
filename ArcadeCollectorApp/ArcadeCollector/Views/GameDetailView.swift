@@ -14,9 +14,15 @@ struct GameDetailView: View {
     @State private var isFetchingArtwork = false
     @State private var fetchError: Error?
     @State private var selectedArtwork: GameArtwork?
+    @State private var mainImageKind: ArtworkKind = .title
+
+    /// Kinds surfaced in the main-image segmented picker, in order.
+    /// Matches the five segments of the legacy `DetailViewController`.
+    private static let mainKinds: [ArtworkKind] = [.title, .inGame, .cabinet, .flyer, .pcb]
 
     var body: some View {
         List {
+            heroSection
             metadataSection
             hardwareLinkSection
             if hasExternalLinks {
@@ -24,7 +30,6 @@ struct GameDetailView: View {
             }
             ownershipSection
             componentStatusSection
-            artworkSection
             repairLogSection
         }
         .navigationTitle(game.title)
@@ -32,6 +37,21 @@ struct GameDetailView: View {
         .toolbarBackground(Color.arcadeToolbar, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    Task { await fetchArtwork(force: true) }
+                } label: {
+                    if isFetchingArtwork {
+                        ProgressView().controlSize(.small)
+                    } else {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                }
+                .disabled(isFetchingArtwork)
+                .accessibilityLabel("Refresh artwork")
+            }
+        }
         .alert(
             "Couldn't fetch artwork",
             isPresented: Binding(
@@ -50,7 +70,97 @@ struct GameDetailView: View {
                 ZoomableImageView(image: uiImage, title: art.kind.displayName)
             }
         }
+        .task {
+            await fetchArtwork(force: false)
+        }
     }
+
+    // MARK: - Hero (marquee + main image + segmented picker)
+
+    private var heroSection: some View {
+        Section {
+            VStack(spacing: 12) {
+                marqueeBanner
+                mainImageWithPicker
+            }
+            .padding(.vertical, 8)
+        }
+        .listRowInsets(EdgeInsets())
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+    }
+
+    private var marqueeBanner: some View {
+        Group {
+            if let art = game.artwork(.marquee),
+               let uiImage = art.imageData.flatMap(UIImage.init(data:)) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity)
+                    .onTapGesture { selectedArtwork = art }
+                    .accessibilityAddTraits(.isImage)
+                    .accessibilityLabel("Marquee")
+            } else {
+                // Legacy fallback graphic — a 576×144 (4:1) placeholder that
+                // preserves the marquee's silhouette while artwork is loading
+                // or unavailable from the Arcade Database.
+                Image("missing_marquee")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity)
+                    .overlay {
+                        if isFetchingArtwork {
+                            ProgressView()
+                        }
+                    }
+                    .accessibilityLabel("Missing marquee")
+            }
+        }
+    }
+
+    private var mainImageWithPicker: some View {
+        VStack(spacing: 10) {
+            mainImage
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: 300)
+
+            Picker("Artwork", selection: $mainImageKind) {
+                ForEach(Self.mainKinds) { kind in
+                    Text(kind.displayName).tag(kind)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+        }
+    }
+
+    private var mainImage: some View {
+        Group {
+            if let art = game.artwork(mainImageKind),
+               let uiImage = art.imageData.flatMap(UIImage.init(data:)) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFit()
+                    .onTapGesture { selectedArtwork = art }
+                    .accessibilityAddTraits(.isImage)
+                    .accessibilityLabel(mainImageKind.displayName)
+            } else if isFetchingArtwork {
+                ProgressView()
+                    .controlSize(.large)
+                    .frame(height: 200)
+            } else {
+                ContentUnavailableView(
+                    "No \(mainImageKind.displayName) Image",
+                    systemImage: "photo",
+                    description: Text("The Arcade Database may not have this artwork for \(game.romSetName).")
+                )
+                .frame(maxHeight: 240)
+            }
+        }
+    }
+
+    // MARK: - Overview / metadata
 
     private var metadataSection: some View {
         Section("Overview") {
@@ -80,6 +190,8 @@ struct GameDetailView: View {
             }
         }
     }
+
+    // MARK: - External links
 
     private var hasExternalLinks: Bool {
         youtubeURL != nil || game.shortPlayURL != nil || game.manualURL != nil
@@ -115,6 +227,8 @@ struct GameDetailView: View {
         }
     }
 
+    // MARK: - Ownership / status / repair
+
     private var ownershipSection: some View {
         Section("Ownership") {
             Picker("Status", selection: $game.ownership) {
@@ -139,51 +253,6 @@ struct GameDetailView: View {
         }
     }
 
-    private var artworkSection: some View {
-        Section("Artwork") {
-            if !game.artwork.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(alignment: .top, spacing: 12) {
-                        ForEach(sortedArtwork) { art in
-                            Button {
-                                selectedArtwork = art
-                            } label: {
-                                VStack(spacing: 4) {
-                                    ArtworkThumbnailView(artwork: art)
-                                    Text(art.kind.displayName)
-                                        .font(.caption2)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(.vertical, 4)
-                }
-                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-            } else if !isFetchingArtwork {
-                Text("No artwork saved yet")
-                    .foregroundStyle(.secondary)
-            }
-
-            Button(action: fetchArtwork) {
-                HStack {
-                    if isFetchingArtwork {
-                        ProgressView()
-                            .controlSize(.small)
-                        Text("Fetching…")
-                    } else {
-                        Label(
-                            game.artwork.isEmpty ? "Fetch Artwork" : "Fetch Missing",
-                            systemImage: "arrow.down.circle"
-                        )
-                    }
-                }
-            }
-            .disabled(isFetchingArtwork)
-        }
-    }
-
     private var repairLogSection: some View {
         Section("Repair Log") {
             NavigationLink {
@@ -202,26 +271,28 @@ struct GameDetailView: View {
         }
     }
 
-    private var sortedArtwork: [GameArtwork] {
-        let order: [ArtworkKind] = [.marquee, .title, .inGame, .flyer, .cabinet, .pcb, .userPCB]
-        return game.artwork.sorted { lhs, rhs in
-            (order.firstIndex(of: lhs.kind) ?? Int.max)
-                < (order.firstIndex(of: rhs.kind) ?? Int.max)
-        }
-    }
+    // MARK: - Artwork fetch
 
-    private func fetchArtwork() {
+    /// Fires from `.task` on view appear, and from the toolbar refresh button.
+    /// Skips when marquee + title are already present unless `force` is true.
+    private func fetchArtwork(force: Bool) async {
+        if !force {
+            let hasMarquee = game.artwork(.marquee) != nil
+            let hasTitle = game.artwork(.title) != nil
+            guard !hasMarquee || !hasTitle else { return }
+        }
+        guard !isFetchingArtwork else { return }
+
         isFetchingArtwork = true
+        defer { isFetchingArtwork = false }
+
         let gameID = game.persistentModelID
         let container = modelContext.container
-        Task {
-            do {
-                let fetcher = ArtworkFetcher(modelContainer: container)
-                try await fetcher.fetch(for: gameID)
-            } catch {
-                fetchError = error
-            }
-            isFetchingArtwork = false
+        do {
+            let fetcher = ArtworkFetcher(modelContainer: container)
+            try await fetcher.fetch(for: gameID)
+        } catch {
+            fetchError = error
         }
     }
 }
