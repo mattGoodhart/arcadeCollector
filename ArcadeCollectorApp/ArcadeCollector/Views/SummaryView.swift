@@ -53,6 +53,7 @@ struct SummaryView: View {
                         .toolbarColorScheme(.dark, for: .navigationBar)
                 }
             }
+            .onDisappear { cancelBulkFetch() }
         }
     }
 
