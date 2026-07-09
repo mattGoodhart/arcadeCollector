@@ -99,7 +99,12 @@ private struct SectionIndexOverlay: View {
     let sections: [String]
     let onSelect: (String) -> Void
 
-    @State private var overlayHeight: CGFloat = 1
+    @State private var labelStackHeight: CGFloat = 1
+
+    /// Named coordinate space anchored on the labels stack (not the padded
+    /// outer frame), so drag `value.location.y` maps directly onto label
+    /// positions without an offset from the surrounding vertical padding.
+    private static let labelsSpace = "SectionIndexOverlay.labels"
 
     var body: some View {
         VStack(spacing: 0) {
@@ -108,15 +113,16 @@ private struct SectionIndexOverlay: View {
             }
         }
         .frame(width: 18)
-        .padding(.vertical, 4)
         .background {
             GeometryReader { geo in
-                Color.arcadeRowOdd.opacity(0.85)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
-                    .onAppear { overlayHeight = geo.size.height }
-                    .onChange(of: geo.size.height) { _, h in overlayHeight = h }
+                Color.clear
+                    .onAppear { labelStackHeight = geo.size.height }
+                    .onChange(of: geo.size.height) { _, h in labelStackHeight = h }
             }
         }
+        .coordinateSpace(name: Self.labelsSpace)
+        .padding(.vertical, 4)
+        .background(Color.arcadeRowOdd.opacity(0.85), in: RoundedRectangle(cornerRadius: 6))
         .padding(.trailing, 2)
         .contentShape(Rectangle())
         .gesture(dragGesture)
@@ -132,9 +138,10 @@ private struct SectionIndexOverlay: View {
     }
 
     private var dragGesture: some Gesture {
-        DragGesture(minimumDistance: 0, coordinateSpace: .local)
+        DragGesture(minimumDistance: 0, coordinateSpace: .named(Self.labelsSpace))
             .onChanged { value in
-                let index = Int(value.location.y / overlayHeight * CGFloat(sections.count))
+                let y = max(0, min(labelStackHeight, value.location.y))
+                let index = Int(y / labelStackHeight * CGFloat(sections.count))
                 let clamped = max(0, min(sections.count - 1, index))
                 onSelect(sections[clamped])
             }

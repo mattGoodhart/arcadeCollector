@@ -9,6 +9,7 @@ import SwiftData
 struct GameDetailView: View {
     @Bindable var game: Game
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.openURL) private var openURL
 
     @State private var isFetchingArtwork = false
     @State private var fetchError: Error?
@@ -80,34 +81,36 @@ struct GameDetailView: View {
         }
     }
 
-    @Environment(\.openURL) private var openURL
-
     private var hasExternalLinks: Bool {
-        !game.youtubeVideoID.isEmpty || game.shortPlayURL != nil || game.manualURL != nil
+        youtubeURL != nil || game.shortPlayURL != nil || game.manualURL != nil
+    }
+
+    /// Builds a YouTube watch URL from the video ID via `URLComponents`
+    /// so any special characters in the ID are properly escaped (raw
+    /// interpolation into a string + `URL(string:)!` was crash-prone).
+    private var youtubeURL: URL? {
+        let id = game.youtubeVideoID
+        guard !id.isEmpty else { return nil }
+        var components = URLComponents(string: "https://www.youtube.com/watch")
+        components?.queryItems = [URLQueryItem(name: "v", value: id)]
+        return components?.url
     }
 
     private var externalLinksSection: some View {
         Section("Links") {
-            if !game.youtubeVideoID.isEmpty {
-                Button {
-                    openURL(URL(string: "https://www.youtube.com/watch?v=\(game.youtubeVideoID)")!)
-                } label: {
-                    Label("YouTube Gameplay", systemImage: "play.rectangle")
-                }
-            }
-            if let shortPlayURL = game.shortPlayURL {
-                Button {
-                    openURL(shortPlayURL)
-                } label: {
-                    Label("Short Play", systemImage: "arcade.stick")
-                }
-            }
-            if let manualURL = game.manualURL {
-                Button {
-                    openURL(manualURL)
-                } label: {
-                    Label("Manual", systemImage: "book")
-                }
+            linkRow(title: "YouTube Gameplay", systemImage: "play.rectangle", url: youtubeURL)
+            linkRow(title: "Short Play",       systemImage: "arcade.stick",   url: game.shortPlayURL)
+            linkRow(title: "Manual",           systemImage: "book",           url: game.manualURL)
+        }
+    }
+
+    @ViewBuilder
+    private func linkRow(title: String, systemImage: String, url: URL?) -> some View {
+        if let url {
+            Button {
+                openURL(url)
+            } label: {
+                Label(title, systemImage: systemImage)
             }
         }
     }
