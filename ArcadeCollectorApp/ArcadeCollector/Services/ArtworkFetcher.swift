@@ -55,12 +55,16 @@ actor ArtworkFetcher {
         if game.shortPlayURL == nil, let shortPlay = metadata.shortPlayURL {
             game.shortPlayURL = shortPlay
         }
+        if game.gamePageURL == nil, let pageURL = metadata.gamePageURL {
+            game.gamePageURL = pageURL
+        }
         if game.emulationStatus.isEmpty, !metadata.emulationStatus.isEmpty {
             game.emulationStatus = metadata.emulationStatus
         }
-        if game.driver.isEmpty, !metadata.emulatorName.isEmpty {
-            // `Game.driver` holds the MAME driver / emulator identifier.
-            game.driver = metadata.emulatorName
+        if game.driver.isEmpty {
+            if let sourceFile = try? await client.driverSourceFile(for: romSetName) {
+                game.driver = sourceFile
+            }
         }
         if game.inputControls.isEmpty, !metadata.inputControls.isEmpty {
             game.inputControls = metadata.inputControls

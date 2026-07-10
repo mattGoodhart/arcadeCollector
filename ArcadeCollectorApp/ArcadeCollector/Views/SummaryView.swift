@@ -150,7 +150,7 @@ struct SummaryView: View {
 
     // MARK: - Board Condition Chart
 
-    private var gamesByCondition: [(label: String, count: Int, color: Color)] {
+    private var gamesByCondition: [(label: String, count: Int, color: Color, labelColor: Color)] {
         let owned = ownedGames
 
         let untested = owned.filter {
@@ -181,10 +181,10 @@ struct SummaryView: View {
         let broken = owned.filter { $0.bootStatus == .broken }.count
 
         return [
-            ("Working", working, ComponentStatus.working.color),
-            ("Issues", issues, ComponentStatus.issues.color),
-            ("Broken", broken, ComponentStatus.broken.color),
-            ("Untested", untested, ComponentStatus.untested.color),
+            ("Working", working, ComponentStatus.working.color, .white),
+            ("Issues", issues, ComponentStatus.issues.color, .black),
+            ("Broken", broken, ComponentStatus.broken.color, .white),
+            ("Untested", untested, ComponentStatus.untested.color, .white),
         ].filter { $0.count > 0 }
     }
 
@@ -209,7 +209,7 @@ struct SummaryView: View {
                                 Text("\(item.count)")
                                     .font(.caption2.bold())
                             }
-                            .foregroundStyle(.white)
+                            .foregroundStyle(item.labelColor)
                         }
                     }
                 }

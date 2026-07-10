@@ -289,7 +289,6 @@ struct GameDetailView: View {
 
     private var componentStatusSection: some View {
         Section("Component Status") {
-            StatusPickerRow(label: "Overall",       selection: $game.functionalCondition)
             StatusPickerRow(label: "Boot",          selection: $game.bootStatus)
             StatusPickerRow(label: "Audio",         selection: $game.audioStatus)
             StatusPickerRow(label: "Video",         selection: $game.videoStatus)

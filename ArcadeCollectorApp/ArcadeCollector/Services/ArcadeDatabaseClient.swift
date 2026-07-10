@@ -36,6 +36,9 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
         let inputControls: String
         let inputButtons: Int?
         let screenResolution: String
+
+        // ADB page
+        let gamePageURL: URL?
     }
 
     enum Failure: Error, LocalizedError {
@@ -76,6 +79,20 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
             throw Failure.noResultsForRom(romSetName)
         }
         return row.asMetadata()
+    }
+
+    func driverSourceFile(for romSetName: String) async throws -> String? {
+        var components = URLComponents(string: "https://adb.arcadeitalia.net/download_file.php")!
+        components.queryItems = [
+            URLQueryItem(name: "tipo", value: "xml"),
+            URLQueryItem(name: "codice", value: romSetName),
+        ]
+        let url = components.url!
+
+        let (data, response) = try await session.data(from: url)
+        try Self.throwIfNotOK(response)
+
+        return MachineSourceFileParser.parse(data: data)
     }
 
     func downloadImage(from url: URL) async throws -> Data {
@@ -123,6 +140,7 @@ private nonisolated struct ScraperResponse: Decodable {
         let inputButtons: Int?
         let screenResolution: String?
         let history: String?
+        let url: String?
 
         enum CodingKeys: String, CodingKey {
             case gameName = "game_name"
@@ -145,6 +163,7 @@ private nonisolated struct ScraperResponse: Decodable {
             case inputButtons = "input_buttons"
             case screenResolution = "screen_resolution"
             case history
+            case url
         }
 
         func asMetadata() -> ArcadeDatabaseClient.GameMetadata {
@@ -167,7 +186,8 @@ private nonisolated struct ScraperResponse: Decodable {
                 emulatorName: emulatorName ?? "",
                 inputControls: inputControls ?? "",
                 inputButtons: inputButtons,
-                screenResolution: screenResolution ?? ""
+                screenResolution: screenResolution ?? "",
+                gamePageURL: url.flatMap(URL.init(string:))
             )
         }
     }
@@ -175,4 +195,31 @@ private nonisolated struct ScraperResponse: Decodable {
 
 private extension String {
     nonisolated var nonEmpty: String? { isEmpty ? nil : self }
+}
+
+// MARK: - XML Parser for <machine sourcefile="...">
+
+private final class MachineSourceFileParser: NSObject, XMLParserDelegate {
+    private var sourceFile: String?
+
+    static func parse(data: Data) -> String? {
+        let delegate = MachineSourceFileParser()
+        let parser = XMLParser(data: data)
+        parser.delegate = delegate
+        parser.parse()
+        return delegate.sourceFile
+    }
+
+    func parser(
+        _ parser: XMLParser,
+        didStartElement elementName: String,
+        namespaceURI: String?,
+        qualifiedName: String?,
+        attributes attributeDict: [String: String] = [:]
+    ) {
+        if elementName == "machine", let sf = attributeDict["sourcefile"] {
+            sourceFile = sf
+            parser.abortParsing()
+        }
+    }
 }

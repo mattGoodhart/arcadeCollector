@@ -400,3 +400,46 @@ The legacy app had a "History" button that displayed a block of text from the `h
 - **I'd have started with a data migration plan.** The current design treats the port as a clean start — no user data carries over from the legacy app. If we ever want to import existing users' Core Data stores, the drift between the legacy and new schemas (especially the LED-int-to-enum and normalized artwork) becomes a migration script. That's fine, but it's a decision we made *implicitly* rather than intentionally. Worth revisiting before we ship.
 
 - **I'd rely more on `#Preview` from day one.** The empty `ContentView` we have today has no meaningful preview because it queries `Game` from an in-memory store with zero rows. A `Preview` extension that inserts a few `Game` samples into the preview container would pay for itself the moment we start building detail screens.
+
+### 2026-07-10 — Game Condition Chart Rework
+
+The Summary tab's donut chart was showing "Board Condition" based solely on the `functionalCondition` field — a single top-level status that didn't reflect the nuance captured in the per-component statuses. Reworked it to derive an overall game condition from the five individual component fields (boot, audio, video, controls, extended play):
+
+- **Untested** — every component is `.untested`. The default state for a newly added game.
+- **Working** — boot, audio, video, and controls are all `.working`; extended play can be `.working` or `.untested` (since many games don't get extended-play testing).
+- **Issues** — the board boots (bootStatus ≠ `.broken`), but at least one component is `.issues` or `.broken`. This catches partially-working boards where, say, audio is dead but everything else runs.
+- **Broken** — bootStatus is `.broken`. Nothing else matters if it won't boot.
+
+Changed the scope from boards-only (`hasBoard == true`) to **all owned games**, since the component statuses are meaningful even before you've marked a board as owned separately. Section renamed from "Board Condition" to "Game Condition."
+
+Switched the chart colors from the legacy chart palette (`chartGreen`, `chartOrange`, etc.) to `ComponentStatus.color` — the same `.green`, `.yellow`, `.red`, `.secondary` used in the per-component status bars below the chart. Visual consistency: same colors mean the same things everywhere.
+
+Added **labels** to each donut sector (category name above the count) so the chart is readable without cross-referencing the legend.
+
+**App icon in the donut hole**: copied the legacy app's PCB icon (`appstore.png`) into the new app's asset catalog as `AppIconImage.imageset`, then overlaid it centered in the donut's inner radius via `.chartBackground`. Also set the same image as the actual app icon for the new app (light appearance slot).
+
+**Background cleanup**: matched the chart's row background and chart background to `Color.arcadeSummaryBackground`, and zeroed out list row insets so the chart bleeds seamlessly into the summary view's background.
+
+**Preview data fix**: the existing preview set random statuses on only 3 of 5 component fields, so most owned games fell through all four chart categories and were invisible. Replaced with deterministic statuses — one game per category (Pac-Man = Working, Donkey Kong = Issues, Street Fighter II = Broken, Defender = Untested).
+
+### 2026-07-10 — MAME Driver Source from XML
+
+The legacy app's `HardwareViewController` fetches hardware details from an XML endpoint (`adb.arcadeitalia.net/download_file.php?tipo=xml&codice={rom}`) and parses the `sourcefile` attribute from the `<machine>` element — this is the MAME driver source file name (e.g. `pacman.cpp`). The new app was instead storing the `emulator_name` field from the JSON scraper (e.g. "Mame 0.288 (may-29 2026)") in `Game.driver`, which is the emulator version string, not the driver source.
+
+Added `driverSourceFile(for:)` to `ArcadeDatabaseClient` — fetches the XML, parses with a minimal `MachineSourceFileParser` (an `XMLParserDelegate` that aborts as soon as it reads the `sourcefile` attribute, so it doesn't waste time parsing chip/display/sound data we don't need yet). `ArtworkFetcher` now calls this instead of using `emulatorName`.
+
+Made the Driver row in `HardwareDetailView` tappable — it opens the raw MAME source file on GitHub (`raw.githubusercontent.com/mamedev/mame/master/src/mame/{driver}`), matching the "open" link under "Driver source" on the ADB game page. The URL was verified by scraping the ADB page: the current MAME repo structure puts drivers at `src/mame/{driver}`, not `src/mame/drivers/{driver}` as the legacy app assumed.
+
+Also added `gamePageURL` to the `Game` model and `ArcadeDatabaseClient.GameMetadata`, populated from the `url` field in the scraper JSON (`https://adb.arcadeitalia.net/?mame={rom}`), for potential future use.
+
+### 2026-07-10 — Preview Navigation Crash Fix
+
+Tapping a game in the canvas preview crashed with a fatal error in SwiftData's `BackingData.swift`. Root cause: the `#Preview` block inserted games into an in-memory `ModelContainer` but never called `context.save()`. Without a save, persistent identifiers aren't fully materialized, and `NavigationLink(value: game)` + `.navigationDestination(for: Game.self)` triggers a crash when SwiftData tries to resolve the backing data during navigation.
+
+**Fix**: added `try! context.save()` after the insertion loop.
+
+**Lesson**: in-memory SwiftData preview containers need an explicit `save()` before any navigation that resolves model instances by their `PersistentIdentifier`. Insert-without-save works for display but not for identity-based lookups.
+
+### 2026-07-10 — Removed "Overall" from Component Status
+
+Removed the `functionalCondition` / "Overall" picker row from the `componentStatusSection` in `GameDetailView`. The overall game condition is now *derived* from the individual component statuses (as the reworked donut chart shows), so a separate manually-set "Overall" field was redundant and potentially contradictory. The five component pickers (Boot, Audio, Video, Controls, Extended Play) remain.

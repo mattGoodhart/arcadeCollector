@@ -52,6 +52,7 @@ final class Game {
     var mameNotes: String
     var youtubeVideoID: String
     var shortPlayURL: URL?
+    var gamePageURL: URL?
     var manualURL: URL?
     @Attribute(.externalStorage) var manualData: Data?
 

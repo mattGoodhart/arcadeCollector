@@ -79,6 +79,7 @@ struct ContentView: View {
         }
         context.insert(game)
     }
+    try! context.save()
 
     return ContentView()
         .modelContainer(container)
