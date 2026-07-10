@@ -31,15 +31,42 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
-        .modelContainer(
-            for: [
-                Game.self,
-                GameArtwork.self,
-                RepairLog.self,
-                RepairLogPhoto.self,
-                GameCollection.self,
-            ],
-            inMemory: true
+    let container = try! ModelContainer(
+        for: Schema([Game.self, GameArtwork.self, RepairLog.self, RepairLogPhoto.self, GameCollection.self]),
+        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    let context = container.mainContext
+
+    let games: [(String, String, String, String, String, ScreenOrientation, OwnershipStatus, Bool)] = [
+        ("pacman", "Pac-Man", "Namco", "1980", "1-2", .vertical, .owned, true),
+        ("dkong", "Donkey Kong", "Nintendo", "1981", "1-2", .vertical, .owned, true),
+        ("galaga", "Galaga", "Namco", "1981", "1-2", .vertical, .wanted, false),
+        ("sf2", "Street Fighter II", "Capcom", "1991", "1-2", .horizontal, .owned, true),
+        ("mslug", "Metal Slug", "SNK", "1996", "1-2", .horizontal, .wanted, false),
+        ("1942", "1942", "Capcom", "1984", "1-2", .vertical, .none, false),
+        ("defender", "Defender", "Williams", "1981", "1-2", .horizontal, .owned, true),
+        ("asteroids", "Asteroids", "Atari", "1979", "1-2", .vertical, .none, false),
+    ]
+
+    for (rom, title, mfr, year, players, orient, ownership, board) in games {
+        let game = Game(
+            romSetName: rom,
+            title: title,
+            manufacturer: mfr,
+            year: year,
+            players: players,
+            orientation: orient,
+            ownership: ownership,
+            hasBoard: board
         )
+        if board {
+            game.bootStatus = .working
+            game.audioStatus = .working
+            game.videoStatus = [.working, .issues, .broken].randomElement()!
+        }
+        context.insert(game)
+    }
+
+    return ContentView()
+        .modelContainer(container)
 }
