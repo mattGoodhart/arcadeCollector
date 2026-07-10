@@ -59,10 +59,23 @@ struct ContentView: View {
             ownership: ownership,
             hasBoard: board
         )
-        if board {
+        switch rom {
+        case "pacman":
             game.bootStatus = .working
             game.audioStatus = .working
-            game.videoStatus = [.working, .issues, .broken].randomElement()!
+            game.videoStatus = .working
+            game.controlsStatus = .working
+        case "dkong":
+            game.bootStatus = .working
+            game.audioStatus = .working
+            game.videoStatus = .issues
+            game.controlsStatus = .working
+        case "sf2":
+            game.bootStatus = .broken
+        case "defender":
+            break
+        default:
+            break
         }
         context.insert(game)
     }

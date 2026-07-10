@@ -26,6 +26,8 @@ struct SummaryView: View {
                 boardConditionSection
                 componentBreakdownSection
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.arcadeSummaryBackground)
             .navigationTitle("Summary")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -148,28 +150,51 @@ struct SummaryView: View {
 
     // MARK: - Board Condition Chart
 
-    private var boardsByCondition: [(label: String, count: Int, color: Color)] {
-        let boards = boardsOwned
-        let working = boards.filter { $0.functionalCondition == .working }.count
-        let issues = boards.filter { $0.functionalCondition == .issues }.count
-        let broken = boards.filter { $0.functionalCondition == .broken }.count
-        let untested = boards.filter { $0.functionalCondition == .untested }.count
+    private var gamesByCondition: [(label: String, count: Int, color: Color)] {
+        let owned = ownedGames
+
+        let untested = owned.filter {
+            $0.bootStatus == .untested &&
+            $0.audioStatus == .untested &&
+            $0.videoStatus == .untested &&
+            $0.controlsStatus == .untested &&
+            $0.extendedPlayStatus == .untested
+        }.count
+
+        let working = owned.filter {
+            $0.bootStatus == .working &&
+            $0.audioStatus == .working &&
+            $0.videoStatus == .working &&
+            $0.controlsStatus == .working &&
+            ($0.extendedPlayStatus == .working || $0.extendedPlayStatus == .untested)
+        }.count
+
+        let issues = owned.filter {
+            $0.bootStatus != .broken &&
+            ($0.bootStatus == .issues ||
+             $0.audioStatus == .issues || $0.audioStatus == .broken ||
+             $0.videoStatus == .issues || $0.videoStatus == .broken ||
+             $0.controlsStatus == .issues || $0.controlsStatus == .broken ||
+             $0.extendedPlayStatus == .issues || $0.extendedPlayStatus == .broken)
+        }.count
+
+        let broken = owned.filter { $0.bootStatus == .broken }.count
 
         return [
-            ("Working", working, .green),
-            ("Issues", issues, .yellow),
-            ("Broken", broken, .red),
-            ("Untested", untested, .secondary),
+            ("Working", working, ComponentStatus.working.color),
+            ("Issues", issues, ComponentStatus.issues.color),
+            ("Broken", broken, ComponentStatus.broken.color),
+            ("Untested", untested, ComponentStatus.untested.color),
         ].filter { $0.count > 0 }
     }
 
     private var boardConditionSection: some View {
-        Section("Board Condition") {
-            if boardsOwned.isEmpty {
-                Text("No boards in collection yet")
+        Section("Game Condition") {
+            if ownedGames.isEmpty {
+                Text("No owned games yet")
                     .foregroundStyle(.secondary)
             } else {
-                Chart(boardsByCondition, id: \.label) { item in
+                Chart(gamesByCondition, id: \.label) { item in
                     SectorMark(
                         angle: .value("Count", item.count),
                         innerRadius: .ratio(0.5),
@@ -178,15 +203,19 @@ struct SummaryView: View {
                     .foregroundStyle(item.color)
                     .annotation(position: .overlay) {
                         if item.count > 0 {
-                            Text("\(item.count)")
-                                .font(.caption2.bold())
-                                .foregroundStyle(.white)
+                            VStack(spacing: 0) {
+                                Text(item.label)
+                                    .font(.caption2)
+                                Text("\(item.count)")
+                                    .font(.caption2.bold())
+                            }
+                            .foregroundStyle(.white)
                         }
                     }
                 }
                 .chartLegend(position: .bottom) {
                     HStack(spacing: 16) {
-                        ForEach(boardsByCondition, id: \.label) { item in
+                        ForEach(gamesByCondition, id: \.label) { item in
                             HStack(spacing: 4) {
                                 Circle()
                                     .fill(item.color)
@@ -197,8 +226,19 @@ struct SummaryView: View {
                         }
                     }
                 }
+                .chartBackground { proxy in
+                    Color.arcadeSummaryBackground.overlay {
+                        Image("AppIconImage")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 70, height: 70)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+                }
                 .frame(height: 200)
                 .padding(.vertical, 8)
+                .listRowBackground(Color.arcadeSummaryBackground)
+                .listRowInsets(EdgeInsets())
             }
         }
     }
@@ -241,8 +281,10 @@ private struct StatRow: View {
             Text("\(value)")
                 .fontDesign(.rounded)
                 .bold()
+                .foregroundStyle(Color.arcadeRowOdd)
         } label: {
             Label(label, systemImage: icon)
+                .foregroundStyle(Color.arcadeRowOdd)
         }
     }
 }
