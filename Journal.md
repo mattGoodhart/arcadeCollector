@@ -443,3 +443,22 @@ Tapping a game in the canvas preview crashed with a fatal error in SwiftData's `
 ### 2026-07-10 — Removed "Overall" from Component Status
 
 Removed the `functionalCondition` / "Overall" picker row from the `componentStatusSection` in `GameDetailView`. The overall game condition is now *derived* from the individual component statuses (as the reworked donut chart shows), so a separate manually-set "Overall" field was redundant and potentially contradictory. The five component pickers (Boot, Audio, Video, Controls, Extended Play) remain.
+
+### 2026-07-10 — Removed `hasBoard`, Ownership Simplification
+
+The `Game` model had two overlapping concepts: `hasBoard: Bool` and `ownership: OwnershipStatus`. In practice, "having a board" *is* ownership — if you have the PCB, you own the game. Removed `hasBoard` entirely. The "Have the PCB" toggle in `GameDetailView` now drives `ownership` directly via a computed `Binding` (`get: ownership == .owned`, `set: .owned / .none`). The heart button in the toolbar is shown when `ownership != .owned` instead of `!hasBoard`. `boardsOwned` in `SummaryView` filters on `ownership == .owned`.
+
+**Lesson**: when two fields always change in lockstep (toggling `hasBoard` immediately set `ownership = .owned`), one of them is redundant. The `.onChange` synchronization was a code smell pointing at a modeling problem. One source of truth is always better.
+
+### 2026-07-10 — Collapsible History Section
+
+The Arcade Database history text can be very long (Pac-Man's entry is several pages of ports, trivia, and release history). Made the History section in `GameDetailView` collapsible using `DisclosureGroup`, defaulting to collapsed. This keeps the detail view scannable — users can expand it when they want the deep dive.
+
+### 2026-07-10 — Flat Lists for Non-All-Games Tabs
+
+Year-grouped sections with a section index make sense for navigating 4,166 games on the All Games tab, but they're noise on the smaller tabs (My Collection, Wanted, Repair Logs) where the user has maybe 20–50 games. Split `GameListView.body` into two paths:
+
+- **All Games**: year-grouped sections with year headers and the section index overlay (unchanged).
+- **Everything else**: a flat, alphabetically-sorted list with alternating row colors but no section grouping.
+
+The sort uses `localizedCaseInsensitiveCompare` so titles like "1942" sort naturally alongside alphabetic titles.
