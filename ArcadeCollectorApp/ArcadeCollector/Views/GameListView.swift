@@ -46,9 +46,17 @@ struct GameListView: View {
             ? games.filter(filter.matchesEnumFilters)
             : games
 
+        if mode == .allGames {
+            yearGroupedList(visible)
+        } else {
+            flatList(visible.sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending })
+        }
+    }
+
+    private func yearGroupedList(_ visible: [Game]) -> some View {
         let groups = groupedByYear(visible)
 
-        ScrollViewReader { proxy in
+        return ScrollViewReader { proxy in
             ZStack(alignment: .trailing) {
                 List {
                     ForEach(groups) { group in
@@ -70,13 +78,38 @@ struct GameListView: View {
                 }
                 .listStyle(.plain)
 
-                if mode == .allGames, groups.count > 1 {
+                if groups.count > 1 {
                     SectionIndexOverlay(sections: groups.map(\.year)) { year in
                         proxy.scrollTo(year, anchor: .top)
                     }
                 }
             }
         }
+        .overlay {
+            if visible.isEmpty {
+                if !filter.search.isEmpty {
+                    ContentUnavailableView.search
+                } else {
+                    ContentUnavailableView(
+                        mode.emptyTitle,
+                        systemImage: mode.tabIcon,
+                        description: Text(mode.emptyDescription)
+                    )
+                }
+            }
+        }
+    }
+
+    private func flatList(_ visible: [Game]) -> some View {
+        List {
+            ForEach(Array(visible.enumerated()), id: \.element.id) { index, game in
+                NavigationLink(value: game) {
+                    GameRow(game: game, isDarkRow: !index.isMultiple(of: 2))
+                }
+                .listRowBackground(index.isMultiple(of: 2) ? Color.arcadeRowEven : Color.arcadeRowOdd)
+            }
+        }
+        .listStyle(.plain)
         .overlay {
             if visible.isEmpty {
                 if !filter.search.isEmpty {

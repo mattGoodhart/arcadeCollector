@@ -37,18 +37,18 @@ struct ContentView: View {
     )
     let context = container.mainContext
 
-    let games: [(String, String, String, String, String, ScreenOrientation, OwnershipStatus, Bool)] = [
-        ("pacman", "Pac-Man", "Namco", "1980", "1-2", .vertical, .owned, true),
-        ("dkong", "Donkey Kong", "Nintendo", "1981", "1-2", .vertical, .owned, true),
-        ("galaga", "Galaga", "Namco", "1981", "1-2", .vertical, .wanted, false),
-        ("sf2", "Street Fighter II", "Capcom", "1991", "1-2", .horizontal, .owned, true),
-        ("mslug", "Metal Slug", "SNK", "1996", "1-2", .horizontal, .wanted, false),
-        ("1942", "1942", "Capcom", "1984", "1-2", .vertical, .none, false),
-        ("defender", "Defender", "Williams", "1981", "1-2", .horizontal, .owned, true),
-        ("asteroids", "Asteroids", "Atari", "1979", "1-2", .vertical, .none, false),
+    let games: [(String, String, String, String, String, ScreenOrientation, OwnershipStatus)] = [
+        ("pacman", "Pac-Man", "Namco", "1980", "1-2", .vertical, .owned),
+        ("dkong", "Donkey Kong", "Nintendo", "1981", "1-2", .vertical, .owned),
+        ("galaga", "Galaga", "Namco", "1981", "1-2", .vertical, .wanted),
+        ("sf2", "Street Fighter II", "Capcom", "1991", "1-2", .horizontal, .owned),
+        ("mslug", "Metal Slug", "SNK", "1996", "1-2", .horizontal, .wanted),
+        ("1942", "1942", "Capcom", "1984", "1-2", .vertical, .none),
+        ("defender", "Defender", "Williams", "1981", "1-2", .horizontal, .owned),
+        ("asteroids", "Asteroids", "Atari", "1979", "1-2", .vertical, .none),
     ]
 
-    for (rom, title, mfr, year, players, orient, ownership, board) in games {
+    for (rom, title, mfr, year, players, orient, ownership) in games {
         let game = Game(
             romSetName: rom,
             title: title,
@@ -56,8 +56,7 @@ struct ContentView: View {
             year: year,
             players: players,
             orientation: orient,
-            ownership: ownership,
-            hasBoard: board
+            ownership: ownership
         )
         switch rom {
         case "pacman":

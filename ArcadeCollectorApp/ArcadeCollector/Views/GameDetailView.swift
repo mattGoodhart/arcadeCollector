@@ -42,7 +42,7 @@ struct GameDetailView: View {
         .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                if !game.hasBoard {
+                if game.ownership != .owned {
                     Button {
                         let isWanted = game.ownership == .wanted
                         game.ownership = isWanted ? .none : .wanted
@@ -223,10 +223,14 @@ struct GameDetailView: View {
         }
     }
 
+    @State private var historyExpanded = false
+
     private var historySection: some View {
-        Section("History") {
-            Text(game.history)
-                .font(.subheadline)
+        Section {
+            DisclosureGroup("History", isExpanded: $historyExpanded) {
+                Text(game.history)
+                    .font(.subheadline)
+            }
         }
     }
 
@@ -280,10 +284,10 @@ struct GameDetailView: View {
 
     private var pcbSection: some View {
         Section {
-            Toggle("Have the PCB", isOn: $game.hasBoard)
-                .onChange(of: game.hasBoard) { _, hasPCB in
-                    game.ownership = hasPCB ? .owned : .none
-                }
+            Toggle("Have the PCB", isOn: Binding(
+                get: { game.ownership == .owned },
+                set: { game.ownership = $0 ? .owned : .none }
+            ))
         }
     }
 
@@ -374,8 +378,7 @@ private struct StatusPickerRow: View {
         year: "1980",
         players: "1",
         orientation: .vertical,
-        ownership: .owned,
-        hasBoard: true
+        ownership: .owned
     )
     game.bootStatus = .working
     game.videoStatus = .issues

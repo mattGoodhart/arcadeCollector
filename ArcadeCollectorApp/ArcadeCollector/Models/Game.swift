@@ -22,7 +22,6 @@ final class Game {
 
     // MARK: Ownership
     var ownership: OwnershipStatus
-    var hasBoard: Bool
 
     // MARK: Component status (LED indicators)
     var functionalCondition: ComponentStatus
@@ -78,8 +77,7 @@ final class Game {
         players: String = "",
         orientation: ScreenOrientation = .horizontal,
         isBootleg: Bool = false,
-        ownership: OwnershipStatus = .none,
-        hasBoard: Bool = false
+        ownership: OwnershipStatus = .none
     ) {
         self.romSetName = romSetName
         self.title = title
@@ -90,7 +88,6 @@ final class Game {
         self.orientation = orientation
         self.isBootleg = isBootleg
         self.ownership = ownership
-        self.hasBoard = hasBoard
 
         self.functionalCondition = .untested
         self.bootStatus = .untested

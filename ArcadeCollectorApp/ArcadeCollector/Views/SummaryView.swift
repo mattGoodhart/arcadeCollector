@@ -64,7 +64,6 @@ struct SummaryView: View {
     private var ownedGames: [Game] { games.filter { $0.ownership == .owned } }
     private var wantedGames: [Game] { games.filter { $0.ownership == .wanted } }
     private var gamesInRepair: [Game] { games.filter { $0.lastRepairLogDate != nil } }
-    private var boardsOwned: [Game] { games.filter { $0.hasBoard } }
 
     private var collectionCountsSection: some View {
         Section("Collection") {
@@ -72,7 +71,7 @@ struct SummaryView: View {
             StatRow(label: "Owned", value: ownedGames.count, icon: "star.circle")
             StatRow(label: "Wanted", value: wantedGames.count, icon: "heart.circle")
             StatRow(label: "In Repair", value: gamesInRepair.count, icon: "wrench.and.screwdriver")
-            StatRow(label: "Boards Owned", value: boardsOwned.count, icon: "cpu")
+
         }
     }
 
