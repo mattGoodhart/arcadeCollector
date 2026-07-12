@@ -32,8 +32,10 @@ struct GameDetailView: View {
                 externalLinksSection
             }
             pcbSection
-            componentStatusSection
-            repairLogSection
+            if game.ownership == .owned {
+                componentStatusSection
+                repairLogSection
+            }
         }
         .navigationTitle(game.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -85,6 +87,7 @@ struct GameDetailView: View {
             }
         }
         .task {
+            guard ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == nil else { return }
             await fetchArtwork(force: false)
         }
     }
@@ -383,6 +386,7 @@ private struct StatusPickerRow: View {
     game.bootStatus = .working
     game.videoStatus = .issues
     container.mainContext.insert(game)
+    try! container.mainContext.save()
 
     return NavigationStack {
         GameDetailView(game: game)

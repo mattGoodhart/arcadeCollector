@@ -462,3 +462,15 @@ Year-grouped sections with a section index make sense for navigating 4,166 games
 - **Everything else**: a flat, alphabetically-sorted list with alternating row colors but no section grouping.
 
 The sort uses `localizedCaseInsensitiveCompare` so titles like "1942" sort naturally alongside alphabetic titles.
+
+### 2026-07-12 — Preview GroupRecordingError Fix
+
+The `GameDetailView` preview was crashing with a `GroupRecordingError` — SwiftUI's vague internal error for "something in the view hierarchy blew up during a render pass." The culprit was the `.task { await fetchArtwork(force: false) }` modifier, which fires immediately in the preview. That call creates an `ArtworkFetcher` `@ModelActor` on a background actor, makes network requests to the Arcade Database, and mutates the SwiftData store when artwork comes back. The cross-context store mutation triggers a view update in the preview renderer, which chokes.
+
+**Fix (two parts)**:
+1. **Skip the network fetch in previews** — added a `ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"]` guard at the top of the `.task` block. Previews don't need live artwork.
+2. **Save the context after insert** — the `#Preview` block was inserting a `Game` into the in-memory container without calling `save()`. While this works for display, any cross-context lookup by `PersistentIdentifier` (like the `@ModelActor` does) needs a saved context to resolve the ID. Added `try! container.mainContext.save()` after insert.
+
+Also gated the component status and repair log sections behind `game.ownership == .owned` — these sections are only meaningful for owned games, and showing empty status pickers for games you don't own is confusing.
+
+**Lesson**: Xcode previews run `.task` modifiers just like the real app. If your `.task` does network I/O or background-actor SwiftData mutations, the preview will either crash or behave unpredictably. Guard against the preview environment for side effects that don't contribute to the preview's visual output.
