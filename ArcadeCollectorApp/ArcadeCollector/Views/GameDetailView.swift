@@ -87,7 +87,6 @@ struct GameDetailView: View {
             }
         }
         .task {
-            guard ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == nil else { return }
             await fetchArtwork(force: false)
         }
     }
@@ -370,10 +369,7 @@ private struct StatusPickerRow: View {
 }
 
 #Preview {
-    let container = try! ModelContainer(
-        for: Schema([Game.self, GameArtwork.self, RepairLog.self, RepairLogPhoto.self, GameCollection.self]),
-        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-    )
+    let container = PreviewSupport.container
     let game = Game(
         romSetName: "pacman",
         title: "Pac-Man",

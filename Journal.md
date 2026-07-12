@@ -474,3 +474,17 @@ The `GameDetailView` preview was crashing with a `GroupRecordingError` — Swift
 Also gated the component status and repair log sections behind `game.ownership == .owned` — these sections are only meaningful for owned games, and showing empty status pickers for games you don't own is confusing.
 
 **Lesson**: Xcode previews run `.task` modifiers just like the real app. If your `.task` does network I/O or background-actor SwiftData mutations, the preview will either crash or behave unpredictably. Guard against the preview environment for side effects that don't contribute to the preview's visual output.
+
+### 2026-07-12 — Preview Fix, Follow-up Cleanup
+
+Ran a three-agent parallel review over the previous commit (reuse / quality / efficiency). Two findings were worth acting on; the rest were either false positives or premature abstractions.
+
+**Leaky-abstraction fix**: the `XCODE_RUNNING_FOR_PREVIEWS` guard was sitting at the *call site* — the view's `.task` block. That works, but it puts the burden on every future caller of `ArtworkFetcher.fetch` to remember to guard. Moved the guard into `ArtworkFetcher.fetch(for:)` itself. Now the fetcher self-protects: any caller (this view, `BulkArtworkFetcher`, any future feature) automatically skips network + cross-context mutations in previews without knowing about the pitfall. The view's `.task` shrinks back to `await fetchArtwork(force: false)`.
+
+**Reuse fix**: both `ContentView.swift` and `GameDetailView.swift` had `#Preview` blocks that spelled out the full in-memory `ModelContainer` scaffolding (schema list of all five model types, in-memory config, force-try). Extracted `PreviewSupport.container` under a new `Support/` folder. Each preview now opens with `let container = PreviewSupport.container` — one line, and adding a sixth model type to the schema is a one-file change.
+
+**Skipped findings**:
+- Extracting a `ProcessInfo.isRunningInPreview` extension. After the leaky-abstraction fix, there's exactly *one* usage of the raw env-var string. A named constant for a single call site is premature abstraction — extract when the second caller appears.
+- A `game.isOwned` computed property. The `ownership == .owned` check is clear inline; the `OwnershipStatus` enum is small and well-named. Adding a helper wouldn't buy readability.
+
+**Lesson**: guards that protect against a specific runtime environment (previews, tests, CI) should live inside the thing being protected, not at every call site. Same principle as putting HTTP retries inside the HTTP client, not in every service that uses it: the thing that owns the risky behavior should own the safety net.

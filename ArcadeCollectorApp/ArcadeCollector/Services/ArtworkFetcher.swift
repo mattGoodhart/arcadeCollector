@@ -15,6 +15,9 @@ actor ArtworkFetcher {
     /// Fetches every canonical artwork kind that the game doesn't already
     /// have. Serial downloads — good enough for ~6 images per game.
     func fetch(for gameID: PersistentIdentifier) async throws {
+        // Skip in Xcode previews: cross-context SwiftData mutations during a
+        // preview render cause a GroupRecordingError.
+        guard ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == nil else { return }
         guard let game = self[gameID, as: Game.self] else { return }
 
         let romSetName = game.romSetName

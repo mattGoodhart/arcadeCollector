@@ -31,10 +31,7 @@ struct ContentView: View {
 }
 
 #Preview {
-    let container = try! ModelContainer(
-        for: Schema([Game.self, GameArtwork.self, RepairLog.self, RepairLogPhoto.self, GameCollection.self]),
-        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-    )
+    let container = PreviewSupport.container
     let context = container.mainContext
 
     let games: [(String, String, String, String, String, ScreenOrientation, OwnershipStatus)] = [
