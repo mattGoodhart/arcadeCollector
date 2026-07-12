@@ -488,3 +488,17 @@ Ran a three-agent parallel review over the previous commit (reuse / quality / ef
 - A `game.isOwned` computed property. The `ownership == .owned` check is clear inline; the `OwnershipStatus` enum is small and well-named. Adding a helper wouldn't buy readability.
 
 **Lesson**: guards that protect against a specific runtime environment (previews, tests, CI) should live inside the thing being protected, not at every call site. Same principle as putting HTTP retries inside the HTTP client, not in every service that uses it: the thing that owns the risky behavior should own the safety net.
+
+### 2026-07-12 — Inline Short Play Video
+
+Replaced the "Short Play" external link in `GameDetailView` with an inline collapsible video player. The Arcade Database serves short gameplay clips as direct MP4 downloads (`download_file.php?...&entity=shortplay`), so a native `VideoPlayer` (AVKit) works without any YouTube embed scaffolding.
+
+The player lives inside a `DisclosureGroup` — collapsed by default, the `AVPlayer` is created lazily on first expand (no network hit until the user asks), and paused on collapse.
+
+**Content-type snag**: the server returns `Content-Type: application/octet-stream` with `Content-disposition: attachment` — it's treating the file as a download, not a stream. `AVPlayer(url:)` refused to play it (slashed play icon). The fix: create an `AVURLAsset` with `AVURLAssetOutOfBandMIMETypeKey` set to `"video/mp4"`, which tells AVPlayer to treat the bytes as MP4 regardless of what the server claims.
+
+The aspect ratio adapts to the game's orientation — 4:3 for horizontal games, 3:4 for vertical.
+
+**Simulator caveat**: the iOS Simulator doesn't support hardware video decoding, so the player renders audio-only with a black frame. Confirmed working (audio plays, controls respond) — visual playback requires a physical device.
+
+**Lesson**: when streaming video from a server you don't control, check the `Content-Type` and `Content-Disposition` headers. `AVPlayer` is strict about MIME types — if the server says "binary blob," the player won't guess. `AVURLAssetOutOfBandMIMETypeKey` is the escape hatch for servers that serve valid video with wrong headers.

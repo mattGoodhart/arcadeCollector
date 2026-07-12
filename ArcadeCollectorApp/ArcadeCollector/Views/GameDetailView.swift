@@ -3,6 +3,7 @@
 //  ArcadeCollector
 //
 
+import AVKit
 import SwiftUI
 import SwiftData
 
@@ -15,6 +16,8 @@ struct GameDetailView: View {
     @State private var fetchError: Error?
     @State private var selectedArtwork: GameArtwork?
     @State private var mainImageKind: ArtworkKind = .inGame
+    @State private var shortPlayExpanded = false
+    @State private var shortPlayPlayer: AVPlayer?
 
     /// Priority order for the main image area and segmented picker.
     private static let mainKinds: [ArtworkKind] = [.inGame, .title, .cabinet, .flyer, .pcb]
@@ -28,6 +31,9 @@ struct GameDetailView: View {
                 historySection
             }
             hardwareLinkSection
+            if game.shortPlayURL != nil {
+                shortPlaySection
+            }
             if hasExternalLinks {
                 externalLinksSection
             }
@@ -249,7 +255,7 @@ struct GameDetailView: View {
     // MARK: - External links
 
     private var hasExternalLinks: Bool {
-        youtubeURL != nil || game.shortPlayURL != nil || game.manualURL != nil
+        youtubeURL != nil || game.manualURL != nil
     }
 
     /// Builds a YouTube watch URL from the video ID via `URLComponents`
@@ -263,10 +269,37 @@ struct GameDetailView: View {
         return components?.url
     }
 
+    private var shortPlaySection: some View {
+        Section {
+            DisclosureGroup(isExpanded: $shortPlayExpanded) {
+                if let player = shortPlayPlayer {
+                    VideoPlayer(player: player)
+                        .aspectRatio(game.orientation == .vertical ? 3/4 : 4/3, contentMode: .fit)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                } else {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 200)
+                }
+            } label: {
+                Label("Short Play", systemImage: "arcade.stick")
+            }
+            .onChange(of: shortPlayExpanded) {
+                if shortPlayExpanded, shortPlayPlayer == nil, let url = game.shortPlayURL {
+                    let asset = AVURLAsset(url: url, options: [
+                        "AVURLAssetOutOfBandMIMETypeKey": "video/mp4"
+                    ])
+                    shortPlayPlayer = AVPlayer(playerItem: AVPlayerItem(asset: asset))
+                } else if !shortPlayExpanded {
+                    shortPlayPlayer?.pause()
+                }
+            }
+        }
+    }
+
     private var externalLinksSection: some View {
         Section("Links") {
             linkRow(title: "YouTube Gameplay", systemImage: "play.rectangle", url: youtubeURL)
-            linkRow(title: "Short Play",       systemImage: "arcade.stick",   url: game.shortPlayURL)
             linkRow(title: "Manual",           systemImage: "book",           url: game.manualURL)
         }
     }
