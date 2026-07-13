@@ -502,3 +502,30 @@ The aspect ratio adapts to the game's orientation — 4:3 for horizontal games, 
 **Simulator caveat**: the iOS Simulator doesn't support hardware video decoding, so the player renders audio-only with a black frame. Confirmed working (audio plays, controls respond) — visual playback requires a physical device.
 
 **Lesson**: when streaming video from a server you don't control, check the `Content-Type` and `Content-Disposition` headers. `AVPlayer` is strict about MIME types — if the server says "binary blob," the player won't guess. `AVURLAssetOutOfBandMIMETypeKey` is the escape hatch for servers that serve valid video with wrong headers.
+
+### 2026-07-12 — App Store Preparation
+
+Ran an App Store readiness audit and addressed the gaps:
+
+1. **App category** — added `INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference"` to both Debug and Release build configurations. The app is a reference tool for arcade game collectors, so "Reference" fits.
+
+2. **Code signing** — configured via Xcode's Signing & Capabilities pane with automatic signing. The `DEVELOPMENT_TEAM` is stored locally in `.xcuserdata`, not in the shared project file — standard practice for a solo developer.
+
+3. **Privacy manifest** — created `PrivacyInfo.xcprivacy` declaring no tracking, no tracking domains, no collected data types, and no required-reason API usage. The app uses `URLSession` for artwork fetching and the camera for repair log photos, but neither is a required-reason API. `PhotosPicker` uses limited photo library access and doesn't need a usage description. The camera's `NSCameraUsageDescription` was already in place.
+
+4. **Graceful database error handling** — replaced the `fatalError` in `ArcadeCollectorApp.swift` with optional `ModelContainer` initialization. If the SwiftData store can't be created (corrupted database, disk full, etc.), the app now shows a `ContentUnavailableView` with a "Unable to Load Database" message instead of crashing on launch. The previous `fatalError` would have been an instant rejection if App Review triggered it.
+
+**What the audit confirmed was already fine**:
+- App icon present (1024×1024 universal, dark/tinted slots declared but optional).
+- Auto-generated launch screen via `UILaunchScreen_Generation`.
+- Camera usage description in place.
+- Zero third-party dependencies — no license compliance or supply chain concerns.
+- No TODOs, FIXMEs, or stub views in the codebase.
+- 12 unit/integration tests covering seeding, filtering, and API client logic.
+
+**Remaining nice-to-haves** (not blockers):
+- Dark/tinted app icon variants for adaptive icon support.
+- Real UI test coverage (current UI tests are Xcode-generated stubs).
+- The iOS 26.0 deployment target limits the audience to the latest OS — an intentional choice for a Liquid Glass–first design, but worth revisiting if wider reach matters.
+
+**Lesson**: most App Store rejections come from missing metadata (category, privacy manifest) or launch crashes — things that are trivial to fix but easy to overlook when you're focused on features. An audit pass before submission catches them in minutes instead of days in the review queue.

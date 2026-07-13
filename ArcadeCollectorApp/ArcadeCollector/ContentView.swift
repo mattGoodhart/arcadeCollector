@@ -28,6 +28,14 @@ struct ContentView: View {
         }
         .tint(.accentColor)
     }
+
+    static var databaseErrorView: some View {
+        ContentUnavailableView(
+            "Unable to Load Database",
+            systemImage: "exclamationmark.triangle",
+            description: Text("ArcadeCollector could not open its data store. Try restarting the app. If the problem persists, reinstalling may help.")
+        )
+    }
 }
 
 #Preview {

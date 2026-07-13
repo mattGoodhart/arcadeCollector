@@ -10,7 +10,9 @@ import SwiftData
 
 @main
 struct ArcadeCollectorApp: App {
-    let sharedModelContainer: ModelContainer = {
+    let sharedModelContainer: ModelContainer?
+
+    init() {
         let schema = Schema([
             Game.self,
             GameArtwork.self,
@@ -21,24 +23,28 @@ struct ArcadeCollectorApp: App {
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            sharedModelContainer = try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            sharedModelContainer = nil
         }
-    }()
+    }
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .task {
-                    do {
-                        let seeder = GameSeeder(modelContainer: sharedModelContainer)
-                        try await seeder.seedIfNeeded()
-                    } catch {
-                        assertionFailure("Seeding failed: \(error)")
+            if let sharedModelContainer {
+                ContentView()
+                    .task {
+                        do {
+                            let seeder = GameSeeder(modelContainer: sharedModelContainer)
+                            try await seeder.seedIfNeeded()
+                        } catch {
+                            assertionFailure("Seeding failed: \(error)")
+                        }
                     }
-                }
+                    .modelContainer(sharedModelContainer)
+            } else {
+                ContentView.databaseErrorView
+            }
         }
-        .modelContainer(sharedModelContainer)
     }
 }

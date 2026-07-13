@@ -299,7 +299,7 @@ struct GameDetailView: View {
 
     private var externalLinksSection: some View {
         Section("Links") {
-            linkRow(title: "YouTube Gameplay", systemImage: "play.rectangle", url: youtubeURL)
+            linkRow(title: "YouTube Longplay", systemImage: "play.rectangle", url: youtubeURL)
             linkRow(title: "Manual",           systemImage: "book",           url: game.manualURL)
         }
     }
