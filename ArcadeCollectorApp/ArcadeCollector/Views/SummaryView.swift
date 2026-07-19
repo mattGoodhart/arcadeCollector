@@ -10,6 +10,7 @@ import Charts
 struct SummaryView: View {
     @Query private var games: [Game]
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.colorScheme) private var colorScheme
     @State private var showingAbout = false
     @State private var bulkFetchTask: Task<Void, Never>?
     @State private var bulkProgress: BulkArtworkFetcher.Progress?
@@ -151,6 +152,7 @@ struct SummaryView: View {
 
     private var gamesByCondition: [(label: String, count: Int, color: Color, labelColor: Color)] {
         let owned = ownedGames
+        let isDark = colorScheme == .dark
 
         let untested = owned.filter {
             $0.bootStatus == .untested &&
@@ -180,10 +182,10 @@ struct SummaryView: View {
         let broken = owned.filter { $0.bootStatus == .broken }.count
 
         return [
-            ("Working", working, ComponentStatus.working.color, .white),
+            ("Working", working, ComponentStatus.working.color, isDark ? .black : .white),
             ("Issues", issues, ComponentStatus.issues.color, .black),
-            ("Broken", broken, ComponentStatus.broken.color, .white),
-            ("Untested", untested, ComponentStatus.untested.color, .white),
+            ("Broken", broken, ComponentStatus.broken.color, isDark ? .black : .white),
+            ("Untested", untested, ComponentStatus.untested.color, isDark ? .black : .white),
         ].filter { $0.count > 0 }
     }
 
@@ -280,10 +282,8 @@ private struct StatRow: View {
             Text("\(value)")
                 .fontDesign(.rounded)
                 .bold()
-                .foregroundStyle(Color.arcadeRowOdd)
         } label: {
             Label(label, systemImage: icon)
-                .foregroundStyle(Color.arcadeRowOdd)
         }
     }
 }
@@ -306,7 +306,7 @@ private struct ComponentStatRow: View {
                             .overlay {
                                 Text("\(count)")
                                     .font(.caption2.bold())
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(status.barLabelColor)
                             }
                     }
                 }

@@ -616,3 +616,13 @@ Two overlapping bugs:
 **Lesson**: XCUITest's element resolution is a *snapshot* at query time. Any code path that touches `.value`, `.frame`, or other snapshot-dependent properties can hard-fail if the element vanishes between resolution and access — even for one poll tick during a normal SwiftUI re-layout. Poll loops need to treat "element temporarily missing" as retry-worthy, not fatal.
 
 **Lesson**: `isHittable` guarantees the center point is tappable; it says nothing about whether the *rest* of the frame is on-screen. For coordinate-based taps at non-center offsets (which we need for wide-cell controls like `Toggle`), also verify the target region is clear of overlays — tab bar, keyboard, safe area — via explicit `frame` comparisons.
+
+### 2026-07-19 — Summary View Dark Mode Visibility
+
+The Summary tab's color scheme was designed light-mode-first (the legacy app was light-mode only). Two visibility problems in dark mode:
+
+1. **`StatRow` text was invisible.** The collection stats (Total Games, Owned, Wanted, In Repair) used `Color.arcadeRowOdd` — a dark teal (0.098, 0.392, 0.392) — as the text color. This was originally a background color in the game list (with white text on top). Using it as text on the standard dark-mode cell background (near black) produced zero contrast. Fix: removed the hardcoded color; text now uses `.primary` which is dark in light mode and white in dark mode.
+
+2. **Donut chart annotations were unreadable.** The sector label text used hardcoded `.white` (or `.black` for the yellow "Issues" sector). In dark mode, SwiftUI's semantic colors (`.green`, `.red`, `.secondary`) produce brighter fills than in light mode — white text on bright green has a contrast ratio around 2.4:1, well below WCAG AA. Fix: label colors now adapt via `colorScheme` — dark mode uses black text (high contrast on bright fills), light mode uses white (high contrast on darker fills).
+
+3. **Component bar count labels.** The horizontal stacked bars in the component breakdown used `.white` for all count labels. The yellow "Issues" bar has always had poor contrast with white text. Added a `barLabelColor` property to `ComponentStatus` — black for yellow, white for green/red/gray.

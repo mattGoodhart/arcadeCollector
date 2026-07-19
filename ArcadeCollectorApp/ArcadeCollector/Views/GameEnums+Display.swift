@@ -27,6 +27,13 @@ extension ComponentStatus {
         }
     }
 
+    var barLabelColor: Color {
+        switch self {
+        case .issues:                    return .black
+        case .untested, .broken, .working: return .white
+        }
+    }
+
     var symbolName: String {
         switch self {
         case .untested: return "circle"
