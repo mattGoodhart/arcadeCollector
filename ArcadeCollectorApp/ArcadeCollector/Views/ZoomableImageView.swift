@@ -8,6 +8,7 @@ import SwiftUI
 struct ZoomableImageView: View {
     let image: UIImage
     let title: String
+    var forcedAspectRatio: CGFloat? = nil
     @Environment(\.dismiss) private var dismiss
     @State private var scale: CGFloat = 1
     @State private var lastScale: CGFloat = 1
@@ -19,7 +20,7 @@ struct ZoomableImageView: View {
             GeometryReader { geo in
                 Image(uiImage: image)
                     .resizable()
-                    .scaledToFit()
+                    .aspectRatio(forcedAspectRatio, contentMode: .fit)
                     .scaleEffect(scale)
                     .offset(offset)
                     .frame(width: geo.size.width, height: geo.size.height)

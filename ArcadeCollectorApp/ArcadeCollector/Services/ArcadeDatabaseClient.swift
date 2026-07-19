@@ -81,7 +81,13 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
         return row.asMetadata()
     }
 
-    func driverSourceFile(for romSetName: String) async throws -> String? {
+    struct MachineXMLInfo: Sendable {
+        let sourceFile: String?
+        let displayType: String?
+        let displayCount: Int
+    }
+
+    func machineXMLInfo(for romSetName: String) async throws -> MachineXMLInfo {
         var components = URLComponents(string: "https://adb.arcadeitalia.net/download_file.php")!
         components.queryItems = [
             URLQueryItem(name: "tipo", value: "xml"),
@@ -92,7 +98,7 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
         let (data, response) = try await session.data(from: url)
         try Self.throwIfNotOK(response)
 
-        return MachineSourceFileParser.parse(data: data)
+        return MachineXMLParser.parse(data: data)
     }
 
     func downloadImage(from url: URL) async throws -> Data {
@@ -197,17 +203,23 @@ private extension String {
     nonisolated var nonEmpty: String? { isEmpty ? nil : self }
 }
 
-// MARK: - XML Parser for <machine sourcefile="...">
+// MARK: - XML Parser for <machine> and <display> elements
 
-private final class MachineSourceFileParser: NSObject, XMLParserDelegate {
+private final class MachineXMLParser: NSObject, XMLParserDelegate {
     private var sourceFile: String?
+    private var displayType: String?
+    private var displayCount = 0
 
-    static func parse(data: Data) -> String? {
-        let delegate = MachineSourceFileParser()
+    static func parse(data: Data) -> ArcadeDatabaseClient.MachineXMLInfo {
+        let delegate = MachineXMLParser()
         let parser = XMLParser(data: data)
         parser.delegate = delegate
         parser.parse()
-        return delegate.sourceFile
+        return .init(
+            sourceFile: delegate.sourceFile,
+            displayType: delegate.displayType,
+            displayCount: delegate.displayCount
+        )
     }
 
     func parser(
@@ -217,9 +229,16 @@ private final class MachineSourceFileParser: NSObject, XMLParserDelegate {
         qualifiedName: String?,
         attributes attributeDict: [String: String] = [:]
     ) {
-        if elementName == "machine", let sf = attributeDict["sourcefile"] {
-            sourceFile = sf
-            parser.abortParsing()
+        switch elementName {
+        case "machine":
+            sourceFile = attributeDict["sourcefile"]
+        case "display":
+            displayCount += 1
+            if displayType == nil {
+                displayType = attributeDict["type"]
+            }
+        default:
+            break
         }
     }
 }

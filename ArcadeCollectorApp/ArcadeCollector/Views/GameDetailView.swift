@@ -89,7 +89,15 @@ struct GameDetailView: View {
         }
         .fullScreenCover(item: $selectedArtwork) { art in
             if let uiImage = art.imageData.flatMap(UIImage.init(data:)) {
-                ZoomableImageView(image: uiImage, title: art.kind.displayName)
+                let forceAspect = shouldForceScreenAspectRatio
+                    && (art.kind == .title || art.kind == .inGame)
+                ZoomableImageView(
+                    image: uiImage,
+                    title: art.kind.displayName,
+                    forcedAspectRatio: forceAspect
+                        ? (game.orientation == .vertical ? 3.0/4.0 : 4.0/3.0)
+                        : nil
+                )
             }
         }
         .task {
@@ -186,12 +194,24 @@ struct GameDetailView: View {
         return nil
     }
 
+    private var shouldForceScreenAspectRatio: Bool {
+        let type = game.displayType
+        return type == "raster" || type == "vector"
+    }
+
     private var mainImage: some View {
         Group {
             if let best = bestAvailableArtwork {
+                let forceAspect = shouldForceScreenAspectRatio
+                    && (best.artwork.kind == .title || best.artwork.kind == .inGame)
                 Image(uiImage: best.image)
                     .resizable()
-                    .scaledToFit()
+                    .aspectRatio(
+                        forceAspect
+                            ? (game.orientation == .vertical ? 3.0/4.0 : 4.0/3.0)
+                            : nil,
+                        contentMode: .fit
+                    )
                     .onTapGesture { selectedArtwork = best.artwork }
                     .accessibilityAddTraits(.isImage)
                     .accessibilityLabel(best.artwork.kind.displayName)

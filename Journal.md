@@ -560,3 +560,17 @@ Getting this to work reliably was a war story. The bugs, in order:
 **Lesson 3**: Coordinate-based taps are a code smell, but for wide-cell controls like `Toggle` in a `Form`/`List`, they're the only reliable option. Element-based `.tap()` doesn't know which sub-region of a compound cell is the interactive part.
 
 Suite count: 15 → 21 tests. The five decoder tests are ~0.1s each, deterministic, and cover the JSON contract that used to be verified only by live-API integration tests. The one UI test is ~30s and catches routing / binding / cross-tab observation regressions that no unit test can.
+
+### 2026-07-19 — Display Type Parsing and Forced 4:3 Aspect Ratio
+
+The Arcade Database's XML endpoint contains `<display>` elements with a `type` attribute ("raster" or "vector") and — for multi-monitor games like Punch-Out!! — multiple `<display>` elements. The legacy app parsed this into a `displayType` string, but the new app's `MachineSourceFileParser` was aborting as soon as it found the `<machine>` element's `sourcefile` attribute, throwing away everything else in the XML.
+
+**Extended the XML parser** — renamed `MachineSourceFileParser` to `MachineXMLParser` and changed it to continue parsing past `<machine>`. It now captures the `type` attribute from the first `<display>` element and counts all `<display>` elements. The public method was renamed from `driverSourceFile(for:)` to `machineXMLInfo(for:)`, returning a `MachineXMLInfo` struct with `sourceFile`, `displayType`, and `displayCount`.
+
+**Populating `displayType`** — `ArtworkFetcher` now calls `machineXMLInfo` and stores the display type. For single-monitor games, `displayType` is set to "raster" or "vector" directly. For multi-monitor games (displayCount > 1), it's set to "multiple". This single field encodes both the monitor technology and the single-vs-multiple distinction.
+
+**Forced aspect ratio on screenshots** — title and in-game images from the Arcade Database are gameplay screenshots captured from the emulated display. Standard arcade monitors are 4:3 (or 3:4 when rotated for vertical games), but the source images aren't always pixel-perfect 4:3 — emulator capture can introduce slight ratio drift. For games with a single raster or vector monitor, we now force the aspect ratio to match the physical monitor: `4:3` for horizontal games, `3:4` for vertical. Games with multiple monitors (which have non-standard display geometries) keep their natural image ratio.
+
+The logic lives in a `shouldForceScreenAspectRatio` computed property on the detail view, and the ratio is passed through to `ZoomableImageView` via a new optional `forcedAspectRatio` parameter so the constraint holds in both the thumbnail and the full-screen viewer.
+
+**Why not force it on all artwork kinds?** Cabinet photos, flyers, and PCB photos have no relationship to the monitor's aspect ratio — they're photographs of physical objects with arbitrary dimensions. Only title and in-game images represent what appears on the CRT.
