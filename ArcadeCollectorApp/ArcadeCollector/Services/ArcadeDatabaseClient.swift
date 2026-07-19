@@ -112,6 +112,23 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
         URL(string: "https://adb.arcadeitalia.net/media/mame.current/pcbs/\(romSetName).png")!
     }
 
+    /// Manual PDF download URL for a given ROM.
+    func manualURL(for romSetName: String) -> URL {
+        var components = URLComponents(string: "https://adb.arcadeitalia.net/download_file.php")!
+        components.queryItems = [
+            URLQueryItem(name: "tipo", value: "mame_current"),
+            URLQueryItem(name: "codice", value: romSetName),
+            URLQueryItem(name: "entity", value: "manual"),
+        ]
+        return components.url!
+    }
+
+    func downloadData(from url: URL) async throws -> Data {
+        let (data, response) = try await session.data(from: url)
+        try Self.throwIfNotOK(response)
+        return data
+    }
+
     private static func throwIfNotOK(_ response: URLResponse) throws {
         guard let http = response as? HTTPURLResponse else { return }
         guard (200..<300).contains(http.statusCode) else {

@@ -18,6 +18,8 @@ struct GameDetailView: View {
     @State private var mainImageKind: ArtworkKind = .inGame
     @State private var shortPlayExpanded = false
     @State private var shortPlayPlayer: AVPlayer?
+    @State private var isLoadingManual = false
+    @State private var showManual = false
 
     /// Priority order for the main image area and segmented picker.
     private static let mainKinds: [ArtworkKind] = [.inGame, .title, .cabinet, .flyer, .pcb]
@@ -36,6 +38,9 @@ struct GameDetailView: View {
             }
             if hasExternalLinks {
                 externalLinksSection
+            }
+            if game.manualURL != nil {
+                manualSection
             }
             pcbSection
             if game.ownership == .owned {
@@ -98,6 +103,11 @@ struct GameDetailView: View {
                         ? (game.orientation == .vertical ? 3.0/4.0 : 4.0/3.0)
                         : nil
                 )
+            }
+        }
+        .sheet(isPresented: $showManual) {
+            if let data = game.manualData {
+                ManualView(title: "\(game.title) Manual", pdfData: data)
             }
         }
         .task {
@@ -275,7 +285,7 @@ struct GameDetailView: View {
     // MARK: - External links
 
     private var hasExternalLinks: Bool {
-        youtubeURL != nil || game.manualURL != nil
+        youtubeURL != nil
     }
 
     /// Builds a YouTube watch URL from the video ID via `URLComponents`
@@ -320,7 +330,6 @@ struct GameDetailView: View {
     private var externalLinksSection: some View {
         Section("Links") {
             linkRow(title: "YouTube Longplay", systemImage: "play.rectangle", url: youtubeURL)
-            linkRow(title: "Manual",           systemImage: "book",           url: game.manualURL)
         }
     }
 
@@ -332,6 +341,50 @@ struct GameDetailView: View {
             } label: {
                 Label(title, systemImage: systemImage)
             }
+        }
+    }
+
+    // MARK: - Manual
+
+    private var manualSection: some View {
+        Section {
+            Button {
+                Task { await loadManual() }
+            } label: {
+                HStack {
+                    Label("Manual", systemImage: "book")
+                    Spacer()
+                    if isLoadingManual {
+                        ProgressView().controlSize(.small)
+                    }
+                }
+            }
+            .disabled(isLoadingManual)
+        }
+    }
+
+    private func loadManual() async {
+        if game.manualData != nil {
+            showManual = true
+            return
+        }
+        guard let url = game.manualURL else { return }
+
+        isLoadingManual = true
+        defer { isLoadingManual = false }
+
+        let client = ArcadeDatabaseClient()
+        do {
+            let data = try await client.downloadData(from: url)
+            guard data.count >= 4,
+                  data.prefix(4) == Data([0x25, 0x50, 0x44, 0x46]) else {
+                game.manualURL = nil
+                return
+            }
+            game.manualData = data
+            showManual = true
+        } catch {
+            game.manualURL = nil
         }
     }
 

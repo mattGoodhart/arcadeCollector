@@ -574,3 +574,27 @@ The Arcade Database's XML endpoint contains `<display>` elements with a `type` a
 The logic lives in a `shouldForceScreenAspectRatio` computed property on the detail view, and the ratio is passed through to `ZoomableImageView` via a new optional `forcedAspectRatio` parameter so the constraint holds in both the thumbnail and the full-screen viewer.
 
 **Why not force it on all artwork kinds?** Cabinet photos, flyers, and PCB photos have no relationship to the monitor's aspect ratio — they're photographs of physical objects with arbitrary dimensions. Only title and in-game images represent what appears on the CRT.
+
+### 2026-07-19 — In-App Manual Viewer
+
+The legacy app's `HardwareViewController` had a "Manual" button that downloaded a PDF from the Arcade Database, validated it was a real PDF, cached it on the Game entity, and displayed it inline via PDFKit. The new app had a "Manual" link in the external links section that just opened the URL in Safari — useful but clunky, and it re-downloaded every time.
+
+**Ported the full flow:**
+
+1. **URL construction** — added `manualURL(for:)` to `ArcadeDatabaseClient`, which builds the download URL from the ROM set name using the same endpoint as the legacy app (`download_file.php?tipo=mame_current&codice={rom}&entity=manual`). `ArtworkFetcher` now populates `game.manualURL` during the metadata back-fill pass so every game that's been fetched from the API gets the URL.
+
+2. **Download + validate** — the `loadManual()` method in `GameDetailView` downloads the data and checks the first four bytes for the `%PDF` magic header (hex `25 50 44 46`), matching the legacy `checkForRealPDF` logic. The Arcade Database sometimes returns HTML error pages or empty responses for games that don't have manuals — without this check, we'd cache garbage and try to render it as a PDF. If validation fails, `manualURL` is cleared so the row disappears.
+
+3. **Caching** — validated PDF data is stored in `game.manualData` (with `@Attribute(.externalStorage)`), so subsequent taps show the manual instantly without re-downloading. Same pattern as artwork caching.
+
+4. **In-app viewer** — `ManualView` wraps PDFKit's `PDFView` in a `UIViewRepresentable`, presented as a `.sheet`. Single-page continuous scrolling with auto-scaling, matching the legacy `PopOverViewController`'s PDF mode. The sheet gets a "Done" button and the arcade toolbar styling.
+
+The manual row lives in its own section (between Links and Have the PCB), separate from external links — because it's not an external link anymore. Tapping it shows an inline `ProgressView` during download, then presents the sheet.
+
+**Why not eagerly download manuals during artwork fetch?** Manuals are 1–20MB PDFs. Downloading them for every game the user views (or worse, during bulk artwork fetch) would waste bandwidth and storage on content most users will never look at. Lazy download on tap is the right call — same as the legacy app.
+
+**UI test race condition**: the golden-path UI test broke after adding the manual section. The PCB toggle sits below all the metadata/media sections in the detail view's `List`. Before the artwork fetch completes, the view is short and the toggle is in the initial viewport — `findPCBToggle` finds it immediately. But ~0.5s later the fetch completes, inserting history, short play, links, and manual sections above it, pushing the toggle off-screen. SwiftUI `List` de-materializes off-screen cells from the accessibility tree, so accessing `toggle.value` immediately after fails with "No matches found for Descendants matching type Switch."
+
+**Fix**: added `waitForDetailToSettle` — waits for the "Manual" button to appear (the last section inserted by the fetch) before scrolling to find the toggle. This ensures the view's layout is stable and the toggle's final position is known. Also bumped `maxSwipes` from 8 to 12 for the longer post-fetch content.
+
+**Lesson**: when a SwiftUI `List` has async content insertion (via `.task`, `@Query` updates, etc.), UI tests must wait for the insertions to complete before querying elements lower in the list. An element that `.exists` in the pre-insertion layout can vanish from the accessibility tree milliseconds later when new sections push it off-screen. The fix is to wait for a sentinel element that marks "all async content has landed" before interacting with position-sensitive elements below it.

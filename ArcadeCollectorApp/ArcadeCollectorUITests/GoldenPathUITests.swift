@@ -40,9 +40,11 @@ final class GoldenPathUITests: XCTestCase {
         XCTAssertTrue(gameRow.waitForExistence(timeout: 15), "Donkey Kong row not visible after searching — seed or search filter broken")
         gameRow.tap()
 
-        // Step 2: toggle "Have the PCB" on. The toggle sits several sections
-        //         down a `List`, which lazily materializes rows into the
-        //         accessibility tree; scroll until it's reachable.
+        // Step 2: toggle "Have the PCB" on. The artwork fetch fires on view
+        //         appear and inserts sections (history, short play, links,
+        //         manual) above the toggle — wait for it to settle so we
+        //         don't find the toggle then lose it to a re-render.
+        waitForDetailToSettle(app)
         let pcbToggle = findPCBToggle(app)
         XCTAssertTrue(pcbToggle.waitForExistence(timeout: 5), "PCB toggle not reachable after scrolling detail view")
         if isSwitchOn(pcbToggle) {
@@ -61,6 +63,7 @@ final class GoldenPathUITests: XCTestCase {
 
         // Step 4: cleanup — flip back off so state doesn't leak into subsequent runs.
         collectionRow.tap()
+        waitForDetailToSettle(app)
         let cleanupToggle = findPCBToggle(app)
         XCTAssertTrue(cleanupToggle.waitForExistence(timeout: 5), "PCB toggle not reachable during cleanup")
         tapToggle(cleanupToggle)
@@ -84,7 +87,7 @@ final class GoldenPathUITests: XCTestCase {
     }
 
     /// Scrolls the detail view's `List` up until the PCB toggle is reachable.
-    private func findPCBToggle(_ app: XCUIApplication, maxSwipes: Int = 8) -> XCUIElement {
+    private func findPCBToggle(_ app: XCUIApplication, maxSwipes: Int = 12) -> XCUIElement {
         let toggle = app.switches[Self.pcbToggleIdentifier]
         let scroller = app.collectionViews.firstMatch
         for _ in 0..<maxSwipes {
@@ -149,6 +152,15 @@ final class GoldenPathUITests: XCTestCase {
             Thread.sleep(forTimeInterval: 0.1)
         }
         return isSwitchOn(toggle) == desired
+    }
+
+    /// Waits for the artwork fetch to complete and the detail view to
+    /// stabilize before interacting with lower sections. The Manual button
+    /// only appears after `ArtworkFetcher` populates `manualURL`, so its
+    /// presence signals the async content insertion is done.
+    private func waitForDetailToSettle(_ app: XCUIApplication) {
+        let manualButton = app.buttons["Manual"]
+        _ = manualButton.waitForExistence(timeout: 10)
     }
 
     private func navigateBack(_ app: XCUIApplication) {

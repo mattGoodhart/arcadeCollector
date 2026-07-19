@@ -61,6 +61,9 @@ actor ArtworkFetcher {
         if game.gamePageURL == nil, let pageURL = metadata.gamePageURL {
             game.gamePageURL = pageURL
         }
+        if game.manualURL == nil {
+            game.manualURL = client.manualURL(for: romSetName)
+        }
         if game.emulationStatus.isEmpty, !metadata.emulationStatus.isEmpty {
             game.emulationStatus = metadata.emulationStatus
         }
