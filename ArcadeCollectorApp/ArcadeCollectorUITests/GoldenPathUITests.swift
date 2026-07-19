@@ -86,12 +86,26 @@ final class GoldenPathUITests: XCTestCase {
         return app.descendants(matching: .any).matching(predicate).firstMatch
     }
 
-    /// Scrolls the detail view's `List` up until the PCB toggle is reachable.
+    /// Scrolls the detail view's `List` up until the PCB toggle is reachable
+    /// AND fully clear of the tab bar. Two conditions are checked:
+    ///
+    /// 1. `.isHittable` — a row sitting at the very bottom edge of the
+    ///    viewport enters the accessibility tree but the tree can evict it on
+    ///    the next query, so requiring hittable keeps subsequent `.value`
+    ///    reads from missing.
+    /// 2. `frame.maxY <= tabBar.frame.minY` — the switch's compound frame can
+    ///    extend behind the tab bar even when hittable. Without this check,
+    ///    `coordinate(withNormalizedOffset: (0.9, 0.5)).tap()` lands on the
+    ///    Repair Logs tab button instead of the switch knob.
     private func findPCBToggle(_ app: XCUIApplication, maxSwipes: Int = 12) -> XCUIElement {
         let toggle = app.switches[Self.pcbToggleIdentifier]
         let scroller = app.collectionViews.firstMatch
+        let tabBar = app.tabBars.firstMatch
         for _ in 0..<maxSwipes {
-            if toggle.exists { return toggle }
+            if toggle.exists && toggle.isHittable {
+                let clearsTabBar = !tabBar.exists || toggle.frame.maxY <= tabBar.frame.minY
+                if clearsTabBar { return toggle }
+            }
             if scroller.exists {
                 scroller.swipeUp()
             } else {
@@ -132,9 +146,14 @@ final class GoldenPathUITests: XCTestCase {
         toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap()
     }
 
+    /// SwiftUI Toggle exposes value as "0" or "1"; belt-and-suspenders for
+    /// platform versions that report a Bool or localized "On"/"Off". Guards
+    /// `.exists` before reading `.value` because on a missing element `.value`
+    /// hard-fails the test with "No matches found for Descendants matching
+    /// type Switch" — which can happen mid-flight when a `List` re-layouts
+    /// after the toggled change adds or removes sections below.
     private func isSwitchOn(_ toggle: XCUIElement) -> Bool {
-        // SwiftUI Toggle exposes value as "0" or "1"; belt-and-suspenders for
-        // platform versions that report a Bool or localized "On"/"Off".
+        guard toggle.exists else { return false }
         if let boolValue = toggle.value as? Bool { return boolValue }
         if let stringValue = toggle.value as? String {
             return stringValue == "1" || stringValue.lowercased() == "on"
@@ -144,14 +163,16 @@ final class GoldenPathUITests: XCTestCase {
 
     /// SwiftUI `Toggle` state changes propagate asynchronously through the
     /// bound property, so the accessibility `.value` doesn't flip on the same
-    /// event-loop tick as the tap. Poll for a bounded window.
-    private func waitForSwitch(_ toggle: XCUIElement, on desired: Bool, timeout: TimeInterval = 3) -> Bool {
+    /// event-loop tick as the tap. Poll for a bounded window, treating a
+    /// transient element absence (during `List` re-layout) as "keep polling"
+    /// rather than a terminal failure.
+    private func waitForSwitch(_ toggle: XCUIElement, on desired: Bool, timeout: TimeInterval = 5) -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {
-            if isSwitchOn(toggle) == desired { return true }
+            if toggle.exists, isSwitchOn(toggle) == desired { return true }
             Thread.sleep(forTimeInterval: 0.1)
         }
-        return isSwitchOn(toggle) == desired
+        return toggle.exists && isSwitchOn(toggle) == desired
     }
 
     /// Waits for the artwork fetch to complete and the detail view to

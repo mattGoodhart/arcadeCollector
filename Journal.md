@@ -598,3 +598,21 @@ The manual row lives in its own section (between Links and Have the PCB), separa
 **Fix**: added `waitForDetailToSettle` — waits for the "Manual" button to appear (the last section inserted by the fetch) before scrolling to find the toggle. This ensures the view's layout is stable and the toggle's final position is known. Also bumped `maxSwipes` from 8 to 12 for the longer post-fetch content.
 
 **Lesson**: when a SwiftUI `List` has async content insertion (via `.task`, `@Query` updates, etc.), UI tests must wait for the insertions to complete before querying elements lower in the list. An element that `.exists` in the pre-insertion layout can vanish from the accessibility tree milliseconds later when new sections push it off-screen. The fix is to wait for a sentinel element that marks "all async content has landed" before interacting with position-sensitive elements below it.
+
+### 2026-07-19 — UI Test: The Tab Bar Was Eating the Tap
+
+Golden-path test broke again after the manual viewer landed. Same test flow — search, tap Donkey Kong, toggle "Have the PCB" on, verify on My Collection, cleanup — but the cleanup tap on the second detail view was silently doing nothing, and eventually `.value` reads on the switch would hard-fail with "No matches found for Descendants matching type Switch." Watching the simulator, the tap wasn't hitting the switch at all — it was landing on the Repair Logs tab button.
+
+Two overlapping bugs:
+
+**Bug 1: the tap coordinate was hitting the tab bar.** On the second detail visit, the game was owned, so `componentStatusSection` and `repairLogSection` were rendering *below* `pcbSection`. `findPCBToggle` scrolled until the switch was `.isHittable` and returned. But the switch element's compound frame extended partway behind the tab bar overlay. `coordinate(withNormalizedOffset: (0.9, 0.5)).tap()` normalizes to the *frame center* — which resolved to a point inside the tab bar's "Repair Logs" button. The tap changed tabs instead of toggling the switch. `.isHittable` is not sufficient: it only checks that the center point is reachable through system UI, not that arbitrary normalized offsets land inside the visible area.
+
+**Fix 1**: `findPCBToggle` now scrolls until BOTH `.isHittable` AND `toggle.frame.maxY <= tabBar.frame.minY`. The switch must be fully above the tab bar, not just centered-clear of it.
+
+**Bug 2: `.value` hard-failed during a `List` re-layout transition.** When we toggle ownership off, `componentStatusSection` and `repairLogSection` disappear from the list. Between the state change and the layout settling, the switch briefly leaves the accessibility tree. `waitForSwitch`'s polling loop kept calling `isSwitchOn` → `toggle.value` → snapshot query failure → hard test failure with "No matches found for Descendants matching type Switch." A poll loop shouldn't crash because the element blinked out of existence for 200ms.
+
+**Fix 2**: `isSwitchOn` now guards `.exists` before reading `.value`. `waitForSwitch` also checks `.exists` before calling `isSwitchOn` — a transient absence during layout re-shuffle is treated as "keep polling", not "fail the test."
+
+**Lesson**: XCUITest's element resolution is a *snapshot* at query time. Any code path that touches `.value`, `.frame`, or other snapshot-dependent properties can hard-fail if the element vanishes between resolution and access — even for one poll tick during a normal SwiftUI re-layout. Poll loops need to treat "element temporarily missing" as retry-worthy, not fatal.
+
+**Lesson**: `isHittable` guarantees the center point is tappable; it says nothing about whether the *rest* of the frame is on-screen. For coordinate-based taps at non-center offsets (which we need for wide-cell controls like `Toggle`), also verify the target region is clear of overlays — tab bar, keyboard, safe area — via explicit `frame` comparisons.
