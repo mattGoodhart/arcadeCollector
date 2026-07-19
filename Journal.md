@@ -529,3 +529,34 @@ Ran an App Store readiness audit and addressed the gaps:
 - The iOS 26.0 deployment target limits the audience to the latest OS — an intentional choice for a Liquid Glass–first design, but worth revisiting if wider reach matters.
 
 **Lesson**: most App Store rejections come from missing metadata (category, privacy manifest) or launch crashes — things that are trivial to fix but easy to overlook when you're focused on features. An audit pass before submission catches them in minutes instead of days in the review queue.
+
+### 2026-07-19 — Test Coverage Push: Fixture Decoding + Golden-Path UI
+
+The App Store audit called out two soft spots: the `ArcadeDatabaseClient` decoder was only exercised via live network calls (skipped on flake), and the UI test file was still Xcode's boilerplate `testExample() {}`. Fixed both.
+
+**Fixture-based decoder tests** — five new tests in `ArcadeDatabaseClientFixtureTests.swift` that never touch the network:
+
+- A tiny `FixtureURLProtocol` subclass gets registered on a custom `URLSession`; the tests set a stubbed status + JSON body, then call `client.metadata(for:)` normally. The wire format is fully exercised — decoding, key mapping, fallback logic — without depending on adb.arcadeitalia.net being up.
+- Five scenarios covered: happy path (all fields map correctly), missing optional fields (empty-string / nil fallbacks), empty-string `youtube_video_id` (must become nil, not `""`), empty `result` array (throws `noResultsForRom`), and HTTP 500 (throws `httpStatus`).
+
+**The `.serialized` gotcha**: first run had 3 of 5 tests fail with bizarre assertion failures — the *happy-path* fixture test would see the *minimal* fixture's data. Turns out Swift Testing parallelizes tests within a suite by default, and my `FixtureURLProtocol`'s static `stubbedBody` was getting stomped mid-flight by concurrent tests. Adding `@Suite(..., .serialized)` fixed it instantly. XCTest ran tests serially by default; Swift Testing is opt-out. Worth remembering.
+
+**Golden-path UI test** — one end-to-end flow in `GoldenPathUITests.swift`: launch → search "donkey" on All Games → tap `game-row-dkong` → toggle "Have the PCB" on → assert Donkey Kong shows up on My Collection → tap it → toggle back off → assert it's gone. Exercises tab bar routing, `NavigationLink(value:)` + `.navigationDestination(for:)`, `@Bindable` writes, and the ownership → filter cascade in a single 30-second run.
+
+Getting this to work reliably was a war story. The bugs, in order:
+
+1. **Lazy list rendering.** `List` with 4,166 rows only materializes visible cells into the accessibility tree, so `app.staticTexts["Pac-Man"]` returned nothing even though the row "existed" logically. Search narrows the list to one row → problem solved.
+2. **Compound row labels.** `GameRow` bundles title + rom + year + manufacturer into one accessibility element, so `app.buttons["Pac-Man"]` didn't match either — the label was actually `"Pac-Man, pacman, 1980, Namco"`. Added `.accessibilityIdentifier("game-row-\(romSetName)")` to every row's `NavigationLink`.
+3. **Section wrapping.** Same lazy-materialization problem on the detail view — `pcbSection` sits below several other sections in the detail's `List`. Added `.accessibilityIdentifier("pcb-toggle")` and a scroll-until-visible helper.
+4. **Toggle taps landing on the label side.** Even after finding the switch element, `pcbToggle.tap()` didn't flip the state — SwiftUI's Toggle cell is wide (label on the left, switch on the right), and the tap was landing on the label area which is inert. Fix: `coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap()` to hit the switch knob directly.
+5. **Async Binding propagation.** After a successful tap, `pcbToggle.value` was still `"0"` for a beat — SwiftUI Toggle state flows through the binding on the next render, not synchronously. Added a `waitForSwitch(_:on:timeout:)` poll helper instead of asserting immediately.
+
+**Two production-code affordances** were needed to make this test tractable: the two `.accessibilityIdentifier(...)` calls above. That's it — no launch-arg store reset, no test-only view modifiers, no feature flags. Clean.
+
+**Lesson 1**: SwiftUI `List` and XCUITest have a fundamental impedance mismatch — the accessibility tree is a *rendered* snapshot, not the logical view hierarchy. For any list with > a screenful of data, you need either search-first navigation or explicit `.scrollTo(...)` in the test. Off-screen rows are invisible.
+
+**Lesson 2**: If you're going to write UI tests against SwiftUI, budget for accessibility identifiers on your interactive elements. It's one line per element, and it makes the difference between a UI test suite and a UI test wish.
+
+**Lesson 3**: Coordinate-based taps are a code smell, but for wide-cell controls like `Toggle` in a `Form`/`List`, they're the only reliable option. Element-based `.tap()` doesn't know which sub-region of a compound cell is the interactive part.
+
+Suite count: 15 → 21 tests. The five decoder tests are ~0.1s each, deterministic, and cover the JSON contract that used to be verified only by live-API integration tests. The one UI test is ~30s and catches routing / binding / cross-tab observation regressions that no unit test can.

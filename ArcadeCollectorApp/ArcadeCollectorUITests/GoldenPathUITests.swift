@@ -1,0 +1,159 @@
+//
+//  GoldenPathUITests.swift
+//  ArcadeCollectorUITests
+//
+
+import XCTest
+
+/// Exercises the primary user flow end-to-end: launch, find a specific seeded
+/// game, mark it owned, verify it shows up on the My Collection tab, then toggle
+/// ownership back off so the test leaves no persistent state behind.
+///
+/// Targets Donkey Kong specifically because the seeded dataset guarantees it
+/// exists (`romSetName == "dkong"`) and both `GameRow` and the ownership toggle
+/// carry stable accessibility identifiers (`game-row-dkong`, `pcb-toggle`) that
+/// don't depend on the row being visible in the accessibility tree.
+final class GoldenPathUITests: XCTestCase {
+
+    private static let romSetName = "dkong"
+    private static let searchQuery = "donkey"
+    private static let gameRowIdentifier = "game-row-\(romSetName)"
+    private static let pcbToggleIdentifier = "pcb-toggle"
+
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+    }
+
+    @MainActor
+    func testOwnershipRoundTripAcrossTabs() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        let tabBar = app.tabBars.firstMatch
+        XCTAssertTrue(tabBar.waitForExistence(timeout: 30), "Tab bar never appeared — ModelContainer init likely failed")
+
+        // Step 1: on All Games, use search to narrow the 4,166-row list down to
+        //         just Donkey Kong so its row materializes into the viewport.
+        openTab(app, named: "All Games")
+        searchForTestGame(app)
+        let gameRow = findGameRow(app)
+        XCTAssertTrue(gameRow.waitForExistence(timeout: 15), "Donkey Kong row not visible after searching — seed or search filter broken")
+        gameRow.tap()
+
+        // Step 2: toggle "Have the PCB" on. The toggle sits several sections
+        //         down a `List`, which lazily materializes rows into the
+        //         accessibility tree; scroll until it's reachable.
+        let pcbToggle = findPCBToggle(app)
+        XCTAssertTrue(pcbToggle.waitForExistence(timeout: 5), "PCB toggle not reachable after scrolling detail view")
+        if isSwitchOn(pcbToggle) {
+            tapToggle(pcbToggle)
+            XCTAssertTrue(waitForSwitch(pcbToggle, on: false), "Failed to reset PCB toggle to off before test body")
+        }
+        tapToggle(pcbToggle)
+        XCTAssertTrue(waitForSwitch(pcbToggle, on: true), "Toggling 'Have the PCB' on didn't stick")
+
+        // Step 3: cross-tab observation — My Collection should now show Donkey
+        //         Kong without any search needed (it's the only owned game).
+        navigateBack(app)
+        openTab(app, named: "My Collection")
+        let collectionRow = findGameRow(app)
+        XCTAssertTrue(collectionRow.waitForExistence(timeout: 5), "Donkey Kong missing from My Collection after marking owned")
+
+        // Step 4: cleanup — flip back off so state doesn't leak into subsequent runs.
+        collectionRow.tap()
+        let cleanupToggle = findPCBToggle(app)
+        XCTAssertTrue(cleanupToggle.waitForExistence(timeout: 5), "PCB toggle not reachable during cleanup")
+        tapToggle(cleanupToggle)
+        XCTAssertTrue(waitForSwitch(cleanupToggle, on: false), "Cleanup toggle-off didn't stick")
+
+        // Step 5: confirm My Collection no longer lists Donkey Kong.
+        navigateBack(app)
+        let stillVisible = findGameRow(app).waitForExistence(timeout: 2)
+        XCTAssertFalse(stillVisible, "Donkey Kong still visible on My Collection after cleanup — ownership filter isn't reactive")
+    }
+
+    // MARK: - Helpers
+
+    /// Queries by accessibility identifier across any element type. SwiftUI's
+    /// `.accessibilityIdentifier(_:)` inside a `NavigationLink` may surface on
+    /// a button, cell, or otherElement depending on the platform release, so
+    /// we accept whichever the accessibility tree exposes.
+    private func findGameRow(_ app: XCUIApplication) -> XCUIElement {
+        let predicate = NSPredicate(format: "identifier == %@", Self.gameRowIdentifier)
+        return app.descendants(matching: .any).matching(predicate).firstMatch
+    }
+
+    /// Scrolls the detail view's `List` up until the PCB toggle is reachable.
+    private func findPCBToggle(_ app: XCUIApplication, maxSwipes: Int = 8) -> XCUIElement {
+        let toggle = app.switches[Self.pcbToggleIdentifier]
+        let scroller = app.collectionViews.firstMatch
+        for _ in 0..<maxSwipes {
+            if toggle.exists { return toggle }
+            if scroller.exists {
+                scroller.swipeUp()
+            } else {
+                app.swipeUp()
+            }
+        }
+        return toggle
+    }
+
+    private func openTab(_ app: XCUIApplication, named name: String) {
+        let tab = app.tabBars.buttons[name]
+        XCTAssertTrue(tab.waitForExistence(timeout: 5), "\(name) tab button missing")
+        tab.tap()
+    }
+
+    private func searchForTestGame(_ app: XCUIApplication) {
+        // `.searchable()` on iOS 26 renders a search field in the nav bar area;
+        // the field may need to be scrolled into view via a downward drag on
+        // the list if it's initially hidden.
+        var searchField = app.searchFields.firstMatch
+        if !searchField.waitForExistence(timeout: 3) {
+            let list = app.collectionViews.firstMatch
+            if list.exists {
+                list.swipeDown()
+            }
+            searchField = app.searchFields.firstMatch
+        }
+        XCTAssertTrue(searchField.waitForExistence(timeout: 5), "Search field not found on All Games")
+        searchField.tap()
+        searchField.typeText(Self.searchQuery)
+    }
+
+    /// SwiftUI `Toggle`'s accessibility element sometimes reports type `.switch`
+    /// but the tap target is the whole cell (label + switch). A plain `.tap()`
+    /// can land on the label area and be swallowed — hitting the right-hand
+    /// side of the frame guarantees we land on the switch control itself.
+    private func tapToggle(_ toggle: XCUIElement) {
+        toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap()
+    }
+
+    private func isSwitchOn(_ toggle: XCUIElement) -> Bool {
+        // SwiftUI Toggle exposes value as "0" or "1"; belt-and-suspenders for
+        // platform versions that report a Bool or localized "On"/"Off".
+        if let boolValue = toggle.value as? Bool { return boolValue }
+        if let stringValue = toggle.value as? String {
+            return stringValue == "1" || stringValue.lowercased() == "on"
+        }
+        return false
+    }
+
+    /// SwiftUI `Toggle` state changes propagate asynchronously through the
+    /// bound property, so the accessibility `.value` doesn't flip on the same
+    /// event-loop tick as the tap. Poll for a bounded window.
+    private func waitForSwitch(_ toggle: XCUIElement, on desired: Bool, timeout: TimeInterval = 3) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if isSwitchOn(toggle) == desired { return true }
+            Thread.sleep(forTimeInterval: 0.1)
+        }
+        return isSwitchOn(toggle) == desired
+    }
+
+    private func navigateBack(_ app: XCUIApplication) {
+        let back = app.navigationBars.buttons.firstMatch
+        XCTAssertTrue(back.waitForExistence(timeout: 5), "Back button not found")
+        back.tap()
+    }
+}

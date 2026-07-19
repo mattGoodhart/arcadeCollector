@@ -65,6 +65,8 @@ struct GameListView: View {
                                 let globalIndex = group.startIndex + localIndex
                                 NavigationLink(value: game) {
                                     GameRow(game: game, isDarkRow: !globalIndex.isMultiple(of: 2))
+                                        .accessibilityElement(children: .combine)
+                                        .accessibilityIdentifier("game-row-\(game.romSetName)")
                                 }
                                 .listRowBackground(globalIndex.isMultiple(of: 2) ? Color.arcadeRowEven : Color.arcadeRowOdd)
                             }
@@ -105,6 +107,8 @@ struct GameListView: View {
             ForEach(Array(visible.enumerated()), id: \.element.id) { index, game in
                 NavigationLink(value: game) {
                     GameRow(game: game, isDarkRow: !index.isMultiple(of: 2))
+                        .accessibilityElement(children: .combine)
+                        .accessibilityIdentifier("game-row-\(game.romSetName)")
                 }
                 .listRowBackground(index.isMultiple(of: 2) ? Color.arcadeRowEven : Color.arcadeRowOdd)
             }

@@ -323,6 +323,7 @@ struct GameDetailView: View {
                 get: { game.ownership == .owned },
                 set: { game.ownership = $0 ? .owned : .none }
             ))
+            .accessibilityIdentifier("pcb-toggle")
         }
     }
 
