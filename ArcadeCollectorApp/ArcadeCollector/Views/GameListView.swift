@@ -73,7 +73,7 @@ struct GameListView: View {
                         } header: {
                             Text(group.year)
                                 .font(.subheadline.bold())
-                                .foregroundStyle(Color.arcadeRowOdd)
+                                .foregroundStyle(.primary)
                         }
                         .id(group.year)
                     }
@@ -216,7 +216,7 @@ struct GameRow: View {
             VStack(alignment: .leading) {
                 Text(game.title)
                     .font(.headline)
-                    .foregroundStyle(isDarkRow ? .white : .primary)
+                    .foregroundStyle(isDarkRow ? .white : .black)
                 HStack(spacing: 6) {
                     Text(game.romSetName)
                     if !game.year.isEmpty {
@@ -230,7 +230,7 @@ struct GameRow: View {
                     }
                 }
                 .font(.caption)
-                .foregroundStyle(isDarkRow ? Color.white.opacity(0.7) : .secondary)
+                .foregroundStyle(isDarkRow ? Color.white.opacity(0.7) : Color.black.opacity(0.6))
             }
         }
     }

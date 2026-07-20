@@ -626,3 +626,15 @@ The Summary tab's color scheme was designed light-mode-first (the legacy app was
 2. **Donut chart annotations were unreadable.** The sector label text used hardcoded `.white` (or `.black` for the yellow "Issues" sector). In dark mode, SwiftUI's semantic colors (`.green`, `.red`, `.secondary`) produce brighter fills than in light mode — white text on bright green has a contrast ratio around 2.4:1, well below WCAG AA. Fix: label colors now adapt via `colorScheme` — dark mode uses black text (high contrast on bright fills), light mode uses white (high contrast on darker fills).
 
 3. **Component bar count labels.** The horizontal stacked bars in the component breakdown used `.white` for all count labels. The yellow "Issues" bar has always had poor contrast with white text. Added a `barLabelColor` property to `ComponentStatus` — black for yellow, white for green/red/gray.
+
+### 2026-07-19 — Dark Mode Pass: Game Lists and About View
+
+Extended the dark mode visibility fixes to the remaining views that inherited light-mode-only color assumptions from the legacy app.
+
+**Adaptive view backgrounds.** `arcadeAboutBackground` and `arcadeSummaryBackground` in `Theme.swift` were fixed bright greens. Section header text in dark mode uses light gray by default, and light gray on bright green fails contrast. Made both colors adaptive via `UIColor { traitCollection }` — the existing bright greens stay in light mode, darker greens take over in dark mode. This lets all auto-adaptive text colors (section headers, labels) remain readable without per-view overrides.
+
+**Game list section headers.** Year headers in the All Games tab used `Color.arcadeRowOdd` (dark teal) as the text color — the same "background-as-text" mistake we fixed in `StatRow`. Dark teal text on a dark section header background is invisible. Changed to `.primary`.
+
+**Game row text on fixed backgrounds.** The alternating row colors (sage green and dark teal) are fixed — they're the app's visual identity and don't adapt to color scheme. But the text on sage green rows was using `.primary`, which flips to white in dark mode. White on sage green (0.45, 0.62, 0.50) has a contrast ratio around 3:1 — below the WCAG AA minimum. Fixed by using `.black` / `.black.opacity(0.6)` instead of `.primary` / `.secondary` for even-row text. The dark teal rows already used `.white`, which is correct.
+
+**The principle**: when a background color is fixed (doesn't adapt to color scheme), text on it must also be fixed to whatever provides adequate contrast. Adaptive text colors (`.primary`, `.secondary`) only work correctly on adaptive backgrounds (system cell colors, default list backgrounds). Mixing fixed backgrounds with adaptive text is a contrast bug waiting to happen in whichever mode the background wasn't designed for.

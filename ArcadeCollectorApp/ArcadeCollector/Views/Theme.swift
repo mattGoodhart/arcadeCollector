@@ -9,8 +9,16 @@ extension Color {
     static let arcadeRowEven = Color(red: 0.45, green: 0.62, blue: 0.50)
     static let arcadeRowOdd = Color(red: 0.098, green: 0.392, blue: 0.392)
     static let arcadeToolbar = Color(red: 0.45, green: 0.62, blue: 0.50)
-    static let arcadeAboutBackground = Color(red: 0.614, green: 0.842, blue: 0.680)
-    static let arcadeSummaryBackground = Color(red: 0.542, green: 0.749, blue: 0.606)
+    static let arcadeAboutBackground = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.14, green: 0.26, blue: 0.18, alpha: 1)
+            : UIColor(red: 0.614, green: 0.842, blue: 0.680, alpha: 1)
+    })
+    static let arcadeSummaryBackground = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.12, green: 0.22, blue: 0.15, alpha: 1)
+            : UIColor(red: 0.542, green: 0.749, blue: 0.606, alpha: 1)
+    })
 
     // Legacy chart palette
     static let chartGreen = Color(red: 0, green: 104.0/255, blue: 56.0/255)
