@@ -638,3 +638,26 @@ Extended the dark mode visibility fixes to the remaining views that inherited li
 **Game row text on fixed backgrounds.** The alternating row colors (sage green and dark teal) are fixed — they're the app's visual identity and don't adapt to color scheme. But the text on sage green rows was using `.primary`, which flips to white in dark mode. White on sage green (0.45, 0.62, 0.50) has a contrast ratio around 3:1 — below the WCAG AA minimum. Fixed by using `.black` / `.black.opacity(0.6)` instead of `.primary` / `.secondary` for even-row text. The dark teal rows already used `.white`, which is correct.
 
 **The principle**: when a background color is fixed (doesn't adapt to color scheme), text on it must also be fixed to whatever provides adequate contrast. Adaptive text colors (`.primary`, `.secondary`) only work correctly on adaptive backgrounds (system cell colors, default list backgrounds). Mixing fixed backgrounds with adaptive text is a contrast bug waiting to happen in whichever mode the background wasn't designed for.
+
+### 2026-07-19 — In-App MAME Driver Source Viewer
+
+The legacy app's Hardware view showed the MAME driver name as a tappable row that opened the raw source file on GitHub in Safari. For the new app, we initially did the same — a `NavigationLink` in `HardwareDetailView` that pushed a `DriverSourceView` showing the C++ source in a bidirectional scrollable view. Two bugs shipped with the first implementation:
+
+**Bug 1: Donkey Kong showed a blank page.** `String(data: data, encoding: .utf8)` returned `nil` for some responses, and the view had no branch for the `sourceText == nil && isLoading == false && errorMessage == nil` state — it just rendered nothing. The nil decode could happen when the server response contained bytes outside the valid UTF-8 range.
+
+**Fix**: added an `.isoLatin1` fallback (`String(data: data, encoding: .utf8) ?? String(data: data, encoding: .isoLatin1)`) and a proper error view for the remaining nil/empty case. ISO Latin 1 never fails — it maps every byte to a character — so it acts as a lossless catch-all for any text the server sends.
+
+**Bug 2: X-Men vs Street Fighter loaded forever.** The driver for X-Men vs SF is `cps2.cpp` — about 14,000 lines of C++ in the MAME source tree. The original implementation used a SwiftUI `Text` view inside a `ScrollView([.horizontal, .vertical])` with `.fixedSize(horizontal: true, vertical: false)`. SwiftUI's `Text` isn't designed for this — it tried to layout the entire 14,000-line string as a single text element, and the type system ground to a halt computing the intrinsic content size. The spinner never stopped.
+
+**Fix**: replaced the SwiftUI `Text` with a `UITextView` wrapped inside a `UIScrollView` via `UIViewRepresentable`. `UITextView` handles large text natively — it's what Terminal.app and every code editor on iOS uses under the hood. Key configuration:
+
+- `textContainer.widthTracksTextView = false` + `textContainer.size = (.greatestFiniteMagnitude, .greatestFiniteMagnitude)` — tells the text container not to wrap at the view's width, enabling true horizontal scrolling. Lines extend as far as they need to.
+- `textView.isScrollEnabled = false` — the `UITextView` delegates scrolling to the parent `UIScrollView`, which owns both axes.
+- Parent `UIScrollView` sets `contentSize` from `textView.sizeToFit()` after text assignment, providing correct bidirectional scroll bounds.
+- Pinch-to-zoom (0.5x–3x) via `UIScrollViewDelegate.viewForZooming(in:)` — useful for scanning wide C++ files or zooming into specific functions.
+
+The result renders 14,000+ lines instantly with smooth bidirectional scrolling and zoom. Monospaced 12pt system font, `.label` text color for automatic dark mode support.
+
+**Lesson**: SwiftUI's `Text` is a layout primitive, not a text rendering engine. For content measured in hundreds of lines, it's fine. For content measured in thousands, `UITextView` (or `UITextView` via `UIViewRepresentable`) is the right tool. The boundary is roughly "if the user might need to scroll for more than a few seconds, use UIKit."
+
+**Lesson**: always handle the nil case from `String(data:encoding:)`. UTF-8 decoding is strict — a single invalid byte rejects the entire input. For display-only use cases where lossy decoding is acceptable, `.isoLatin1` is a safe fallback that never fails.

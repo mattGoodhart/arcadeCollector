@@ -38,27 +38,16 @@ struct HardwareDetailView: View {
 
     // MARK: Sections
 
-    @Environment(\.openURL) private var openURL
-
     private var emulationSection: some View {
         Section("Emulation") {
             if !game.emulationStatus.isEmpty {
                 LabeledContent("Status", value: game.emulationStatus)
             }
             if !game.driver.isEmpty {
-                Button {
-                    let urlString = "https://raw.githubusercontent.com/mamedev/mame/master/src/mame/\(game.driver)"
-                    if let url = URL(string: urlString) {
-                        openURL(url)
-                    }
+                NavigationLink {
+                    DriverSourceView(driverFileName: game.driver)
                 } label: {
-                    LabeledContent("Driver") {
-                        HStack(spacing: 4) {
-                            Text(game.driver)
-                            Image(systemName: "arrow.up.right.square")
-                                .font(.caption)
-                        }
-                    }
+                    LabeledContent("Driver", value: game.driver)
                 }
             }
         }
