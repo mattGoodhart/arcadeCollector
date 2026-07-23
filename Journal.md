@@ -10,7 +10,7 @@ Imagine you own a garage full of old arcade PCBs. Some boot up beautifully. Some
 
 That's Arcade Collector. It started as a 2021 UIKit + Storyboards + Core Data app targeting iOS 12, and in July 2026 we kicked off a modernization pass to bring it to iOS 26 with SwiftUI and SwiftData. Both apps live in this repo right now — the old one still runs while we rebuild the new one screen-by-screen underneath it.
 
-The reference data comes from the [Arcade Game Database](http://adb.arcadeitalia.net) — about 4,166 games' worth of rom names, titles, years, manufacturers, and orientations, shipped as a bundled JSON file the app seeds into its store on first launch.
+The reference data comes from the [Arcade Game Database](http://adb.arcadeitalia.net) — 3,855 games' worth of rom names, titles, years, manufacturers, hardware specs, and more, shipped as a bundled JSON file the app seeds into its store on first launch.
 
 ---
 
@@ -661,3 +661,23 @@ The result renders 14,000+ lines instantly with smooth bidirectional scrolling a
 **Lesson**: SwiftUI's `Text` is a layout primitive, not a text rendering engine. For content measured in hundreds of lines, it's fine. For content measured in thousands, `UITextView` (or `UITextView` via `UIViewRepresentable`) is the right tool. The boundary is roughly "if the user might need to scroll for more than a few seconds, use UIKit."
 
 **Lesson**: always handle the nil case from `String(data:encoding:)`. UTF-8 decoding is strict — a single invalid byte rejects the entire input. For display-only use cases where lossy decoding is acceptable, `.isoLatin1` is a safe fallback that never fails.
+
+### 2026-07-23 — New Seed File: Richer Data, Messier Types
+
+Replaced `ScrollingData.json` (4,166 games, 6 fields per row) with a new seed file — `Arcade Collector Value-only Seed ready for JSON July 23 2026.json` (3,855 games, 29 fields per row). The new file carries hardware specs, control details, driver info, genre, and URLs that the old seed didn't have, eliminating the need to fetch much of this data from the API on first artwork pull.
+
+**JSON shape change**: the old file wrapped its array in `{"result": [...]}`, matching a web API response format. The new file is a top-level array — cleaner, no wrapper object. `SeedPayload` (with its `result` property) was replaced by decoding directly as `[SeedRow]`.
+
+**Mixed types bit us twice.** The new JSON was generated from a spreadsheet/database export with inconsistent typing:
+
+1. **`Players`** — integer for most rows (`2`), but string for 49 rows (`"1"`). Likely a formatting artifact from the source data. The `JSONDecoder` threw `typeMismatch` on row 41 (`centiped`), crashing the app at launch.
+
+2. **Missing keys** — `url_playonline` is absent from 3,237 of 3,855 rows. `Players` missing from 392. `chips_audio` from 124. `manufacturer` from 16. Every non-universal field needed `decodeIfPresent` or the decoder threw `keyNotFound`.
+
+**The fix**: a custom `init(from decoder:)` on `SeedRow` that tries `Int` first, falls back to `String` for `Year` and `Players`, and uses `decodeIfPresent` for every field that's missing from any row. Both `year` and `players` are stored as `String` on the `Game` model, so the int-to-string conversion is lossless.
+
+**Sentinel filtering**: the source data uses `"-"` as a sentinel for "no value" in URL fields. Added `raw != "-"` guards before attempting `URL(string:)` construction — without this, every game would get a `shortPlayURL` pointing to the string literal `"-"`, which `URL(string:)` happily accepts as a valid relative URL.
+
+**Fields now populated at seed time** (previously required an API fetch): `genre`, `driver` (MAME source file), `emulationStatus`, `inputControls`, `inputButtons`, `displayType`, `monitorResolutionType`, `resolution` (computed from `display_width` × `display_height`), `verticalRefresh`, `cpus`, `soundDevices`, `shortPlayURL`, `gamePageURL`.
+
+**Lesson**: when consuming JSON from an external source (especially spreadsheet exports), assume every field can be missing and every "numeric" field might arrive as a string. A custom `Decodable` init with try/fallback per field is more resilient than relying on synthesized conformance with exact type matching. The crash-on-launch failure mode (fatal error in the seeder's `.task`) makes this especially punishing — there's no UI to show an error, the app just dies.

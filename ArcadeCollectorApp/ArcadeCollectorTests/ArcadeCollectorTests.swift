@@ -13,26 +13,70 @@ import SwiftData
 @Suite("GameSeeder")
 struct GameSeederTests {
     private static let fixture = Data("""
-    {
-      "result": [
-        {
-          "romName": "pacman",
-          "Title": "Pac-Man ",
-          "year": "1980",
-          "manufacturer": "Namco",
-          "Players": "1",
-          "Orientation": "Vertical"
-        },
-        {
-          "romName": "sf2",
-          "Title": "Street Fighter II",
-          "year": "1991",
-          "manufacturer": "Capcom",
-          "Players": "2",
-          "Orientation": "Horizontal"
-        }
-      ]
-    }
+    [
+      {
+        "romName": "pacman",
+        "Title": "Pac-Man ",
+        "Year": 1980,
+        "manufacturer": "Namco",
+        "Players": 1,
+        "Orientation": "VERTICAL",
+        "nplayers": "2P alt",
+        "description": "Pac-Man (Midway)",
+        "use_chds": "NO",
+        "sourcefile": "namco/pacman.cpp",
+        "driver_status": "GOOD",
+        "display_type": "RASTER",
+        "display_width": 224,
+        "display_height": 288,
+        "buttons": "0",
+        "genre": "Maze",
+        "display_refresh": "60.606061",
+        "input_controls": "joystick (4-way)",
+        "monitor_type": "CRT 15kHz",
+        "colors": "YES",
+        "url_playonline": "-",
+        "url_shortplays": "-",
+        "chips_cpu": "Zilog Z80",
+        "chips_audio": "Speaker,Namco",
+        "chips_cpu_details": "",
+        "chips_audio_details": "",
+        "has_disks": "NO",
+        "has_dip_switches": "YES",
+        "category": "Maze"
+      },
+      {
+        "romName": "sf2",
+        "Title": "Street Fighter II",
+        "Year": 1991,
+        "manufacturer": "Capcom",
+        "Players": 2,
+        "Orientation": "HORIZONTAL",
+        "nplayers": "2P sim",
+        "description": "Street Fighter II: The World Warrior (World 910522)",
+        "use_chds": "NO",
+        "sourcefile": "capcom/cps1.cpp",
+        "driver_status": "GOOD",
+        "display_type": "RASTER",
+        "display_width": 384,
+        "display_height": 224,
+        "buttons": "6",
+        "genre": "Fighter",
+        "display_refresh": "59.637405",
+        "input_controls": "joystick (8-way)",
+        "monitor_type": "CRT 15kHz",
+        "colors": "YES",
+        "url_playonline": "-",
+        "url_shortplays": "-",
+        "chips_cpu": "Motorola 68000,Zilog Z80",
+        "chips_audio": "Speaker,YM2151 OPM,OKI MSM6295 ADPCM",
+        "chips_cpu_details": "",
+        "chips_audio_details": "",
+        "has_disks": "NO",
+        "has_dip_switches": "YES",
+        "category": "Fighter / Versus"
+      }
+    ]
     """.utf8)
 
     private func makeContainer() throws -> ModelContainer {
@@ -64,9 +108,17 @@ struct GameSeederTests {
         #expect(pacman.orientation == .vertical)
         #expect(pacman.ownership == .none)
         #expect(pacman.bootStatus == .untested)
+        #expect(pacman.genre == "Maze")
+        #expect(pacman.driver == "namco/pacman.cpp")
+        #expect(pacman.emulationStatus == "GOOD")
+        #expect(pacman.inputControls == "joystick (4-way)")
+        #expect(pacman.resolution == "224x288")
+        #expect(pacman.cpus == ["Zilog Z80"])
+        #expect(pacman.soundDevices == ["Speaker", "Namco"])
 
         let sf2 = try #require(games.first { $0.romSetName == "sf2" })
         #expect(sf2.orientation == .horizontal)
+        #expect(sf2.cpus == ["Motorola 68000", "Zilog Z80"])
     }
 
     @Test func isIdempotentWhenStoreAlreadyPopulated() async throws {
@@ -84,35 +136,26 @@ struct GameSeederTests {
     }
 
     @Test func bundledResourceLoadsAndDecodes() throws {
-        // Verifies the bundled ScrollingData.json ships in the app bundle and
-        // parses cleanly. Uses the app bundle (not the test bundle) because
-        // the resource lives with the main target.
         let appBundle = Bundle(for: BundleLocator.self)
-        // Test host bundle contains the app bundle at PlugIns/... locate via URL.
-        // Simpler: load directly from the built .app URL if available.
         guard let url = Bundle.allBundles
-            .compactMap({ $0.url(forResource: "ScrollingData", withExtension: "json") })
+            .compactMap({ $0.url(forResource: "Arcade Collector Value-only Seed ready for JSON July 23 2026", withExtension: "json") })
             .first
         else {
-            Issue.record("ScrollingData.json not found in any loaded bundle")
+            Issue.record("Seed JSON not found in any loaded bundle")
             return
         }
 
         let data = try Data(contentsOf: url)
-        let payload = try JSONDecoder().decode(BundledPayload.self, from: data)
-        #expect(payload.result.count == 4166, "Expected 4166 seed rows, got \(payload.result.count)")
+        let rows = try JSONDecoder().decode([BundledRow].self, from: data)
+        #expect(rows.count == 3855, "Expected 3855 seed rows, got \(rows.count)")
 
         _ = appBundle
     }
 
-    // Local locator for Bundle(for:) resolution.
     private final class BundleLocator {}
 
-    private struct BundledPayload: Decodable {
-        let result: [Row]
-        struct Row: Decodable {
-            let romName: String
-        }
+    private struct BundledRow: Decodable {
+        let romName: String
     }
 }
 

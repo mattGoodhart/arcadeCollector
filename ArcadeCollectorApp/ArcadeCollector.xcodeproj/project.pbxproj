@@ -29,9 +29,25 @@
 		A22C2C6D2FFB302D00E68CB6 /* ArcadeCollectorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArcadeCollectorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A2E55412301289DE00AAC079 /* Exceptions for "ArcadeCollector" folder in "ArcadeCollectorUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Resources/Arcade Collector Value-only Seed ready for JSON July 23 2026.json",
+			);
+			target = A22C2C6C2FFB302D00E68CB6 /* ArcadeCollectorUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A22C2C562FFB302B00E68CB6 /* ArcadeCollector */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A2E55412301289DE00AAC079 /* Exceptions for "ArcadeCollector" folder in "ArcadeCollectorUITests" target */,
+			);
+			explicitFileTypes = {
+				"Resources/All games seed data July 2026.json" = text.json;
+			};
 			path = ArcadeCollector;
 			sourceTree = "<group>";
 		};
