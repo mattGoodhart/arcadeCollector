@@ -205,8 +205,8 @@ struct GameDetailView: View {
     }
 
     private var shouldForceScreenAspectRatio: Bool {
-        let type = game.displayType
-        return type == "raster" || type == "vector"
+        let type = game.displayType.lowercased()
+        return !type.isEmpty && type != "multiple"
     }
 
     private var mainImage: some View {

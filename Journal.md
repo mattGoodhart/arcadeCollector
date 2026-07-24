@@ -681,3 +681,19 @@ Replaced `ScrollingData.json` (4,166 games, 6 fields per row) with a new seed fi
 **Fields now populated at seed time** (previously required an API fetch): `genre`, `driver` (MAME source file), `emulationStatus`, `inputControls`, `inputButtons`, `displayType`, `monitorResolutionType`, `resolution` (computed from `display_width` × `display_height`), `verticalRefresh`, `cpus`, `soundDevices`, `shortPlayURL`, `gamePageURL`.
 
 **Lesson**: when consuming JSON from an external source (especially spreadsheet exports), assume every field can be missing and every "numeric" field might arrive as a string. A custom `Decodable` init with try/fallback per field is more resilient than relying on synthesized conformance with exact type matching. The crash-on-launch failure mode (fatal error in the seeder's `.task`) makes this especially punishing — there's no UI to show an error, the app just dies.
+
+### 2026-07-24 — Seed File v3: Screen Count and Aspect Ratio Fix
+
+Upgraded to a third seed file iteration (`Arcade Collector Value-only Seed July 24 2026.json`). Same 3,855 games, but with a new `screens` field (integer: 1–4) and three removed fields (`description`, `has_disks`, `url_playonline`).
+
+**The multi-screen regression.** The July 23 seed populated `displayType` with `"RASTER"` for every game at seed time. The `ArtworkFetcher` had previously been the only place that detected multi-screen games — it fetched the MAME XML, counted `<display>` elements, and set `displayType = "multiple"` for games with more than one screen. But the fetcher's guard was `if game.displayType.isEmpty`, so once the seed filled it with `"RASTER"`, the XML fetch was skipped and multi-screen games like The Ninja Warriors (3 screens) got a forced 4:3 aspect ratio on their screenshots.
+
+**Two-part fix:**
+
+1. **Seed-time detection** — the new `screens` field lets the seeder set `displayType = "multiple"` at insert time for any game with `screens > 1`. No XML fetch needed.
+
+2. **ArtworkFetcher still overrides** — removed the `game.displayType.isEmpty` guard so the XML fetch always runs during artwork pull. If the XML reports multiple displays, `displayType` is overwritten to `"multiple"` regardless of what the seed set. Belt and suspenders: the seed handles the common case, the fetcher catches anything the seed missed.
+
+**Aspect ratio rule simplified** — `shouldForceScreenAspectRatio` was checking for `type == "raster" || type == "vector"`. Changed to `!type.isEmpty && type != "multiple"` (case-insensitive). This means: force 4:3 for any single-screen game, regardless of whether it's raster or vector. The only games that should keep their natural image aspect ratio are multi-screen games with non-standard display geometries.
+
+**Lesson**: when you add a new data source that populates a field the existing code treated as "empty until enriched," audit every `isEmpty` guard downstream. The seed-then-enrich pattern creates an implicit contract: "this field starts empty and gets filled later." Populating it earlier breaks every conditional that relied on emptiness as a signal for "hasn't been processed yet."

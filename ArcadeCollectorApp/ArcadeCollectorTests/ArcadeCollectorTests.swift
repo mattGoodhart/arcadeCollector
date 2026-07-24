@@ -22,7 +22,6 @@ struct GameSeederTests {
         "Players": 1,
         "Orientation": "VERTICAL",
         "nplayers": "2P alt",
-        "description": "Pac-Man (Midway)",
         "use_chds": "NO",
         "sourcefile": "namco/pacman.cpp",
         "driver_status": "GOOD",
@@ -35,15 +34,14 @@ struct GameSeederTests {
         "input_controls": "joystick (4-way)",
         "monitor_type": "CRT 15kHz",
         "colors": "YES",
-        "url_playonline": "-",
         "url_shortplays": "-",
         "chips_cpu": "Zilog Z80",
         "chips_audio": "Speaker,Namco",
         "chips_cpu_details": "",
         "chips_audio_details": "",
-        "has_disks": "NO",
         "has_dip_switches": "YES",
-        "category": "Maze"
+        "category": "Maze",
+        "screens": 1
       },
       {
         "romName": "sf2",
@@ -53,7 +51,6 @@ struct GameSeederTests {
         "Players": 2,
         "Orientation": "HORIZONTAL",
         "nplayers": "2P sim",
-        "description": "Street Fighter II: The World Warrior (World 910522)",
         "use_chds": "NO",
         "sourcefile": "capcom/cps1.cpp",
         "driver_status": "GOOD",
@@ -66,15 +63,14 @@ struct GameSeederTests {
         "input_controls": "joystick (8-way)",
         "monitor_type": "CRT 15kHz",
         "colors": "YES",
-        "url_playonline": "-",
         "url_shortplays": "-",
         "chips_cpu": "Motorola 68000,Zilog Z80",
         "chips_audio": "Speaker,YM2151 OPM,OKI MSM6295 ADPCM",
         "chips_cpu_details": "",
         "chips_audio_details": "",
-        "has_disks": "NO",
         "has_dip_switches": "YES",
-        "category": "Fighter / Versus"
+        "category": "Fighter / Versus",
+        "screens": 1
       }
     ]
     """.utf8)
@@ -138,7 +134,7 @@ struct GameSeederTests {
     @Test func bundledResourceLoadsAndDecodes() throws {
         let appBundle = Bundle(for: BundleLocator.self)
         guard let url = Bundle.allBundles
-            .compactMap({ $0.url(forResource: "Arcade Collector Value-only Seed ready for JSON July 23 2026", withExtension: "json") })
+            .compactMap({ $0.url(forResource: "Arcade Collector Value-only Seed July 24 2026", withExtension: "json") })
             .first
         else {
             Issue.record("Seed JSON not found in any loaded bundle")

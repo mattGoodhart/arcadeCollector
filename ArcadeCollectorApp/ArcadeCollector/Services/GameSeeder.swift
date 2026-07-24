@@ -8,7 +8,7 @@ import SwiftData
 
 @ModelActor
 actor GameSeeder {
-    private static let resourceName = "Arcade Collector Value-only Seed ready for JSON July 23 2026"
+    private static let resourceName = "Arcade Collector Value-only Seed July 24 2026"
     private static let resourceExtension = "json"
 
     func seedIfNeeded() throws {
@@ -44,7 +44,11 @@ actor GameSeeder {
             game.emulationStatus = row.driverStatus
             game.inputControls = row.inputControls ?? ""
             game.inputButtons = row.buttons
-            game.displayType = row.displayType
+            if let screens = row.screens, screens > 1 {
+                game.displayType = "multiple"
+            } else {
+                game.displayType = row.displayType
+            }
             game.monitorResolutionType = row.monitorType
             game.resolution = "\(row.displayWidth)x\(row.displayHeight)"
             game.verticalRefresh = row.displayRefresh
@@ -52,9 +56,6 @@ actor GameSeeder {
             game.soundDevices = row.chipsAudio?.components(separatedBy: ",") ?? []
             if let raw = row.urlShortplays, raw != "-", let url = URL(string: raw) {
                 game.shortPlayURL = url
-            }
-            if let raw = row.urlPlayonline, raw != "-", let url = URL(string: raw) {
-                game.gamePageURL = url
             }
             modelContext.insert(game)
         }
@@ -88,8 +89,8 @@ private nonisolated struct SeedRow: Decodable {
     let monitorType: String
     let chipsCpu: String?
     let chipsAudio: String?
-    let urlPlayonline: String?
     let urlShortplays: String?
+    let screens: Int?
 
     enum CodingKeys: String, CodingKey {
         case romName
@@ -110,8 +111,8 @@ private nonisolated struct SeedRow: Decodable {
         case monitorType = "monitor_type"
         case chipsCpu = "chips_cpu"
         case chipsAudio = "chips_audio"
-        case urlPlayonline = "url_playonline"
         case urlShortplays = "url_shortplays"
+        case screens
     }
 
     init(from decoder: Decoder) throws {
@@ -142,7 +143,7 @@ private nonisolated struct SeedRow: Decodable {
         monitorType = try c.decode(String.self, forKey: .monitorType)
         chipsCpu = try c.decodeIfPresent(String.self, forKey: .chipsCpu)
         chipsAudio = try c.decodeIfPresent(String.self, forKey: .chipsAudio)
-        urlPlayonline = try c.decodeIfPresent(String.self, forKey: .urlPlayonline)
         urlShortplays = try c.decodeIfPresent(String.self, forKey: .urlShortplays)
+        screens = try c.decodeIfPresent(Int.self, forKey: .screens)
     }
 }

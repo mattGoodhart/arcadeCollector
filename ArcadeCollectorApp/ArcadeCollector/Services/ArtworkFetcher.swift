@@ -67,14 +67,14 @@ actor ArtworkFetcher {
         if game.emulationStatus.isEmpty, !metadata.emulationStatus.isEmpty {
             game.emulationStatus = metadata.emulationStatus
         }
-        if game.driver.isEmpty || game.displayType.isEmpty {
-            if let xmlInfo = try? await client.machineXMLInfo(for: romSetName) {
-                if game.driver.isEmpty, let sourceFile = xmlInfo.sourceFile {
-                    game.driver = sourceFile
-                }
-                if game.displayType.isEmpty, let type = xmlInfo.displayType {
-                    game.displayType = xmlInfo.displayCount > 1 ? "multiple" : type
-                }
+        if let xmlInfo = try? await client.machineXMLInfo(for: romSetName) {
+            if game.driver.isEmpty, let sourceFile = xmlInfo.sourceFile {
+                game.driver = sourceFile
+            }
+            if xmlInfo.displayCount > 1 {
+                game.displayType = "multiple"
+            } else if game.displayType.isEmpty, let type = xmlInfo.displayType {
+                game.displayType = type
             }
         }
         if game.inputControls.isEmpty, !metadata.inputControls.isEmpty {
