@@ -17,6 +17,7 @@ final class Game {
     var year: String
     var genre: String
     var players: String
+    var nplayers: String = ""
     var orientation: ScreenOrientation
     var isBootleg: Bool
 

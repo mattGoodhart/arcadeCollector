@@ -53,7 +53,6 @@ enum GameListMode: Hashable {
 /// Sort options exposed in the games list toolbar.
 enum GameSort: String, CaseIterable, Identifiable {
     case title
-    case year
     case manufacturer
 
     var id: String { rawValue }
@@ -61,7 +60,6 @@ enum GameSort: String, CaseIterable, Identifiable {
     var displayName: String {
         switch self {
         case .title:        return "Title"
-        case .year:         return "Year"
         case .manufacturer: return "Manufacturer"
         }
     }
@@ -69,7 +67,6 @@ enum GameSort: String, CaseIterable, Identifiable {
     var descriptor: SortDescriptor<Game> {
         switch self {
         case .title:        return SortDescriptor(\Game.title)
-        case .year:         return SortDescriptor(\Game.year)
         case .manufacturer: return SortDescriptor(\Game.manufacturer)
         }
     }
@@ -92,15 +89,19 @@ struct GameListFilter: Equatable {
     var search: String = ""
     var ownership: OwnershipStatus? = nil
     var orientation: ScreenOrientation? = nil
+    var genre: String? = nil
+    var nplayers: String? = nil
 
     var isActive: Bool {
         !search.trimmingCharacters(in: .whitespaces).isEmpty
             || ownership != nil
             || orientation != nil
+            || genre != nil
+            || nplayers != nil
     }
 
     var hasEnumFilters: Bool {
-        ownership != nil || orientation != nil || mode != .allGames
+        ownership != nil || orientation != nil || genre != nil || nplayers != nil || mode != .allGames
     }
 
     var mode: GameListMode = .allGames
@@ -129,6 +130,8 @@ struct GameListFilter: Equatable {
             if let ownership, game.ownership != ownership { return false }
         }
         if let orientation, game.orientation != orientation { return false }
+        if let genre, game.genre != genre { return false }
+        if let nplayers, game.nplayers != nplayers { return false }
         return true
     }
 }

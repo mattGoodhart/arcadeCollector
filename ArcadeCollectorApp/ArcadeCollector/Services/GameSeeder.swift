@@ -40,6 +40,11 @@ actor GameSeeder {
                 players: row.players ?? "",
                 orientation: orientation(from: row.orientation)
             )
+            if let np = row.nplayers, !np.isEmpty, np != "???" {
+                game.nplayers = np
+            } else if let p = row.players, !p.isEmpty {
+                game.nplayers = "\(p)P"
+            }
             game.driver = row.sourcefile
             game.emulationStatus = row.driverStatus
             game.inputControls = row.inputControls ?? ""
@@ -89,6 +94,7 @@ private nonisolated struct SeedRow: Decodable {
     let monitorType: String
     let chipsCpu: String?
     let chipsAudio: String?
+    let nplayers: String?
     let urlShortplays: String?
     let screens: Int?
 
@@ -111,6 +117,7 @@ private nonisolated struct SeedRow: Decodable {
         case monitorType = "monitor_type"
         case chipsCpu = "chips_cpu"
         case chipsAudio = "chips_audio"
+        case nplayers
         case urlShortplays = "url_shortplays"
         case screens
     }
@@ -143,6 +150,7 @@ private nonisolated struct SeedRow: Decodable {
         monitorType = try c.decode(String.self, forKey: .monitorType)
         chipsCpu = try c.decodeIfPresent(String.self, forKey: .chipsCpu)
         chipsAudio = try c.decodeIfPresent(String.self, forKey: .chipsAudio)
+        nplayers = try c.decodeIfPresent(String.self, forKey: .nplayers)
         urlShortplays = try c.decodeIfPresent(String.self, forKey: .urlShortplays)
         screens = try c.decodeIfPresent(Int.self, forKey: .screens)
     }

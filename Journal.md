@@ -697,3 +697,15 @@ Upgraded to a third seed file iteration (`Arcade Collector Value-only Seed July 
 **Aspect ratio rule simplified** — `shouldForceScreenAspectRatio` was checking for `type == "raster" || type == "vector"`. Changed to `!type.isEmpty && type != "multiple"` (case-insensitive). This means: force 4:3 for any single-screen game, regardless of whether it's raster or vector. The only games that should keep their natural image aspect ratio are multi-screen games with non-standard display geometries.
 
 **Lesson**: when you add a new data source that populates a field the existing code treated as "empty until enriched," audit every `isEmpty` guard downstream. The seed-then-enrich pattern creates an implicit contract: "this field starts empty and gets filled later." Populating it earlier breaks every conditional that relied on emptiness as a signal for "hasn't been processed yet."
+
+### 2026-07-24 — Genre and Players Filters
+
+Added two new filter options to the game list toolbar menu: **Genre** and **Players**.
+
+**Genre** — 16 values from the seed data (Shooter, Sports, Fighter, Platform, Puzzle, Driving, Maze, etc.). Straightforward: `genre: String?` on `GameListFilter`, a `Picker` in the menu populated from a `@Query`-derived `availableGenres` computed property. Same pattern as the existing Ownership and Orientation filters.
+
+**Players** — uses the `nplayers` field from the seed data (e.g., "2P sim", "4P alt", "2P alt / 4P sim"). Added `nplayers: String` to the `Game` model. The seeder populates it from the JSON `nplayers` key, falling back to `Players` with a "P" suffix (e.g., "2" → "2P") when `nplayers` is empty or `"???"`. This gives every game a human-readable player-count label suitable for both display and filtering.
+
+Also removed the **Year** sort option from `GameSort` — the All Games tab is already sectioned by year, making a year sort redundant.
+
+**Design note on filter architecture**: all filters follow the same split architecture described in the `GameListFilter` doc comment — text search goes into the `@Query` predicate (SwiftData/SQLite), while enum/string filters run in-memory via `matchesEnumFilters`. This is because SwiftData's `#Predicate` macro still can't handle custom enum KeyPaths or arbitrary string equality on non-indexed fields without runtime crashes. The in-memory pass is fine for the dataset size (3,855 games) — filtering completes in under a millisecond.

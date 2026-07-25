@@ -111,6 +111,7 @@ struct GameSeederTests {
         #expect(pacman.resolution == "224x288")
         #expect(pacman.cpus == ["Zilog Z80"])
         #expect(pacman.soundDevices == ["Speaker", "Namco"])
+        #expect(pacman.nplayers == "2P alt")
 
         let sf2 = try #require(games.first { $0.romSetName == "sf2" })
         #expect(sf2.orientation == .horizontal)

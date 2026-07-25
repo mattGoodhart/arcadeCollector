@@ -4,15 +4,25 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct GameListTab: View {
     let mode: GameListMode
 
+    @Query(sort: \Game.genre) private var allGames: [Game]
     @State private var sort: GameSort = .title
     @State private var filter = GameListFilter()
     @State private var showingAbout = false
 
     private var showsSearch: Bool { mode == .allGames }
+
+    private var availableGenres: [String] {
+        Array(Set(allGames.map(\.genre)).filter { !$0.isEmpty }).sorted()
+    }
+
+    private var availableNplayers: [String] {
+        Array(Set(allGames.map(\.nplayers)).filter { !$0.isEmpty }).sorted()
+    }
 
     var body: some View {
         NavigationStack {
@@ -104,6 +114,30 @@ struct GameListTab: View {
                     }
                 } label: {
                     Text("Orientation")
+                }
+                .pickerStyle(.inline)
+            }
+
+            Section("Genre") {
+                Picker(selection: $filter.genre) {
+                    Text("All").tag(String?.none)
+                    ForEach(availableGenres, id: \.self) { genre in
+                        Text(genre).tag(Optional(genre))
+                    }
+                } label: {
+                    Text("Genre")
+                }
+                .pickerStyle(.inline)
+            }
+
+            Section("Players") {
+                Picker(selection: $filter.nplayers) {
+                    Text("All").tag(String?.none)
+                    ForEach(availableNplayers, id: \.self) { value in
+                        Text(value).tag(Optional(value))
+                    }
+                } label: {
+                    Text("Players")
                 }
                 .pickerStyle(.inline)
             }
