@@ -45,31 +45,31 @@ struct AboutView: View {
         Section("Data Sources") {
             DataSourceRow(
                 name: "Arcade Database",
-                description: "Game metadata, artwork, and hardware information",
+                description: "The primary source for this app, The Arcade Databse maintained by motoschifo provides game metadata, artwork, and hardware information.",
                 banner: "About Banners/arcade_database_banner1",
                 url: URL(string: "http://adb.arcadeitalia.net")!
             )
             DataSourceRow(
                 name: "MAME",
-                description: "Driver and hardware specifications",
+                description: "The Multiple Arcade Machine Emulator project provides driver and hardware specifications. MAME® is a registered trademark of Gregory Ember.",
                 banner: "About Banners/logo-mame",
                 url: URL(string: "https://www.mamedev.org")!
             )
             DataSourceRow(
                 name: "Progetto-SNAPS",
-                description: "Game snapshots and media",
+                description: "By Antopisa, Progetto-SNAPS provides game snapshots and media",
                 banner: "About Banners/Progetto-snaps banner",
                 url: URL(string: "https://www.progettosnaps.net")!
             )
             DataSourceRow(
                 name: "Gaming-History",
-                description: "Arcade gaming history and documentation",
+                description: "Arcade gaming history and documentation © Copyright of Alexis Bousiges",
                 banner: "About Banners/Gaming History Banner",
                 url: URL(string: "https://www.arcade-history.com")!
             )
             DataSourceRow(
                 name: "World of Longplays",
-                description: "Gameplay recordings",
+                description: "Arcade game longplays",
                 banner: "About Banners/wolheader",
                 url: URL(string: "https://www.longplays.org")!
             )
@@ -81,7 +81,7 @@ struct AboutView: View {
             )
             DataSourceRow(
                 name: "NPlayers",
-                description: "Player count and versus mode data",
+                description: "Player count and versus mode data © Copyright of Nomax",
                 banner: "About Banners/titre",
                 url: URL(string: "https://nplayers.arcadebelgium.be")!
             )
@@ -109,22 +109,32 @@ private struct DataSourceRow: View {
 
     var body: some View {
         Link(destination: url) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 10) {
                 Image(banner)
                     .resizable()
                     .scaledToFit()
-                    .frame(maxHeight: 60)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .frame(maxWidth: .infinity, maxHeight: 120)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(name)
-                        .font(.body)
-                    Text(description)
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(name)
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(.primary)
+                        Text(description)
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: "arrow.up.right")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.gray)
                 }
             }
-            .padding(.vertical, 4)
+            .padding(.vertical, 6)
         }
     }
 }

@@ -709,3 +709,11 @@ Added two new filter options to the game list toolbar menu: **Genre** and **Play
 Also removed the **Year** sort option from `GameSort` — the All Games tab is already sectioned by year, making a year sort redundant.
 
 **Design note on filter architecture**: all filters follow the same split architecture described in the `GameListFilter` doc comment — text search goes into the `@Query` predicate (SwiftData/SQLite), while enum/string filters run in-memory via `matchesEnumFilters`. This is because SwiftData's `#Predicate` macro still can't handle custom enum KeyPaths or arbitrary string equality on non-indexed fields without runtime crashes. The in-memory pass is fine for the dataset size (3,855 games) — filtering completes in under a millisecond.
+
+### 2026-07-27 — About View Data Sources Readability
+
+The "Data Sources" section in `AboutView` was hard to read — seven rows crammed into a grouped list with tiny 60pt banners and link-tinted text that washed out the descriptions.
+
+**Card-style rows** — `DataSourceRow` got a visual overhaul. Banner images doubled from 60pt to 120pt max height and stretch full-width, giving each data source enough visual weight to be scannable. Text below uses explicit `.primary` / `.secondary` foreground styles instead of inheriting the `Link` tint, so names and descriptions are readable without fighting the blue. A subtle `arrow.up.right` icon on the trailing edge signals tappability without relying on tinted text.
+
+**Wrapping descriptions** — several data sources got longer descriptions with proper attributions and copyright notices (MAME trademark, Gaming-History copyright, NPlayers copyright). Added `.fixedSize(horizontal: false, vertical: true)` to the description `Text` so longer strings wrap to multiple lines instead of truncating.
