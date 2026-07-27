@@ -717,3 +717,7 @@ The "Data Sources" section in `AboutView` was hard to read — seven rows cramme
 **Card-style rows** — `DataSourceRow` got a visual overhaul. Banner images doubled from 60pt to 120pt max height and stretch full-width, giving each data source enough visual weight to be scannable. Text below uses explicit `.primary` / `.secondary` foreground styles instead of inheriting the `Link` tint, so names and descriptions are readable without fighting the blue. A subtle `arrow.up.right` icon on the trailing edge signals tappability without relying on tinted text.
 
 **Wrapping descriptions** — several data sources got longer descriptions with proper attributions and copyright notices (MAME trademark, Gaming-History copyright, NPlayers copyright). Added `.fixedSize(horizontal: false, vertical: true)` to the description `Text` so longer strings wrap to multiple lines instead of truncating.
+
+### 2026-07-27 — Monitor Type in Hardware View
+
+Added a "Monitor Type" row to the Display section of `HardwareDetailView`, visible only when `displayType` is "raster" and `monitorResolutionType` is non-empty. The value comes straight from the seed data's `monitor_type` field (populated in the July 24 seed with values like "CRT 15kHz", "CRT 31kHz", "CRT 25kHz") via `game.monitorResolutionType`. Initially tried computing it from horizontal refresh thresholds (matching the legacy `getMonitorResolutionType()` logic), but the seed data already has clean labels — no need to recompute what's already there.
