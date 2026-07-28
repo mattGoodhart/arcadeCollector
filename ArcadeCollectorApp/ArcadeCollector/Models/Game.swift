@@ -38,6 +38,7 @@ final class Game {
     var inputControls: String
     var inputButtons: String
     var displayType: String
+    var screens: Int
     var monitorResolutionType: String
     var resolution: String
     var horizontalRefresh: String
@@ -102,6 +103,7 @@ final class Game {
         self.inputControls = ""
         self.inputButtons = ""
         self.displayType = ""
+        self.screens = 1
         self.monitorResolutionType = ""
         self.resolution = ""
         self.horizontalRefresh = ""

@@ -59,6 +59,9 @@ struct HardwareDetailView: View {
                 LabeledContent("Resolution", value: game.resolution)
             }
             LabeledContent("Orientation", value: game.orientation.displayName)
+            if game.screens > 0 {
+                LabeledContent("Screens", value: "\(game.screens)")
+            }
             if game.displayType.lowercased() == "raster", !game.monitorResolutionType.isEmpty {
                 LabeledContent("Monitor Type", value: game.monitorResolutionType)
             }

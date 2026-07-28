@@ -64,6 +64,7 @@ actor GameSeeder {
         game.inputControls = row.inputControls ?? ""
         game.inputButtons = row.buttons
         game.displayType = displayType(from: row)
+        game.screens = row.screens ?? 1
         game.monitorResolutionType = row.monitorType
         game.resolution = "\(row.displayWidth)x\(row.displayHeight)"
         game.verticalRefresh = row.displayRefresh
