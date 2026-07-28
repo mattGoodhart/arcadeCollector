@@ -51,6 +51,10 @@ enum GameListMode: Hashable {
 }
 
 /// Sort options exposed in the games list toolbar.
+///
+/// Intentionally does *not* include `.year` — the All Games tab is already
+/// grouped into year sections with a section-index scrubber, so a year sort
+/// would just reorder within-section without adding navigability.
 enum GameSort: String, CaseIterable, Identifiable {
     case title
     case manufacturer

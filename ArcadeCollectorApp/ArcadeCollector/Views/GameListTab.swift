@@ -9,20 +9,14 @@ import SwiftData
 struct GameListTab: View {
     let mode: GameListMode
 
-    @Query(sort: \Game.genre) private var allGames: [Game]
+    @Environment(\.modelContext) private var modelContext
     @State private var sort: GameSort = .title
     @State private var filter = GameListFilter()
     @State private var showingAbout = false
+    @State private var availableGenres: [String] = []
+    @State private var availableNplayers: [String] = []
 
     private var showsSearch: Bool { mode == .allGames }
-
-    private var availableGenres: [String] {
-        Array(Set(allGames.map(\.genre)).filter { !$0.isEmpty }).sorted()
-    }
-
-    private var availableNplayers: [String] {
-        Array(Set(allGames.map(\.nplayers)).filter { !$0.isEmpty }).sorted()
-    }
 
     var body: some View {
         NavigationStack {
@@ -58,7 +52,26 @@ struct GameListTab: View {
                 .navigationDestination(for: Game.self) { game in
                     GameDetailView(game: game)
                 }
+                .task {
+                    if availableGenres.isEmpty {
+                        loadFilterOptions()
+                    }
+                }
         }
+    }
+
+    /// Populates the Genre and Players picker options with distinct values
+    /// from the store. Uses `propertiesToFetch` so SwiftData only reads the
+    /// two columns we need instead of materializing full `Game` rows. Runs
+    /// once per view lifetime — the seed and API back-fill don't churn these
+    /// values often enough to warrant continuous `@Query` observation over
+    /// the full 3,855-row table.
+    private func loadFilterOptions() {
+        var descriptor = FetchDescriptor<Game>()
+        descriptor.propertiesToFetch = [\.genre, \.nplayers]
+        guard let games = try? modelContext.fetch(descriptor) else { return }
+        availableGenres = Array(Set(games.map(\.genre)).subtracting([""])).sorted()
+        availableNplayers = Array(Set(games.map(\.nplayers)).subtracting([""])).sorted()
     }
 
     @ViewBuilder

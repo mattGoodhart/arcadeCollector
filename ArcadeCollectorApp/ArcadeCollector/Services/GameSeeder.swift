@@ -8,7 +8,10 @@ import SwiftData
 
 @ModelActor
 actor GameSeeder {
-    private static let resourceName = "Arcade Collector Value-only Seed July 24 2026"
+    /// The seed JSON is renamed to a stable `seed.json` at copy-in time so
+    /// this string never changes across seed refreshes. Version/date info
+    /// lives in git history and `Journal.md`, not the filename.
+    private static let resourceName = "seed"
     private static let resourceExtension = "json"
 
     func seedIfNeeded() throws {
@@ -31,43 +34,80 @@ actor GameSeeder {
 
         let rows = try JSONDecoder().decode([SeedRow].self, from: data)
         for row in rows {
-            let game = Game(
-                romSetName: row.romName,
-                title: row.title.trimmingCharacters(in: .whitespaces),
-                manufacturer: row.manufacturer ?? "",
-                year: row.year,
-                genre: row.genre,
-                players: row.players ?? "",
-                orientation: orientation(from: row.orientation)
-            )
-            if let np = row.nplayers, !np.isEmpty, np != "???" {
-                game.nplayers = np
-            } else if let p = row.players, !p.isEmpty {
-                game.nplayers = "\(p)P"
-            }
-            game.driver = row.sourcefile
-            game.emulationStatus = row.driverStatus
-            game.inputControls = row.inputControls ?? ""
-            game.inputButtons = row.buttons
-            if let screens = row.screens, screens > 1 {
-                game.displayType = "multiple"
-            } else {
-                game.displayType = row.displayType
-            }
-            game.monitorResolutionType = row.monitorType
-            game.resolution = "\(row.displayWidth)x\(row.displayHeight)"
-            game.verticalRefresh = row.displayRefresh
-            game.cpus = row.chipsCpu?.components(separatedBy: ",") ?? []
-            game.soundDevices = row.chipsAudio?.components(separatedBy: ",") ?? []
-            if let raw = row.urlShortplays, raw != "-", let url = URL(string: raw) {
-                game.shortPlayURL = url
-            }
-            modelContext.insert(game)
+            modelContext.insert(Self.makeGame(from: row))
         }
         try modelContext.save()
     }
 
-    private func orientation(from raw: String) -> ScreenOrientation {
+    // MARK: - Row → Game
+
+    /// `nplayers` field placeholder in the source data ("we don't know").
+    private static let unknownNplayers = "???"
+
+    /// `"-"` marks "no value" for URL fields in the source data. `URL(string:)`
+    /// happily accepts it as a relative URL, so every field must be guarded.
+    private static let noValueSentinel = "-"
+
+    private static func makeGame(from row: SeedRow) -> Game {
+        let game = Game(
+            romSetName: row.romName,
+            title: row.title.trimmingCharacters(in: .whitespaces),
+            manufacturer: row.manufacturer ?? "",
+            year: row.year,
+            genre: row.genre,
+            players: row.players ?? "",
+            orientation: orientation(from: row.orientation)
+        )
+        game.nplayers = nplayersLabel(from: row)
+        game.driver = row.sourcefile
+        game.emulationStatus = row.driverStatus
+        game.inputControls = row.inputControls ?? ""
+        game.inputButtons = row.buttons
+        game.displayType = displayType(from: row)
+        game.monitorResolutionType = row.monitorType
+        game.resolution = "\(row.displayWidth)x\(row.displayHeight)"
+        game.verticalRefresh = row.displayRefresh
+        game.cpus = chipList(from: row.chipsCpu)
+        game.soundDevices = chipList(from: row.chipsAudio)
+        game.shortPlayURL = sanitizedURL(from: row.urlShortplays)
+        return game
+    }
+
+    /// Uses the human-readable `nplayers` value when present ("2P sim",
+    /// "4P alt"), otherwise falls back to `players + "P"`. Empty strings
+    /// and the `"???"` sentinel both count as absent.
+    private static func nplayersLabel(from row: SeedRow) -> String {
+        if let np = row.nplayers, !np.isEmpty, np != unknownNplayers {
+            return np
+        }
+        if let p = row.players, !p.isEmpty {
+            return "\(p)P"
+        }
+        return ""
+    }
+
+    /// `screens > 1` rewrites `display_type` to `"multiple"` so downstream
+    /// code (aspect-ratio forcing, hardware view labels) can treat multi-
+    /// monitor cabinets as a distinct category rather than raster/vector.
+    /// Regression source: The Ninja Warriors got a forced 4:3 aspect ratio
+    /// on its screenshots before this rewrite existed.
+    private static func displayType(from row: SeedRow) -> String {
+        if let screens = row.screens, screens > 1 {
+            return "multiple"
+        }
+        return row.displayType
+    }
+
+    private static func chipList(from raw: String?) -> [String] {
+        raw?.components(separatedBy: ",") ?? []
+    }
+
+    private static func sanitizedURL(from raw: String?) -> URL? {
+        guard let raw, raw != noValueSentinel else { return nil }
+        return URL(string: raw)
+    }
+
+    private static func orientation(from raw: String) -> ScreenOrientation {
         switch raw.uppercased() {
         case "VERTICAL": return .vertical
         default: return .horizontal
