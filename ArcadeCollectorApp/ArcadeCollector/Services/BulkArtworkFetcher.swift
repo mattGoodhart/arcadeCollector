@@ -51,6 +51,13 @@ actor BulkArtworkFetcher {
             } catch {
                 // Per-game failures are non-fatal
             }
+
+            // Courtesy delay so a 200-game bulk fetch doesn't hammer ADB. Skipped
+            // after the last game since there's nothing following. Cancellation-
+            // aware — a cancelled sleep throws, which we treat as user intent.
+            if index < total - 1 {
+                try await Task.sleep(for: .milliseconds(250))
+            }
         }
 
         onProgress(Progress(completed: total, total: total, currentTitle: ""))

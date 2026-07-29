@@ -58,7 +58,17 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
         string: "https://adb.arcadeitalia.net/service_scraper.php"
     )!
 
-    init(session: URLSession = .shared) {
+    /// Identifies this app to ADB in every request so their admins can distinguish
+    /// our traffic (and reach out if we're misbehaving) instead of seeing an
+    /// unattributed URLSession UA.
+    nonisolated static let defaultSession: URLSession = {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+        let config = URLSessionConfiguration.default
+        config.httpAdditionalHeaders = ["User-Agent": "ArcadeCollector/\(version) (iOS)"]
+        return URLSession(configuration: config)
+    }()
+
+    init(session: URLSession = ArcadeDatabaseClient.defaultSession) {
         self.session = session
     }
 

@@ -765,3 +765,15 @@ private nonisolated final class MachineXMLParser: NSObject, XMLParserDelegate {
 The parser does zero UI work, holds no main-actor state, and its output is a `Sendable` struct — it has no business being on the main actor.
 
 **Lesson**: `NSObject`-derived classes in the Swift 6 world need explicit `nonisolated` (or an explicit actor annotation) whenever they're going to be called from off-main-actor contexts. The main-actor default is a footgun that will bite silently: your code works today under Swift 5 mode, but the same file becomes uncompilable the day you enable Swift 6. Audit any bridging class (delegates, parsers, coders) that inherits from `NSObject` and gets called from `async` code that isn't `@MainActor`.
+
+### 2026-07-29 — Being a Good Neighbor to the Arcade Database
+
+The Arcade Database (`adb.arcadeitalia.net`) is a community-run resource, not a CDN with infinite capacity. Before submitting the app to the store, added two small courtesies so that a user with a 200-game collection doesn't accidentally DDoS the site.
+
+**User-Agent header on every request.** The default `URLSession.shared` sends a generic `CFNetwork/...` user-agent — indistinguishable from any other iOS app. If the ADB admins ever see a traffic spike from our app, they have no way to identify it or reach us. Fixed by giving `ArcadeDatabaseClient` a dedicated session with `httpAdditionalHeaders = ["User-Agent": "ArcadeCollector/<version> (iOS)"]`, sourced from `CFBundleShortVersionString` so the value tracks the current release automatically. Tests pass their own `URLSession` (via `FixtureURLProtocol`) and are unaffected.
+
+**Between-games courtesy delay.** `BulkArtworkFetcher` was hammering ADB in tight sequential loops — a game with 6 missing artwork kinds fires 6 image downloads back-to-back, then immediately moves to the next game. For a 50-owned-games bulk fetch, that's ~300 requests over a few minutes. Added `try await Task.sleep(for: .milliseconds(250))` between games (skipped after the last). Costs the user 12.5 seconds on a 50-game pass in exchange for giving ADB's server breathing room. The sleep is cancellation-aware, so hitting Cancel still terminates promptly.
+
+**Why between-games and not between-requests?** A single game already fires 6 sequential downloads inside `ArtworkFetcher.fetch`, but that's a bounded burst — the polite thing is to space out the *bursts*, not to stretch each burst by a factor of six. Between-games gives ADB idle time to serve other users between rounds; between-requests would just make our user wait longer without meaningfully changing our impact.
+
+**Lesson**: when your app depends on a third-party service that's a labor of love rather than a business, "polite by default" is a moral and pragmatic obligation. Identify yourself in the User-Agent, throttle bursts, and stagger long-running operations. The cost to you (a few seconds of latency) is trivial; the cost to them of being flooded is real.
