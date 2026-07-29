@@ -749,3 +749,19 @@ Ran a self-review over the recent seed-overhaul work and picked off the highest-
 The "Fetch All Missing Artwork" button in `SummaryView` would stick in its completed state ("All artwork fetched" / "All owned games have artwork") until the app was relaunched. If a user toggled a new game to "owned" via the PCB toggle, they had to restart the app to see the fetch button again.
 
 **Fix** — added `.onChange(of: ownedGames.count)` to the `NavigationStack`. When the owned count changes and a bulk fetch isn't in progress, it checks whether any owned game is still missing artwork (comparing stored `ArtworkKind`s against the full set of six). If so, it resets `bulkProgress` and `nothingToFetch`, which returns the button to its actionable "Fetch All Missing Artwork" state. The artwork-kind set is shared as a view-level constant (`allArtworkKinds`) to stay consistent with `BulkArtworkFetcher`'s own check.
+
+### 2026-07-29 — Swift 6 Isolation Warning in XML Parser
+
+A pre-submission audit turned up a lingering warning: `main actor-isolated static method 'parse(data:)' cannot be called from outside of the actor; this is an error in the Swift 6 language mode` in `ArcadeDatabaseClient.swift`. Left unfixed, it would become a hard build error the moment the project flips to Swift 6.
+
+**Why it fired.** `MachineXMLParser` inherits from `NSObject` and conforms to `XMLParserDelegate`. Under Swift 6 language mode, `NSObject`-derived classes are inferred as `@MainActor`-isolated by default (a compatibility default for legacy Cocoa classes). That isolation propagates to the class's static methods too — so `MachineXMLParser.parse(data:)` was implicitly main-actor. Meanwhile `ArcadeDatabaseClient` is declared `nonisolated` (it's a stateless Sendable wrapper), so calling the parser from `machineXMLInfo(for:)` was a cross-actor hop the compiler flagged.
+
+**Fix** — one keyword. Declared the parser `nonisolated` at the class level:
+
+```swift
+private nonisolated final class MachineXMLParser: NSObject, XMLParserDelegate {
+```
+
+The parser does zero UI work, holds no main-actor state, and its output is a `Sendable` struct — it has no business being on the main actor.
+
+**Lesson**: `NSObject`-derived classes in the Swift 6 world need explicit `nonisolated` (or an explicit actor annotation) whenever they're going to be called from off-main-actor contexts. The main-actor default is a footgun that will bite silently: your code works today under Swift 5 mode, but the same file becomes uncompilable the day you enable Swift 6. Audit any bridging class (delegates, parsers, coders) that inherits from `NSObject` and gets called from `async` code that isn't `@MainActor`.

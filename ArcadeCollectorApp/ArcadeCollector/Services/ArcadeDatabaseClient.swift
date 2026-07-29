@@ -222,7 +222,7 @@ private extension String {
 
 // MARK: - XML Parser for <machine> and <display> elements
 
-private final class MachineXMLParser: NSObject, XMLParserDelegate {
+private nonisolated final class MachineXMLParser: NSObject, XMLParserDelegate {
     private var sourceFile: String?
     private var displayType: String?
     private var displayCount = 0
