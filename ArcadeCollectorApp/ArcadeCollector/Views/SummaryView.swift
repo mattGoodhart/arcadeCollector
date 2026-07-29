@@ -57,8 +57,19 @@ struct SummaryView: View {
                 }
             }
             .onDisappear { cancelBulkFetch() }
+            .onChange(of: ownedGames.count) {
+                guard !isBulkFetching else { return }
+                if ownedGames.contains(where: { game in
+                    Set(game.artwork.map(\.kind)) != allArtworkKinds
+                }) {
+                    bulkProgress = nil
+                    nothingToFetch = false
+                }
+            }
         }
     }
+
+    private let allArtworkKinds: Set<ArtworkKind> = [.cabinet, .flyer, .inGame, .marquee, .title, .pcb]
 
     // MARK: - Collection Counts
 

@@ -743,3 +743,9 @@ Ran a self-review over the recent seed-overhaul work and picked off the highest-
 **Lesson**: for data-ingest code (seeders, decoders, importers), the test-writing bar is *lower* than for regular business logic, not higher. Every "custom `Decodable` init" and "sentinel value handling" line is a footgun that will silently regress the day someone touches it. The `centiped` crash cost hours to diagnose; a 15-line inline-fixture test would have caught it before submit.
 
 **Lesson**: filenames are interfaces. When a filename encodes state (a date, a version, a hash), every consumer of that filename becomes coupled to the version. Stable names + versioning inside the file (or in git history) is nearly always the right factoring.
+
+### 2026-07-29 — Reset Fetch Artwork Button on Ownership Change
+
+The "Fetch All Missing Artwork" button in `SummaryView` would stick in its completed state ("All artwork fetched" / "All owned games have artwork") until the app was relaunched. If a user toggled a new game to "owned" via the PCB toggle, they had to restart the app to see the fetch button again.
+
+**Fix** — added `.onChange(of: ownedGames.count)` to the `NavigationStack`. When the owned count changes and a bulk fetch isn't in progress, it checks whether any owned game is still missing artwork (comparing stored `ArtworkKind`s against the full set of six). If so, it resets `bulkProgress` and `nothingToFetch`, which returns the button to its actionable "Fetch All Missing Artwork" state. The artwork-kind set is shared as a view-level constant (`allArtworkKinds`) to stay consistent with `BulkArtworkFetcher`'s own check.
