@@ -10,6 +10,7 @@ struct ZoomableImageView: View {
     let title: String
     var forcedAspectRatio: CGFloat? = nil
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var scale: CGFloat = 1
     @State private var lastScale: CGFloat = 1
     @State private var offset: CGSize = .zero
@@ -24,18 +25,21 @@ struct ZoomableImageView: View {
                     .scaleEffect(scale)
                     .offset(offset)
                     .frame(width: geo.size.width, height: geo.size.height)
+                    .accessibilityLabel(title)
+                    .accessibilityAddTraits(.isImage)
+                    .accessibilityHint("Double-tap to zoom. Pinch to scale.")
                     .gesture(
                         MagnifyGesture()
                             .onChanged { value in
                                 scale = clampScale(lastScale * value.magnification)
                             }
                             .onEnded { value in
-                                withAnimation(.easeOut(duration: 0.2)) {
+                                withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) {
                                     scale = clampScale(lastScale * value.magnification)
                                 }
                                 lastScale = scale
                                 if scale <= 1 {
-                                    withAnimation(.easeOut(duration: 0.2)) {
+                                    withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) {
                                         offset = .zero
                                         lastOffset = .zero
                                     }
@@ -56,7 +60,7 @@ struct ZoomableImageView: View {
                             )
                     )
                     .onTapGesture(count: 2) {
-                        withAnimation(.easeInOut(duration: 0.3)) {
+                        withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.3)) {
                             if scale > 1 {
                                 scale = 1
                                 lastScale = 1

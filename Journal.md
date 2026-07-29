@@ -802,3 +802,26 @@ nonisolated struct GameListFilter: Equatable { ... }
 Both are plain value types with no legitimate main-actor dependency. The `#Predicate<Game>` inside `searchPredicate` compiles fine from a nonisolated context — SwiftData's macro-generated code handles the isolation correctly, it just needs a hint from us that we're not opting into main-actor for the whole struct. `GameListMode` needed the same treatment because its Equatable conformance was being pulled into main-actor isolation for the same file-level reason, and `GameListFilter` compares `mode != .allGames`.
 
 **Lesson**: Swift 6's isolation inference is aggressive and viral. One `#Predicate<@ModelType>` reference in a computed property can silently isolate the enclosing struct, which then isolates every method the struct exposes, which then breaks every nonisolated caller. When you see a chain of "cannot be called from outside the actor" warnings on trivial members (plain `String` setters, memberwise `init`), don't fix them one at a time — declare the enclosing type `nonisolated` at the source and cut the whole chain in one stroke.
+
+### 2026-07-29 — Accessibility Pass
+
+Pre-submission audit for VoiceOver, Reduce Motion, and combined element semantics. Grep-first discovery: only 11 accessibility annotations across the whole new-app target, concentrated in three files. Most custom controls had *nothing*.
+
+**ZoomableImageView.** Three `withAnimation(.easeOut/.easeInOut)` calls (pinch-to-zoom settle, snap-back, and double-tap toggle) are now gated on `@Environment(\.accessibilityReduceMotion)` — `withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2))` cleanly disables the transitions when the user has Reduce Motion on. Also added `.accessibilityLabel(title)` + `.accessibilityAddTraits(.isImage)` + `.accessibilityHint("Double-tap to zoom. Pinch to scale.")` so VoiceOver users know they've landed on something interactive rather than a generic image.
+
+**SummaryView donut chart.** The Charts-generated `Chart` was completely opaque to VoiceOver — a rotating sector graph with visual annotations but no textual equivalent. Added `.accessibilityLabel("Game condition breakdown")` on the whole chart and a computed `.accessibilityValue` that reads "Working 3, Issues 1, Broken 1, Untested 0" (derived from the same `gamesByCondition` array the chart itself uses, so the label and the visual stay in sync automatically). Chart-legend rows are now combined elements labeled "Working: 3" rather than the default "circle, Working" split reading.
+
+**SummaryView ComponentStatRow.** The horizontal colored bar with per-status counts was pure visual — VoiceOver would announce each colored rectangle individually. Wrapped it with `.accessibilityElement(children: .ignore)` and gave the row a proper label ("Boot") + accessibility value that composes the non-zero counts ("Working 3, Issues 1, Untested 2"). Same trick as the chart: one shared source of truth for the visual and the announcement.
+
+**AboutView.** The decorative `arcade.stick.console` app icon is now `.accessibilityHidden(true)` — screen-reader users get "Arcade Collector, Version X, by Matt Goodhart" without the redundant icon announcement. Each `DataSourceRow` is now a single accessible element ("Arcade Database. The primary source…" with hint "Opens website") instead of VoiceOver navigating banner → name → description → arrow separately. Banner image and trailing `arrow.up.right` glyph are hidden as decorative.
+
+**RepairLogEntryView.** Photo thumbnails were bare buttons — VoiceOver announced "button, button, button" with no way to distinguish photos or discover the context-menu delete. Now announces "Photo N of M" with hint "Double-tap to view. Touch and hold for delete option." Also refactored the `ForEach` to enumerate so the index label stays accurate as photos are added/removed.
+
+**Intentionally not touched.**
+- `SectionIndexOverlay` in `GameListView` — already `.accessibilityHidden(true)`, and its size-9 non-scaling font is intentional (it's a spatial scrubber, not readable text; enlarging would break the compact overlay layout).
+- `HardwareDetailView` — uses `LabeledContent` and `NavigationLink` throughout, both fully accessible by default.
+- `GameRow` — the parent `.accessibilityElement(children: .combine)` produces an acceptable-if-imperfect combined reading. Deferring an explicit label until real-device VoiceOver testing shows a specific problem.
+
+**Lesson**: for accessibility work, grep is the fastest audit. `.accessibilityLabel` / `.accessibilityHint` / `.accessibilityValue` / `.animation(` / `.font(.system(size:` — five searches across the codebase gave a complete picture of what needed attention in under a minute. Custom controls without any of the first three are almost always bugs.
+
+**Lesson**: when a visual control encodes information (colored bars, donut sectors, badges, dots), the accessibility label/value should be derived from the *same data source* as the visual, in the same view — not duplicated with hand-rolled strings. Otherwise you get drift: the chart says "3 working games" and VoiceOver says "2 working games" a month later because someone edited one and not the other.

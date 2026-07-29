@@ -38,7 +38,7 @@ struct RepairLogEntryView: View {
                 if !sortedPhotos.isEmpty {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 12) {
-                            ForEach(sortedPhotos) { photo in
+                            ForEach(Array(sortedPhotos.enumerated()), id: \.element.id) { index, photo in
                                 if let data = photo.imageData, let uiImage = UIImage(data: data) {
                                     Button {
                                         zoomedPhoto = photo
@@ -50,6 +50,8 @@ struct RepairLogEntryView: View {
                                             .clipShape(RoundedRectangle(cornerRadius: 8))
                                     }
                                     .buttonStyle(.plain)
+                                    .accessibilityLabel("Photo \(index + 1) of \(sortedPhotos.count)")
+                                    .accessibilityHint("Double-tap to view. Touch and hold for delete option.")
                                     .contextMenu {
                                         Button("Delete Photo", role: .destructive) {
                                             deletePhoto(photo)

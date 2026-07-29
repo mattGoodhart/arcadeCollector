@@ -26,6 +26,7 @@ struct AboutView: View {
                 Image(systemName: "arcade.stick.console")
                     .font(.system(size: 48))
                     .foregroundStyle(.tint)
+                    .accessibilityHidden(true)
 
                 Text("Arcade Collector")
                     .font(.title2.bold())
@@ -133,6 +134,7 @@ private struct DataSourceRow: View {
                     .scaledToFit()
                     .frame(maxWidth: .infinity, maxHeight: 120)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .accessibilityHidden(true)
 
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
@@ -150,10 +152,14 @@ private struct DataSourceRow: View {
                     Image(systemName: "arrow.up.right")
                         .font(.caption)
                         .foregroundStyle(.gray)
+                        .accessibilityHidden(true)
                 }
             }
             .padding(.vertical, 6)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(name). \(description)")
+        .accessibilityHint("Opens website")
     }
 }
 

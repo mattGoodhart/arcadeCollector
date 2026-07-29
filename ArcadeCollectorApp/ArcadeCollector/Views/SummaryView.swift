@@ -225,6 +225,8 @@ struct SummaryView: View {
                         }
                     }
                 }
+                .accessibilityLabel("Game condition breakdown")
+                .accessibilityValue(conditionAccessibilityValue)
                 .chartLegend(position: .bottom) {
                     HStack(spacing: 16) {
                         ForEach(gamesByCondition, id: \.label) { item in
@@ -232,9 +234,12 @@ struct SummaryView: View {
                                 Circle()
                                     .fill(item.color)
                                     .frame(width: 8, height: 8)
+                                    .accessibilityHidden(true)
                                 Text(item.label)
                                     .font(.caption)
                             }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel("\(item.label): \(item.count)")
                         }
                     }
                 }
@@ -278,6 +283,12 @@ struct SummaryView: View {
             counts[game[keyPath: keyPath], default: 0] += 1
         }
         return counts
+    }
+
+    private var conditionAccessibilityValue: String {
+        gamesByCondition
+            .map { "\($0.label) \($0.count)" }
+            .joined(separator: ", ")
     }
 }
 
@@ -326,5 +337,17 @@ private struct ComponentStatRow: View {
             .clipShape(RoundedRectangle(cornerRadius: 4))
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(label)
+        .accessibilityValue(accessibilitySummary)
+    }
+
+    private var accessibilitySummary: String {
+        ComponentStatus.allCases
+            .compactMap { status in
+                let count = counts[status, default: 0]
+                return count > 0 ? "\(status.displayName) \(count)" : nil
+            }
+            .joined(separator: ", ")
     }
 }
