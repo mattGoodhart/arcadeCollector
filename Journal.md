@@ -777,3 +777,28 @@ The Arcade Database (`adb.arcadeitalia.net`) is a community-run resource, not a 
 **Why between-games and not between-requests?** A single game already fires 6 sequential downloads inside `ArtworkFetcher.fetch`, but that's a bounded burst — the polite thing is to space out the *bursts*, not to stretch each burst by a factor of six. Between-games gives ADB idle time to serve other users between rounds; between-requests would just make our user wait longer without meaningfully changing our impact.
 
 **Lesson**: when your app depends on a third-party service that's a labor of love rather than a business, "polite by default" is a moral and pragmatic obligation. Identify yourself in the User-Agent, throttle bursts, and stagger long-running operations. The cost to you (a few seconds of latency) is trivial; the cost to them of being flooded is real.
+
+### 2026-07-29 — More Swift 6 Actor Isolation: GameListFilter
+
+While cleaning up before submission, `searchFiltersByTitleCaseInsensitively()` and its sibling tests in `GameListFilterTests` were emitting a cluster of Swift 6 warnings:
+
+```
+main actor-isolated initializer 'init()' cannot be called from outside of the actor
+main actor-isolated property 'search' can not be mutated from a nonisolated context
+main actor-isolated property 'searchPredicate' can not be referenced from a nonisolated context
+```
+
+**Root cause.** SwiftData's `@Model` macro (applied to `Game`) infers the class as `@MainActor`-isolated under Swift 6. `GameListFilter.searchPredicate` uses `#Predicate<Game>`, which references the main-actor type. That single reference is enough to pull the *whole* `GameListFilter` struct's inferred isolation to `@MainActor` — including the memberwise `init()` and every stored property setter, even ones as innocent as `search: String`.
+
+Once the struct is main-actor, calling `GameListFilter()` from a nonisolated test (Swift Testing test functions default to nonisolated) crosses actor boundaries — hence the warnings.
+
+**Fix.** Explicitly mark `GameListFilter` and its sibling enum `GameListMode` as `nonisolated`:
+
+```swift
+nonisolated enum GameListMode: Hashable { ... }
+nonisolated struct GameListFilter: Equatable { ... }
+```
+
+Both are plain value types with no legitimate main-actor dependency. The `#Predicate<Game>` inside `searchPredicate` compiles fine from a nonisolated context — SwiftData's macro-generated code handles the isolation correctly, it just needs a hint from us that we're not opting into main-actor for the whole struct. `GameListMode` needed the same treatment because its Equatable conformance was being pulled into main-actor isolation for the same file-level reason, and `GameListFilter` compares `mode != .allGames`.
+
+**Lesson**: Swift 6's isolation inference is aggressive and viral. One `#Predicate<@ModelType>` reference in a computed property can silently isolate the enclosing struct, which then isolates every method the struct exposes, which then breaks every nonisolated caller. When you see a chain of "cannot be called from outside the actor" warnings on trivial members (plain `String` setters, memberwise `init`), don't fix them one at a time — declare the enclosing type `nonisolated` at the source and cut the whole chain in one stroke.

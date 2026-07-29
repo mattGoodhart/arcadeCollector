@@ -6,7 +6,7 @@
 import Foundation
 import SwiftData
 
-enum GameListMode: Hashable {
+nonisolated enum GameListMode: Hashable {
     case allGames, myCollection, wanted, repairLogs
 
     var title: String {
@@ -89,7 +89,7 @@ enum GameSort: String, CaseIterable, Identifiable {
 ///   (String predicates are fully supported and fast on SQLite).
 /// - **`matchesEnumFilters(_:)`** runs in-memory on the query result to
 ///   apply ownership + orientation filters.
-struct GameListFilter: Equatable {
+nonisolated struct GameListFilter: Equatable {
     var search: String = ""
     var ownership: OwnershipStatus? = nil
     var orientation: ScreenOrientation? = nil
