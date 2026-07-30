@@ -10,6 +10,7 @@ struct AboutView: View {
         List {
             appSection
             basicInfoSection
+            dataSection
             disclaimerSection
             dataSourcesSection
             acknowledgmentsSection
@@ -18,6 +19,16 @@ struct AboutView: View {
         .navigationBarTitleDisplayMode(.inline)
         .scrollContentBackground(.hidden)
         .background(Color.arcadeAboutBackground)
+    }
+
+    private var dataSection: some View {
+        Section("Your Data") {
+            NavigationLink {
+                BackupView()
+            } label: {
+                Label("Backup Collection", systemImage: "arrow.down.doc")
+            }
+        }
     }
 
     private var appSection: some View {

@@ -843,3 +843,41 @@ The retry button is safe to press repeatedly because `ArtworkFetcher.fetch(for:)
 Also cleared `bulkResult` in the `onChange(of: ownedGames.count)` handler so newly-owned games force the section back to its actionable "Fetch All Missing Artwork" state instead of leaving a stale success/failure message glued to the screen.
 
 **Lesson**: silent per-item failures are a lie by omission. When a background operation iterates over N things and some fail, the caller has a right to know the split — and the UI has a right to render a "we did what we could, but here's what didn't work" state. Wrapping the loop's outcome in a small `Result`-shaped struct (attempted/succeeded/failed) beats returning a single opaque count. Same principle as HTTP batch APIs returning per-item statuses rather than a single "OK" for the whole call.
+
+### 2026-07-29 — Backup Collection: JSON + Photos Zip Export
+
+Users who invest time in repair logs (photos, dates, notes across 20+ games) need a way out of the app. Added a Backup feature reachable from About → "Your Data" → Backup Collection.
+
+**What's in the backup** — user-authored only:
+- `Game.ownership`, the five component statuses, and the game's `romSetName` + `title` (title is a nicety for humans reading the JSON — the identity is `romSetName`).
+- Every `RepairLog` with its date, notes, and photos.
+
+**What's out** — ADB-derived data (game metadata, artwork, hardware specs). Those are re-fetchable by design, and including them would balloon a typical backup from tens of KB to hundreds of MB. Users can trigger the bulk artwork refetch after restore.
+
+**Filter** — only games with *modified* state are included (any non-`.none` ownership, any non-`.untested` component, or any repair log). A default game in a 3,855-entry seed is worthless to serialize.
+
+**Archive format:**
+```
+ArcadeCollector-Backup-2026-07-29-153042.zip
+├── backup.json          (manifest with games + repair-log entries)
+└── photos/
+    ├── <uuid>.jpg
+    └── ...
+```
+Photos are referenced from the manifest by filename to avoid base64 bloat. `UUID` filenames dodge collisions across repair logs.
+
+**Zipping without a dependency** — iOS Foundation has no `zip()`. Trick: `NSFileCoordinator.coordinate(readingItemAt: sourceDir, options: [.forUploading])` synchronously delivers a zip archive of the source directory into a coordinator-managed temp location. We copy that out to a stable named path (`ArcadeCollector-Backup-<timestamp>.zip`) and hand the URL to `ShareLink`. No SPM dependency, no bridging headers, no third-party zip library.
+
+**Actor isolation** — `BackupExporter` is a `@ModelActor` because it fetches games via `FetchDescriptor`. The private `zip(directory:)` helper is `nonisolated static` — file I/O and `NSFileCoordinator` don't need model-actor context. Same for the `filenameDateFormatter`. Keeping these off the actor sidesteps a needless hop and makes the zip step pure.
+
+**UI states in `BackupView`**:
+- Idle — "Create Backup" button.
+- In progress — `ProgressView` + "Preparing backup…".
+- Success — a summary row ("N games, M repair logs, K photos"), a `ShareLink` to hand the file off to Files / AirDrop / Mail / Messages, and a "Create Another Backup" button.
+- Error — inline red label + "Try Again".
+
+**Import is v1.1.** Round-trip restore needs conflict resolution (what if the target device already has repair logs on the same game? Merge? Overwrite? Skip?) which is a real design problem worth deliberating rather than shipping half-baked. Export alone still delivers the core value: users can safely reinstall / migrate devices without losing their work, even if manual re-entry is the interim recovery path.
+
+**Lesson**: for a "get my data out" feature in a small utility app, the killer feature is *not* fidelity — it's the ability to hand off the file. `ShareLink` on a self-contained zip means the user's backup instantly reaches every destination iOS knows about (iCloud Drive, email, Slack, Dropbox, Files.app to a USB drive, etc.) without us writing a single line of destination-specific code. Design your export format so the sharing surface is a single file, not a directory.
+
+**Lesson**: `NSFileCoordinator`'s `.forUploading` option is one of those quiet Apple APIs that solves a real problem (zip a directory) without documentation making it obvious. Worth knowing about. It's what iCloud Drive and the share sheet use internally when they present a folder as a single item for upload.
