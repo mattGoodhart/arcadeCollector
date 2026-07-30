@@ -36,6 +36,24 @@ struct ContentView: View {
             description: Text("ArcadeCollector could not open its data store. Try restarting the app. If the problem persists, reinstalling may help.")
         )
     }
+
+    /// Shown when the initial game-database seed fails on first launch. The
+    /// underlying error message is surfaced in small secondary text so a
+    /// support conversation can capture the actual cause.
+    static func seedFailureView(message: String) -> some View {
+        VStack(spacing: 12) {
+            ContentUnavailableView(
+                "Couldn't Load Game Database",
+                systemImage: "exclamationmark.triangle",
+                description: Text("The Arcade Collector game database couldn't be loaded on first launch. Try quitting and reopening the app. If the problem persists, please reinstall.")
+            )
+            Text(message)
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+        }
+    }
 }
 
 #Preview {

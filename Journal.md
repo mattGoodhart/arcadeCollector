@@ -881,3 +881,27 @@ Photos are referenced from the manifest by filename to avoid base64 bloat. `UUID
 **Lesson**: for a "get my data out" feature in a small utility app, the killer feature is *not* fidelity — it's the ability to hand off the file. `ShareLink` on a self-contained zip means the user's backup instantly reaches every destination iOS knows about (iCloud Drive, email, Slack, Dropbox, Files.app to a USB drive, etc.) without us writing a single line of destination-specific code. Design your export format so the sharing surface is a single file, not a directory.
 
 **Lesson**: `NSFileCoordinator`'s `.forUploading` option is one of those quiet Apple APIs that solves a real problem (zip a directory) without documentation making it obvious. Worth knowing about. It's what iCloud Drive and the share sheet use internally when they present a folder as a single item for upload.
+
+### 2026-07-29 — Seeder Failure Now Has a User-Facing Story
+
+`ArcadeCollectorApp.body` had `assertionFailure("Seeding failed: \(error)")` as its only response to a first-launch seed error. That's fine in debug builds — the app halts and the developer sees the error — but in a Release build `assertionFailure` is a no-op, so a real user with a corrupt bundle or exhausted disk would launch the app, see an *empty* game list, and have no idea what happened.
+
+**Fix.** Introduced a private `RootView` wrapper that owns `@State private var seedFailure: String?` (App types can't hold `@State`, so a small child view is the standard workaround). The seeder task now writes into that state instead of assertion-failing:
+
+```swift
+.task {
+    do {
+        try await GameSeeder(modelContainer: container).seedIfNeeded()
+    } catch {
+        seedFailure = error.localizedDescription
+    }
+}
+```
+
+When `seedFailure` is set, the whole `ContentView` tree is replaced with a new `ContentView.seedFailureView(message:)` — a `ContentUnavailableView` titled "Couldn't Load Game Database" with description "Try quitting and reopening the app. If the problem persists, please reinstall." The underlying error string is shown in tertiary caption text below the description so a support conversation can capture the actual cause instead of "it didn't work."
+
+**Why not a retry button?** The seed is a one-shot idempotent operation on launch. If the user reopens the app, the seeder runs again automatically. A retry button would just add UI noise for a code path that's already exercised by the "quit and reopen" instruction — and the failure modes (missing bundle resource, corrupt JSON, disk full, keychain lockout) are essentially all resolved by a fresh launch or a reinstall. Better to keep the error state passive and let the user's normal recovery flow do the work.
+
+**Why not merge with `databaseErrorView`?** Both errors are container-related but distinct root causes. Container-init failure ("Unable to Load Database") almost always means the SwiftData schema is incompatible with the on-disk store — usually a downgrade from a newer app version, or a corrupted store file. Seed failure ("Couldn't Load Game Database") means the bundled JSON is missing or malformed, or a save transaction bombed. Distinct messages give a user (or a support engineer helping a user) a real signal about which layer to investigate.
+
+**Lesson**: `assertionFailure` is the right tool for "this can't happen without a code bug." It is *not* the right tool for "this might rarely happen if the bundle is corrupt or the disk is full." The distinction is: does a Release-build user need to see this? If yes, `assertionFailure` is worse than nothing because it silently swallows in production. Every use of `assertionFailure` in an app should get a one-line audit: is this a "developer, wake up" signal, or a "shipping user needs feedback" signal?
