@@ -905,3 +905,47 @@ When `seedFailure` is set, the whole `ContentView` tree is replaced with a new `
 **Why not merge with `databaseErrorView`?** Both errors are container-related but distinct root causes. Container-init failure ("Unable to Load Database") almost always means the SwiftData schema is incompatible with the on-disk store — usually a downgrade from a newer app version, or a corrupted store file. Seed failure ("Couldn't Load Game Database") means the bundled JSON is missing or malformed, or a save transaction bombed. Distinct messages give a user (or a support engineer helping a user) a real signal about which layer to investigate.
 
 **Lesson**: `assertionFailure` is the right tool for "this can't happen without a code bug." It is *not* the right tool for "this might rarely happen if the bundle is corrupt or the disk is full." The distinction is: does a Release-build user need to see this? If yes, `assertionFailure` is worse than nothing because it silently swallows in production. Every use of `assertionFailure` in an app should get a one-line audit: is this a "developer, wake up" signal, or a "shipping user needs feedback" signal?
+
+### 2026-07-29 — Persistence Roundtrip Test as Migration Safety Net
+
+The 2026-07-09 "History" field crash — `fatalError` in `ModelContainer.init` because a new non-optional `String` property had no inline default — was the single most expensive SwiftData bug this project has hit. It only reproduces on a *second* app launch (an existing store meets a new schema), so every existing test (which uses `isStoredInMemoryOnly: true`) is blind to it.
+
+**Fix, structurally**: added `PersistenceMigrationTests` — a Swift Testing suite that runs the actual migration path a user hits on every relaunch, backed by an on-disk store in a temp directory.
+
+**Test shape:**
+
+```swift
+// Launch 1 — write
+do {
+    let container = try ModelContainer(for: schema,
+        configurations: ModelConfiguration(schema: schema, url: storeURL))
+    // insert Game with ownership, statuses, RepairLog, RepairLogPhoto
+    try context.save()
+} // container falls out of scope
+
+// Launch 2 — read
+let container2 = try ModelContainer(for: schema,
+    configurations: ModelConfiguration(schema: schema, url: storeURL))
+// fetch and assert every user-authored field survived
+```
+
+Two tests: `userDataSurvivesContainerRestart` covers the "populated store round-trips" case, `emptyStoreOpensCleanlyAfterRestart` covers the empty-store variant (because a broken schema will fail even without data). Both run in <150ms so they're cheap to keep in the default suite.
+
+**Cleanup detail**: SwiftData writes SQLite `-shm` and `-wal` sidecar files next to the main store file. The teardown `defer` block removes all three so temp directories don't accumulate leftover state across test runs.
+
+**Manual rehearsal checklist (before shipping v1.0):**
+
+1. Delete the app from the simulator / device to guarantee a clean install.
+2. Fresh install the current build.
+3. Wait for the seeder to complete (~1 sec for 3,855 rows).
+4. Toggle several games to `.owned`, set a few component statuses, add 2–3 repair logs with photos.
+5. Force-quit.
+6. Relaunch and verify all the state is still there. (This is what the automated test now covers, but doing it once on a device confirms it in reality.)
+7. **The real rehearsal**: add a new stored property to one of the `@Model` classes *with an inline default* (`var newField: String = ""` or similar). Rebuild and relaunch. Confirm the store migrates without a `fatalError`.
+8. Bonus: temporarily *drop* the inline default to see what the failure looks like — it should be caught in dev, never in Release.
+
+**Safety rule**: any new non-optional stored property added to a `@Model` class MUST have an inline default value. Enforcement is by review + this test suite. If the automated roundtrip breaks after a model change, the fix is to add an inline default to the new property, not to disable the test.
+
+**Lesson**: in-memory tests validate logic; on-disk tests validate persistence contracts. Every SwiftData app should have at least one on-disk roundtrip test in CI, even if it feels redundant with the in-memory suite — the failure mode it catches (schema migration bug) is not exercised by any other kind of test, and it's the one that ships broken apps.
+
+**Lesson**: don't couple test lifetimes to test-file lifetimes when working with temp directories. `defer { try? FileManager.default.removeItem(at: url) }` is nice; make sure you also nuke the `-shm` and `-wal` sidecars SQLite creates. Otherwise flaky failures pile up as prior-run detritus gets in the way of subsequent runs.
