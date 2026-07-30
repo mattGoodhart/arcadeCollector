@@ -13,13 +13,7 @@ struct ArcadeCollectorApp: App {
     let sharedModelContainer: ModelContainer?
 
     init() {
-        let schema = Schema([
-            Game.self,
-            GameArtwork.self,
-            RepairLog.self,
-            RepairLogPhoto.self,
-            GameCollection.self,
-        ])
+        let schema = AppSchema.schema
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
         do {

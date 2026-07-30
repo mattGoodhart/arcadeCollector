@@ -949,3 +949,40 @@ Two tests: `userDataSurvivesContainerRestart` covers the "populated store round-
 **Lesson**: in-memory tests validate logic; on-disk tests validate persistence contracts. Every SwiftData app should have at least one on-disk roundtrip test in CI, even if it feels redundant with the in-memory suite — the failure mode it catches (schema migration bug) is not exercised by any other kind of test, and it's the one that ships broken apps.
 
 **Lesson**: don't couple test lifetimes to test-file lifetimes when working with temp directories. `defer { try? FileManager.default.removeItem(at: url) }` is nice; make sure you also nuke the `-shm` and `-wal` sidecars SQLite creates. Otherwise flaky failures pile up as prior-run detritus gets in the way of subsequent runs.
+
+### 2026-07-29 — Reuse Pass: Kill the Three Duplications
+
+Three-agent parallel review across this session's 9 commits turned up three real duplications worth acting on. The quality and efficiency reviews came back clean — the useful signal was concentrated in the reuse review.
+
+**Duplication 1: schema construction** was in three places — `ArcadeCollectorApp.init`, `PreviewSupport.container`, and `PersistenceMigrationTests.schema()` — each spelled out `Schema([Game.self, GameArtwork.self, RepairLog.self, RepairLogPhoto.self, GameCollection.self])`. Adding a new `@Model` currently required three coordinated edits, which is exactly the kind of chore that gets skipped and then discovered later when tests inexplicably fail to see a new entity type.
+
+Fixed with a new `Support/AppSchema.swift`:
+
+```swift
+enum AppSchema {
+    static let models: [any PersistentModel.Type] = [
+        Game.self, GameArtwork.self, RepairLog.self, RepairLogPhoto.self, GameCollection.self,
+    ]
+    static var schema: Schema { Schema(models) }
+}
+```
+
+All three call sites now say `AppSchema.schema`. Adding a new model is a one-file change.
+
+**Duplication 2: the artwork-kinds set** — `Set<ArtworkKind> = [.cabinet, .flyer, .inGame, .marquee, .title, .pcb]` was hand-rolled in both `BulkArtworkFetcher` and `SummaryView`. Not a huge win, but easy to make right by adding a `static let bulkFetchable` on `ArtworkKind` itself. Discoverable from the enum's namespace, deliberately excludes `.userPCB` (user-supplied only), and both call sites now share the same reality — if we ever add a seventh downloadable kind, we edit one line.
+
+**Duplication 3: `CFBundleShortVersionString` fetch** appeared in three subsystems (`ArcadeDatabaseClient.defaultSession`, `BackupExporter.export`, and `AboutView.appSection`), two using `object(forInfoDictionaryKey:)` and the third using `infoDictionary?[...]`. Both are the same key, both need the same "1.0" fallback. Extracted to a `Bundle.appVersion` extension property.
+
+**Swift 6 tax: two more `nonisolated` markers.** Both `Bundle.appVersion` and `ArtworkKind.bulkFetchable` initially built with warnings that they were `@MainActor`-isolated when called from `BackupExporter` and `BulkArtworkFetcher` (both `@ModelActor` types). `Bundle.main` is main-actor-inferred under Swift 6; static enum properties on types referenced elsewhere in the codebase also seem to inherit isolation from context. Explicit `nonisolated` at the declaration site fixes it and is documented at the declaration ("so background actors can read this without hopping to the main actor").
+
+**Skipped intentionally**:
+- Merging `ContentView.databaseErrorView` with `seedFailureView` into a shared fatal-startup-error helper. Only two call sites, and the seed variant adds structure (a `VStack` wrapping the `ContentUnavailableView` to surface the underlying error message). Extract on the third occurrence.
+- Changing `bulkFetchError: String?` and `errorMessage: String?` to typed `Error?` in the two views. They're only consumed for display via `.localizedDescription`; the type erasure is deliberate.
+- Rewriting the backup manifest to encode enums as strings/ints via a custom `Codable` conformance. `OwnershipStatus` and `ComponentStatus` are already raw-value-backed (`String` and `Int`), so their default synthesized encoding is stable. The `manifestVersion: 1` field is the versioning hook if any of that changes.
+- Optional streaming-zip in `BackupExporter` (skip re-reading everything through NSFileCoordinator). Optimization has no meaningful impact at the app's expected backup sizes (< 100 MB); revisit if a real user reports it.
+
+**Flake note**: the first post-refactor test run failed with `Failed to create a bundle instance representing ...ArcadeCollectorTests.xctest` — a simulator install race, not a real regression. Zero test-case failures in that log; xcodebuild bailed during setup. Re-running against the same code passed cleanly, 35/0. Documenting because the exit-65 was scary in the moment; the discipline was "read the log, don't just retry blindly."
+
+**Lesson**: static let constants that reference an enum's own cases and don't touch main-actor state should still be marked `nonisolated` under Swift 6 if they'll be read from any non-`@MainActor` async context. The compiler can't always figure out that "this is just a set of enum cases" is nonisolated by nature — it has to be told.
+
+**Lesson**: three duplication sites is the threshold where an abstraction pays for itself. Two sites can be "same value, different files, that's fine." Three sites is a maintenance liability: adding a new value requires editing three places, forgetting one gets discovered days later, and the fix is *always* larger than just extracting the abstraction would have been. Extract on the second occurrence when the pattern is obvious; latest by the third.

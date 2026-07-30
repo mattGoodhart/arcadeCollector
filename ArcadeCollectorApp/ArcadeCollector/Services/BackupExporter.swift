@@ -81,11 +81,10 @@ actor BackupExporter {
         let photosDir = staging.appendingPathComponent("photos", isDirectory: true)
         try FileManager.default.createDirectory(at: photosDir, withIntermediateDirectories: true)
 
-        let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
         var manifest = Manifest(
             version: Self.manifestVersion,
             exportedAt: Date(),
-            appVersion: appVersion,
+            appVersion: Bundle.main.appVersion,
             games: []
         )
 

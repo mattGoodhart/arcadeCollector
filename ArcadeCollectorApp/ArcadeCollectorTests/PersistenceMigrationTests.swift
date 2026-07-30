@@ -18,15 +18,7 @@ import SwiftData
 @Suite("SwiftData persistence roundtrip")
 struct PersistenceMigrationTests {
 
-    private static func schema() -> Schema {
-        Schema([
-            Game.self,
-            GameArtwork.self,
-            RepairLog.self,
-            RepairLogPhoto.self,
-            GameCollection.self,
-        ])
-    }
+    private static func schema() -> Schema { AppSchema.schema }
 
     private static func makeOnDiskURL() -> URL {
         URL(fileURLWithPath: NSTemporaryDirectory())

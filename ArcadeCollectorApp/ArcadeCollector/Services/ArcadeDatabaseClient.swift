@@ -62,9 +62,8 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
     /// our traffic (and reach out if we're misbehaving) instead of seeing an
     /// unattributed URLSession UA.
     nonisolated static let defaultSession: URLSession = {
-        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
         let config = URLSessionConfiguration.default
-        config.httpAdditionalHeaders = ["User-Agent": "ArcadeCollector/\(version) (iOS)"]
+        config.httpAdditionalHeaders = ["User-Agent": "ArcadeCollector/\(Bundle.main.appVersion) (iOS)"]
         return URLSession(configuration: config)
     }()
 

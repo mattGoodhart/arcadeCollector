@@ -42,7 +42,7 @@ struct AboutView: View {
                 Text("Arcade Collector")
                     .font(.title2.bold())
 
-                Text("Version \(appVersion)")
+                Text("Version \(Bundle.main.appVersion)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
 
@@ -124,10 +124,6 @@ struct AboutView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
-    }
-
-    private var appVersion: String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
     }
 }
 

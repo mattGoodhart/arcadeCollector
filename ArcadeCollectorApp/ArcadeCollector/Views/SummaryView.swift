@@ -61,7 +61,7 @@ struct SummaryView: View {
             .onChange(of: ownedGames.count) {
                 guard !isBulkFetching else { return }
                 if ownedGames.contains(where: { game in
-                    Set(game.artwork.map(\.kind)) != allArtworkKinds
+                    Set(game.artwork.map(\.kind)) != ArtworkKind.bulkFetchable
                 }) {
                     bulkProgress = nil
                     bulkResult = nil
@@ -70,8 +70,6 @@ struct SummaryView: View {
             }
         }
     }
-
-    private let allArtworkKinds: Set<ArtworkKind> = [.cabinet, .flyer, .inGame, .marquee, .title, .pcb]
 
     // MARK: - Collection Counts
 

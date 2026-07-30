@@ -27,14 +27,12 @@ actor BulkArtworkFetcher {
     func fetchAllMissing(
         onProgress: @Sendable @escaping (Progress) -> Void
     ) async throws -> Result {
-        let allKinds: Set<ArtworkKind> = [.cabinet, .flyer, .inGame, .marquee, .title, .pcb]
-
         let allGames = try modelContext.fetch(
             FetchDescriptor<Game>(sortBy: [SortDescriptor(\.title)])
         )
 
         let needsFetch = allGames.filter { game in
-            game.ownership == .owned && Set(game.artwork.map(\.kind)) != allKinds
+            game.ownership == .owned && Set(game.artwork.map(\.kind)) != ArtworkKind.bulkFetchable
         }
 
         let total = needsFetch.count
