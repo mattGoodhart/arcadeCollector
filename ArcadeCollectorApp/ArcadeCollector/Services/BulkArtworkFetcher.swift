@@ -15,11 +15,18 @@ actor BulkArtworkFetcher {
         var currentTitle: String
     }
 
-    /// Returns the number of games that needed artwork fetched.
+    struct Result: Sendable {
+        let attempted: Int
+        let succeeded: Int
+        var failed: Int { attempted - succeeded }
+    }
+
+    /// Returns an attempted/succeeded/failed breakdown so the UI can distinguish
+    /// full success from a partial-failure run that needs a retry hint.
     @discardableResult
     func fetchAllMissing(
         onProgress: @Sendable @escaping (Progress) -> Void
-    ) async throws -> Int {
+    ) async throws -> Result {
         let allKinds: Set<ArtworkKind> = [.cabinet, .flyer, .inGame, .marquee, .title, .pcb]
 
         let allGames = try modelContext.fetch(
@@ -31,9 +38,10 @@ actor BulkArtworkFetcher {
         }
 
         let total = needsFetch.count
-        if total == 0 { return 0 }
+        if total == 0 { return Result(attempted: 0, succeeded: 0) }
 
         let fetcher = ArtworkFetcher(modelContainer: modelContainer)
+        var succeeded = 0
 
         for (index, game) in needsFetch.enumerated() {
             try Task.checkCancellation()
@@ -46,10 +54,11 @@ actor BulkArtworkFetcher {
 
             do {
                 try await fetcher.fetch(for: game.persistentModelID)
+                succeeded += 1
             } catch is CancellationError {
                 throw CancellationError()
             } catch {
-                // Per-game failures are non-fatal
+                // Per-game failures are non-fatal; recorded in the Result count.
             }
 
             // Courtesy delay so a 200-game bulk fetch doesn't hammer ADB. Skipped
@@ -61,6 +70,6 @@ actor BulkArtworkFetcher {
         }
 
         onProgress(Progress(completed: total, total: total, currentTitle: ""))
-        return total
+        return Result(attempted: total, succeeded: succeeded)
     }
 }

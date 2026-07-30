@@ -825,3 +825,21 @@ Pre-submission audit for VoiceOver, Reduce Motion, and combined element semantic
 **Lesson**: for accessibility work, grep is the fastest audit. `.accessibilityLabel` / `.accessibilityHint` / `.accessibilityValue` / `.animation(` / `.font(.system(size:` — five searches across the codebase gave a complete picture of what needed attention in under a minute. Custom controls without any of the first three are almost always bugs.
 
 **Lesson**: when a visual control encodes information (colored bars, donut sectors, badges, dots), the accessibility label/value should be derived from the *same data source* as the visual, in the same view — not duplicated with hand-rolled strings. Otherwise you get drift: the chart says "3 working games" and VoiceOver says "2 working games" a month later because someone edited one and not the other.
+
+### 2026-07-29 — Bulk Fetch: Report Partial Failures
+
+The bulk artwork fetcher was returning `Int` — the number of games attempted — and silently swallowing per-game failures inside a `catch { }`. If ADB went down mid-run, the UI showed "All artwork fetched" for a run where zero games actually succeeded, because the *attempt count* equaled the *total count* and the successes were never distinguished from the failures.
+
+**Return-type refactor.** `BulkArtworkFetcher.fetchAllMissing` now returns a `Result` struct with `attempted` and `succeeded` counts (and a derived `failed` property). The internal loop now increments `succeeded += 1` on a successful `try await fetcher.fetch(...)` call and leaves it alone on `catch`. Cancellations still rethrow to distinguish user intent from network failure.
+
+**Three completion states in the UI**, rendered by a `bulkResultRow(_:)` `@ViewBuilder`:
+
+- **Fully succeeded** → green ✓ "Fetched artwork for N game(s)"
+- **Partial failure** → orange ⚠ "Fetched N of M. K failed." + **Retry** button
+- **Complete failure** (zero succeeded) → orange ⚠ "Couldn't fetch artwork. Check your connection and try again." + **Retry** button
+
+The retry button is safe to press repeatedly because `ArtworkFetcher.fetch(for:)` already skips artwork kinds that exist, so a retry only re-attempts what's still actually missing. That's a nice property that fell out of the earlier "existingKinds" deduplication — a small design decision from months ago paying dividends now.
+
+Also cleared `bulkResult` in the `onChange(of: ownedGames.count)` handler so newly-owned games force the section back to its actionable "Fetch All Missing Artwork" state instead of leaving a stale success/failure message glued to the screen.
+
+**Lesson**: silent per-item failures are a lie by omission. When a background operation iterates over N things and some fail, the caller has a right to know the split — and the UI has a right to render a "we did what we could, but here's what didn't work" state. Wrapping the loop's outcome in a small `Result`-shaped struct (attempted/succeeded/failed) beats returning a single opaque count. Same principle as HTTP batch APIs returning per-item statuses rather than a single "OK" for the whole call.

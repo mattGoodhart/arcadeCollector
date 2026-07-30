@@ -14,6 +14,7 @@ struct SummaryView: View {
     @State private var showingAbout = false
     @State private var bulkFetchTask: Task<Void, Never>?
     @State private var bulkProgress: BulkArtworkFetcher.Progress?
+    @State private var bulkResult: BulkArtworkFetcher.Result?
     @State private var nothingToFetch = false
     @State private var bulkFetchError: String?
 
@@ -63,6 +64,7 @@ struct SummaryView: View {
                     Set(game.artwork.map(\.kind)) != allArtworkKinds
                 }) {
                     bulkProgress = nil
+                    bulkResult = nil
                     nothingToFetch = false
                 }
             }
@@ -109,9 +111,15 @@ struct SummaryView: View {
                 } label: {
                     Label("Cancel", systemImage: "xmark.circle")
                 }
-            } else if let progress = bulkProgress, progress.completed == progress.total {
-                Label("All artwork fetched", systemImage: "checkmark.circle")
-                    .foregroundStyle(.green)
+            } else if let result = bulkResult {
+                bulkResultRow(result)
+                if result.failed > 0 {
+                    Button {
+                        startBulkFetch()
+                    } label: {
+                        Label("Retry", systemImage: "arrow.clockwise")
+                    }
+                }
             } else if nothingToFetch {
                 Label("All owned games have artwork", systemImage: "checkmark.circle")
                     .foregroundStyle(.green)
@@ -129,19 +137,39 @@ struct SummaryView: View {
         }
     }
 
+    @ViewBuilder
+    private func bulkResultRow(_ result: BulkArtworkFetcher.Result) -> some View {
+        if result.failed == 0 {
+            Label("Fetched artwork for \(result.succeeded) game\(result.succeeded == 1 ? "" : "s")",
+                  systemImage: "checkmark.circle")
+                .foregroundStyle(.green)
+        } else if result.succeeded == 0 {
+            Label("Couldn't fetch artwork. Check your connection and try again.",
+                  systemImage: "wifi.exclamationmark")
+                .foregroundStyle(.orange)
+        } else {
+            Label("Fetched \(result.succeeded) of \(result.attempted). \(result.failed) failed.",
+                  systemImage: "exclamationmark.circle")
+                .foregroundStyle(.orange)
+        }
+    }
+
     private func startBulkFetch() {
         nothingToFetch = false
+        bulkResult = nil
         let container = modelContext.container
         bulkFetchTask = Task {
             let fetcher = BulkArtworkFetcher(modelContainer: container)
             do {
-                let count = try await fetcher.fetchAllMissing { progress in
+                let result = try await fetcher.fetchAllMissing { progress in
                     Task { @MainActor in
                         bulkProgress = progress
                     }
                 }
-                if count == 0 {
+                if result.attempted == 0 {
                     nothingToFetch = true
+                } else {
+                    bulkResult = result
                 }
             } catch is CancellationError {
                 // User cancelled
