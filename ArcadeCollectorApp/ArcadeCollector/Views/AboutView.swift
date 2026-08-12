@@ -12,6 +12,7 @@ struct AboutView: View {
             basicInfoSection
             dataSection
             disclaimerSection
+            attributionsSection
             dataSourcesSection
             acknowledgmentsSection
         }
@@ -118,6 +119,14 @@ struct AboutView: View {
         }
     }
     
+    private var attributionsSection: some View {
+        Section("Attributions") {
+            Text("Game metadata and reference imagery are provided by the Arcade Database (adb.arcadeitalia.net), used with the express written permission of its owner and maintainer, motoschifo.\n\nAll arcade game titles, logos, marquees, cabinet art, flyers, screenshots, and related artwork are trademarks and copyrights of their respective owners. Their inclusion here is for informational and personal-collection-tracking purposes only and does not imply endorsement by, or affiliation with, any rights holder.\n\nMAME® is a registered trademark of Gregory Ember.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+    }
+
     private var disclaimerSection: some View {
         Section("Disclaimer") {
             Text("This app is NOT an emulator, a way to play games, or a way to source game ROMs or any other protected intellectual property. This app is only a reference tool for tracking and maintaining your collection.\n\nAll names and images are used here for informational purposes only ('Fair Use' usage, per 17 U.S.C. Section 107), Their use neither detracts value nor inhibits sales in any way. \n\nAll copyrights and trademarks belong to their respective copyright and trademark holders.")

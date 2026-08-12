@@ -986,3 +986,23 @@ All three call sites now say `AppSchema.schema`. Adding a new model is a one-fil
 **Lesson**: static let constants that reference an enum's own cases and don't touch main-actor state should still be marked `nonisolated` under Swift 6 if they'll be read from any non-`@MainActor` async context. The compiler can't always figure out that "this is just a set of enum cases" is nonisolated by nature — it has to be told.
 
 **Lesson**: three duplication sites is the threshold where an abstraction pays for itself. Two sites can be "same value, different files, that's fine." Three sites is a maintenance liability: adding a new value requires editing three places, forgetting one gets discovered days later, and the fix is *always* larger than just extracting the abstraction would have been. Extract on the second occurrence when the pattern is obvious; latest by the third.
+
+### 2026-08-12 — Attributions Section: Making the Permission Claim Explicit
+
+Pre-submission thinking about App Review guideline 5.2 (Intellectual Property). The Arcade Database's owner and maintainer, motoschifo, has given explicit written permission to use ADB in this app — but that permission only covers what motoschifo actually owns (the ADB dataset and site). It does **not** cover the underlying arcade titles, marquees, cabinet art, flyers, or screenshots, which belong to the original rights holders (Capcom, Bandai Namco, Nintendo, Sega, et al.). A reviewer scanning the About screen for the "we know what's ours vs. someone else's" signal shouldn't have to squint at the existing Disclaimer + Acknowledgments prose to find it.
+
+**The addition.** A dedicated `attributionsSection` in `AboutView`, positioned between Disclaimer and Data Sources, that says three things plainly:
+
+1. Game metadata and reference imagery come from ADB, used with motoschifo's express written permission.
+2. All arcade game titles, logos, marquees, cabinet art, flyers, and screenshots are trademarks and copyrights of their respective owners; their inclusion here is for informational/collection-tracking purposes only and implies no endorsement or affiliation.
+3. MAME® is a registered trademark of Gregory Ember.
+
+Point 3 was already tucked inside the MAME `DataSourceRow` description, but repeating it at the top-level "Attributions" surface is the standard trademark-recognition pattern reviewers (and lawyers) expect to see.
+
+**Why not just edit the existing Disclaimer?** The Disclaimer speaks in the language of *user assumptions* ("this app is not an emulator, not a ROM source, uses names under fair use"). Attributions speaks in the language of *legal provenance* ("here's who gave us permission, here's what we don't own"). Same neighborhood, different jobs — reviewers know to look for both and having them side-by-side is easier to skim than a single 400-word wall.
+
+**What this doesn't fix.** The IP exposure surface is proportional to how much artwork we redistribute. If a rights holder decides tomorrow that even fair-use display of a marquee bothers them, an Attributions section doesn't stop the takedown notice — it just makes clear we weren't claiming ownership. The higher-leverage risk mitigations are (a) fetch artwork on demand rather than bundling it, and (b) prefer user-supplied photos over auto-populated ADB assets where the UX allows it. Both are v1.x considerations, not blockers for the initial submission.
+
+**Lesson**: App Review guidelines aren't checkboxes you satisfy once — they're patterns a reviewer scans for in 30 seconds. Named sections ("Attributions", "Disclaimer", "Data Sources") beat prose paragraphs because they signal *you already thought about this*. Same logic as writing PR descriptions with headers instead of paragraph mush: the reader is skimming, help them.
+
+**Lesson**: written permission from a data aggregator is necessary but not sufficient. The aggregator can grant you what they own; they can't grant you what upstream rights holders own. If your app touches trademark-heavy vertical content (video games, film, sports, music), the trademark-recognition boilerplate in the About screen is table stakes even when you have written permission from your primary data source.
