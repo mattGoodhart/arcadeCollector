@@ -71,7 +71,7 @@ struct AboutView: View {
             )
             DataSourceRow(
                 name: "Progetto-SNAPS",
-                description: "By Antopisa, Progetto-SNAPS provides game snapshots and media",
+                description: "By AntoPisa (Antonio Paradossi), Progetto-SNAPS provides game snapshots and media",
                 banner: "About Banners/Progetto-snaps banner",
                 url: URL(string: "https://www.progettosnaps.net")!
             )
@@ -112,7 +112,7 @@ struct AboutView: View {
     
     private var basicInfoSection: some View {
         Section("Basic Info") {
-            Text("This App was designed for arcade game enthusiasts who want to easily reference and track their game collection. \n\nThis app is particularly focused on game repair by providing an easy way to create and manage repair logs, and track the overall working status of each game. Specific hardware information from the Arcade Database is provided here to further assist that effort. \n\nInitially, the app provides a list of 3,855 games focused on older, raster and vector monitor-based games. Newer games designed for flat panel displays are typically PC-based and less interesting to maintian, so they are not included here (for now).")
+            Text("This app was designed for arcade game enthusiasts who want to easily reference and track their game collection. \n\nThe app is particularly focused on game repair by providing an easy way to create and manage repair logs, and track the overall working status of each game. Specific hardware information from the Arcade Database is provided here to further assist that effort. \n\nInitially, the app provides a list of 3,855 games focused on older, raster and vector monitor-based arcade games. Newer games designed for flat panel displays are typically PC-based and less interesting to maintian, so they are not included here (for now).")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
