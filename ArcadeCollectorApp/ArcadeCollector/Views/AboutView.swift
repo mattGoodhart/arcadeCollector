@@ -121,7 +121,7 @@ struct AboutView: View {
     
     private var attributionsSection: some View {
         Section("Attributions") {
-            Text("Game metadata and reference imagery are provided by the Arcade Database (adb.arcadeitalia.net), used with the express written permission of its owner and maintainer, motoschifo.\n\nAll arcade game titles, logos, marquees, cabinet art, flyers, screenshots, and related artwork are trademarks and copyrights of their respective owners. Their inclusion here is for informational and personal-collection-tracking purposes only and does not imply endorsement by, or affiliation with, any rights holder.\n\nMAME® is a registered trademark of Gregory Ember.")
+            Text("Game metadata and reference imagery are provided by the Arcade Database (adb.arcadeitalia.net), used with the express written permission of its owner and maintainer, motoschifo.\n\nAll arcade game titles, logos, marquees, cabinet art, flyers, screenshots, videos, and related artwork are trademarks and copyrights of their respective owners. Their inclusion here is for informational and personal-collection-tracking purposes only and does not imply endorsement by, or affiliation with, any rights holder.\n\nMAME® is a registered trademark of Gregory Ember.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
