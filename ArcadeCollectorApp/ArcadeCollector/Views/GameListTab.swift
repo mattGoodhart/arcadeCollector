@@ -50,7 +50,11 @@ struct GameListTab: View {
                     }
                 }
                 .navigationDestination(for: Game.self) { game in
-                    GameDetailView(game: game)
+                    if mode == .repairLogs {
+                        RepairLogListView(game: game)
+                    } else {
+                        GameDetailView(game: game)
+                    }
                 }
                 .task {
                     if availableGenres.isEmpty {

@@ -1006,3 +1006,23 @@ Point 3 was already tucked inside the MAME `DataSourceRow` description, but repe
 **Lesson**: App Review guidelines aren't checkboxes you satisfy once — they're patterns a reviewer scans for in 30 seconds. Named sections ("Attributions", "Disclaimer", "Data Sources") beat prose paragraphs because they signal *you already thought about this*. Same logic as writing PR descriptions with headers instead of paragraph mush: the reader is skimming, help them.
 
 **Lesson**: written permission from a data aggregator is necessary but not sufficient. The aggregator can grant you what they own; they can't grant you what upstream rights holders own. If your app touches trademark-heavy vertical content (video games, film, sports, music), the trademark-recognition boilerplate in the About screen is table stakes even when you have written permission from your primary data source.
+
+### 2026-08-14 — Repair Log Tab Direct Navigation & Entry View Performance
+
+Two changes to the repair log experience.
+
+**Repair Logs tab now navigates directly to RepairLogListView.** Previously, tapping a game on the Repair Logs tab opened `GameDetailView` — the same destination as every other tab — forcing users to then navigate *again* into the repair log section. Since the user is already on the Repair Logs tab, the intent is obvious: they want to see the repair entries. The fix is a one-line conditional in `GameListTab`'s `.navigationDestination(for: Game.self)` that checks `mode == .repairLogs` and routes to `RepairLogListView` instead.
+
+**RepairLogEntryView was unusably slow on-device.** Typing notes felt like molasses on a real iPhone. Two compounding causes:
+
+1. **Photo thumbnails decoded inline in `body`.** Every photo's full-resolution `imageData` blob was loaded from SwiftData external storage and decoded into a `UIImage` *inside the `ForEach`*. The `TextEditor` binding triggered body re-evaluation on every keystroke, which re-decoded every photo from disk every time a character was typed.
+
+2. **`TextEditor` bound directly to SwiftData.** `$log.notes` wrote to the `@Model` object on every keystroke. Each write triggered SwiftData's dirty-tracking, which sent a change notification back to SwiftUI, which re-evaluated the entire `Form` body — including the photo decoding above. So each character produced: keystroke → SwiftData write → change notification → body re-eval → N full-resolution image decodes. On an iPhone with a few photos attached, this was catastrophic.
+
+**Fix 1: `PhotoThumbnail` subview.** Extracted the inline photo rendering into a private `PhotoThumbnail` struct with its own `@State private var thumbnail: UIImage?`. The thumbnail is loaded once via `.task`, decoded and downscaled to 300×300px off the main thread using `UIImage.byPreparingThumbnail(ofSize:)` inside a `Task.detached`. Because it's a separate view with its own `@State`, SwiftUI's diffing skips it entirely when the parent's `TextEditor` binding changes — the thumbnail is already rendered and cached.
+
+**Fix 2: buffered notes text.** Replaced `TextEditor(text: $log.notes)` with a local `@State private var notesText: String` initialized from `log.notes` in `init`. The `TextEditor` now writes to plain SwiftUI state, not SwiftData, so keystrokes stay inside SwiftUI's lightweight state system with no persistence overhead. The model is updated once in `.onDisappear` when the user navigates away.
+
+**Lesson**: `@Bindable` two-way bindings to SwiftData `@Model` properties are convenient but dangerous in text-editing contexts. Every keystroke becomes a database write, which triggers change observation, which triggers view re-evaluation, which triggers anything expensive in the body. For high-frequency input like text editing, buffer in `@State` and flush on disappear.
+
+**Lesson**: SwiftUI's view-diffing optimization only works at subview boundaries. An expensive computation inlined in a parent's `body` re-runs every time *any* state in that parent changes. Extracting it into a child view with its own `@State` gives SwiftUI a diffing boundary — if the child's inputs haven't changed, its body is skipped entirely.
