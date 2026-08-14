@@ -1026,3 +1026,39 @@ Two changes to the repair log experience.
 **Lesson**: `@Bindable` two-way bindings to SwiftData `@Model` properties are convenient but dangerous in text-editing contexts. Every keystroke becomes a database write, which triggers change observation, which triggers view re-evaluation, which triggers anything expensive in the body. For high-frequency input like text editing, buffer in `@State` and flush on disappear.
 
 **Lesson**: SwiftUI's view-diffing optimization only works at subview boundaries. An expensive computation inlined in a parent's `body` re-runs every time *any* state in that parent changes. Extracting it into a child view with its own `@State` gives SwiftUI a diffing boundary — if the child's inputs haven't changed, its body is skipped entirely.
+
+### 2026-08-14 — Short Play Video Playback: YouTube + AVPlayer Dual Path
+
+The Short Play section in `GameDetailView` was broken on device — videos never played. Root cause: the seed data's `url_shortplays` field contains **YouTube watch URLs** (`youtube.com/watch?v=...`), not direct video file URLs. `AVPlayer` can't play YouTube page links; it needs direct media URLs (`.mp4`, `.m3u8`).
+
+Meanwhile, the ADB API returns two separate things: a direct video download URL (`url_video_shortplay` → `adb.arcadeitalia.net/download_file.php?...`) and a YouTube video ID (`youtube_video_id`). The `youtubeVideoID` was being fetched and stored on `Game` but never used in any view.
+
+**The fix: a two-path video player with YouTube priority.**
+
+Priority logic in `GameDetailView`:
+1. `resolvedYouTubeID` — checks `game.youtubeVideoID` first (set by ADB API), then falls back to extracting a video ID from `game.shortPlayURL` if it's a YouTube link (covers seed data). Helper `extractYouTubeID(from:)` handles both `youtube.com/watch?v=` and `youtu.be/` formats.
+2. `directVideoURL` — returns `game.shortPlayURL` only when it's *not* a YouTube URL, so `AVPlayer` is used only for actual video file URLs.
+
+**YouTube path: `YouTubePlayerView` (WKWebView).** This went through several iterations:
+
+- **Attempt 1: YouTube IFrame embed** (`/embed/{id}?playsinline=1`) — YouTube rejected it with error 153 (origin validation failure). WKWebView's default origin is `about:blank`, which YouTube doesn't allow.
+- **Attempt 2: IFrame with `baseURL: youtube.com`** — Still rejected, error 152-4. Setting the HTML page's origin via `loadHTMLString(baseURL:)` wasn't enough; YouTube's embed player does deeper validation.
+- **Attempt 3: YouTube IFrame Player API** (the approach Google's own `youtube-ios-player-helper` uses) — Same error 152-4. The specific Contra video has embedding disabled by its owner, so *no* embed approach can work for it.
+- **Attempt 4: Load `m.youtube.com/watch` directly** — This works because it's just loading the YouTube mobile website, not embedding. Embed restrictions don't apply. But the raw mobile page showed YouTube's full UI (top bar, comments, related videos) and had layout issues.
+
+**Cleaning up the mobile page.** A `WKUserScript` injected at document end handles two things:
+
+1. **CSS** hides YouTube chrome (`ytm-mobile-topbar-renderer`, `#below-player`, `ytm-pivot-bar-renderer`) and positions `#player-container-id` as a fixed full-viewport overlay.
+2. **JavaScript** scales the player to fill the WKWebView. Rather than fighting YouTube's internal element sizing (which YouTube's JS constantly resets via inline styles), the script uses `transform: scale()` on `#movie_player`: it measures the player's natural size, calculates `Math.min(viewportWidth/playerWidth, viewportHeight/playerHeight)`, and applies `translate(-50%,-50%) scale(factor)` from `position: fixed; top: 50%; left: 50%`. This preserves YouTube's internal layout (controls, aspect ratio) while uniformly zooming to fit. A `setInterval` at 500ms re-applies in case YouTube's JS resets styles.
+
+**Fullscreen support** required `config.preferences.isElementFullscreenEnabled = true` on the `WKWebViewConfiguration` — without it, YouTube's fullscreen button is a no-op in WKWebView.
+
+**Layout fix.** The original `DisclosureGroup` wrapper indented the video player content, clipping the left edge. Replaced with a manual toggle button (with rotating chevron) + conditional content, so the `YouTubePlayerView` is its own list row with `.listRowInsets(EdgeInsets(...))` for full-width display.
+
+**AVPlayer path** is unchanged — `AVURLAsset` with MIME type hint, created lazily on expand. Only used when `resolvedYouTubeID` is nil and `directVideoURL` is a non-YouTube URL.
+
+**Lesson**: YouTube's embed restrictions are per-video, set by the uploader. There is no client-side configuration — not origin headers, not the IFrame API, not `baseURL` tricks — that can bypass a video with embedding disabled. If your app needs to play arbitrary YouTube videos inline, the only reliable path is loading the full YouTube mobile page and cleaning it up with injected CSS/JS.
+
+**Lesson**: when you need to scale third-party web content to fit a WKWebView frame, `transform: scale()` on the content's root container is far more robust than overriding individual element sizes. The third party's JS will fight your size overrides with inline styles, but `transform` on a parent element doesn't conflict with child sizing — it applies uniformly after layout.
+
+**Lesson**: `WKWebView` does not enable the JavaScript Fullscreen API by default. Set `config.preferences.isElementFullscreenEnabled = true` (iOS 15.4+) or fullscreen buttons in embedded web content silently do nothing.

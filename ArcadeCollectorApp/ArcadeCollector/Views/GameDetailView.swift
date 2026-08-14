@@ -6,6 +6,7 @@
 import AVKit
 import SwiftUI
 import SwiftData
+import WebKit
 
 struct GameDetailView: View {
     @Bindable var game: Game
@@ -33,7 +34,7 @@ struct GameDetailView: View {
                 historySection
             }
             hardwareLinkSection
-            if game.shortPlayURL != nil {
+            if resolvedYouTubeID != nil || directVideoURL != nil {
                 shortPlaySection
             }
             if game.manualURL != nil {
@@ -279,10 +280,57 @@ struct GameDetailView: View {
         }
     }
 
+    private var resolvedYouTubeID: String? {
+        if !game.youtubeVideoID.isEmpty {
+            return game.youtubeVideoID
+        }
+        return game.shortPlayURL.flatMap(Self.extractYouTubeID)
+    }
+
+    private var directVideoURL: URL? {
+        guard let url = game.shortPlayURL,
+              Self.extractYouTubeID(from: url) == nil else { return nil }
+        return url
+    }
+
+    private static func extractYouTubeID(from url: URL) -> String? {
+        let host = url.host()?.lowercased() ?? ""
+        if host.contains("youtu.be") {
+            let id = url.lastPathComponent
+            return id.isEmpty ? nil : id
+        }
+        if host.contains("youtube.com"),
+           let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+           let id = components.queryItems?.first(where: { $0.name == "v" })?.value,
+           !id.isEmpty {
+            return id
+        }
+        return nil
+    }
+
     private var shortPlaySection: some View {
         Section {
-            DisclosureGroup(isExpanded: $shortPlayExpanded) {
-                if let player = shortPlayPlayer {
+            Button {
+                withAnimation { shortPlayExpanded.toggle() }
+            } label: {
+                HStack {
+                    Label("Short Play", systemImage: "arcade.stick")
+                    Spacer()
+                    Image(systemName: "chevron.down")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .rotationEffect(.degrees(shortPlayExpanded ? 0 : -90))
+                }
+            }
+            .tint(.primary)
+
+            if shortPlayExpanded {
+                if let ytID = resolvedYouTubeID {
+                    YouTubePlayerView(videoID: ytID)
+                        .aspectRatio(16/9, contentMode: .fit)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 8, trailing: 0))
+                } else if let player = shortPlayPlayer {
                     VideoPlayer(player: player)
                         .aspectRatio(game.orientation == .vertical ? 3/4 : 4/3, contentMode: .fit)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -291,18 +339,17 @@ struct GameDetailView: View {
                         .frame(maxWidth: .infinity)
                         .frame(height: 200)
                 }
-            } label: {
-                Label("Short Play", systemImage: "arcade.stick")
             }
-            .onChange(of: shortPlayExpanded) {
-                if shortPlayExpanded, shortPlayPlayer == nil, let url = game.shortPlayURL {
-                    let asset = AVURLAsset(url: url, options: [
-                        "AVURLAssetOutOfBandMIMETypeKey": "video/mp4"
-                    ])
-                    shortPlayPlayer = AVPlayer(playerItem: AVPlayerItem(asset: asset))
-                } else if !shortPlayExpanded {
-                    shortPlayPlayer?.pause()
-                }
+        }
+        .onChange(of: shortPlayExpanded) {
+            if shortPlayExpanded, resolvedYouTubeID == nil,
+               shortPlayPlayer == nil, let url = directVideoURL {
+                let asset = AVURLAsset(url: url, options: [
+                    "AVURLAssetOutOfBandMIMETypeKey": "video/mp4"
+                ])
+                shortPlayPlayer = AVPlayer(playerItem: AVPlayerItem(asset: asset))
+            } else if !shortPlayExpanded {
+                shortPlayPlayer?.pause()
             }
         }
     }
@@ -415,6 +462,67 @@ struct GameDetailView: View {
             fetchError = error
         }
     }
+}
+
+private struct YouTubePlayerView: UIViewRepresentable {
+    let videoID: String
+
+    func makeUIView(context: Context) -> WKWebView {
+        let config = WKWebViewConfiguration()
+        config.allowsInlineMediaPlayback = true
+        config.preferences.isElementFullscreenEnabled = true
+
+        let hideUI = WKUserScript(
+            source: """
+            const s = document.createElement('style');
+            s.textContent = `
+                ytm-mobile-topbar-renderer,
+                .mobile-topbar-header,
+                #below-player,
+                ytm-pivot-bar-renderer { display:none!important }
+                body { margin:0!important; background:#000!important; overflow:hidden!important }
+                #player-container-id {
+                    position:fixed!important; top:0!important; left:0!important;
+                    width:100vw!important; height:100vh!important;
+                }
+            `;
+            document.head.appendChild(s);
+            function fitVideo() {
+                var mp = document.getElementById('movie_player');
+                if (!mp) {
+                    var v = document.querySelector('video');
+                    if (v) mp = v.parentElement;
+                }
+                if (!mp || !mp.offsetWidth || !mp.offsetHeight) return;
+                var scale = Math.min(
+                    window.innerWidth / mp.offsetWidth,
+                    window.innerHeight / mp.offsetHeight
+                );
+                mp.style.setProperty('position','fixed','important');
+                mp.style.setProperty('top','50%','important');
+                mp.style.setProperty('left','50%','important');
+                mp.style.setProperty('transform',
+                    'translate(-50%,-50%) scale('+scale+')','important');
+                mp.style.setProperty('transform-origin','center center','important');
+            }
+            setInterval(fitVideo, 500);
+            """,
+            injectionTime: .atDocumentEnd,
+            forMainFrameOnly: true
+        )
+        config.userContentController.addUserScript(hideUI)
+
+        let webView = WKWebView(frame: .zero, configuration: config)
+        webView.scrollView.isScrollEnabled = false
+        webView.isOpaque = false
+        webView.backgroundColor = .black
+        if let url = URL(string: "https://m.youtube.com/watch?v=\(videoID)") {
+            webView.load(URLRequest(url: url))
+        }
+        return webView
+    }
+
+    func updateUIView(_ webView: WKWebView, context: Context) {}
 }
 
 private struct StatusPickerRow: View {
