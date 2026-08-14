@@ -36,9 +36,6 @@ struct GameDetailView: View {
             if game.shortPlayURL != nil {
                 shortPlaySection
             }
-            if hasExternalLinks {
-                externalLinksSection
-            }
             if game.manualURL != nil {
                 manualSection
             }
@@ -282,23 +279,6 @@ struct GameDetailView: View {
         }
     }
 
-    // MARK: - External links
-
-    private var hasExternalLinks: Bool {
-        youtubeURL != nil
-    }
-
-    /// Builds a YouTube watch URL from the video ID via `URLComponents`
-    /// so any special characters in the ID are properly escaped (raw
-    /// interpolation into a string + `URL(string:)!` was crash-prone).
-    private var youtubeURL: URL? {
-        let id = game.youtubeVideoID
-        guard !id.isEmpty else { return nil }
-        var components = URLComponents(string: "https://www.youtube.com/watch")
-        components?.queryItems = [URLQueryItem(name: "v", value: id)]
-        return components?.url
-    }
-
     private var shortPlaySection: some View {
         Section {
             DisclosureGroup(isExpanded: $shortPlayExpanded) {
@@ -323,23 +303,6 @@ struct GameDetailView: View {
                 } else if !shortPlayExpanded {
                     shortPlayPlayer?.pause()
                 }
-            }
-        }
-    }
-
-    private var externalLinksSection: some View {
-        Section("Links") {
-            linkRow(title: "YouTube Longplay", systemImage: "play.rectangle", url: youtubeURL)
-        }
-    }
-
-    @ViewBuilder
-    private func linkRow(title: String, systemImage: String, url: URL?) -> some View {
-        if let url {
-            Button {
-                openURL(url)
-            } label: {
-                Label(title, systemImage: systemImage)
             }
         }
     }

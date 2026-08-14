@@ -83,18 +83,6 @@ struct AboutView: View {
                 url: URL(string: "https://www.arcade-history.com")!
             )
             DataSourceRow(
-                name: "World of Longplays",
-                description: "Arcade game longplays",
-                banner: "About Banners/wolheader",
-                url: URL(string: "https://www.longplays.org")!
-            )
-            DataSourceRow(
-                name: "MAME Icons",
-                description: "Game icons",
-                banner: "About Banners/MAMUIconsBanner",
-                url: URL(string: "http://icons.mameworld.info")!
-            )
-            DataSourceRow(
                 name: "NPlayers",
                 description: "Player count and versus mode data © Copyright of Nomax",
                 banner: "About Banners/titre",
