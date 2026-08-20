@@ -10,7 +10,9 @@ import PhotosUI
 struct RepairLogEntryView: View {
     @Bindable var log: RepairLog
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
     @State private var notesText: String
+    @State private var notesFlushTask: Task<Void, Never>?
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var zoomedPhoto: RepairLogPhoto?
     @State private var showingCamera = false
@@ -84,8 +86,16 @@ struct RepairLogEntryView: View {
         .toolbarBackground(Color.arcadeToolbar, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
+        .onChange(of: notesText) {
+            scheduleDebouncedFlush()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase != .active {
+                flushNotes()
+            }
+        }
         .onDisappear {
-            log.notes = notesText
+            flushNotes()
         }
         .fullScreenCover(item: $zoomedPhoto) { photo in
             if let uiImage = photo.imageData.flatMap(UIImage.init(data:)) {
@@ -128,6 +138,28 @@ struct RepairLogEntryView: View {
         guard let game = log.game else { return }
         game.lastRepairLogDate = game.repairLogs
             .max(by: { $0.date < $1.date })?.date
+    }
+
+    // Notes are buffered in @State to keep TextEditor keystrokes off SwiftData.
+    // Flushing must survive process termination between keystrokes and view exit:
+    // debounced writes cover typing pauses, scenePhase writes cover backgrounding,
+    // and onDisappear covers normal navigation.
+    private func flushNotes() {
+        notesFlushTask?.cancel()
+        notesFlushTask = nil
+        if log.notes != notesText {
+            log.notes = notesText
+        }
+        try? modelContext.save()
+    }
+
+    private func scheduleDebouncedFlush() {
+        notesFlushTask?.cancel()
+        notesFlushTask = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(1))
+            guard !Task.isCancelled else { return }
+            flushNotes()
+        }
     }
 }
 

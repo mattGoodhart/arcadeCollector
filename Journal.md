@@ -1103,3 +1103,21 @@ The mechanism is the closure conversion. `GameDetailView` is main-actor-isolated
 **Fix**: one keyword — `private nonisolated static func extractYouTubeID(from:)`. Pure URL parsing, no view state, no reason to be on the main actor.
 
 **Lesson**: pure helpers that get passed as function references (`.flatMap`, `.map`, `Task { }`, etc.) need `nonisolated` even inside main-actor types. Direct call sites hide the issue — the closure-conversion path is what enforces the isolation contract. When you see a warning on line X but "the same call one line down" is fine, look for a callable-reference conversion at line X.
+
+### 2026-08-20 — Repair Log Notes: Crash-Safe Buffered Writes
+
+The 2026-08-14 perf fix moved `TextEditor` off SwiftData and into a `@State` buffer that only flushed to `log.notes` on `.onDisappear`. Keystroke latency went from unusable back to instant, but a code review spotted the tradeoff: any time between "user typed" and "user navigates back" is a data-loss window if iOS reclaims the backgrounded process or the app crashes.
+
+**Three-way flush** in `RepairLogEntryView`:
+
+1. **Debounced auto-save while typing** — `.onChange(of: notesText)` schedules a `Task { @MainActor in ... try? await Task.sleep(for: .seconds(1)); flushNotes() }`. Every keystroke cancels the previous task, so the actual write only fires after a 1-second typing pause. This still keeps SwiftData off the per-keystroke hot path (the whole point of the buffer) but bounds the loss window to ~1 second of typing.
+
+2. **Background flush** — `.onChange(of: scenePhase)` fires `flushNotes()` whenever the scene leaves `.active` (either `.inactive` transitions or full `.background`). This catches the "user swipes up to the app switcher before pausing to type" scenario.
+
+3. **Disappear flush** — kept the existing `.onDisappear { flushNotes() }` for the normal navigation-back path.
+
+All three routes call a single `flushNotes()` that cancels the pending debounce task, writes `notesText → log.notes` (guarded by inequality check to avoid touching the model unnecessarily), and explicitly calls `try? modelContext.save()`. SwiftData's implicit periodic auto-save is not scene-aware — you have to force the save yourself before the OS can kill the process.
+
+**Lesson**: any UI pattern that "buffers writes into `@State` for performance and flushes later" has two failure modes to design around: the process getting killed while the buffer is stale, and the view getting reused for a different underlying record while the buffer holds the previous record's content. The first is fixed with `scenePhase` + debounce; the second requires either view-identity tagging (`.id(model.persistentModelID)`) or an `.onChange(of: model.id)` re-seed. This pass covered the first — the second is worth adding when a use case that could exercise it surfaces.
+
+**Lesson**: `Task { @MainActor in ... }` explicitly marks the debounce task as main-actor even inside an already-main-actor view. That's belt-and-suspenders for readability — a future reader can grep for "`@MainActor in`" and immediately see "yes this UI-adjacent async work is on the main actor" without having to trace enclosing isolation.
