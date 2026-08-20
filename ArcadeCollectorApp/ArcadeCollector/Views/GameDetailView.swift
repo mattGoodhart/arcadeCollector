@@ -293,7 +293,7 @@ struct GameDetailView: View {
         return url
     }
 
-    private static func extractYouTubeID(from url: URL) -> String? {
+    private nonisolated static func extractYouTubeID(from url: URL) -> String? {
         let host = url.host()?.lowercased() ?? ""
         if host.contains("youtu.be") {
             let id = url.lastPathComponent

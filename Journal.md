@@ -1093,3 +1093,13 @@ Once the tester used the Customize tray explicitly (long-press home screen → E
 **Lesson**: for iOS 18+ app icon variants, the asset requirements aren't documented in the same place as the Contents.json format. The Contents.json accepts opaque PNGs happily with no build warnings — the wrong-format icons ship, they just don't render correctly at runtime. Any icon-preparation tooling should assert alpha=4-samples on the dark and tinted PNGs before check-in, because the failure mode is silent.
 
 **Lesson**: idempotent asset-processing scripts want a "pristine source" convention that lives *outside* the folder the tooling scans. Sources go next to the script (`scripts/icon_sources/`), processed outputs go into the asset catalog. Colocating sources with outputs is tempting for the clean data flow but immediately conflicts with any folder that has its own scanner — asset catalogs, resource bundles, build phases. Same principle as `.gitignore`-ing generated files: producers and consumers of a folder shouldn't share a namespace with unrelated visitors of that folder.
+
+### 2026-08-20 — Swift 6 Isolation: `flatMap(Self.method)` Requires `nonisolated`
+
+A build warning in `GameDetailView`: `Call to main actor-isolated static method 'extractYouTubeID(from:)' in a synchronous nonisolated context`. Only line 287 fired — `game.shortPlayURL.flatMap(Self.extractYouTubeID)` — while the same static method called directly on line 292 (`Self.extractYouTubeID(from: url)`) was silent.
+
+The mechanism is the closure conversion. `GameDetailView` is main-actor-isolated by SwiftUI convention, so `Self.extractYouTubeID` inherits main-actor isolation. Direct call from another main-actor context is fine. But passing the method as a bare reference to `Optional.flatMap` binds it as a closure with type `(URL) -> String?` — and `flatMap`'s parameter is *nonisolated*. Swift 6 refuses to convert a main-actor method into a nonisolated closure.
+
+**Fix**: one keyword — `private nonisolated static func extractYouTubeID(from:)`. Pure URL parsing, no view state, no reason to be on the main actor.
+
+**Lesson**: pure helpers that get passed as function references (`.flatMap`, `.map`, `Task { }`, etc.) need `nonisolated` even inside main-actor types. Direct call sites hide the issue — the closure-conversion path is what enforces the isolation contract. When you see a warning on line X but "the same call one line down" is fine, look for a callable-reference conversion at line X.
