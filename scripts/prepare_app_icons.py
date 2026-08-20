@@ -10,10 +10,12 @@ backgrounds so the system can composite them over its own chrome:
   Tinted  - grayscale content stays as a luminance mask; alpha carries the mask so
             iOS can tint the shape with the user's chosen color.
 
-Idempotent: on first run, the current opaque PNGs are backed up as
-<name>.opaque.png. Subsequent runs use the backup as the source, so re-running
-the script always produces the same result even if you've already overwritten
-the file in the iconset.
+Idempotent: on first run, the current opaque PNGs are backed up to
+scripts/icon_sources/<name>.opaque.png. Subsequent runs use those backups as
+the source, so re-running the script always produces the same result even if
+you've already overwritten the file in the iconset. The sources live outside
+the .appiconset because Xcode's asset catalog flags any unassigned files in
+that folder as warnings.
 
 Usage:
     python3 scripts/prepare_app_icons.py
@@ -30,6 +32,7 @@ from PIL import Image, ImageChops
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ICONSET = REPO_ROOT / "ArcadeCollectorApp/ArcadeCollector/Assets.xcassets/AppIcon.appiconset"
+SOURCES = Path(__file__).resolve().parent / "icon_sources"
 
 DARK_ICON = ICONSET / "dark_icon_1024x1024.png"
 TINTED_ICON = ICONSET / "Arcade Collector Tinted.png"
@@ -42,8 +45,9 @@ DARK_BG_THRESHOLD = 40
 
 
 def backup_source(target: Path) -> Path:
-    """Return the .opaque.png backup, creating it from `target` on first run."""
-    backup = target.with_suffix(".opaque.png")
+    """Return the .opaque.png backup in `SOURCES`, creating it from `target` on first run."""
+    SOURCES.mkdir(exist_ok=True)
+    backup = SOURCES / target.with_suffix(".opaque.png").name
     if not backup.exists():
         if not target.exists():
             raise FileNotFoundError(f"missing both {target} and {backup}")
