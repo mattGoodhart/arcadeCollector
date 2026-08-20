@@ -1062,3 +1062,34 @@ Priority logic in `GameDetailView`:
 **Lesson**: when you need to scale third-party web content to fit a WKWebView frame, `transform: scale()` on the content's root container is far more robust than overriding individual element sizes. The third party's JS will fight your size overrides with inline styles, but `transform` on a parent element doesn't conflict with child sizing — it applies uniformly after layout.
 
 **Lesson**: `WKWebView` does not enable the JavaScript Fullscreen API by default. Set `config.preferences.isElementFullscreenEnabled = true` (iOS 15.4+) or fullscreen buttons in embedded web content silently do nothing.
+
+### 2026-08-20 — App Icon Appearance Variants: Two Bugs Wearing a Trenchcoat
+
+The dark and tinted app icon variants weren't showing up on the simulator *or* on the physical device. Started chasing this as an asset problem and ended up finding two overlapping issues — one in the assets, one in the tester's mental model of how iOS 18+ icon appearance actually works.
+
+**Bug 1: The PNGs were fully opaque.** `sips -g hasAlpha` on all three icon files came back `no` — every variant was `RGB / samplesPerPixel: 3`. iOS 18+ has strict requirements for the appearance variants that the source PNGs from the design tool weren't meeting:
+
+- **Dark variant** needs an **alpha channel with a transparent background** — iOS composites the icon over its own dark glass chrome. A fully opaque dark icon just displays its own background rectangle instead of picking up the system aesthetic.
+- **Tinted variant** needs to be **grayscale with luminance as alpha** — iOS reads the alpha (or grayscale intensity) to know where to paint the user's chosen tint color. A fully opaque color-RGB PNG has nothing for the tint system to key off of, so it just displays as-is.
+
+Wrote `scripts/prepare_app_icons.py` to fix both:
+
+- **Dark**: samples the corner pixel as the background reference (came back as RGB (9, 14, 24) — near-black), then uses `ImageChops.difference` across all three channels to compute per-pixel max distance from that reference. Pixels within threshold=40 become alpha=0; distances above 2× ramp smoothly to alpha=255 for anti-aliased edges. Post-processing, corners are (9,14,24,0) and content pixels are (color, 255).
+- **Tinted**: converts to grayscale via PIL's `.convert("L")`, then reassembles as `RGBA` with the grayscale in R/G/B *and* alpha. Black background naturally becomes fully transparent; bright grayscale content becomes fully opaque with the same intensity value in RGB.
+
+Idempotent by design: on first run, the script backs up each opaque source to `<name>.opaque.png` before overwriting the iconset PNG. Subsequent runs read from the backup, so re-running always produces the same output even after the iconset PNGs have already been overwritten. Backups are checked into git as the pristine source of truth for future re-runs.
+
+**Bug 2 (the real gotcha): system Dark Mode ≠ home screen icon appearance on iOS 18+.** After the asset fix, the tester reported that not just our app's icon but *Apple's own stock icons* also weren't changing appearance when they toggled Dark Mode. That last detail cracked the case — the tester was flipping Settings → Display & Brightness → Dark and expecting the home screen icons to swap variants, but on iOS 18+ those are **two independent controls**:
+
+- Settings → Display & Brightness → Dark changes the **system UI** appearance (control center, keyboard, apps' internal chrome).
+- Long-press the home screen → **Edit → Customize** → pick **Automatic / Dark / Light / Tinted** — this is what controls **home screen icon appearance**.
+
+Only the "Automatic" mode ties icon appearance to the system Dark Mode toggle. Any of the other three modes is a hard override that pins the icon variant regardless of what the system-level Dark Mode says. So a tester who happens to have this set to "Light" (the default in some configurations) will never see icon changes from toggling Dark Mode.
+
+Once the tester used the Customize tray explicitly (long-press home screen → Edit → Customize → Dark, then Tinted), both bugs' fixes were visible immediately — our processed variants rendered correctly, and Apple's stock icons also swapped alongside them.
+
+**Lesson**: when a whole class of visual features fails to change, check whether *any* similar feature — including first-party apps — is behaving correctly. If Apple's own icons don't change appearance, the app's asset catalog isn't the bug. The signal "even the built-in stuff is broken" narrows the search space from "our code" to "the environment or the user's mental model" instantly.
+
+**Lesson**: for iOS 18+ app icon variants, the asset requirements aren't documented in the same place as the Contents.json format. The Contents.json accepts opaque PNGs happily with no build warnings — the wrong-format icons ship, they just don't render correctly at runtime. Any icon-preparation tooling should assert alpha=4-samples on the dark and tinted PNGs before check-in, because the failure mode is silent.
+
+**Lesson**: idempotent asset-processing scripts want a "pristine source" convention. `<name>.opaque.png` next to `<name>.png` in the same folder is the simplest possible mapping — the script always knows which file to read from and which to write to, and re-running twice in a row is a no-op instead of a progressively worse cascade of re-processed images. Same principle as immutable inputs feeding a build step.
