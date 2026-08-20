@@ -281,10 +281,14 @@ struct GameDetailView: View {
     }
 
     private var resolvedYouTubeID: String? {
-        if !game.youtubeVideoID.isEmpty {
+        if !game.youtubeVideoID.isEmpty, YouTubePlayerView.isValid(id: game.youtubeVideoID) {
             return game.youtubeVideoID
         }
-        return game.shortPlayURL.flatMap(Self.extractYouTubeID)
+        if let extracted = game.shortPlayURL.flatMap(Self.extractYouTubeID),
+           YouTubePlayerView.isValid(id: extracted) {
+            return extracted
+        }
+        return nil
     }
 
     private var directVideoURL: URL? {
@@ -467,62 +471,126 @@ struct GameDetailView: View {
 private struct YouTubePlayerView: UIViewRepresentable {
     let videoID: String
 
+    /// YouTube video IDs are canonically 11 base64url chars; widened to 6–32 to tolerate
+    /// future format drift without opening up to injection-friendly punctuation.
+    private nonisolated static let idPattern = /^[A-Za-z0-9_-]{6,32}$/
+
+    nonisolated static func isValid(id: String) -> Bool {
+        (try? Self.idPattern.wholeMatch(in: id)) != nil
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(allowedVideoID: videoID)
+    }
+
     func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         config.preferences.isElementFullscreenEnabled = true
+        // Ephemeral: no persistent cookies, cache, or YouTube login state across launches.
+        config.websiteDataStore = .nonPersistent()
 
         let hideUI = WKUserScript(
-            source: """
-            const s = document.createElement('style');
-            s.textContent = `
-                ytm-mobile-topbar-renderer,
-                .mobile-topbar-header,
-                #below-player,
-                ytm-pivot-bar-renderer { display:none!important }
-                body { margin:0!important; background:#000!important; overflow:hidden!important }
-                #player-container-id {
-                    position:fixed!important; top:0!important; left:0!important;
-                    width:100vw!important; height:100vh!important;
-                }
-            `;
-            document.head.appendChild(s);
-            function fitVideo() {
-                var mp = document.getElementById('movie_player');
-                if (!mp) {
-                    var v = document.querySelector('video');
-                    if (v) mp = v.parentElement;
-                }
-                if (!mp || !mp.offsetWidth || !mp.offsetHeight) return;
-                var scale = Math.min(
-                    window.innerWidth / mp.offsetWidth,
-                    window.innerHeight / mp.offsetHeight
-                );
-                mp.style.setProperty('position','fixed','important');
-                mp.style.setProperty('top','50%','important');
-                mp.style.setProperty('left','50%','important');
-                mp.style.setProperty('transform',
-                    'translate(-50%,-50%) scale('+scale+')','important');
-                mp.style.setProperty('transform-origin','center center','important');
-            }
-            setInterval(fitVideo, 500);
-            """,
+            source: Self.hideUIScript,
             injectionTime: .atDocumentEnd,
             forMainFrameOnly: true
         )
         config.userContentController.addUserScript(hideUI)
 
         let webView = WKWebView(frame: .zero, configuration: config)
+        webView.navigationDelegate = context.coordinator
         webView.scrollView.isScrollEnabled = false
         webView.isOpaque = false
         webView.backgroundColor = .black
-        if let url = URL(string: "https://m.youtube.com/watch?v=\(videoID)") {
+
+        guard Self.isValid(id: videoID),
+              var components = URLComponents(string: "https://m.youtube.com/watch") else {
+            return webView
+        }
+        components.queryItems = [URLQueryItem(name: "v", value: videoID)]
+        if let url = components.url {
             webView.load(URLRequest(url: url))
         }
         return webView
     }
 
     func updateUIView(_ webView: WKWebView, context: Context) {}
+
+    static func dismantleUIView(_ webView: WKWebView, coordinator: Coordinator) {
+        webView.stopLoading()
+        webView.configuration.userContentController.removeAllUserScripts()
+        webView.navigationDelegate = nil
+    }
+
+    final class Coordinator: NSObject, WKNavigationDelegate {
+        let allowedVideoID: String
+
+        init(allowedVideoID: String) {
+            self.allowedVideoID = allowedVideoID
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            decidePolicyFor navigationAction: WKNavigationAction
+        ) async -> WKNavigationActionPolicy {
+            // Non-link navigation (initial load, YouTube's own AJAX, fullscreen transitions)
+            // stays in-frame. Only user-driven link taps and form submits get filtered.
+            let type = navigationAction.navigationType
+            guard type == .linkActivated || type == .formSubmitted,
+                  let url = navigationAction.request.url else {
+                return .allow
+            }
+
+            // Same video on YouTube's watch page: stay in-frame.
+            if let host = url.host()?.lowercased(),
+               host.hasSuffix("youtube.com") || host.hasSuffix("youtu.be"),
+               let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+               components.queryItems?.first(where: { $0.name == "v" })?.value == allowedVideoID {
+                return .allow
+            }
+
+            // Anything else (channel, related, share, sign-in, external site) → hand off
+            // to the system so the user leaves via Safari instead of getting stuck in a
+            // stripped-mobile-YouTube session inside our WKWebView.
+            await UIApplication.shared.open(url)
+            return .cancel
+        }
+    }
+
+    private static let hideUIScript = """
+    const s = document.createElement('style');
+    s.textContent = `
+        ytm-mobile-topbar-renderer,
+        .mobile-topbar-header,
+        #below-player,
+        ytm-pivot-bar-renderer { display:none!important }
+        body { margin:0!important; background:#000!important; overflow:hidden!important }
+        #player-container-id {
+            position:fixed!important; top:0!important; left:0!important;
+            width:100vw!important; height:100vh!important;
+        }
+    `;
+    document.head.appendChild(s);
+    function fitVideo() {
+        var mp = document.getElementById('movie_player');
+        if (!mp) {
+            var v = document.querySelector('video');
+            if (v) mp = v.parentElement;
+        }
+        if (!mp || !mp.offsetWidth || !mp.offsetHeight) return;
+        var scale = Math.min(
+            window.innerWidth / mp.offsetWidth,
+            window.innerHeight / mp.offsetHeight
+        );
+        mp.style.setProperty('position','fixed','important');
+        mp.style.setProperty('top','50%','important');
+        mp.style.setProperty('left','50%','important');
+        mp.style.setProperty('transform',
+            'translate(-50%,-50%) scale('+scale+')','important');
+        mp.style.setProperty('transform-origin','center center','important');
+    }
+    setInterval(fitVideo, 500);
+    """
 }
 
 private struct StatusPickerRow: View {
