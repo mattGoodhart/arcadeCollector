@@ -34,7 +34,7 @@ struct GameDetailView: View {
                 historySection
             }
             hardwareLinkSection
-            if resolvedYouTubeID != nil || directVideoURL != nil {
+            if videoMode.isPresent {
                 shortPlaySection
             }
             if game.manualURL != nil {
@@ -280,21 +280,32 @@ struct GameDetailView: View {
         }
     }
 
-    private var resolvedYouTubeID: String? {
-        if !game.youtubeVideoID.isEmpty, YouTubeURL.isValid(id: game.youtubeVideoID) {
-            return game.youtubeVideoID
+    /// The single source of truth for the Short Play section: what kind of video (if any)
+    /// this game has. Callers pattern-match on the case rather than nil-checking two
+    /// parallel optionals — that way the "youtube ID present *and* direct URL present"
+    /// mixed state is unrepresentable.
+    private enum VideoMode: Equatable {
+        case youtube(id: String)
+        case direct(URL)
+        case none
+
+        var isPresent: Bool {
+            if case .none = self { return false }
+            return true
         }
-        if let extracted = game.shortPlayURL.flatMap(YouTubeURL.extractID(from:)),
-           YouTubeURL.isValid(id: extracted) {
-            return extracted
-        }
-        return nil
     }
 
-    private var directVideoURL: URL? {
-        guard let url = game.shortPlayURL,
-              YouTubeURL.extractID(from: url) == nil else { return nil }
-        return url
+    private var videoMode: VideoMode {
+        if !game.youtubeVideoID.isEmpty, YouTubeURL.isValid(id: game.youtubeVideoID) {
+            return .youtube(id: game.youtubeVideoID)
+        }
+        if let url = game.shortPlayURL {
+            if let id = YouTubeURL.extractID(from: url), YouTubeURL.isValid(id: id) {
+                return .youtube(id: id)
+            }
+            return .direct(url)
+        }
+        return .none
     }
 
     private var shortPlaySection: some View {
@@ -314,7 +325,7 @@ struct GameDetailView: View {
             .tint(.primary)
 
             if shortPlayExpanded {
-                if let ytID = resolvedYouTubeID {
+                if case .youtube(let ytID) = videoMode {
                     YouTubePlayerView(videoID: ytID)
                         .aspectRatio(16/9, contentMode: .fit)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -331,8 +342,8 @@ struct GameDetailView: View {
             }
         }
         .onChange(of: shortPlayExpanded) {
-            if shortPlayExpanded, resolvedYouTubeID == nil,
-               shortPlayPlayer == nil, let url = directVideoURL {
+            if shortPlayExpanded, shortPlayPlayer == nil,
+               case .direct(let url) = videoMode {
                 let asset = AVURLAsset(url: url, options: [
                     "AVURLAssetOutOfBandMIMETypeKey": "video/mp4"
                 ])

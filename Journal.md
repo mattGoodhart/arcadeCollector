@@ -1161,3 +1161,27 @@ Three benefits from the same refactor:
 **Test count: 32 → 53** (+21). Signing for the test target needs to be configured in Xcode's Signing & Capabilities pane before the suite can run via the CI-adjacent tooling; the tests build cleanly on the main target and are ready to run from Xcode directly.
 
 **Lesson**: when a helper is `private` but ought to be tested, the temptation is to reach for `@testable import` or drop the `private`. Neither is wrong, but the *better* move is often to ask whether the helper deserves a home of its own. If two related helpers are cohabiting inside a view/service/actor purely because they were written there first, extracting them into a small namespace type gives you testability, discoverability, and — crucially — a natural docstring surface for the shared invariants (host allow-list, ID regex) that were previously implicit.
+
+### 2026-08-20 — VideoMode Enum + Repair Log Identity Guard
+
+Two remaining "Should fix" items from the review cleared.
+
+**VideoMode consolidation.** `GameDetailView` had two parallel computed properties, `resolvedYouTubeID: String?` and `directVideoURL: URL?`, each parsing `game.shortPlayURL` independently. The invariant "at most one of these is non-nil" was implicit — nothing in the type system prevented a mixed state — and body plus `shortPlaySection` plus the `onChange` handler each called both to figure out which player to use.
+
+Replaced with a `VideoMode` enum:
+
+```swift
+private enum VideoMode: Equatable {
+    case youtube(id: String)
+    case direct(URL)
+    case none
+}
+```
+
+Every call site now pattern-matches: `if case .youtube(let ytID) = videoMode`, `if case .direct(let url) = videoMode`, and `videoMode.isPresent` for the guard. The mixed state is unrepresentable, the branching intent is legible at each usage, and the two YouTube-vs-direct-file resolutions collapse to one function.
+
+**Repair log entry identity guard.** `RepairLogEntryView` seeds a `notesText: @State String` from `log.notes` in `init`. If SwiftUI ever reused the same view instance for a *different* `log` (identity-preserving update — plausible under list re-orderings or future navigation restructurings), the buffer would show the previous log's content until `.onAppear` re-ran. Added `.id(log.persistentModelID)` on the presented view inside `RepairLogListView`'s `NavigationLink` destination — pins the view's identity to the log's persistent ID, so a different log always gets a fresh view (and a freshly-seeded buffer). Belt-and-suspenders for the current navigation stack; future-proofs against list re-use patterns that don't exist today.
+
+**Lesson**: two nil-able optionals that model "at most one of these" are almost always better expressed as a single enum. The typed enum forces every consumer to state their intent (which case?), makes the impossible-state literally impossible (no representation for "both non-nil"), and lets Swift's exhaustiveness checker prove no case is forgotten. Pay the extra 8 lines to define the enum; save the recurring "wait, can both be nil at the same time?" tax at every consumer.
+
+**Lesson**: `@State` buffers over model data (see the notes-flush entry earlier today) always want `.id(model.persistentIdentifier)` on the presenting view — even if today's navigation always creates fresh view instances. It's a two-word insurance policy against a subtle failure mode that only shows up when a future refactor introduces view identity preservation, which is exactly when nobody remembers this buffer exists.

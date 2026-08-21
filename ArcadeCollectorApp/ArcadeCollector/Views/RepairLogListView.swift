@@ -19,6 +19,10 @@ struct RepairLogListView: View {
             ForEach(sortedLogs) { log in
                 NavigationLink {
                     RepairLogEntryView(log: log)
+                        // Force view identity to track the log; the entry view seeds a
+                        // notesText @State buffer in init that would otherwise stick if
+                        // SwiftUI reused the view for a different log.
+                        .id(log.persistentModelID)
                 } label: {
                     RepairLogRow(log: log)
                 }
