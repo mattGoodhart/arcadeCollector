@@ -174,6 +174,18 @@ private struct PhotoThumbnail: View {
 
     private static let size: CGFloat = 100
 
+    // Shared across all PhotoThumbnail instances so scrolling in and out of view
+    // doesn't re-decode from external storage. NSCache evicts on memory pressure.
+    private static let cache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.countLimit = 64
+        return cache
+    }()
+
+    private var cacheKey: NSString {
+        "\(photo.persistentModelID.hashValue)" as NSString
+    }
+
     var body: some View {
         Group {
             if let thumbnail {
@@ -197,13 +209,19 @@ private struct PhotoThumbnail: View {
             Button("Delete Photo", role: .destructive, action: onDelete)
         }
         .task {
-            guard thumbnail == nil, let data = photo.imageData else { return }
+            guard thumbnail == nil else { return }
+            if let cached = Self.cache.object(forKey: cacheKey) {
+                thumbnail = cached
+                return
+            }
+            guard let data = photo.imageData else { return }
             let pixelSize = CGSize(width: Self.size * 3, height: Self.size * 3)
             let result = await Task.detached(priority: .userInitiated) {
                 guard let source = UIImage(data: data) else { return nil as UIImage? }
                 return await source.byPreparingThumbnail(ofSize: pixelSize)
             }.value
             if let result {
+                Self.cache.setObject(result, forKey: cacheKey)
                 thumbnail = result
             }
         }

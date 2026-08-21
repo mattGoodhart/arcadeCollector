@@ -51,7 +51,7 @@ final class Game {
     // MARK: Notes & external media
     var history: String = ""
     var mameNotes: String
-    var youtubeVideoID: String
+    var youtubeVideoID: String?
     var shortPlayURL: URL?
     var gamePageURL: URL?
     var manualURL: URL?
@@ -114,7 +114,6 @@ final class Game {
         self.soundDevices = []
         self.history = ""
         self.mameNotes = ""
-        self.youtubeVideoID = ""
     }
 }
 

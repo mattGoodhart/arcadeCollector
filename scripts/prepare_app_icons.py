@@ -45,19 +45,62 @@ DARK_BG_THRESHOLD = 40
 
 
 def backup_source(target: Path) -> Path:
-    """Return the .opaque.png backup in `SOURCES`, creating it from `target` on first run."""
+    """Return the .opaque.png backup in `SOURCES`, creating it from `target` on first run.
+
+    Refuses to back up a target that already has transparency at the corner — the
+    only way that happens is if a previous run already stripped the background
+    and no backup was ever created (e.g., someone deleted the backup by hand),
+    in which case backing it up now would freeze the *stripped* version as the
+    "pristine source" and destroy the true original forever.
+    """
     SOURCES.mkdir(exist_ok=True)
     backup = SOURCES / target.with_suffix(".opaque.png").name
     if not backup.exists():
         if not target.exists():
             raise FileNotFoundError(f"missing both {target} and {backup}")
+        with Image.open(target) as candidate:
+            if candidate.mode in ("RGBA", "LA"):
+                corner = candidate.convert("RGBA").getpixel((0, 0))
+                if corner[3] == 0:
+                    raise SystemExit(
+                        f"refusing to back up {target.name}: corner pixel is "
+                        f"transparent, so this file appears to already be the "
+                        f"processed output. Restore the true opaque source "
+                        f"before rerunning."
+                    )
         backup.write_bytes(target.read_bytes())
     return backup
+
+
+def assert_uniform_corners(img: Image.Image, tolerance: int = 5) -> None:
+    """Assert all four corners are within `tolerance` per channel of each other.
+
+    The dark-background strip samples one corner and floods that color to alpha=0.
+    If the corners disagree, the sampled color isn't representative — half the
+    intended background will survive, or content near a differently-tinted corner
+    will erase. Better to fail loud than silently produce a broken icon.
+    """
+    w, h = img.size
+    corners = [
+        img.getpixel((0, 0)),
+        img.getpixel((w - 1, 0)),
+        img.getpixel((0, h - 1)),
+        img.getpixel((w - 1, h - 1)),
+    ]
+    for channel in range(3):
+        values = [c[channel] for c in corners]
+        if max(values) - min(values) > tolerance:
+            raise SystemExit(
+                f"corner colors disagree beyond tolerance {tolerance} "
+                f"(channel {channel}: {values}). The background is not uniform; "
+                f"corner-sampled color-key stripping would produce artifacts."
+            )
 
 
 def strip_dark_background(src: Path, dst: Path, threshold: int = DARK_BG_THRESHOLD) -> None:
     """Sample the corner as background color, convert matching pixels to alpha=0."""
     img = Image.open(src).convert("RGBA")
+    assert_uniform_corners(img)
     bg = img.getpixel((0, 0))[:3]
 
     r, g, b, _ = img.split()

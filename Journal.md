@@ -1185,3 +1185,30 @@ Every call site now pattern-matches: `if case .youtube(let ytID) = videoMode`, `
 **Lesson**: two nil-able optionals that model "at most one of these" are almost always better expressed as a single enum. The typed enum forces every consumer to state their intent (which case?), makes the impossible-state literally impossible (no representation for "both non-nil"), and lets Swift's exhaustiveness checker prove no case is forgotten. Pay the extra 8 lines to define the enum; save the recurring "wait, can both be nil at the same time?" tax at every consumer.
 
 **Lesson**: `@State` buffers over model data (see the notes-flush entry earlier today) always want `.id(model.persistentIdentifier)` on the presenting view — even if today's navigation always creates fresh view instances. It's a two-word insurance policy against a subtle failure mode that only shows up when a future refactor introduces view identity preservation, which is exactly when nobody remembers this buffer exists.
+
+### 2026-08-20 — Remaining Nice-To-Haves From The August Review
+
+Four small hardening items from the code review, all shipped as a batch since none is worth a standalone commit but the cumulative effect is real.
+
+**PhotoThumbnail NSCache.** The repair-log photo strip re-decoded from external storage every time a thumbnail scrolled back into view. Added a `static NSCache<NSString, UIImage>` with `countLimit = 64`, keyed by `photo.persistentModelID.hashValue`. Cache is checked before the decode in `.task`; new decodes are stored on completion. NSCache handles memory-pressure eviction automatically, so no manual invalidation needed.
+
+**`prepare_app_icons.py` safety rails.** Two assertions added to prevent silent icon corruption:
+
+1. `backup_source` now refuses to back up a target whose corner pixel is already transparent — meaning a previous run stripped the file and no backup exists to restore from. Backing it up now would freeze the *stripped* version as the "pristine source" and destroy the true original forever. Loud `SystemExit` beats a corrupted asset that ships without anyone noticing.
+2. `assert_uniform_corners` verifies all four corner pixels of the dark-icon input are within 5-per-channel of each other before doing color-key stripping. If corners disagree, the sampled background color isn't representative — content near a differently-tinted corner would erase, or half the background would survive. Also loud fail rather than silent artifact.
+
+Byte-identical output verified via `shasum` before and after the changes.
+
+**YouTube CSS selector monitor (DEBUG-only).** `YouTubePlayerView`'s CSS depends on YouTube's mobile DOM structure — `ytm-mobile-topbar-renderer`, `#below-player`, `ytm-pivot-bar-renderer`, `#movie_player`, `#player-container-id`. YouTube can rename these any time and the app's layout would silently break. Added a DEBUG-only diagnostic:
+
+- A second `WKUserScript` runs 3s after page load and calls `document.querySelector` for each dependent selector.
+- Any miss posts a message via `window.webkit.messageHandlers.selectorMissed.postMessage(selector)`.
+- The Coordinator now conforms to `WKScriptMessageHandler` and prints `[YouTubePlayer] DOM selector missing on YouTube page: <selector>` to the debug console.
+
+Wrapped in `#if DEBUG` so Release builds inject nothing and pay zero cost. `dismantleUIView` gained `removeAllScriptMessageHandlers()` to complement the existing script-cleanup.
+
+**`Game.youtubeVideoID`: `String = ""` → `String?`.** The empty-string sentinel was inconsistent with the surrounding schema (`shortPlayURL: URL?`, `gamePageURL: URL?`, `manualURL: URL?` — all use nil for absence). Three-line change: model property, drop the `self.youtubeVideoID = ""` from `init`, callers updated from `.isEmpty` to `!= nil` / `if let`. SwiftData lightweight migration handles the type change; existing rows with `""` remain as `.some("")` which is functionally equivalent to "no ID" under the new callers (all of them either `if let`-unwrap or explicitly nil-check before use). `PersistenceMigrationTests` and `GameSeederTests` remain green (5/5), confirming both the schema change and the seed round-trip survive.
+
+**Lesson**: DEBUG-only diagnostics are cheap and durable. The temptation is always to skip them ("I'll notice if it breaks") — but for anything that depends on a third-party's implementation detail (DOM selectors, private API strings, undocumented behavior), you *won't* notice until a user reports it. A `#if DEBUG` script that prints one line when the assumption falls over is a five-minute investment that turns a mysterious "layout looks off" bug report into an obvious "YouTube renamed X" fix. The cost in Release is zero; the cost of the missing check in Debug is measured in customer support hours.
+
+**Lesson**: any codebase-wide sentinel pattern (empty string as absence, `-1` as "none", `Date.distantPast` as "never") is a technical-debt tax that keeps compounding. Every consumer must remember the sentinel; new consumers might not; refactorings that only touch some consumers introduce drift. `Optional<T>` costs one keyword at the definition, one letter at each unwrap, and makes the impossible-state (both "" and .some("")) unrepresentable. Migrate sentinels to Optional when you spot them — the churn is usually smaller than the ongoing correctness burden.

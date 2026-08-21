@@ -52,7 +52,7 @@ actor ArtworkFetcher {
         if game.history.isEmpty, !metadata.history.isEmpty {
             game.history = metadata.history
         }
-        if game.youtubeVideoID.isEmpty, let ytID = metadata.youtubeVideoID {
+        if game.youtubeVideoID == nil, let ytID = metadata.youtubeVideoID {
             game.youtubeVideoID = ytID
         }
         if game.shortPlayURL == nil, let shortPlay = metadata.shortPlayURL {

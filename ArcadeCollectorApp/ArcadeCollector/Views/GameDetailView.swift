@@ -296,8 +296,8 @@ struct GameDetailView: View {
     }
 
     private var videoMode: VideoMode {
-        if !game.youtubeVideoID.isEmpty, YouTubeURL.isValid(id: game.youtubeVideoID) {
-            return .youtube(id: game.youtubeVideoID)
+        if let id = game.youtubeVideoID, YouTubeURL.isValid(id: id) {
+            return .youtube(id: id)
         }
         if let url = game.shortPlayURL {
             if let id = YouTubeURL.extractID(from: url), YouTubeURL.isValid(id: id) {
@@ -485,6 +485,19 @@ private struct YouTubePlayerView: UIViewRepresentable {
         )
         config.userContentController.addUserScript(hideUI)
 
+        #if DEBUG
+        // Monitor whether YouTube renamed any DOM selectors we depend on so
+        // the "layout looks off" symptom shows up in the debugger before a
+        // real user reports it. No-op in Release builds.
+        let monitor = WKUserScript(
+            source: Self.selectorMonitorScript,
+            injectionTime: .atDocumentEnd,
+            forMainFrameOnly: true
+        )
+        config.userContentController.addUserScript(monitor)
+        config.userContentController.add(context.coordinator, name: "selectorMissed")
+        #endif
+
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
         webView.scrollView.isScrollEnabled = false
@@ -507,14 +520,24 @@ private struct YouTubePlayerView: UIViewRepresentable {
     static func dismantleUIView(_ webView: WKWebView, coordinator: Coordinator) {
         webView.stopLoading()
         webView.configuration.userContentController.removeAllUserScripts()
+        webView.configuration.userContentController.removeAllScriptMessageHandlers()
         webView.navigationDelegate = nil
     }
 
-    final class Coordinator: NSObject, WKNavigationDelegate {
+    final class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         let allowedVideoID: String
 
         init(allowedVideoID: String) {
             self.allowedVideoID = allowedVideoID
+        }
+
+        func userContentController(
+            _ userContentController: WKUserContentController,
+            didReceive message: WKScriptMessage
+        ) {
+            if message.name == "selectorMissed" {
+                print("[YouTubePlayer] DOM selector missing on YouTube page: \(message.body)")
+            }
         }
 
         func webView(
@@ -578,6 +601,28 @@ private struct YouTubePlayerView: UIViewRepresentable {
         mp.style.setProperty('transform-origin','center center','important');
     }
     setInterval(fitVideo, 500);
+    """
+
+    /// DEBUG-only diagnostic: 3s after page load, checks each selector our CSS
+    /// and JS depend on and reports any that don't match anything. The 3s wait
+    /// covers YouTube's initial hydration; if a selector is still missing after
+    /// that, YouTube has almost certainly renamed it and our layout will be off.
+    private static let selectorMonitorScript = """
+    setTimeout(function() {
+        var selectors = [
+            'ytm-mobile-topbar-renderer',
+            '.mobile-topbar-header',
+            '#below-player',
+            'ytm-pivot-bar-renderer',
+            '#movie_player',
+            '#player-container-id'
+        ];
+        selectors.forEach(function(sel) {
+            if (!document.querySelector(sel)) {
+                window.webkit.messageHandlers.selectorMissed.postMessage(sel);
+            }
+        });
+    }, 3000);
     """
 }
 
