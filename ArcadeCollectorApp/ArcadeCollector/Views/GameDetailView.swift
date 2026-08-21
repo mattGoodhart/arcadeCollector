@@ -281,11 +281,11 @@ struct GameDetailView: View {
     }
 
     private var resolvedYouTubeID: String? {
-        if !game.youtubeVideoID.isEmpty, YouTubePlayerView.isValid(id: game.youtubeVideoID) {
+        if !game.youtubeVideoID.isEmpty, YouTubeURL.isValid(id: game.youtubeVideoID) {
             return game.youtubeVideoID
         }
-        if let extracted = game.shortPlayURL.flatMap(Self.extractYouTubeID),
-           YouTubePlayerView.isValid(id: extracted) {
+        if let extracted = game.shortPlayURL.flatMap(YouTubeURL.extractID(from:)),
+           YouTubeURL.isValid(id: extracted) {
             return extracted
         }
         return nil
@@ -293,23 +293,8 @@ struct GameDetailView: View {
 
     private var directVideoURL: URL? {
         guard let url = game.shortPlayURL,
-              Self.extractYouTubeID(from: url) == nil else { return nil }
+              YouTubeURL.extractID(from: url) == nil else { return nil }
         return url
-    }
-
-    private nonisolated static func extractYouTubeID(from url: URL) -> String? {
-        let host = url.host()?.lowercased() ?? ""
-        if host.contains("youtu.be") {
-            let id = url.lastPathComponent
-            return id.isEmpty ? nil : id
-        }
-        if host.contains("youtube.com"),
-           let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-           let id = components.queryItems?.first(where: { $0.name == "v" })?.value,
-           !id.isEmpty {
-            return id
-        }
-        return nil
     }
 
     private var shortPlaySection: some View {
@@ -471,14 +456,6 @@ struct GameDetailView: View {
 private struct YouTubePlayerView: UIViewRepresentable {
     let videoID: String
 
-    /// YouTube video IDs are canonically 11 base64url chars; widened to 6–32 to tolerate
-    /// future format drift without opening up to injection-friendly punctuation.
-    private nonisolated static let idPattern = /^[A-Za-z0-9_-]{6,32}$/
-
-    nonisolated static func isValid(id: String) -> Bool {
-        (try? Self.idPattern.wholeMatch(in: id)) != nil
-    }
-
     func makeCoordinator() -> Coordinator {
         Coordinator(allowedVideoID: videoID)
     }
@@ -503,7 +480,7 @@ private struct YouTubePlayerView: UIViewRepresentable {
         webView.isOpaque = false
         webView.backgroundColor = .black
 
-        guard Self.isValid(id: videoID),
+        guard YouTubeURL.isValid(id: videoID),
               var components = URLComponents(string: "https://m.youtube.com/watch") else {
             return webView
         }

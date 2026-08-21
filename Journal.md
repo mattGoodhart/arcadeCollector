@@ -1141,3 +1141,23 @@ Also added `dismantleUIView(_:coordinator:)` to explicitly `stopLoading()`, `rem
 **Lesson**: any `UIViewRepresentable` that hosts a `WKWebView` for third-party web content should default to `WKWebsiteDataStore.nonPersistent()` and set a `WKNavigationDelegate` that whitelists the specific navigation you're hosting. The default WKWebView is effectively an in-app browser with cookie persistence — fine when that's the intent (a full browser feature), dangerous when it isn't (playing a single video). Both settings should be flipped explicitly at construction, not left to defaults.
 
 **Lesson**: for any string-interpolated URL with user- or externally-sourced data, either use `URLComponents`/`URLQueryItem` (which percent-encode automatically) or validate the input against a strict allow-list regex *before* interpolation. Doing neither is the classic pattern that makes SSRF, open-redirect, and injection bugs easy to write and hard to notice. The regex-in-front approach is especially valuable for identifier fields (video IDs, ROM names) where the acceptable character set is small and well-known.
+
+### 2026-08-20 — YouTubeURL Namespace + Test Suite
+
+The `extractYouTubeID` and `isValid` helpers lived as `private nonisolated static` methods buried inside `GameDetailView.swift` — untestable through `@testable import` (private isn't visible even with the testable modifier) and semantically two orphans that clearly belonged together. Extracted them into `Support/YouTubeURL.swift` as a `nonisolated enum` namespace with `extractID(from:)` and `isValid(id:)`, matching the `AppSchema` / `Bundle+AppVersion` convention already used in `Support/`.
+
+Three benefits from the same refactor:
+
+1. **Testability** — the helpers are now `internal` (the enum's default), so `@testable import ArcadeCollector` sees them and a new 21-test `YouTubeURLTests` suite can exercise every corner case: length bounds, illegal characters, all recognized URL shapes (watch, shorts, youtu.be, mobile subdomain), the empty-path / missing-`v` failure modes, and the deceptive-suffix trap (`notyoutu.be` must not match).
+
+2. **Feature parity with the seed data** — added `youtube.com/shorts/<id>` support. The old code only knew watch URLs and `youtu.be`, so any shorts URL in the ADB data would silently fall through to `AVPlayer` and fail. Now recognized as a first-class URL shape.
+
+3. **Tightened host matching** — the previous `host.contains("youtu.be")` would match `"notyoutu.be"`. Replaced with an exact allow-list (`youtu.be`, `youtube.com`, `www.youtube.com`, `m.youtube.com`) via `switch host { }`. Won't drift as YouTube adds new subdomains, but also can't be tricked into treating a lookalike domain as legitimate.
+
+**Duplication removed**: `YouTubePlayerView` had grown its own `idPattern` + `isValid` after the earlier hardening pass — dead code once the namespace existed. Deleted both, all callers now route through `YouTubeURL`.
+
+**Swift 6 warning caught in the wild**: after removing `isValid` from `YouTubePlayerView`, the very next build surfaced the same `flatMap(YouTubeURL.extractID(from:))` closure-conversion warning documented earlier this session. Fixed at the source — `nonisolated enum YouTubeURL` — which propagates the isolation stance to every member in one keyword instead of decorating each method individually. Confirms the earlier lesson: for pure utility types, mark the whole type `nonisolated` rather than each member.
+
+**Test count: 32 → 53** (+21). Signing for the test target needs to be configured in Xcode's Signing & Capabilities pane before the suite can run via the CI-adjacent tooling; the tests build cleanly on the main target and are ready to run from Xcode directly.
+
+**Lesson**: when a helper is `private` but ought to be tested, the temptation is to reach for `@testable import` or drop the `private`. Neither is wrong, but the *better* move is often to ask whether the helper deserves a home of its own. If two related helpers are cohabiting inside a view/service/actor purely because they were written there first, extracting them into a small namespace type gives you testability, discoverability, and — crucially — a natural docstring surface for the shared invariants (host allow-list, ID regex) that were previously implicit.
