@@ -404,7 +404,10 @@ struct GameDetailView: View {
             game.manualData = data
             showManual = true
         } catch {
-            game.manualURL = nil
+            // Network/transport failure tells us nothing about whether a manual
+            // exists — leave manualURL intact so the button stays for retry.
+            // Only the non-PDF path above nils it, because that's ADB confirming
+            // the URL doesn't point at a real manual.
             showManualUnavailable = true
         }
     }
