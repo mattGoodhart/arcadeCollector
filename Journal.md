@@ -1212,3 +1212,9 @@ Wrapped in `#if DEBUG` so Release builds inject nothing and pay zero cost. `dism
 **Lesson**: DEBUG-only diagnostics are cheap and durable. The temptation is always to skip them ("I'll notice if it breaks") — but for anything that depends on a third-party's implementation detail (DOM selectors, private API strings, undocumented behavior), you *won't* notice until a user reports it. A `#if DEBUG` script that prints one line when the assumption falls over is a five-minute investment that turns a mysterious "layout looks off" bug report into an obvious "YouTube renamed X" fix. The cost in Release is zero; the cost of the missing check in Debug is measured in customer support hours.
 
 **Lesson**: any codebase-wide sentinel pattern (empty string as absence, `-1` as "none", `Date.distantPast` as "never") is a technical-debt tax that keeps compounding. Every consumer must remember the sentinel; new consumers might not; refactorings that only touch some consumers introduce drift. `Optional<T>` costs one keyword at the definition, one letter at each unwrap, and makes the impossible-state (both "" and .some("")) unrepresentable. Migrate sentinels to Optional when you spot them — the churn is usually smaller than the ongoing correctness burden.
+
+### 2026-08-24 — Manual Unavailable Feedback
+
+When a user tapped "Manual" and the Arcade Database didn't have one (either the download failed or the response wasn't a valid PDF), `loadManual()` silently set `game.manualURL = nil`, which removed the Manual button entirely on the next render. The user saw the button vanish with no explanation — bad UX.
+
+Added a `showManualUnavailable` state flag that triggers an alert: "No manual is available for [game title] on the Arcade Database." Fires on both the non-PDF-data path and the network-error catch. The `manualURL = nil` assignment still happens so the button won't reappear on revisit, but now the user gets immediate feedback about why.

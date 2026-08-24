@@ -21,6 +21,7 @@ struct GameDetailView: View {
     @State private var shortPlayPlayer: AVPlayer?
     @State private var isLoadingManual = false
     @State private var showManual = false
+    @State private var showManualUnavailable = false
 
     /// Priority order for the main image area and segmented picker.
     private static let mainKinds: [ArtworkKind] = [.inGame, .title, .cabinet, .flyer, .pcb]
@@ -107,6 +108,14 @@ struct GameDetailView: View {
             if let data = game.manualData {
                 ManualView(title: "\(game.title) Manual", pdfData: data)
             }
+        }
+        .alert(
+            "Manual Unavailable",
+            isPresented: $showManualUnavailable
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("No manual is available for \(game.title) on the Arcade Database.")
         }
         .task {
             await fetchArtwork(force: false)
@@ -389,12 +398,14 @@ struct GameDetailView: View {
             guard data.count >= 4,
                   data.prefix(4) == Data([0x25, 0x50, 0x44, 0x46]) else {
                 game.manualURL = nil
+                showManualUnavailable = true
                 return
             }
             game.manualData = data
             showManual = true
         } catch {
             game.manualURL = nil
+            showManualUnavailable = true
         }
     }
 
