@@ -398,6 +398,7 @@
 				DEVELOPMENT_TEAM = 45U78H23US;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Take photos of arcade PCBs and repairs to attach to repair log entries.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -433,6 +434,7 @@
 				DEVELOPMENT_TEAM = 45U78H23US;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Take photos of arcade PCBs and repairs to attach to repair log entries.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
