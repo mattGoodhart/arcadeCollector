@@ -17,12 +17,12 @@ final class Game {
     var year: String
     var genre: String
     var players: String
+    var nplayers: String = ""
     var orientation: ScreenOrientation
     var isBootleg: Bool
 
     // MARK: Ownership
     var ownership: OwnershipStatus
-    var hasBoard: Bool
 
     // MARK: Component status (LED indicators)
     var functionalCondition: ComponentStatus
@@ -38,6 +38,7 @@ final class Game {
     var inputControls: String
     var inputButtons: String
     var displayType: String
+    var screens: Int
     var monitorResolutionType: String
     var resolution: String
     var horizontalRefresh: String
@@ -48,9 +49,11 @@ final class Game {
     var soundDevices: [String]
 
     // MARK: Notes & external media
+    var history: String = ""
     var mameNotes: String
-    var youtubeVideoID: String
+    var youtubeVideoID: String?
     var shortPlayURL: URL?
+    var gamePageURL: URL?
     var manualURL: URL?
     @Attribute(.externalStorage) var manualData: Data?
 
@@ -76,8 +79,7 @@ final class Game {
         players: String = "",
         orientation: ScreenOrientation = .horizontal,
         isBootleg: Bool = false,
-        ownership: OwnershipStatus = .none,
-        hasBoard: Bool = false
+        ownership: OwnershipStatus = .none
     ) {
         self.romSetName = romSetName
         self.title = title
@@ -88,7 +90,6 @@ final class Game {
         self.orientation = orientation
         self.isBootleg = isBootleg
         self.ownership = ownership
-        self.hasBoard = hasBoard
 
         self.functionalCondition = .untested
         self.bootStatus = .untested
@@ -102,6 +103,7 @@ final class Game {
         self.inputControls = ""
         self.inputButtons = ""
         self.displayType = ""
+        self.screens = 1
         self.monitorResolutionType = ""
         self.resolution = ""
         self.horizontalRefresh = ""
@@ -110,8 +112,8 @@ final class Game {
         self.audioChannels = ""
         self.cpus = []
         self.soundDevices = []
+        self.history = ""
         self.mameNotes = ""
-        self.youtubeVideoID = ""
     }
 }
 

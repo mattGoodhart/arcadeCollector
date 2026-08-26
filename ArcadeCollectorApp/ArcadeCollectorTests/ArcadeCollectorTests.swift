@@ -13,26 +13,66 @@ import SwiftData
 @Suite("GameSeeder")
 struct GameSeederTests {
     private static let fixture = Data("""
-    {
-      "result": [
-        {
-          "romName": "pacman",
-          "Title": "Pac-Man ",
-          "year": "1980",
-          "manufacturer": "Namco",
-          "Players": "1",
-          "Orientation": "Vertical"
-        },
-        {
-          "romName": "sf2",
-          "Title": "Street Fighter II",
-          "year": "1991",
-          "manufacturer": "Capcom",
-          "Players": "2",
-          "Orientation": "Horizontal"
-        }
-      ]
-    }
+    [
+      {
+        "romName": "pacman",
+        "Title": "Pac-Man ",
+        "Year": 1980,
+        "manufacturer": "Namco",
+        "Players": 1,
+        "Orientation": "VERTICAL",
+        "nplayers": "2P alt",
+        "use_chds": "NO",
+        "sourcefile": "namco/pacman.cpp",
+        "driver_status": "GOOD",
+        "display_type": "RASTER",
+        "display_width": 224,
+        "display_height": 288,
+        "buttons": "0",
+        "genre": "Maze",
+        "display_refresh": "60.606061",
+        "input_controls": "joystick (4-way)",
+        "monitor_type": "CRT 15kHz",
+        "colors": "YES",
+        "url_shortplays": "-",
+        "chips_cpu": "Zilog Z80",
+        "chips_audio": "Speaker,Namco",
+        "chips_cpu_details": "",
+        "chips_audio_details": "",
+        "has_dip_switches": "YES",
+        "category": "Maze",
+        "screens": 1
+      },
+      {
+        "romName": "sf2",
+        "Title": "Street Fighter II",
+        "Year": 1991,
+        "manufacturer": "Capcom",
+        "Players": 2,
+        "Orientation": "HORIZONTAL",
+        "nplayers": "2P sim",
+        "use_chds": "NO",
+        "sourcefile": "capcom/cps1.cpp",
+        "driver_status": "GOOD",
+        "display_type": "RASTER",
+        "display_width": 384,
+        "display_height": 224,
+        "buttons": "6",
+        "genre": "Fighter",
+        "display_refresh": "59.637405",
+        "input_controls": "joystick (8-way)",
+        "monitor_type": "CRT 15kHz",
+        "colors": "YES",
+        "url_shortplays": "-",
+        "chips_cpu": "Motorola 68000,Zilog Z80",
+        "chips_audio": "Speaker,YM2151 OPM,OKI MSM6295 ADPCM",
+        "chips_cpu_details": "",
+        "chips_audio_details": "",
+        "has_dip_switches": "YES",
+        "category": "Fighter / Versus",
+        "screens": 1
+      }
+    ]
     """.utf8)
 
     private func makeContainer() throws -> ModelContainer {
@@ -64,9 +104,18 @@ struct GameSeederTests {
         #expect(pacman.orientation == .vertical)
         #expect(pacman.ownership == .none)
         #expect(pacman.bootStatus == .untested)
+        #expect(pacman.genre == "Maze")
+        #expect(pacman.driver == "namco/pacman.cpp")
+        #expect(pacman.emulationStatus == "GOOD")
+        #expect(pacman.inputControls == "joystick (4-way)")
+        #expect(pacman.resolution == "224x288")
+        #expect(pacman.cpus == ["Zilog Z80"])
+        #expect(pacman.soundDevices == ["Speaker", "Namco"])
+        #expect(pacman.nplayers == "2P alt")
 
         let sf2 = try #require(games.first { $0.romSetName == "sf2" })
         #expect(sf2.orientation == .horizontal)
+        #expect(sf2.cpus == ["Motorola 68000", "Zilog Z80"])
     }
 
     @Test func isIdempotentWhenStoreAlreadyPopulated() async throws {
@@ -84,35 +133,304 @@ struct GameSeederTests {
     }
 
     @Test func bundledResourceLoadsAndDecodes() throws {
-        // Verifies the bundled ScrollingData.json ships in the app bundle and
-        // parses cleanly. Uses the app bundle (not the test bundle) because
-        // the resource lives with the main target.
         let appBundle = Bundle(for: BundleLocator.self)
-        // Test host bundle contains the app bundle at PlugIns/... locate via URL.
-        // Simpler: load directly from the built .app URL if available.
         guard let url = Bundle.allBundles
-            .compactMap({ $0.url(forResource: "ScrollingData", withExtension: "json") })
+            .compactMap({ $0.url(forResource: "seed", withExtension: "json") })
             .first
         else {
-            Issue.record("ScrollingData.json not found in any loaded bundle")
+            Issue.record("Seed JSON not found in any loaded bundle")
             return
         }
 
         let data = try Data(contentsOf: url)
-        let payload = try JSONDecoder().decode(BundledPayload.self, from: data)
-        #expect(payload.result.count == 4166, "Expected 4166 seed rows, got \(payload.result.count)")
+        let rows = try JSONDecoder().decode([BundledRow].self, from: data)
+        #expect(rows.count == 3855, "Expected 3855 seed rows, got \(rows.count)")
 
         _ = appBundle
     }
 
-    // Local locator for Bundle(for:) resolution.
     private final class BundleLocator {}
 
-    private struct BundledPayload: Decodable {
-        let result: [Row]
-        struct Row: Decodable {
-            let romName: String
-        }
+    private struct BundledRow: Decodable {
+        let romName: String
+    }
+}
+
+/// Covers `SeedRow`'s custom decoder and the seed-time transformations that
+/// caused real regressions: mixed Int/String typing on `Players`/`Year`,
+/// missing optional keys, the `"-"` URL sentinel, the `"???"` nplayers
+/// sentinel, and the `screens > 1` → `displayType = "multiple"` rewrite.
+///
+/// Exercises the whole path through `GameSeeder.seed(from:)` — `SeedRow` is
+/// `private`, and the seeder is the only place these transformations run
+/// in production anyway.
+@Suite("GameSeeder edge cases")
+struct GameSeederEdgeCaseTests {
+
+    private func makeContainer() throws -> ModelContainer {
+        let schema = Schema([
+            Game.self,
+            GameArtwork.self,
+            RepairLog.self,
+            RepairLogPhoto.self,
+            GameCollection.self,
+        ])
+        return try ModelContainer(
+            for: schema,
+            configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+        )
+    }
+
+    private func seed(_ fixture: Data) async throws -> Game {
+        let container = try makeContainer()
+        let seeder = GameSeeder(modelContainer: container)
+        try await seeder.seed(from: fixture)
+        let context = ModelContext(container)
+        return try #require(context.fetch(FetchDescriptor<Game>()).first)
+    }
+
+    /// Regression: row 41 (`centiped`) had `"Players": "1"` (string) instead
+    /// of the usual `1` (int), which crashed `JSONDecoder` at launch until
+    /// `init(from:)` learned to fall back through both types.
+    @Test func playersAndYearAsStringsDecodeCorrectly() async throws {
+        let fixture = Self.wrapRow(#"""
+        "romName": "centiped",
+        "Title": "Centipede",
+        "Year": "1980",
+        "manufacturer": "Atari",
+        "Players": "1",
+        "Orientation": "VERTICAL",
+        "sourcefile": "atari/centiped.cpp",
+        "driver_status": "GOOD",
+        "display_type": "RASTER",
+        "display_width": 240,
+        "display_height": 256,
+        "buttons": "1",
+        "genre": "Shooter",
+        "display_refresh": "60",
+        "monitor_type": "CRT 15kHz"
+        """#)
+
+        let game = try await seed(fixture)
+        #expect(game.year == "1980")
+        #expect(game.players == "1")
+    }
+
+    /// Regression: 3,237 of 3,855 rows omit `url_playonline` entirely, 392
+    /// omit `Players`, 124 omit `chips_audio`. Missing optionals must not
+    /// throw `keyNotFound`.
+    @Test func missingOptionalFieldsFallBackCleanly() async throws {
+        let fixture = Self.wrapRow(#"""
+        "romName": "sparse",
+        "Title": "Sparse Game",
+        "Year": 1985,
+        "Orientation": "HORIZONTAL",
+        "sourcefile": "misc/sparse.cpp",
+        "driver_status": "GOOD",
+        "display_type": "RASTER",
+        "display_width": 320,
+        "display_height": 240,
+        "buttons": "0",
+        "genre": "Puzzle",
+        "display_refresh": "60",
+        "monitor_type": "CRT 15kHz"
+        """#)
+
+        let game = try await seed(fixture)
+        #expect(game.manufacturer == "")
+        #expect(game.players == "")
+        #expect(game.inputControls == "")
+        #expect(game.cpus.isEmpty)
+        #expect(game.soundDevices.isEmpty)
+        #expect(game.shortPlayURL == nil)
+    }
+
+    /// Source data uses `"-"` as "no value" for URL fields. Without the
+    /// guard, `URL(string: "-")` succeeds (relative URL) and every game
+    /// would get a bogus shortPlayURL.
+    @Test func dashSentinelInShortplayURLMapsToNil() async throws {
+        let fixture = Self.wrapRow(#"""
+        "romName": "nolink",
+        "Title": "No Link Game",
+        "Year": 1990,
+        "manufacturer": "Nobody",
+        "Players": 1,
+        "Orientation": "HORIZONTAL",
+        "sourcefile": "misc/nolink.cpp",
+        "driver_status": "GOOD",
+        "display_type": "RASTER",
+        "display_width": 320,
+        "display_height": 240,
+        "buttons": "0",
+        "genre": "Misc",
+        "display_refresh": "60",
+        "monitor_type": "CRT 15kHz",
+        "url_shortplays": "-"
+        """#)
+
+        let game = try await seed(fixture)
+        #expect(game.shortPlayURL == nil)
+    }
+
+    /// A real URL should map through.
+    @Test func validShortplayURLPassesThrough() async throws {
+        let fixture = Self.wrapRow(#"""
+        "romName": "withlink",
+        "Title": "With Link",
+        "Year": 1990,
+        "manufacturer": "Somebody",
+        "Players": 1,
+        "Orientation": "HORIZONTAL",
+        "sourcefile": "misc/withlink.cpp",
+        "driver_status": "GOOD",
+        "display_type": "RASTER",
+        "display_width": 320,
+        "display_height": 240,
+        "buttons": "0",
+        "genre": "Misc",
+        "display_refresh": "60",
+        "monitor_type": "CRT 15kHz",
+        "url_shortplays": "https://example.com/video.mp4"
+        """#)
+
+        let game = try await seed(fixture)
+        #expect(game.shortPlayURL?.absoluteString == "https://example.com/video.mp4")
+    }
+
+    /// `nplayers = "???"` is a placeholder in the source data; should fall
+    /// back to `players + "P"` for a display-friendly value.
+    @Test func questionMarksNplayersFallsBackToPlayers() async throws {
+        let fixture = Self.wrapRow(#"""
+        "romName": "qmark",
+        "Title": "Question Marks",
+        "Year": 1985,
+        "manufacturer": "Test",
+        "Players": 4,
+        "Orientation": "HORIZONTAL",
+        "sourcefile": "misc/qmark.cpp",
+        "driver_status": "GOOD",
+        "display_type": "RASTER",
+        "display_width": 320,
+        "display_height": 240,
+        "buttons": "0",
+        "genre": "Misc",
+        "display_refresh": "60",
+        "monitor_type": "CRT 15kHz",
+        "nplayers": "???"
+        """#)
+
+        let game = try await seed(fixture)
+        #expect(game.nplayers == "4P")
+    }
+
+    /// If `nplayers` is absent entirely, also fall back to `players + "P"`.
+    @Test func missingNplayersFallsBackToPlayers() async throws {
+        let fixture = Self.wrapRow(#"""
+        "romName": "noplayers",
+        "Title": "No Nplayers",
+        "Year": 1985,
+        "manufacturer": "Test",
+        "Players": 2,
+        "Orientation": "HORIZONTAL",
+        "sourcefile": "misc/noplayers.cpp",
+        "driver_status": "GOOD",
+        "display_type": "RASTER",
+        "display_width": 320,
+        "display_height": 240,
+        "buttons": "0",
+        "genre": "Misc",
+        "display_refresh": "60",
+        "monitor_type": "CRT 15kHz"
+        """#)
+
+        let game = try await seed(fixture)
+        #expect(game.nplayers == "2P")
+    }
+
+    /// `screens > 1` should force `displayType = "multiple"` regardless of
+    /// what `display_type` reports — the July 24 seed regression that made
+    /// Ninja Warriors get a forced 4:3 aspect ratio.
+    @Test func multiScreenGamesGetMultipleDisplayType() async throws {
+        let fixture = Self.wrapRow(#"""
+        "romName": "ninjaw",
+        "Title": "The Ninja Warriors",
+        "Year": 1987,
+        "manufacturer": "Taito",
+        "Players": 2,
+        "Orientation": "HORIZONTAL",
+        "sourcefile": "taito/ninjaw.cpp",
+        "driver_status": "GOOD",
+        "display_type": "RASTER",
+        "display_width": 320,
+        "display_height": 240,
+        "buttons": "3",
+        "genre": "Fighter",
+        "display_refresh": "60",
+        "monitor_type": "CRT 15kHz",
+        "screens": 3
+        """#)
+
+        let game = try await seed(fixture)
+        #expect(game.displayType == "multiple")
+    }
+
+    /// `screens = 1` (or absent) leaves the raw `display_type` in place so
+    /// downstream code can still tell raster from vector.
+    @Test func singleScreenKeepsRawDisplayType() async throws {
+        let fixture = Self.wrapRow(#"""
+        "romName": "vecgame",
+        "Title": "Vector Game",
+        "Year": 1980,
+        "manufacturer": "Atari",
+        "Players": 1,
+        "Orientation": "HORIZONTAL",
+        "sourcefile": "atari/vecgame.cpp",
+        "driver_status": "GOOD",
+        "display_type": "VECTOR",
+        "display_width": 1024,
+        "display_height": 768,
+        "buttons": "2",
+        "genre": "Shooter",
+        "display_refresh": "40",
+        "monitor_type": "Vector",
+        "screens": 1
+        """#)
+
+        let game = try await seed(fixture)
+        #expect(game.displayType == "VECTOR")
+    }
+
+    /// Comma-separated CPU/audio chip strings should split into arrays.
+    @Test func chipListsSplitOnCommas() async throws {
+        let fixture = Self.wrapRow(#"""
+        "romName": "multichip",
+        "Title": "Multichip",
+        "Year": 1991,
+        "manufacturer": "Capcom",
+        "Players": 2,
+        "Orientation": "HORIZONTAL",
+        "sourcefile": "capcom/cps1.cpp",
+        "driver_status": "GOOD",
+        "display_type": "RASTER",
+        "display_width": 384,
+        "display_height": 224,
+        "buttons": "6",
+        "genre": "Fighter",
+        "display_refresh": "60",
+        "monitor_type": "CRT 15kHz",
+        "chips_cpu": "Motorola 68000,Zilog Z80",
+        "chips_audio": "Speaker,YM2151 OPM,OKI MSM6295 ADPCM"
+        """#)
+
+        let game = try await seed(fixture)
+        #expect(game.cpus == ["Motorola 68000", "Zilog Z80"])
+        #expect(game.soundDevices == ["Speaker", "YM2151 OPM", "OKI MSM6295 ADPCM"])
+    }
+
+    /// Wraps a single row's fields into the seed JSON envelope (top-level
+    /// array). Reduces the fixture noise in each test.
+    private static func wrapRow(_ body: String) -> Data {
+        Data("[{\(body)}]".utf8)
     }
 }
 

@@ -9,6 +9,10 @@ struct AboutView: View {
     var body: some View {
         List {
             appSection
+            basicInfoSection
+            dataSection
+            disclaimerSection
+            attributionsSection
             dataSourcesSection
             acknowledgmentsSection
         }
@@ -18,17 +22,28 @@ struct AboutView: View {
         .background(Color.arcadeAboutBackground)
     }
 
+    private var dataSection: some View {
+        Section("Your Data") {
+            NavigationLink {
+                BackupView()
+            } label: {
+                Label("Backup Collection", systemImage: "arrow.down.doc")
+            }
+        }
+    }
+
     private var appSection: some View {
         Section {
             VStack(spacing: 8) {
                 Image(systemName: "arcade.stick.console")
                     .font(.system(size: 48))
                     .foregroundStyle(.tint)
+                    .accessibilityHidden(true)
 
                 Text("Arcade Collector")
                     .font(.title2.bold())
 
-                Text("Version \(appVersion)")
+                Text("Version \(Bundle.main.appVersion)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
 
@@ -42,46 +57,34 @@ struct AboutView: View {
     }
 
     private var dataSourcesSection: some View {
-        Section("Data Sources") {
+        Section("Data Sources & Acknowledgements") {
             DataSourceRow(
                 name: "Arcade Database",
-                description: "Game metadata, artwork, and hardware information",
+                description: "The primary source for this app, The Arcade Databse maintained by motoschifo provides game metadata, artwork, and hardware information.",
                 banner: "About Banners/arcade_database_banner1",
                 url: URL(string: "http://adb.arcadeitalia.net")!
             )
             DataSourceRow(
                 name: "MAME",
-                description: "Driver and hardware specifications",
+                description: "The Multiple Arcade Machine Emulator project provides driver and hardware specifications. MAME® is a registered trademark of Gregory Ember.",
                 banner: "About Banners/logo-mame",
                 url: URL(string: "https://www.mamedev.org")!
             )
             DataSourceRow(
                 name: "Progetto-SNAPS",
-                description: "Game snapshots and media",
+                description: "By AntoPisa (Antonio Paradossi), Progetto-SNAPS provides game snapshots and media",
                 banner: "About Banners/Progetto-snaps banner",
                 url: URL(string: "https://www.progettosnaps.net")!
             )
             DataSourceRow(
                 name: "Gaming-History",
-                description: "Arcade gaming history and documentation",
+                description: "Arcade gaming history and documentation © Copyright of Alexis Bousiges",
                 banner: "About Banners/Gaming History Banner",
                 url: URL(string: "https://www.arcade-history.com")!
             )
             DataSourceRow(
-                name: "World of Longplays",
-                description: "Gameplay recordings",
-                banner: "About Banners/wolheader",
-                url: URL(string: "https://www.longplays.org")!
-            )
-            DataSourceRow(
-                name: "MAME Icons",
-                description: "Game icons",
-                banner: "About Banners/MAMUIconsBanner",
-                url: URL(string: "http://icons.mameworld.info")!
-            )
-            DataSourceRow(
                 name: "NPlayers",
-                description: "Player count and versus mode data",
+                description: "Player count and versus mode data © Copyright of Nomax",
                 banner: "About Banners/titre",
                 url: URL(string: "https://nplayers.arcadebelgium.be")!
             )
@@ -95,9 +98,29 @@ struct AboutView: View {
                 .foregroundStyle(.secondary)
         }
     }
+    
+    private var basicInfoSection: some View {
+        Section("Basic Info") {
+            Text("This app was designed for arcade game enthusiasts who want to easily reference and track their game collection. \n\nThe app is particularly focused on game repair by providing an easy way to create and manage repair logs, and track the overall working status of each game. Specific hardware information from the Arcade Database is provided here to further assist that effort. \n\nInitially, the app provides a list of 3,855 games focused on older, raster and vector monitor-based arcade games. Newer games designed for flat panel displays are typically PC-based and less interesting to maintian, so they are not included here (for now).")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+    }
+    
+    private var attributionsSection: some View {
+        Section("Attributions") {
+            Text("Game metadata and reference imagery are provided by the Arcade Database (adb.arcadeitalia.net), used with the express written permission of its owner and maintainer, motoschifo.\n\nAll arcade game titles, logos, marquees, cabinet art, flyers, screenshots, videos, and related artwork are trademarks and copyrights of their respective owners. Their inclusion here is for informational and personal-collection-tracking purposes only and does not imply endorsement by, or affiliation with, any rights holder.\n\nMAME® is a registered trademark of Gregory Ember.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+    }
 
-    private var appVersion: String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+    private var disclaimerSection: some View {
+        Section("Disclaimer") {
+            Text("This app is NOT an emulator, a way to play games, or a way to source game ROMs or any other protected intellectual property. This app is only a reference tool for tracking and maintaining your collection.\n\nAll names and images are used here for informational purposes only ('Fair Use' usage, per 17 U.S.C. Section 107), Their use neither detracts value nor inhibits sales in any way. \n\nAll copyrights and trademarks belong to their respective copyright and trademark holders.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
     }
 }
 
@@ -109,23 +132,38 @@ private struct DataSourceRow: View {
 
     var body: some View {
         Link(destination: url) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 10) {
                 Image(banner)
                     .resizable()
                     .scaledToFit()
-                    .frame(maxHeight: 60)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .frame(maxWidth: .infinity, maxHeight: 120)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .accessibilityHidden(true)
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(name)
-                        .font(.body)
-                    Text(description)
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(name)
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(.primary)
+                        Text(description)
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: "arrow.up.right")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.gray)
+                        .accessibilityHidden(true)
                 }
             }
-            .padding(.vertical, 4)
+            .padding(.vertical, 6)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(name). \(description)")
+        .accessibilityHint("Opens website")
     }
 }
 

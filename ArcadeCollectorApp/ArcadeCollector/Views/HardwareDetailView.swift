@@ -44,7 +44,11 @@ struct HardwareDetailView: View {
                 LabeledContent("Status", value: game.emulationStatus)
             }
             if !game.driver.isEmpty {
-                LabeledContent("Driver", value: game.driver)
+                NavigationLink {
+                    DriverSourceView(driverFileName: game.driver)
+                } label: {
+                    LabeledContent("Driver", value: game.driver)
+                }
             }
         }
     }
@@ -55,6 +59,12 @@ struct HardwareDetailView: View {
                 LabeledContent("Resolution", value: game.resolution)
             }
             LabeledContent("Orientation", value: game.orientation.displayName)
+            if game.screens > 0 {
+                LabeledContent("Screens", value: "\(game.screens)")
+            }
+            if game.displayType.lowercased() == "raster", !game.monitorResolutionType.isEmpty {
+                LabeledContent("Monitor Type", value: game.monitorResolutionType)
+            }
         }
     }
 

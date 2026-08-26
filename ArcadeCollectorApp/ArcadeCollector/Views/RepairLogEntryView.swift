@@ -10,7 +10,17 @@ import PhotosUI
 struct RepairLogEntryView: View {
     @Bindable var log: RepairLog
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var notesText: String
+    @State private var notesFlushTask: Task<Void, Never>?
     @State private var selectedPhotos: [PhotosPickerItem] = []
+    @State private var zoomedPhoto: RepairLogPhoto?
+    @State private var showingCamera = false
+
+    init(log: RepairLog) {
+        self.log = log
+        _notesText = State(initialValue: log.notes)
+    }
 
     private var sortedPhotos: [RepairLogPhoto] {
         log.photos.sorted { $0.order < $1.order }
@@ -28,7 +38,7 @@ struct RepairLogEntryView: View {
             }
 
             Section("Notes") {
-                TextEditor(text: $log.notes)
+                TextEditor(text: $notesText)
                     .frame(minHeight: 120)
             }
 
@@ -36,19 +46,14 @@ struct RepairLogEntryView: View {
                 if !sortedPhotos.isEmpty {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 12) {
-                            ForEach(sortedPhotos) { photo in
-                                if let data = photo.imageData, let uiImage = UIImage(data: data) {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 100, height: 100)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        .contextMenu {
-                                            Button("Delete Photo", role: .destructive) {
-                                                deletePhoto(photo)
-                                            }
-                                        }
-                                }
+                            ForEach(Array(sortedPhotos.enumerated()), id: \.element.id) { index, photo in
+                                PhotoThumbnail(
+                                    photo: photo,
+                                    index: index,
+                                    count: sortedPhotos.count,
+                                    onTap: { zoomedPhoto = photo },
+                                    onDelete: { deletePhoto(photo) }
+                                )
                             }
                         }
                         .padding(.vertical, 4)
@@ -61,10 +66,18 @@ struct RepairLogEntryView: View {
                     maxSelectionCount: 10,
                     matching: .images
                 ) {
-                    Label("Add Photos", systemImage: "photo.badge.plus")
+                    Label("Choose from Library", systemImage: "photo.badge.plus")
                 }
                 .onChange(of: selectedPhotos) {
                     Task { await loadPhotos() }
+                }
+
+                if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                    Button {
+                        showingCamera = true
+                    } label: {
+                        Label("Take Photo", systemImage: "camera")
+                    }
                 }
             }
         }
@@ -73,6 +86,28 @@ struct RepairLogEntryView: View {
         .toolbarBackground(Color.arcadeToolbar, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
+        .onChange(of: notesText) {
+            scheduleDebouncedFlush()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase != .active {
+                flushNotes()
+            }
+        }
+        .onDisappear {
+            flushNotes()
+        }
+        .fullScreenCover(item: $zoomedPhoto) { photo in
+            if let uiImage = photo.imageData.flatMap(UIImage.init(data:)) {
+                ZoomableImageView(image: uiImage, title: "Photo")
+            }
+        }
+        .fullScreenCover(isPresented: $showingCamera) {
+            CameraPicker { image in
+                addCapturedPhoto(image)
+            }
+            .ignoresSafeArea()
+        }
     }
 
     private func loadPhotos() async {
@@ -88,6 +123,13 @@ struct RepairLogEntryView: View {
         selectedPhotos.removeAll()
     }
 
+    private func addCapturedPhoto(_ image: UIImage) {
+        guard let data = image.jpegData(compressionQuality: 0.8) else { return }
+        let nextOrder = (log.photos.map(\.order).max() ?? -1) + 1
+        let photo = RepairLogPhoto(order: nextOrder, imageData: data)
+        log.photos.append(photo)
+    }
+
     private func deletePhoto(_ photo: RepairLogPhoto) {
         modelContext.delete(photo)
     }
@@ -96,5 +138,92 @@ struct RepairLogEntryView: View {
         guard let game = log.game else { return }
         game.lastRepairLogDate = game.repairLogs
             .max(by: { $0.date < $1.date })?.date
+    }
+
+    // Notes are buffered in @State to keep TextEditor keystrokes off SwiftData.
+    // Flushing must survive process termination between keystrokes and view exit:
+    // debounced writes cover typing pauses, scenePhase writes cover backgrounding,
+    // and onDisappear covers normal navigation.
+    private func flushNotes() {
+        notesFlushTask?.cancel()
+        notesFlushTask = nil
+        if log.notes != notesText {
+            log.notes = notesText
+        }
+        try? modelContext.save()
+    }
+
+    private func scheduleDebouncedFlush() {
+        notesFlushTask?.cancel()
+        notesFlushTask = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(1))
+            guard !Task.isCancelled else { return }
+            flushNotes()
+        }
+    }
+}
+
+private struct PhotoThumbnail: View {
+    let photo: RepairLogPhoto
+    let index: Int
+    let count: Int
+    var onTap: () -> Void
+    var onDelete: () -> Void
+
+    @State private var thumbnail: UIImage?
+
+    private static let size: CGFloat = 100
+
+    // Shared across all PhotoThumbnail instances so scrolling in and out of view
+    // doesn't re-decode from external storage. NSCache evicts on memory pressure.
+    private static let cache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.countLimit = 64
+        return cache
+    }()
+
+    private var cacheKey: NSString {
+        "\(photo.persistentModelID.hashValue)" as NSString
+    }
+
+    var body: some View {
+        Group {
+            if let thumbnail {
+                Button(action: onTap) {
+                    Image(uiImage: thumbnail)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: Self.size, height: Self.size)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .buttonStyle(.plain)
+            } else {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.quaternary)
+                    .frame(width: Self.size, height: Self.size)
+            }
+        }
+        .accessibilityLabel("Photo \(index + 1) of \(count)")
+        .accessibilityHint("Double-tap to view. Touch and hold for delete option.")
+        .contextMenu {
+            Button("Delete Photo", role: .destructive, action: onDelete)
+        }
+        .task {
+            guard thumbnail == nil else { return }
+            if let cached = Self.cache.object(forKey: cacheKey) {
+                thumbnail = cached
+                return
+            }
+            guard let data = photo.imageData else { return }
+            let pixelSize = CGSize(width: Self.size * 3, height: Self.size * 3)
+            let result = await Task.detached(priority: .userInitiated) {
+                guard let source = UIImage(data: data) else { return nil as UIImage? }
+                return await source.byPreparingThumbnail(ofSize: pixelSize)
+            }.value
+            if let result {
+                Self.cache.setObject(result, forKey: cacheKey)
+                thumbnail = result
+            }
+        }
     }
 }

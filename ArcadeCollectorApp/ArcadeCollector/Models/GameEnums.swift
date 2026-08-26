@@ -44,4 +44,10 @@ enum ArtworkKind: String, Codable, CaseIterable, Identifiable {
     case userPCB
 
     var id: String { rawValue }
+
+    /// The set of artwork kinds a bulk artwork fetch tries to populate for a
+    /// game. Excludes `.userPCB`, which is user-supplied only.
+    /// `nonisolated` so background actors (`BulkArtworkFetcher`) can read it
+    /// without hopping to the main actor.
+    nonisolated static let bulkFetchable: Set<ArtworkKind> = [.cabinet, .flyer, .inGame, .marquee, .title, .pcb]
 }

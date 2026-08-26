@@ -5,6 +5,7 @@
 
 import Foundation
 import SwiftData
+import UIKit
 
 /// Fetches artwork for a Game from the Arcade Database and inserts
 /// `GameArtwork` rows into the SwiftData store. Runs off the main actor.
@@ -14,6 +15,9 @@ actor ArtworkFetcher {
     /// Fetches every canonical artwork kind that the game doesn't already
     /// have. Serial downloads — good enough for ~6 images per game.
     func fetch(for gameID: PersistentIdentifier) async throws {
+        // Skip in Xcode previews: cross-context SwiftData mutations during a
+        // preview render cause a GroupRecordingError.
+        guard ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == nil else { return }
         guard let game = self[gameID, as: Game.self] else { return }
 
         let romSetName = game.romSetName
@@ -45,18 +49,33 @@ actor ArtworkFetcher {
         if game.genre.isEmpty, !metadata.genre.isEmpty {
             game.genre = metadata.genre
         }
-        if game.youtubeVideoID.isEmpty, let ytID = metadata.youtubeVideoID {
+        if game.history.isEmpty, !metadata.history.isEmpty {
+            game.history = metadata.history
+        }
+        if game.youtubeVideoID == nil, let ytID = metadata.youtubeVideoID {
             game.youtubeVideoID = ytID
         }
         if game.shortPlayURL == nil, let shortPlay = metadata.shortPlayURL {
             game.shortPlayURL = shortPlay
         }
+        if game.gamePageURL == nil, let pageURL = metadata.gamePageURL {
+            game.gamePageURL = pageURL
+        }
+        if game.manualURL == nil {
+            game.manualURL = client.manualURL(for: romSetName)
+        }
         if game.emulationStatus.isEmpty, !metadata.emulationStatus.isEmpty {
             game.emulationStatus = metadata.emulationStatus
         }
-        if game.driver.isEmpty, !metadata.emulatorName.isEmpty {
-            // `Game.driver` holds the MAME driver / emulator identifier.
-            game.driver = metadata.emulatorName
+        if let xmlInfo = try? await client.machineXMLInfo(for: romSetName) {
+            if game.driver.isEmpty, let sourceFile = xmlInfo.sourceFile {
+                game.driver = sourceFile
+            }
+            if xmlInfo.displayCount > 1 {
+                game.displayType = "multiple"
+            } else if game.displayType.isEmpty, let type = xmlInfo.displayType {
+                game.displayType = type
+            }
         }
         if game.inputControls.isEmpty, !metadata.inputControls.isEmpty {
             game.inputControls = metadata.inputControls
@@ -69,10 +88,9 @@ actor ArtworkFetcher {
         }
 
         for (kind, url) in plan {
-            // Best-effort per image — a single 404 (e.g. missing PCB image)
-            // should not fail the whole batch.
             do {
                 let data = try await client.downloadImage(from: url)
+                if Self.isEffectivelyBlack(data) { continue }
                 let artwork = GameArtwork(kind: kind, imageData: data, sourceURL: url)
                 artwork.game = game
                 modelContext.insert(artwork)
@@ -82,5 +100,40 @@ actor ArtworkFetcher {
         }
 
         try modelContext.save()
+    }
+
+    /// Detects placeholder/blank images the server returns as all-black PNGs.
+    /// Renders the image into an 8×8 sRGB bitmap and checks whether the
+    /// average brightness is near zero.
+    private static nonisolated func isEffectivelyBlack(_ data: Data) -> Bool {
+        guard let image = UIImage(data: data)?.cgImage else { return true }
+        let size = 8
+        let bytesPerPixel = 4
+        let bytesPerRow = size * bytesPerPixel
+        var pixels = [UInt8](repeating: 0, count: size * size * bytesPerPixel)
+
+        guard let context = CGContext(
+            data: &pixels,
+            width: size,
+            height: size,
+            bitsPerComponent: 8,
+            bytesPerRow: bytesPerRow,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else { return true }
+
+        context.draw(image, in: CGRect(x: 0, y: 0, width: size, height: size))
+
+        var totalBrightness: UInt64 = 0
+        for i in stride(from: 0, to: pixels.count, by: bytesPerPixel) {
+            let r = UInt64(pixels[i])
+            let g = UInt64(pixels[i + 1])
+            let b = UInt64(pixels[i + 2])
+            totalBrightness += r + g + b
+        }
+
+        let pixelCount = UInt64(size * size)
+        let avgBrightness = totalBrightness / (pixelCount * 3)
+        return avgBrightness < 5
     }
 }

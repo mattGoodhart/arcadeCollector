@@ -4,19 +4,23 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct GameListTab: View {
     let mode: GameListMode
 
+    @Environment(\.modelContext) private var modelContext
     @State private var sort: GameSort = .title
     @State private var filter = GameListFilter()
     @State private var showingAbout = false
+    @State private var availableGenres: [String] = []
+    @State private var availableNplayers: [String] = []
+
+    private var showsSearch: Bool { mode == .allGames }
 
     var body: some View {
         NavigationStack {
-            GameListView(sort: sort.descriptor, filter: activeFilter)
-                .navigationTitle(mode.title)
-                .searchable(text: $filter.search, prompt: "Search title")
+            gameList
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
@@ -46,8 +50,43 @@ struct GameListTab: View {
                     }
                 }
                 .navigationDestination(for: Game.self) { game in
-                    GameDetailView(game: game)
+                    if mode == .repairLogs {
+                        RepairLogListView(game: game)
+                    } else {
+                        GameDetailView(game: game)
+                    }
                 }
+                .task {
+                    if availableGenres.isEmpty {
+                        loadFilterOptions()
+                    }
+                }
+        }
+    }
+
+    /// Populates the Genre and Players picker options with distinct values
+    /// from the store. Uses `propertiesToFetch` so SwiftData only reads the
+    /// two columns we need instead of materializing full `Game` rows. Runs
+    /// once per view lifetime — the seed and API back-fill don't churn these
+    /// values often enough to warrant continuous `@Query` observation over
+    /// the full 3,855-row table.
+    private func loadFilterOptions() {
+        var descriptor = FetchDescriptor<Game>()
+        descriptor.propertiesToFetch = [\.genre, \.nplayers]
+        guard let games = try? modelContext.fetch(descriptor) else { return }
+        availableGenres = Array(Set(games.map(\.genre)).subtracting([""])).sorted()
+        availableNplayers = Array(Set(games.map(\.nplayers)).subtracting([""])).sorted()
+    }
+
+    @ViewBuilder
+    private var gameList: some View {
+        let list = GameListView(sort: sort.descriptor, filter: activeFilter)
+            .navigationTitle(mode.title)
+            .navigationBarTitleDisplayMode(.inline)
+        if showsSearch {
+            list.searchable(text: $filter.search, prompt: "Search title")
+        } else {
+            list
         }
     }
 
@@ -92,6 +131,30 @@ struct GameListTab: View {
                     }
                 } label: {
                     Text("Orientation")
+                }
+                .pickerStyle(.inline)
+            }
+
+            Section("Genre") {
+                Picker(selection: $filter.genre) {
+                    Text("All").tag(String?.none)
+                    ForEach(availableGenres, id: \.self) { genre in
+                        Text(genre).tag(Optional(genre))
+                    }
+                } label: {
+                    Text("Genre")
+                }
+                .pickerStyle(.inline)
+            }
+
+            Section("Players") {
+                Picker(selection: $filter.nplayers) {
+                    Text("All").tag(String?.none)
+                    ForEach(availableNplayers, id: \.self) { value in
+                        Text(value).tag(Optional(value))
+                    }
+                } label: {
+                    Text("Players")
                 }
                 .pickerStyle(.inline)
             }

@@ -27,12 +27,18 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
         let youtubeVideoID: String?
         let shortPlayURL: URL?
 
+        // History
+        let history: String
+
         // Hardware / emulation specs
         let emulationStatus: String
         let emulatorName: String
         let inputControls: String
         let inputButtons: Int?
         let screenResolution: String
+
+        // ADB page
+        let gamePageURL: URL?
     }
 
     enum Failure: Error, LocalizedError {
@@ -52,7 +58,16 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
         string: "https://adb.arcadeitalia.net/service_scraper.php"
     )!
 
-    init(session: URLSession = .shared) {
+    /// Identifies this app to ADB in every request so their admins can distinguish
+    /// our traffic (and reach out if we're misbehaving) instead of seeing an
+    /// unattributed URLSession UA.
+    nonisolated static let defaultSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.httpAdditionalHeaders = ["User-Agent": "ArcadeCollector/\(Bundle.main.appVersion) (iOS)"]
+        return URLSession(configuration: config)
+    }()
+
+    init(session: URLSession = ArcadeDatabaseClient.defaultSession) {
         self.session = session
     }
 
@@ -75,6 +90,26 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
         return row.asMetadata()
     }
 
+    struct MachineXMLInfo: Sendable {
+        let sourceFile: String?
+        let displayType: String?
+        let displayCount: Int
+    }
+
+    func machineXMLInfo(for romSetName: String) async throws -> MachineXMLInfo {
+        var components = URLComponents(string: "https://adb.arcadeitalia.net/download_file.php")!
+        components.queryItems = [
+            URLQueryItem(name: "tipo", value: "xml"),
+            URLQueryItem(name: "codice", value: romSetName),
+        ]
+        let url = components.url!
+
+        let (data, response) = try await session.data(from: url)
+        try Self.throwIfNotOK(response)
+
+        return MachineXMLParser.parse(data: data)
+    }
+
     func downloadImage(from url: URL) async throws -> Data {
         let (data, response) = try await session.data(from: url)
         try Self.throwIfNotOK(response)
@@ -84,6 +119,23 @@ nonisolated struct ArcadeDatabaseClient: Sendable {
     /// PCB reference photo lives at a fixed path; no metadata call required.
     func pcbImageURL(for romSetName: String) -> URL {
         URL(string: "https://adb.arcadeitalia.net/media/mame.current/pcbs/\(romSetName).png")!
+    }
+
+    /// Manual PDF download URL for a given ROM.
+    func manualURL(for romSetName: String) -> URL {
+        var components = URLComponents(string: "https://adb.arcadeitalia.net/download_file.php")!
+        components.queryItems = [
+            URLQueryItem(name: "tipo", value: "mame_current"),
+            URLQueryItem(name: "codice", value: romSetName),
+            URLQueryItem(name: "entity", value: "manual"),
+        ]
+        return components.url!
+    }
+
+    func downloadData(from url: URL) async throws -> Data {
+        let (data, response) = try await session.data(from: url)
+        try Self.throwIfNotOK(response)
+        return data
     }
 
     private static func throwIfNotOK(_ response: URLResponse) throws {
@@ -119,6 +171,8 @@ private nonisolated struct ScraperResponse: Decodable {
         let inputControls: String?
         let inputButtons: Int?
         let screenResolution: String?
+        let history: String?
+        let url: String?
 
         enum CodingKeys: String, CodingKey {
             case gameName = "game_name"
@@ -140,6 +194,8 @@ private nonisolated struct ScraperResponse: Decodable {
             case inputControls = "input_controls"
             case inputButtons = "input_buttons"
             case screenResolution = "screen_resolution"
+            case history
+            case url
         }
 
         func asMetadata() -> ArcadeDatabaseClient.GameMetadata {
@@ -157,11 +213,13 @@ private nonisolated struct ScraperResponse: Decodable {
                 titleImageURL: urlImageTitle.flatMap(URL.init(string:)),
                 youtubeVideoID: youtubeVideoID?.nonEmpty,
                 shortPlayURL: urlVideoShortplay.flatMap(URL.init(string:)),
+                history: history ?? "",
                 emulationStatus: emulationStatus ?? "",
                 emulatorName: emulatorName ?? "",
                 inputControls: inputControls ?? "",
                 inputButtons: inputButtons,
-                screenResolution: screenResolution ?? ""
+                screenResolution: screenResolution ?? "",
+                gamePageURL: url.flatMap(URL.init(string:))
             )
         }
     }
@@ -169,4 +227,44 @@ private nonisolated struct ScraperResponse: Decodable {
 
 private extension String {
     nonisolated var nonEmpty: String? { isEmpty ? nil : self }
+}
+
+// MARK: - XML Parser for <machine> and <display> elements
+
+private nonisolated final class MachineXMLParser: NSObject, XMLParserDelegate {
+    private var sourceFile: String?
+    private var displayType: String?
+    private var displayCount = 0
+
+    static func parse(data: Data) -> ArcadeDatabaseClient.MachineXMLInfo {
+        let delegate = MachineXMLParser()
+        let parser = XMLParser(data: data)
+        parser.delegate = delegate
+        parser.parse()
+        return .init(
+            sourceFile: delegate.sourceFile,
+            displayType: delegate.displayType,
+            displayCount: delegate.displayCount
+        )
+    }
+
+    func parser(
+        _ parser: XMLParser,
+        didStartElement elementName: String,
+        namespaceURI: String?,
+        qualifiedName: String?,
+        attributes attributeDict: [String: String] = [:]
+    ) {
+        switch elementName {
+        case "machine":
+            sourceFile = attributeDict["sourcefile"]
+        case "display":
+            displayCount += 1
+            if displayType == nil {
+                displayType = attributeDict["type"]
+            }
+        default:
+            break
+        }
+    }
 }
