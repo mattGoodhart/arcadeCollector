@@ -1222,3 +1222,54 @@ Added a `showManualUnavailable` state flag that triggers an alert: "No manual is
 **Follow-up (same day):** review flagged that the `catch` block was also nil-ing `manualURL` — meaning any transient network failure (offline, timeout, 5xx) would permanently remove the Manual button until the artwork fetcher back-filled the URL again. Swapped a bad UX for a slightly-worse-but-persistent one. Dropped the `manualURL = nil` assignment from the `catch`; kept it on the non-PDF-data path where ADB has actually confirmed the URL isn't a real manual. Alert still fires either way, so the user gets feedback, but the button remains for retry on transient errors.
 
 **Lesson**: "no manual" and "couldn't check" are two different states. Persisting a diagnosis based on the second one is wrong — network availability is orthogonal to whether the resource exists. When your error handling calls `.nil` or otherwise commits state, ask: does *this specific error* prove the fact I'm committing? For an HTTP 404, yes. For a `URLError.timedOut`, no.
+
+### 2026-09-22 — The Ghost Game on the Repair Logs Tab
+
+Delete every repair log for a game and the game *still* sat there on the Repair Logs tab, smugly claiming to have repair history. Navigate in and the entry list was correctly empty. So the data was gone; something was lying about it.
+
+**The lie was a cache.** `Game.lastRepairLogDate: Date?` is a denormalized field — the only thing the Repair Logs tab filter consults (`GameListFilter.matchesEnumFilters` → `if game.lastRepairLogDate == nil { return false }`), and the same field `SummaryView.gamesInRepair` counts. The tab never looks at `game.repairLogs` at all, and for good reason: `matchesEnumFilters` runs in-memory across all 3,855 `@Query` rows, so faulting a to-many relationship per game would be a disaster. Cheap scalar column, one predicate-free pass. Good design — with one bill attached: **every mutation of `repairLogs` must keep the cache honest, or the list shows a game that isn't there.**
+
+The delete path didn't pay it:
+
+```swift
+for index in offsets {
+    modelContext.delete(sorted[index])
+}
+DispatchQueue.main.async {
+    game.lastRepairLogDate = game.repairLogs
+        .max(by: { $0.date < $1.date })?.date
+}
+```
+
+**Why it fails.** `modelContext.delete()` marks a model for deletion; it does not synchronously scrub it from the *inverse relationship array* it's sitting in. So `game.repairLogs` can still hand back the object we just killed, `.max()` finds its date, and the cache gets refreshed to a tombstone's timestamp. Non-nil. Game stays on the tab.
+
+The `DispatchQueue.main.async` is the tell. That hop is someone having *already noticed* the array was stale and hoping a run-loop turn would fix it — the load-bearing comment that never got written. It's a race with SwiftData's internal bookkeeping, and races that "mostly work" are worse than races that never work, because they ship.
+
+**The fix: derive the survivors, don't re-read them.**
+
+```swift
+let snapshot = sortedLogs
+let doomed = offsets.compactMap { snapshot.indices.contains($0) ? snapshot[$0] : nil }
+let doomedIDs = Set(doomed.map(\.persistentModelID))
+
+game.repairLogs.removeAll { doomedIDs.contains($0.persistentModelID) }
+for log in doomed { modelContext.delete(log) }
+
+refreshLastRepairLogDate(from: snapshot.filter { !doomedIDs.contains($0.persistentModelID) })
+try? modelContext.save()
+```
+
+Four changes, each pulling its weight:
+
+1. **Survivors computed by set subtraction on a pre-delete snapshot.** Nothing is read back out of SwiftData, so there is no window in which the answer depends on timing. The correct value is knowable synchronously from data we already hold — so know it synchronously.
+2. **Explicit `repairLogs.removeAll`** detaches the doomed entries from the relationship immediately, so the `ForEach` and the "No Repair Entries" overlay are right on this pass instead of whenever the context catches up.
+3. **Explicit `save()`** commits it. SwiftData's autosave is not a correctness guarantee you can hang a user-visible list off of (same lesson as the notes-flush work in August).
+4. **`refreshLastRepairLogDate(from:)`** now owns the invariant in one place, and `addEntry()` routes through it too. That drive-by also fixed a latent sibling bug: `addEntry` used to assign `lastRepairLogDate = entry.date` flat-out, so a back-dated entry would have *regressed* the "Last Entry" row in `GameDetailView`. New entries are always `.now` today, so nobody could hit it — but "correct only because of how the caller happens to behave" is a bug with a delayed fuse.
+
+The `indices.contains` guard on the offsets is belt-and-suspenders against a stale `IndexSet` from a mid-animation delete. `compactMap` over a bounds check beats a crash on `snapshot[$0]`.
+
+**Lesson**: a denormalized field is a cache, and a cache has exactly one hard requirement — *every* writer of the underlying truth must update it. Grep for the field the moment you add one and make sure the set of writers is small, named, and funneled through a single refresh helper. Here there were three writers (`addEntry`, `deleteLogs`, `RepairLogEntryView.updateGameTimestamp`) and two readers on completely different screens; the delete writer was wrong and the add writer was accidentally-right. That ratio is what denormalization costs, and it's why the refresh logic belongs in one function that every mutation calls rather than three hand-rolled `.max(by:)` expressions.
+
+**Lesson**: `modelContext.delete(child)` does not synchronously remove the child from its parent's to-many array. If you need post-delete state in the same turn of the run loop, compute it from a pre-delete snapshot minus what you're deleting — never by re-reading the relationship. Re-reading is the natural thing to write and it's wrong.
+
+**Lesson**: `DispatchQueue.main.async` inside a `@MainActor` view body handler is a code smell with a specific meaning — "I observed that this value wasn't ready yet, and I'm deferring instead of understanding why." It's the synchronization equivalent of a `sleep(1)` in a flaky test. When you find one, don't delete the hop and hope; find the state that wasn't settled and compute it a way that can't be unsettled. If the correct answer is derivable from data already in hand, no hop is needed at all.

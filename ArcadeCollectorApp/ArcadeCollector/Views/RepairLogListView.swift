@@ -57,18 +57,35 @@ struct RepairLogListView: View {
     private func addEntry() {
         let entry = RepairLog(date: .now, notes: "")
         game.repairLogs.append(entry)
-        game.lastRepairLogDate = entry.date
+        refreshLastRepairLogDate(from: game.repairLogs)
     }
 
     private func deleteLogs(at offsets: IndexSet) {
-        let sorted = sortedLogs
-        for index in offsets {
-            modelContext.delete(sorted[index])
+        let snapshot = sortedLogs
+        let doomed = offsets.compactMap { snapshot.indices.contains($0) ? snapshot[$0] : nil }
+        let doomedIDs = Set(doomed.map(\.persistentModelID))
+
+        // Detach from the relationship before deleting so the list and the
+        // empty-state overlay reflect the removal on this run loop pass
+        // rather than waiting on the context.
+        game.repairLogs.removeAll { doomedIDs.contains($0.persistentModelID) }
+        for log in doomed {
+            modelContext.delete(log)
         }
-        DispatchQueue.main.async {
-            game.lastRepairLogDate = game.repairLogs
-                .max(by: { $0.date < $1.date })?.date
-        }
+
+        refreshLastRepairLogDate(from: snapshot.filter { !doomedIDs.contains($0.persistentModelID) })
+        try? modelContext.save()
+    }
+
+    /// Recomputes the denormalized `game.lastRepairLogDate` from `logs`.
+    ///
+    /// The delete path must pass an explicit survivor list instead of
+    /// `game.repairLogs`: an entry marked for deletion can linger in the
+    /// relationship array until the context saves, so reading it back yields
+    /// the dead entry's date. A stale non-nil date strands the game on the
+    /// Repair Logs tab, whose filter is `lastRepairLogDate != nil`.
+    private func refreshLastRepairLogDate(from logs: [RepairLog]) {
+        game.lastRepairLogDate = logs.max(by: { $0.date < $1.date })?.date
     }
 }
 
