@@ -1359,7 +1359,10 @@ Now explicit, at the target level so both Debug and Release inherit it:
 ```
 INFOPLIST_KEY_UISupportedInterfaceOrientations      = UIInterfaceOrientationPortrait
 INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait
+                                                      UIInterfaceOrientationPortraitUpsideDown
 ```
+
+(The iPad upside-down value arrived in a follow-up pass — see the asymmetry note at the end of this entry. The generic key has no `~ipad` suffix, so it's what governs the iPhone idiom once `_iPad` is set explicitly.)
 
 **Two decisions inside the decision**, both worth recording because the reasoning isn't recoverable from the diff:
 
@@ -1371,7 +1374,16 @@ INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPort
 
 The `XCUIDevice.shared.orientation = .portrait` line in `GoldenPathUITests` stays, downgraded from load-bearing to belt-and-suspenders, with its comment rewritten to say so. It still normalizes the device before the first tap and states the requirement where a future reader of the test will see it.
 
-**One thing deliberately not done**: Apple's docs recommend enabling `portraitUpsideDown` for the iPad idiom ("All iPadOS devices support it; it's best practice to enable it"). Left off, because "portrait-only" was the explicit ask and upside-down iPad is a one-line addition if it's ever wanted.
+**The upside-down asymmetry, added in a follow-up pass.** The first cut declared plain `Portrait` for both idioms, with a note that Apple recommends enabling `portraitUpsideDown` for iPad. That note got acted on — briefly for *both* idioms, then corrected to iPad only, which is exactly what the docs prescribe:
+
+> All iPadOS devices support `portraitUpsideDown`. It's best practice to enable it for the iPad idiom. iOS devices without a Home button, such as iPhone 12, don't support this orientation. **You should disable it entirely for the iPhone idiom.**
+
+So the final shape is deliberately asymmetric: iPhone gets `Portrait`, iPad gets `Portrait + PortraitUpsideDown`. Adding it to iPhone wouldn't have *broken* anything — Face ID iPhones ignore the declaration outright, and it would only have taken effect on older home-button hardware — but "harmless on most devices" is a weaker reason than "the platform docs say don't," and the asymmetry costs nothing to express.
+
+Two mechanical details worth remembering, because both are easy to get backwards:
+
+- `UISupportedInterfaceOrientations` has no idiom suffix, so once `_iPad` is set explicitly the generic key is effectively *the iPhone setting*. There's also a `_iPhone` variant available if you'd rather be explicit on both sides; this project uses generic + `_iPad`, matching the Xcode template's own shape.
+- Going from one orientation to two does **not** re-enable iPad multitasking. The opt-out triggers on "fewer than all four," and 2 of 4 is still fewer than all four.
 
 **Lesson**: unexercised configurations are liabilities whether or not anyone has hit them yet. Supported orientations, supported device families, minimum deployment target, supported locales — every one of those is a promise the app makes to the OS, and the template picks defaults that are broader than most apps actually honor. Audit them once, deliberately, before shipping. "It's the default" is not a decision, and the bug it eventually causes will show up somewhere unrelated — here, as a UI test that passed alone and failed in a suite.
 

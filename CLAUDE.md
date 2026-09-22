@@ -33,11 +33,17 @@ Clean-start SwiftData schema — not a port of the legacy Core Data model, thoug
 
 ### Portrait-only
 
-The app is **portrait-only on both iPhone and iPad** — `INFOPLIST_KEY_UISupportedInterfaceOrientations` and `..._iPad` are both just `UIInterfaceOrientationPortrait`. This is a deliberate decision, not a leftover default. Don't build landscape layouts, and don't assume a landscape configuration is reachable.
+The app is **portrait-only, no landscape on either idiom**. This is a deliberate decision, not a leftover default. Don't build landscape layouts, and don't assume a landscape configuration is reachable.
 
-Two consequences worth knowing:
+| Build setting | Value |
+|---|---|
+| `INFOPLIST_KEY_UISupportedInterfaceOrientations` (governs iPhone) | `UIInterfaceOrientationPortrait` |
+| `INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad` | `UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown` |
 
-- Declaring less than all four orientations **implicitly opts iPad out of multitasking** and resizable windows (per `UIViewController.supportedInterfaceOrientations` docs) — no separate `UIRequiresFullScreen` key needed. Accepted deliberately.
+Three consequences worth knowing:
+
+- Declaring less than all four orientations **implicitly opts iPad out of multitasking** and resizable windows (per `UIViewController.supportedInterfaceOrientations` docs) — no separate `UIRequiresFullScreen` key needed. Accepted deliberately; still true with iPad upside-down enabled, since that's only 2 of 4.
+- The iPhone/iPad asymmetry is intentional and follows Apple's guidance verbatim: *"All iPadOS devices support portraitUpsideDown. It's best practice to enable it for the iPad idiom. iOS devices without a Home button… don't support this orientation. You should disable it entirely for the iPhone idiom."*
 - Fullscreen video in the Short Play section (YouTube `WKWebView` + `AVPlayer` paths) is letterboxed into portrait width. Allowing landscape *just* for video would need an orientation-mask hook or the iOS 26 `prefersInterfaceOrientationLocked` API; explicitly deferred.
 
 `GoldenPathUITests` pins `XCUIDevice.shared.orientation = .portrait` in `setUp`. That's now redundant with the app lock but kept intentionally — it normalizes the physical device and documents the requirement locally.
