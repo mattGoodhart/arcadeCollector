@@ -135,9 +135,7 @@ struct RepairLogEntryView: View {
     }
 
     private func updateGameTimestamp() {
-        guard let game = log.game else { return }
-        game.lastRepairLogDate = game.repairLogs
-            .max(by: { $0.date < $1.date })?.date
+        log.game?.refreshLastRepairLogDate()
     }
 
     // Notes are buffered in @State to keep TextEditor keystrokes off SwiftData.

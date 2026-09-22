@@ -122,4 +122,26 @@ extension Game {
     func artwork(_ kind: ArtworkKind) -> GameArtwork? {
         artwork.first { $0.kind == kind }
     }
+
+    /// Recomputes the denormalized `lastRepairLogDate` from `repairLogs`.
+    ///
+    /// This field is a cache, and it's the *only* thing the Repair Logs tab
+    /// and `SummaryView`'s "In Repair" count consult — neither reads the
+    /// relationship, because both run in-memory across every row in the store
+    /// and faulting a to-many per game would be ruinous. That makes the cache
+    /// load-bearing: every mutation of `repairLogs` has to come back through
+    /// here, or a game with no entries keeps claiming repair history.
+    ///
+    /// - Parameter excluding: Persistent IDs to treat as already gone. Delete
+    ///   paths **must** pass the doomed entries: `modelContext.delete()` marks
+    ///   a model for deletion but does not synchronously scrub it from the
+    ///   inverse relationship, so reading `repairLogs` back mid-delete can
+    ///   still hand you the dead entry and resurrect its date.
+    func refreshLastRepairLogDate(excluding: Set<PersistentIdentifier> = []) {
+        lastRepairLogDate = repairLogs
+            .lazy
+            .filter { !excluding.contains($0.persistentModelID) }
+            .map(\.date)
+            .max()
+    }
 }

@@ -1388,3 +1388,53 @@ Two mechanical details worth remembering, because both are easy to get backwards
 **Lesson**: unexercised configurations are liabilities whether or not anyone has hit them yet. Supported orientations, supported device families, minimum deployment target, supported locales — every one of those is a promise the app makes to the OS, and the template picks defaults that are broader than most apps actually honor. Audit them once, deliberately, before shipping. "It's the default" is not a decision, and the bug it eventually causes will show up somewhere unrelated — here, as a UI test that passed alone and failed in a suite.
 
 **Lesson**: verify build-setting changes against the built artifact, not the `.pbxproj`. Settings are inputs to Info.plist generation, with idiom suffixes (`~ipad`, `~iphone`), `$(inherited)` chains, and per-configuration overrides in between. `plutil -p <built>.app/Info.plist` is the ground truth and takes five seconds. (It also caught that the stale simulator build still had the old four-orientation values — harmless, but exactly the kind of thing that makes you doubt a change that actually worked.)
+
+### 2026-09-22 — Regression Tests, And Catching Myself Writing Fake Ones
+
+The two bugs fixed earlier today both lived in `Game.lastRepairLogDate`, and the suite had **zero** assertions on that field — the only mention anywhere in the test target was a `RepairLog(...)` constructor inside the persistence roundtrip. Both bugs could silently come back. This pass closes that, and the process was more instructive than the result.
+
+**First, collapse the writers.** The invariant had three hand-rolled implementations: `addEntry` and `deleteLogs` in `RepairLogListView`, plus `updateGameTimestamp` in `RepairLogEntryView`. That's precisely the "three writers is a maintenance liability" shape the earlier entry complained about, still sitting there. Moved onto the model where it belongs:
+
+```swift
+extension Game {
+    func refreshLastRepairLogDate(excluding: Set<PersistentIdentifier> = []) {
+        lastRepairLogDate = repairLogs
+            .lazy
+            .filter { !excluding.contains($0.persistentModelID) }
+            .map(\.date)
+            .max()
+    }
+}
+```
+
+The `excluding:` parameter is the delete-path hazard encoded into the signature rather than left in a comment: `modelContext.delete()` doesn't synchronously scrub the model from its inverse relationship, so a recompute that re-reads `repairLogs` can resurrect a dead entry's date. All three call sites now route through this, and the default argument makes the non-delete paths read cleanly.
+
+**Then `SummaryStats` got a real home.** It had been left `fileprivate` inside `SummaryView.swift` purely so a throwaway verification snippet could reach it — honest debt, called out at the time. Now `Support/SummaryStats.swift`, `internal`, with the aggregation rules documented where they're implemented.
+
+**The part worth writing down.** With 26 new tests passing, I reverted the fix to check the regression tests actually fail. **Only 1 of 9 failed.**
+
+The delete tests were mirroring production exactly — detach via `repairLogs.removeAll`, delete, recompute. But the detach *already cleans the array*, so `excluding:` never had anything to do and the tests passed with or without it. They were pinning the happy path while appearing to pin the bug. Green, and worthless.
+
+The fix is a helper that deliberately **omits** the detach:
+
+```swift
+private static func deleteLeavingRelationshipStale(
+    _ logs: [RepairLog], from game: Game, in context: ModelContext
+) {
+    let doomed = Set(logs.map(\.persistentModelID))
+    for log in logs { context.delete(log) }
+    game.refreshLastRepairLogDate(excluding: doomed)
+}
+```
+
+That reproduces the configuration the bug actually occurred in. Re-running the mutation: **4 of 9 fail**, including `deletingOnlyEntryClearsDate` (the literal shipped bug) and `repairLogsFilterFollowsCache` (its user-visible symptom — the game stranded on the tab). One separate test, `fullDeletePathMatchesProduction`, keeps the production sequence with both defenses; it correctly *survives* the mutation, because `removeAll` is an independent second defense. Two defenses, two tests, each pinning one.
+
+Of the five that still pass under mutation, four are legitimately insensitive: three are non-delete paths, and `deletingOlderKeepsDate` genuinely can't distinguish — deleting an older entry leaves the maximum unchanged either way.
+
+**Test counts: 65 → 91.** `RepairLogDateTests` (9) and `SummaryStatsTests` (17), including a 1,024-case matrix asserting the four condition buckets never overlap, since the pie chart treats them as slices of one whole and nothing in the types enforces disjointness.
+
+**Lesson**: mutation-test your regression tests. Write the test, watch it pass, then *reintroduce the bug* and confirm it fails. A regression test that passes against the broken code is worse than no test — it occupies the slot where a real one would go and reports green forever. This is the third time in one day the same trap appeared (a vacuous `XCTAssertFalse` on a lazy list; two identical zeros in an aggregate comparison; now this), which suggests the failure mode isn't carelessness but a structural blind spot: **passing is the expected outcome, so nobody checks whether passing was achievable any other way.**
+
+**Lesson**: a regression test that mirrors production exactly can be the *wrong* test. Production here has two independent defenses — detach the relationship, and exclude the doomed IDs from the recompute — and a test that applies both can only tell you "the combination works." To pin each defense you have to write a test that removes the other one, which means deliberately writing a test that does *not* look like the real call site. Then add one that does, and label it as the integration check.
+
+**Lesson**: when a hazard can't be expressed in the type system, express it in the signature. `refreshLastRepairLogDate(excluding:)` forces every delete-path caller to confront the question "what am I deleting?" at the call site. The previous shape — a bare recompute plus a comment warning about stale relationships — put the burden on the caller remembering to read the comment. Parameters get read; comments get skipped.
