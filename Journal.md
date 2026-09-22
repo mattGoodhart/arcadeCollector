@@ -1306,7 +1306,7 @@ Roughly fifteen full passes over 3,855 games, twelve more over the owned subset,
 
 Confirmed responsive on-device after the four changes landed. No attempt was made to attribute the win between them — they were applied as one batch, and Instruments would be the way to apportion credit if it ever matters. The ranking above is by reasoning about cost, not by measurement.
 
-**Pre-existing failure, found in passing.** The full suite came back 64/65 with `GoldenPathUITests/testOwnershipRoundTripAcrossTabs` failing on "Donkey Kong missing from My Collection after marking owned." Stashed everything and ran that one test against clean `HEAD` — it fails there too. Not mine, not fixed here, and worth its own investigation: the symptom ("mark owned, game doesn't appear on the My Collection tab") smells like exactly the same denormalized-state-vs-observation family as the repair-log ghost from earlier the same day.
+**Pre-existing failure, found in passing.** The full suite came back 64/65 with `GoldenPathUITests/testOwnershipRoundTripAcrossTabs` failing on "Donkey Kong missing from My Collection after marking owned." Stashed everything and ran that one test against clean `HEAD` — it fails there too, so not mine. I guessed in the moment that it smelled like the same denormalized-state-vs-observation family as the repair-log ghost. **That guess was wrong** — see the next entry. The app was fine; the test was making two assumptions about the world that weren't true.
 
 **Lesson**: `TabView` + `@Query` is a performance trap that scales with the number of tabs. Each visited tab keeps its query alive forever, so N tabs with unbounded queries means one save costs N re-fetches and N body evaluations. The fix isn't to fight SwiftUI's tab retention — it's to make each query as narrow as the tab actually needs (predicates pushed into SQLite, not in-memory filters over the whole table) and each body as cheap as possible. Count your live queries; that number is a multiplier on every write in the app.
 
@@ -1315,3 +1315,35 @@ Confirmed responsive on-device after the four changes landed. No attempt was mad
 **Lesson**: when re-fixing a performance problem you already fixed once, check whether the old fix is still correct before rewriting it. The August buffering work was doing its job perfectly — keystrokes never touched SwiftData. The regression was one layer out, in what `save()` costs when the app has grown from one live query to five. Perf fixes are scoped to the architecture at the time they're written; the architecture moved.
 
 **Lesson**: verify behavior-preserving refactors by running both implementations against a generated input space and diffing, not by reading the diff carefully. And then check the *coverage* of that input space — the first comparison run here reported thirteen matches, but one of the buckets was 0 on both sides because the sample never produced a qualifying game. Two identical zeros is not evidence.
+
+### 2026-09-22 — The Golden Path Test Was Testing the Test Machine
+
+`GoldenPathUITests/testOwnershipRoundTripAcrossTabs` had been failing on "Donkey Kong missing from My Collection after marking owned." I'd assumed an app bug in the same family as the morning's repair-log ghost. It was neither an app bug nor one bug — it was two environment assumptions, stacked, and the second one only showed up after fixing the first.
+
+**Getting the evidence instead of guessing.** The console log says almost nothing useful — it just shows the query retrying for five seconds. The thing that actually cracked it was exporting the failure attachments out of the `.xcresult`:
+
+```
+xcrun xcresulttool export attachments --path <bundle>.xcresult \
+  --test-id "GoldenPathUITests/testOwnershipRoundTripAcrossTabs()" \
+  --output-path /tmp/uitest-attach
+```
+
+That drops a `manifest.json` mapping opaque UUIDs to human names, including **"App UI hierarchy for ..."** — a full accessibility dump at the moment of failure. Worth knowing that this exists; it converts "the element wasn't found" into "here is literally everything that was on screen."
+
+**Assumption 1: Donkey Kong is the only owned game.** The dump showed My Collection working perfectly — `aerofgt`, `amerdart`, `area51mx`, `baddudes`, `battlera`, `bbh2sp`, `blockout`, `bloodbro`, `cabal`, `capbowl`, `captaven`. Alphabetical, correct, reactive. The tests run **on a physical iPhone against the owner's real collection**, and the test's own comment said "(it's the only owned game)." Donkey Kong is a D; the visible window was A through C. `List` is lazy, so a row below the fold isn't merely invisible — it isn't in the accessibility tree at all, and "not found" is indistinguishable from "not on screen" from a single query. Green on a clean simulator, red on any device anyone has actually used.
+
+Fixed by replacing the point query with a `scanForGameRow(_:)` that rewinds to the top and swipes through the list, ending early when a swipe fails to change the topmost realized row (i.e. we hit the bottom). The negative assertion in step 5 needed the same treatment for a subtler reason: `XCTAssertFalse(row.waitForExistence(...))` on a lazy list **passes whenever the list happens to be scrolled elsewhere**. It was green, and it was proving nothing. Now it scans the whole list before concluding absence — verified from the log that it really does 8 swipes and terminates via the end-detector rather than the swipe cap.
+
+**Assumption 2: the device is in portrait.** With the scan in place the test passed standalone — and still failed in the full suite. Same code, different result, which is the signature of environment rather than logic. Diffing the two logs: the passing run's collection view was `{{0,0},{393,852}}` and the failing one was `{{0,-0},{852,393}}`. **Landscape.** No test rotates anything; it's a *physical phone on a desk*, and its orientation is whatever it was left in. In landscape the swipes stopped advancing the content, so the end-of-list detector fired immediately and the scan concluded "absent" after eight no-op swipes.
+
+Fixed with one line in `setUpWithError`: `XCUIDevice.shared.orientation = .portrait`. Confirmed it's load-bearing rather than luck — in the now-passing suite run the log still shows other tests going Landscape Right, while this suite's collection view reports `{393, 852}`.
+
+Every geometric assumption in the file was already portrait-shaped and undeclared: `findPCBToggle` compares the toggle's frame against the tab bar's to avoid tapping through to the Repair Logs button, and the scan depends on swipes actually scrolling. The orientation was load-bearing all along; it just happened to be true until it wasn't.
+
+**Lesson**: a UI test that runs against a real device's real data is testing two things at once — your app, and your assumptions about the machine. Both assumptions here were written down *as comments* ("it's the only owned game") and both were false. When a UI test asserts on list membership, never assume position; scan. When it asserts on layout or gestures, pin the orientation explicitly in `setUp` rather than inheriting whatever the last test — or the last human to pick up the phone — left behind.
+
+**Lesson**: `XCTAssertFalse(element.waitForExistence(...))` against a lazy container is usually a fake assertion. Absence-of-element is only meaningful if you've established the element *would* have been realized had it existed. A negative test that can't fail is worse than no test, because it occupies the slot where a real one would go and reports green forever.
+
+**Lesson**: "passes alone, fails in the suite" is diagnostic information, not an annoyance to retry past. It means state or environment is leaking across tests, and the leak is nearly always the actual bug. Diff the two runs' logs — here the answer was sitting in a single geometry string, two numbers transposed.
+
+**Lesson**: when a UI test fails on "element not found," export the `.xcresult` attachments before theorizing. The accessibility hierarchy dump at failure time tells you what was on screen, which collapses the entire space of "is it the app, the query, the timing, or the data?" into one look. I spent the first several minutes of this bug reasoning about SwiftData observation for a screen that was, it turns out, rendering perfectly.
