@@ -31,15 +31,21 @@ final class GoldenPathUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
 
-        // Pin portrait. This suite runs on a physical device, so the starting
-        // orientation is simply however the phone happens to be lying — and
-        // every geometric assumption here is portrait-shaped: `findPCBToggle`
-        // compares the toggle's frame against the tab bar's, and the list
-        // scans depend on swipes actually advancing the content. In landscape
-        // the collection view reports a rotated frame and the swipes stopped
-        // scrolling, which is exactly how this test passed on its own and
-        // failed in the full suite right after a test that left the device
-        // rotated.
+        // Pin portrait. The app itself is now portrait-only
+        // (`INFOPLIST_KEY_UISupportedInterfaceOrientations`), so this is
+        // belt-and-suspenders rather than the thing holding the test up — but
+        // it's worth keeping, because it states the requirement locally and
+        // still normalizes the device before the first tap.
+        //
+        // It mattered a great deal before the app was locked: this suite runs
+        // on a physical device, so the starting orientation was simply however
+        // the phone happened to be lying, and every geometric assumption here
+        // is portrait-shaped (`findPCBToggle` compares the toggle's frame
+        // against the tab bar's; the list scans need swipes to actually
+        // advance the content). In landscape the collection view reported a
+        // rotated frame and swipes stopped scrolling — which is how this test
+        // passed standalone and failed in the full suite right after a test
+        // that left the device rotated.
         XCUIDevice.shared.orientation = .portrait
     }
 

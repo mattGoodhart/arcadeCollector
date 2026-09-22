@@ -1347,3 +1347,32 @@ Every geometric assumption in the file was already portrait-shaped and undeclare
 **Lesson**: "passes alone, fails in the suite" is diagnostic information, not an annoyance to retry past. It means state or environment is leaking across tests, and the leak is nearly always the actual bug. Diff the two runs' logs — here the answer was sitting in a single geometry string, two numbers transposed.
 
 **Lesson**: when a UI test fails on "element not found," export the `.xcresult` attachments before theorizing. The accessibility hierarchy dump at failure time tells you what was on screen, which collapses the entire space of "is it the app, the query, the timing, or the data?" into one look. I spent the first several minutes of this bug reasoning about SwiftData observation for a screen that was, it turns out, rendering perfectly.
+
+### 2026-09-22 — Portrait-Only, Decided On Purpose This Time
+
+The landscape flake above surfaced something nobody had actually decided: the app shipped supporting **landscape left, landscape right, and portrait** on iPhone, and all four orientations on iPad. Not a design choice — just the Xcode template defaults, untouched since the project was created. Every screen was built and eyeballed in portrait; landscape was a completely untested configuration that any user could reach by tilting their phone.
+
+That's the worse failure mode of template defaults: they're not neutral, they're *commitments* you never made. The UI test tripped over it first, but a user rotating the device on the Summary screen would have found the same unexercised layout.
+
+Now explicit, at the target level so both Debug and Release inherit it:
+
+```
+INFOPLIST_KEY_UISupportedInterfaceOrientations      = UIInterfaceOrientationPortrait
+INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait
+```
+
+**Two decisions inside the decision**, both worth recording because the reasoning isn't recoverable from the diff:
+
+1. **iPad is locked too**, even though the target still ships for both idioms (`TARGETED_DEVICE_FAMILY = 1,2`). The consequence is documented in `UIViewController.supportedInterfaceOrientations`: *"You can opt out of multitasking by enabling Requires full screen **or by not declaring support for all possible orientations within the Info.plist file**."* So declaring portrait-only implicitly opts iPad out of multitasking and resizable windows — no separate `UIRequiresFullScreen` needed. Accepted deliberately: a collection-tracking app with a five-tab layout gains little from Split View, and the alternative was maintaining an iPad landscape layout nobody had designed.
+
+2. **No landscape exception for video.** The Short Play section has two player paths (YouTube in a `WKWebView` with `isElementFullscreenEnabled = true`, and `AVPlayer` for direct URLs), and fullscreen video is the one place a portrait lock genuinely costs the user something. Allowing it would mean an orientation-mask hook in an app delegate — or the iOS 26 `prefersInterfaceOrientationLocked` / `setNeedsUpdateOfPrefersInterfaceOrientationLocked()` pair — plus tracking "is a player currently fullscreen" across both video paths. Declined for v1: fullscreen video letterboxes into portrait width, which is worse but costs zero code and zero ongoing correctness burden. The APIs are noted here so the option is cheap to revisit if it ever bothers anyone in practice.
+
+**Verified in the product, not the project file.** `UpdateTargetBuildSetting` wrote both Debug and Release, but the build settings are only an input — what ships is the generated `Info.plist`. Confirmed with `plutil -p` against the freshly built `.app` that `UISupportedInterfaceOrientations` and `UISupportedInterfaceOrientations~ipad` both resolve to a single-element `[UIInterfaceOrientationPortrait]`.
+
+The `XCUIDevice.shared.orientation = .portrait` line in `GoldenPathUITests` stays, downgraded from load-bearing to belt-and-suspenders, with its comment rewritten to say so. It still normalizes the device before the first tap and states the requirement where a future reader of the test will see it.
+
+**One thing deliberately not done**: Apple's docs recommend enabling `portraitUpsideDown` for the iPad idiom ("All iPadOS devices support it; it's best practice to enable it"). Left off, because "portrait-only" was the explicit ask and upside-down iPad is a one-line addition if it's ever wanted.
+
+**Lesson**: unexercised configurations are liabilities whether or not anyone has hit them yet. Supported orientations, supported device families, minimum deployment target, supported locales — every one of those is a promise the app makes to the OS, and the template picks defaults that are broader than most apps actually honor. Audit them once, deliberately, before shipping. "It's the default" is not a decision, and the bug it eventually causes will show up somewhere unrelated — here, as a UI test that passed alone and failed in a suite.
+
+**Lesson**: verify build-setting changes against the built artifact, not the `.pbxproj`. Settings are inputs to Info.plist generation, with idiom suffixes (`~ipad`, `~iphone`), `$(inherited)` chains, and per-configuration overrides in between. `plutil -p <built>.app/Info.plist` is the ground truth and takes five seconds. (It also caught that the stale simulator build still had the old four-orientation values — harmless, but exactly the kind of thing that makes you doubt a change that actually worked.)

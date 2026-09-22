@@ -31,6 +31,17 @@ Clean-start SwiftData schema — not a port of the legacy Core Data model, thoug
 - **Repair log photos** are unbounded (`[RepairLogPhoto]`), not a fixed 3-slot triple.
 - All image blobs and PDFs use `@Attribute(.externalStorage)`.
 
+### Portrait-only
+
+The app is **portrait-only on both iPhone and iPad** — `INFOPLIST_KEY_UISupportedInterfaceOrientations` and `..._iPad` are both just `UIInterfaceOrientationPortrait`. This is a deliberate decision, not a leftover default. Don't build landscape layouts, and don't assume a landscape configuration is reachable.
+
+Two consequences worth knowing:
+
+- Declaring less than all four orientations **implicitly opts iPad out of multitasking** and resizable windows (per `UIViewController.supportedInterfaceOrientations` docs) — no separate `UIRequiresFullScreen` key needed. Accepted deliberately.
+- Fullscreen video in the Short Play section (YouTube `WKWebView` + `AVPlayer` paths) is letterboxed into portrait width. Allowing landscape *just* for video would need an orientation-mask hook or the iOS 26 `prefersInterfaceOrientationLocked` API; explicitly deferred.
+
+`GoldenPathUITests` pins `XCUIDevice.shared.orientation = .portrait` in `setUp`. That's now redundant with the app lock but kept intentionally — it normalizes the physical device and documents the requirement locally.
+
 ### Seeding
 
 `GameSeeder` is a `@ModelActor` invoked from `ArcadeCollectorApp` via `.task { }` on `ContentView`. It:
