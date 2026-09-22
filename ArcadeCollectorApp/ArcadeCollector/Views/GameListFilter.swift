@@ -110,14 +110,36 @@ nonisolated struct GameListFilter: Equatable {
 
     var mode: GameListMode = .allGames
 
-    /// SwiftData-friendly predicate covering the text-search portion.
-    /// Returns nil when the search field is empty, letting SwiftData skip
-    /// the predicate entirely.
+    /// SwiftData-friendly predicate: the text search, plus the repair-log
+    /// clause on the Repair Logs tab. Returns nil when neither applies,
+    /// letting SwiftData skip the predicate entirely.
+    ///
+    /// `lastRepairLogDate` is a plain `Date?` column, so unlike the enum
+    /// properties it *is* expressible in `#Predicate` — which matters a lot
+    /// here. Pushing it down to SQLite takes that tab's fetch from all 3,855
+    /// rows to just the handful with repair history, and shrinks the set of
+    /// per-object observation dependencies the list body registers by the
+    /// same factor. `matchesEnumFilters` still re-checks it in memory: a
+    /// pending delete is not visible to SQL until the context saves, so the
+    /// in-memory pass stays authoritative.
     var searchPredicate: Predicate<Game>? {
         let query = search.trimmingCharacters(in: .whitespaces)
-        guard !query.isEmpty else { return nil }
-        return #Predicate<Game> { game in
-            game.title.localizedStandardContains(query)
+
+        switch (query.isEmpty, mode == .repairLogs) {
+        case (true, false):
+            return nil
+        case (false, false):
+            return #Predicate<Game> { game in
+                game.title.localizedStandardContains(query)
+            }
+        case (true, true):
+            return #Predicate<Game> { game in
+                game.lastRepairLogDate != nil
+            }
+        case (false, true):
+            return #Predicate<Game> { game in
+                game.lastRepairLogDate != nil && game.title.localizedStandardContains(query)
+            }
         }
     }
 

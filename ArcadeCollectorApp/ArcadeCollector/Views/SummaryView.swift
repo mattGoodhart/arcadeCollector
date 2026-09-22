@@ -21,12 +21,14 @@ struct SummaryView: View {
     private var isBulkFetching: Bool { bulkFetchTask != nil }
 
     var body: some View {
+        let stats = Stats(games: games)
+
         NavigationStack {
             List {
-                collectionCountsSection
-                bulkArtworkSection
-                boardConditionSection
-                componentBreakdownSection
+                collectionCountsSection(stats)
+                bulkArtworkSection(stats)
+                boardConditionSection(stats)
+                componentBreakdownSection(stats)
             }
             .scrollContentBackground(.hidden)
             .background(Color.arcadeSummaryBackground)
@@ -58,11 +60,14 @@ struct SummaryView: View {
                 }
             }
             .onDisappear { cancelBulkFetch() }
-            .onChange(of: ownedGames.count) {
+            .onChange(of: stats.owned) {
                 guard !isBulkFetching else { return }
-                if ownedGames.contains(where: { game in
-                    Set(game.artwork.map(\.kind)) != ArtworkKind.bulkFetchable
-                }) {
+                // Walks the artwork relationship, so it only runs when the
+                // owned count actually changes — never on a plain re-render.
+                let missingArtwork = games.lazy
+                    .filter { $0.ownership == .owned }
+                    .contains { Set($0.artwork.map(\.kind)) != ArtworkKind.bulkFetchable }
+                if missingArtwork {
                     bulkProgress = nil
                     bulkResult = nil
                     nothingToFetch = false
@@ -71,25 +76,103 @@ struct SummaryView: View {
         }
     }
 
+    // MARK: - Aggregates
+
+    /// Every collection count and component breakdown shown on this screen,
+    /// derived in a single pass over the query results.
+    ///
+    /// This screen is the most expensive consumer of a SwiftData change in
+    /// the app: `ContentView` is a `TabView`, so once a tab has been visited
+    /// its unbounded `@Query var games: [Game]` stays live, and *any* save
+    /// anywhere re-evaluates this body over all ~3,855 rows. The previous
+    /// shape — `ownedGames` as an uncached computed property, read by a dozen
+    /// call sites including `statusCounts` five times and `gamesByCondition`
+    /// three times — turned one save into roughly fifteen full passes plus a
+    /// Swift Charts relayout, all on the main thread. That is what made
+    /// typing in a repair log on another tab feel like molasses.
+    ///
+    /// The per-game classification predicates below are copied verbatim from
+    /// the old per-bucket `filter` calls; the buckets are not mutually
+    /// exclusive by construction, so each is evaluated independently.
+    fileprivate struct Stats {
+        var total = 0
+        var owned = 0
+        var wanted = 0
+        var inRepair = 0
+
+        var workingBoards = 0
+        var boardsWithIssues = 0
+        var brokenBoards = 0
+        var untestedBoards = 0
+
+        var boot: [ComponentStatus: Int] = [:]
+        var audio: [ComponentStatus: Int] = [:]
+        var video: [ComponentStatus: Int] = [:]
+        var controls: [ComponentStatus: Int] = [:]
+        var extendedPlay: [ComponentStatus: Int] = [:]
+
+        init(games: [Game]) {
+            total = games.count
+
+            for game in games {
+                if game.lastRepairLogDate != nil { inRepair += 1 }
+
+                if game.ownership == .wanted { wanted += 1 }
+
+                // Everything below is scoped to owned games only.
+                guard game.ownership == .owned else { continue }
+                owned += 1
+
+                boot[game.bootStatus, default: 0] += 1
+                audio[game.audioStatus, default: 0] += 1
+                video[game.videoStatus, default: 0] += 1
+                controls[game.controlsStatus, default: 0] += 1
+                extendedPlay[game.extendedPlayStatus, default: 0] += 1
+
+                if game.bootStatus == .untested,
+                   game.audioStatus == .untested,
+                   game.videoStatus == .untested,
+                   game.controlsStatus == .untested,
+                   game.extendedPlayStatus == .untested {
+                    untestedBoards += 1
+                }
+
+                if game.bootStatus == .working,
+                   game.audioStatus == .working,
+                   game.videoStatus == .working,
+                   game.controlsStatus == .working,
+                   game.extendedPlayStatus == .working || game.extendedPlayStatus == .untested {
+                    workingBoards += 1
+                }
+
+                if game.bootStatus != .broken,
+                   game.bootStatus == .issues
+                    || game.audioStatus == .issues || game.audioStatus == .broken
+                    || game.videoStatus == .issues || game.videoStatus == .broken
+                    || game.controlsStatus == .issues || game.controlsStatus == .broken
+                    || game.extendedPlayStatus == .issues || game.extendedPlayStatus == .broken {
+                    boardsWithIssues += 1
+                }
+
+                if game.bootStatus == .broken { brokenBoards += 1 }
+            }
+        }
+    }
+
     // MARK: - Collection Counts
 
-    private var ownedGames: [Game] { games.filter { $0.ownership == .owned } }
-    private var wantedGames: [Game] { games.filter { $0.ownership == .wanted } }
-    private var gamesInRepair: [Game] { games.filter { $0.lastRepairLogDate != nil } }
-
-    private var collectionCountsSection: some View {
+    private func collectionCountsSection(_ stats: Stats) -> some View {
         Section("Collection") {
-            StatRow(label: "Total Games", value: games.count, icon: "list.bullet")
-            StatRow(label: "Owned", value: ownedGames.count, icon: "star.circle")
-            StatRow(label: "Wanted", value: wantedGames.count, icon: "heart.circle")
-            StatRow(label: "In Repair", value: gamesInRepair.count, icon: "wrench.and.screwdriver")
-
+            StatRow(label: "Total Games", value: stats.total, icon: "list.bullet")
+            StatRow(label: "Owned", value: stats.owned, icon: "star.circle")
+            StatRow(label: "Wanted", value: stats.wanted, icon: "heart.circle")
+            StatRow(label: "In Repair", value: stats.inRepair, icon: "wrench.and.screwdriver")
         }
     }
 
     // MARK: - Bulk Artwork Fetch
 
-    private var bulkArtworkSection: some View {
+    private func bulkArtworkSection(_ stats: Stats) -> some View {
         Section("Artwork") {
             if let progress = bulkProgress, isBulkFetching {
                 VStack(alignment: .leading, spacing: 8) {
@@ -130,7 +213,7 @@ struct SummaryView: View {
                 } label: {
                     Label("Fetch All Missing Artwork", systemImage: "arrow.down.circle")
                 }
-                .disabled(ownedGames.isEmpty)
+                .disabled(stats.owned == 0)
             }
         }
     }
@@ -187,52 +270,27 @@ struct SummaryView: View {
 
     // MARK: - Board Condition Chart
 
-    private var gamesByCondition: [(label: String, count: Int, color: Color, labelColor: Color)] {
-        let owned = ownedGames
+    private func gamesByCondition(_ stats: Stats) -> [(label: String, count: Int, color: Color, labelColor: Color)] {
         let isDark = colorScheme == .dark
-
-        let untested = owned.filter {
-            $0.bootStatus == .untested &&
-            $0.audioStatus == .untested &&
-            $0.videoStatus == .untested &&
-            $0.controlsStatus == .untested &&
-            $0.extendedPlayStatus == .untested
-        }.count
-
-        let working = owned.filter {
-            $0.bootStatus == .working &&
-            $0.audioStatus == .working &&
-            $0.videoStatus == .working &&
-            $0.controlsStatus == .working &&
-            ($0.extendedPlayStatus == .working || $0.extendedPlayStatus == .untested)
-        }.count
-
-        let issues = owned.filter {
-            $0.bootStatus != .broken &&
-            ($0.bootStatus == .issues ||
-             $0.audioStatus == .issues || $0.audioStatus == .broken ||
-             $0.videoStatus == .issues || $0.videoStatus == .broken ||
-             $0.controlsStatus == .issues || $0.controlsStatus == .broken ||
-             $0.extendedPlayStatus == .issues || $0.extendedPlayStatus == .broken)
-        }.count
-
-        let broken = owned.filter { $0.bootStatus == .broken }.count
-
         return [
-            ("Working", working, ComponentStatus.working.color, isDark ? .black : .white),
-            ("Issues", issues, ComponentStatus.issues.color, .black),
-            ("Broken", broken, ComponentStatus.broken.color, isDark ? .black : .white),
-            ("Untested", untested, ComponentStatus.untested.color, isDark ? .black : .white),
+            ("Working", stats.workingBoards, ComponentStatus.working.color, isDark ? .black : .white),
+            ("Issues", stats.boardsWithIssues, ComponentStatus.issues.color, .black),
+            ("Broken", stats.brokenBoards, ComponentStatus.broken.color, isDark ? .black : .white),
+            ("Untested", stats.untestedBoards, ComponentStatus.untested.color, isDark ? .black : .white),
         ].filter { $0.count > 0 }
     }
 
-    private var boardConditionSection: some View {
-        Section("Game Condition") {
-            if ownedGames.isEmpty {
+    private func boardConditionSection(_ stats: Stats) -> some View {
+        // Bound once so the chart, its legend, and the accessibility value
+        // share one array instead of rebuilding it three times.
+        let conditions = gamesByCondition(stats)
+
+        return Section("Game Condition") {
+            if stats.owned == 0 {
                 Text("No owned games yet")
                     .foregroundStyle(.secondary)
             } else {
-                Chart(gamesByCondition, id: \.label) { item in
+                Chart(conditions, id: \.label) { item in
                     SectorMark(
                         angle: .value("Count", item.count),
                         innerRadius: .ratio(0.5),
@@ -252,10 +310,10 @@ struct SummaryView: View {
                     }
                 }
                 .accessibilityLabel("Game condition breakdown")
-                .accessibilityValue(conditionAccessibilityValue)
+                .accessibilityValue(conditions.map { "\($0.label) \($0.count)" }.joined(separator: ", "))
                 .chartLegend(position: .bottom) {
                     HStack(spacing: 16) {
-                        ForEach(gamesByCondition, id: \.label) { item in
+                        ForEach(conditions, id: \.label) { item in
                             HStack(spacing: 4) {
                                 Circle()
                                     .fill(item.color)
@@ -288,33 +346,19 @@ struct SummaryView: View {
 
     // MARK: - Component Status Breakdown
 
-    private var componentBreakdownSection: some View {
+    private func componentBreakdownSection(_ stats: Stats) -> some View {
         Section("Component Status (Owned Games)") {
-            if ownedGames.isEmpty {
+            if stats.owned == 0 {
                 Text("No owned games yet")
                     .foregroundStyle(.secondary)
             } else {
-                ComponentStatRow(label: "Boot", counts: statusCounts(\.bootStatus))
-                ComponentStatRow(label: "Audio", counts: statusCounts(\.audioStatus))
-                ComponentStatRow(label: "Video", counts: statusCounts(\.videoStatus))
-                ComponentStatRow(label: "Controls", counts: statusCounts(\.controlsStatus))
-                ComponentStatRow(label: "Extended Play", counts: statusCounts(\.extendedPlayStatus))
+                ComponentStatRow(label: "Boot", counts: stats.boot)
+                ComponentStatRow(label: "Audio", counts: stats.audio)
+                ComponentStatRow(label: "Video", counts: stats.video)
+                ComponentStatRow(label: "Controls", counts: stats.controls)
+                ComponentStatRow(label: "Extended Play", counts: stats.extendedPlay)
             }
         }
-    }
-
-    private func statusCounts(_ keyPath: KeyPath<Game, ComponentStatus>) -> [ComponentStatus: Int] {
-        var counts: [ComponentStatus: Int] = [:]
-        for game in ownedGames {
-            counts[game[keyPath: keyPath], default: 0] += 1
-        }
-        return counts
-    }
-
-    private var conditionAccessibilityValue: String {
-        gamesByCondition
-            .map { "\($0.label) \($0.count)" }
-            .joined(separator: ", ")
     }
 }
 

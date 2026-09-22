@@ -1273,3 +1273,45 @@ The `indices.contains` guard on the offsets is belt-and-suspenders against a sta
 **Lesson**: `modelContext.delete(child)` does not synchronously remove the child from its parent's to-many array. If you need post-delete state in the same turn of the run loop, compute it from a pre-delete snapshot minus what you're deleting — never by re-reading the relationship. Re-reading is the natural thing to write and it's wrong.
 
 **Lesson**: `DispatchQueue.main.async` inside a `@MainActor` view body handler is a code smell with a specific meaning — "I observed that this value wasn't ready yet, and I'm deferring instead of understanding why." It's the synchronization equivalent of a `sleep(1)` in a flaky test. When you find one, don't delete the hop and hope; find the state that wasn't settled and compute it a way that can't be unsettled. If the correct answer is derivable from data already in hand, no hop is needed at all.
+
+### 2026-09-22 — Five Live Queries and a Fifteen-Pass Summary
+
+Right after the repair-log delete fix: typing a few letters into a repair log's notes made the whole UI crawl. Which was maddening, because the August 14 entry *already* fixed slow notes typing — buffered `@State`, debounced flush, thumbnails hoisted into a subview with their own cache. All of that was still in place and still correct. The keystrokes weren't the problem this time. The **save** was.
+
+**The amplifier.** `ContentView` is a `TabView` with five tabs, and four of them are `GameListTab` while the fifth is `SummaryView`. Every single one holds an unbounded `@Query var games: [Game]` over all 3,855 rows. SwiftUI keeps a tab's view tree alive once you've visited it, so after a minute of normal use there are **five live unbounded queries** in the app, and any `modelContext.save()` anywhere invalidates all of them at once.
+
+`flushNotes()` called `try? modelContext.save()`, and the 1-second debounce called `flushNotes()`. So: type, pause for a second, and the app re-fetches 3,855 rows five times and re-evaluates five list bodies. While you're trying to type in a text editor.
+
+**The worst consumer, by a mile.** `SummaryView` had `ownedGames` as an uncached computed property — `games.filter { $0.ownership == .owned }`, a full 3,855-row pass every time it was *read*. Counting the reads in one body evaluation:
+
+- `collectionCountsSection` — `ownedGames`, `wantedGames`, `gamesInRepair` → 3 passes
+- `bulkArtworkSection` — `ownedGames.isEmpty` → 1
+- `boardConditionSection` — `ownedGames.isEmpty` → 1, then `gamesByCondition` (which itself reads `ownedGames` and runs 4 more filters over the owned subset), and **`gamesByCondition` was called three separate times**: once for `Chart`, once for `chartLegend`, once for `conditionAccessibilityValue`
+- `componentBreakdownSection` — `ownedGames.isEmpty` → 1, then `statusCounts` **five times**, each one iterating `ownedGames` from scratch → 5 more passes
+- `.onChange(of: ownedGames.count)` — the value expression is re-evaluated on every body pass → 1 more
+
+Roughly fifteen full passes over 3,855 games, twelve more over the owned subset, plus a Swift Charts pie relayout. Per save. On the main thread.
+
+**Fixes, in descending order of payoff.**
+
+1. **One pass, one struct.** A `Stats` value type with an `init(games:)` that walks the array exactly once and accumulates every count the screen needs — collection totals, the four condition buckets, and all five component histograms. `body` computes `let stats = Stats(games: games)` and threads it into the four sections, which became functions instead of computed properties. The per-game bucket predicates are copied verbatim, because the buckets aren't mutually exclusive by construction and I wanted zero semantic drift.
+
+   Verified rather than eyeballed: ran the old per-bucket `filter` expressions and the new single-pass `Stats` side by side over the full 4⁵ = 1,024-game cross product of component statuses, and all thirteen aggregates matched. Then re-ran with every game `.owned`, because the first sample happened to assign the all-`.untested` game to `.wanted` and left `untestedBoards` at 0 — a bucket that reports "match" while never being exercised is not actually tested. Second run: all five owned-only buckets matched with non-zero counts.
+
+2. **Push the repair-log filter into SQLite.** The Repair Logs tab was fetching all 3,855 games and then discarding all but a handful in `matchesEnumFilters`. But `lastRepairLogDate` is a plain `Date?` column — unlike the enum properties that `#Predicate` chokes on, this one is perfectly expressible. Confirmed empirically before committing to it (`!= nil` alone, and `&&`-ed with the title search) since the journal's own history with `#Predicate` is that it fails at macro expansion, schema validation, *or* runtime depending on the expression. Both forms worked. That tab's query now returns the handful of games with repair history instead of the whole table, which also shrinks the set of per-object observation dependencies the list body registers by the same factor. The in-memory `lastRepairLogDate == nil` check stays as the authority, because a pending delete isn't visible to SQL until the context saves.
+
+3. **Separate the write from the save.** `flushNotes(persist:)` now splits the two costs. The in-memory `log.notes = notesText` write is what bounds the data-loss window and it's nearly free; `save()` is what fans out to five queries. The debounce writes without saving; `scenePhase` leaving `.active` and `onDisappear` — the two moments that actually precede process death — still save. Crash-safety intact, per-second global re-render gone.
+
+4. **Cache the row icons.** `GameRow.iconImage` was an `NSDataAsset` lookup *plus* a full `UIImage(data:)` PNG decode, in a computed property read from `body`, for every visible row, on every re-evaluation. Exactly the bug the August 14 `PhotoThumbnail` entry diagnosed — just never applied to the list rows. Now an `NSCache` for hits plus a main-actor `Set<String>` for known misses, since most of the 3,855 seeded games have no bundled icon and the miss path is the common one.
+
+Confirmed responsive on-device after the four changes landed. No attempt was made to attribute the win between them — they were applied as one batch, and Instruments would be the way to apportion credit if it ever matters. The ranking above is by reasoning about cost, not by measurement.
+
+**Pre-existing failure, found in passing.** The full suite came back 64/65 with `GoldenPathUITests/testOwnershipRoundTripAcrossTabs` failing on "Donkey Kong missing from My Collection after marking owned." Stashed everything and ran that one test against clean `HEAD` — it fails there too. Not mine, not fixed here, and worth its own investigation: the symptom ("mark owned, game doesn't appear on the My Collection tab") smells like exactly the same denormalized-state-vs-observation family as the repair-log ghost from earlier the same day.
+
+**Lesson**: `TabView` + `@Query` is a performance trap that scales with the number of tabs. Each visited tab keeps its query alive forever, so N tabs with unbounded queries means one save costs N re-fetches and N body evaluations. The fix isn't to fight SwiftUI's tab retention — it's to make each query as narrow as the tab actually needs (predicates pushed into SQLite, not in-memory filters over the whole table) and each body as cheap as possible. Count your live queries; that number is a multiplier on every write in the app.
+
+**Lesson**: a computed property that filters a collection is a function call, not a cached value, and SwiftUI bodies read them far more often than they look like they do. `ownedGames` reads like a stored subset; it was fifteen full table scans. The tell is any computed property whose body contains `filter`, `map`, `sorted`, or `reduce` being referenced more than once in a view — bind it to a `let` at the top of `body`, or hoist the whole aggregation into a value type computed once. The same applies doubly to `.onChange(of: expensiveThing)`: that expression is evaluated on *every* body pass, not just when it changes.
+
+**Lesson**: when re-fixing a performance problem you already fixed once, check whether the old fix is still correct before rewriting it. The August buffering work was doing its job perfectly — keystrokes never touched SwiftData. The regression was one layer out, in what `save()` costs when the app has grown from one live query to five. Perf fixes are scoped to the architecture at the time they're written; the architecture moved.
+
+**Lesson**: verify behavior-preserving refactors by running both implementations against a generated input space and diffing, not by reading the diff carefully. And then check the *coverage* of that input space — the first comparison run here reported thirteen matches, but one of the buckets was 0 on both sides because the sample never produced a qualifying game. Two identical zeros is not evidence.
