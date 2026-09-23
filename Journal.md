@@ -933,7 +933,7 @@ Two tests: `userDataSurvivesContainerRestart` covers the "populated store round-
 
 **Cleanup detail**: SwiftData writes SQLite `-shm` and `-wal` sidecar files next to the main store file. The teardown `defer` block removes all three so temp directories don't accumulate leftover state across test runs.
 
-**Manual rehearsal checklist (before shipping v1.0)** — ✅ **executed on device 2026-09-23, everything survived.** See the 2026-09-23 entry at the end of this journal.
+**Manual rehearsal checklist (before shipping v1.0)** — **steps 1–6 executed on device 2026-09-23 and passed; steps 7–8 (the schema-change rehearsal) still pending.** See the 2026-09-23 entry at the end of this journal.
 
 1. Delete the app from the simulator / device to guarantee a clean install.
 2. Fresh install the current build.
@@ -1439,22 +1439,29 @@ Of the five that still pass under mutation, four are legitimately insensitive: t
 
 **Lesson**: when a hazard can't be expressed in the type system, express it in the signature. `refreshLastRepairLogDate(excluding:)` forces every delete-path caller to confront the question "what am I deleting?" at the call site. The previous shape — a bare recompute plus a comment warning about stale relationships — put the burden on the caller remembering to read the comment. Parameters get read; comments get skipped.
 
-### 2026-09-23 — The Rehearsal Ran, And It Passed
+### 2026-09-23 — The Rehearsal Ran (Steps 1–6), And It Passed
 
-The manual rehearsal checklist written on 2026-07-29 finally got executed on device: clean install, seed, populate ownership and component statuses and repair logs with photos, force-quit, relaunch, verify. Everything survived.
+Steps 1–6 of the manual rehearsal checklist written on 2026-07-29 finally got executed on device: clean install, seed, populate ownership and component statuses and repair logs with photos, force-quit, relaunch, verify. Everything survived.
+
+Steps 7–8 — the schema-change rehearsal — were **not** run and remain open. Noting that explicitly because the first draft of this entry said "the checklist was executed, everything survived" and marked the whole thing done, which is precisely the conflation the second lesson below warns about. Caught within the hour and corrected; it would have read as full coverage to anyone skimming later.
 
 That's an anticlimactic result and it's the right one. The whole point of the checklist was that the single most expensive bug this project has hit — the 2026-07-09 `History` field `fatalError`, a non-optional `String` added to a `@Model` with no inline default — **only reproduces on a second launch**, when an existing store meets a new schema. Every in-memory test is blind to it by construction. `PersistenceMigrationTests` closed the automated half in July; this closes the "does it actually hold on real hardware" half.
 
-**Worth being precise about what a green rehearsal does and doesn't buy.** It confirms the *current* schema round-trips on a real device. It does not make the next schema change safe — that's what step 7 of the checklist is for (add a stored property with an inline default, rebuild, relaunch, confirm no `fatalError`), and that step is a rehearsal of a *future* event rather than a verification of the present one. The checklist stays in the journal for exactly that reason: it's not a one-time gate that's now satisfied and can be deleted, it's a procedure to re-run whenever the model layer changes.
+**Worth being precise about what a green rehearsal does and doesn't buy.** Steps 1–6 confirm the *current* schema round-trips on a real device. They do not make the next schema change safe — that's step 7 (add a stored property with an inline default, rebuild, relaunch, confirm no `fatalError`), which rehearses a *future* event rather than verifying the present one. The checklist stays in the journal for exactly that reason: it's not a one-time gate that's now satisfied and can be deleted, it's a procedure to re-run whenever the model layer changes.
 
-**The v1.0 blocker list is now empty.** Three items were open as of yesterday:
+**Status of the v1.0 blocker list:**
 
 | Item | Outcome |
 |---|---|
 | Regression tests for the `lastRepairLogDate` bugs | Done — 65 → 91 tests, mutation-verified |
-| Manual persistence rehearsal | Done — passed on device |
+| Manual persistence rehearsal, steps 1–6 | Done — passed on device |
+| Manual persistence rehearsal, steps 7–8 | **Open** — schema-change rehearsal not yet run |
 | Legacy Core Data migration plan | Moot — legacy app never shipped, never will |
+
+**On step 7 specifically.** It's the highest-value step and the one least suited to being a manual chore, because it has to be re-run on *every* future model change to be worth anything — and a manual step that needs re-running forever is a manual step that will be skipped. The better shape is a `VersionedSchema` pair in the test target: write an on-disk store under schema V1, reopen it under a V2 that adds a property, assert no `fatalError`. That turns "remember to rehearse" into a permanent CI guard against the entire bug class rather than a one-time confidence boost. Noted here as the intended follow-up.
 
 **Lesson**: a checklist nobody has run is a plan, not evidence. This one sat written-but-unexecuted for roughly two months while the surrounding work — accessibility passes, App Review prep, icon variants, performance fixes — all got done, because executing it required a physical device and a deliberate ten minutes rather than a code change. The failure mode isn't forgetting the checklist exists; it's that the items requiring a human in the loop are systematically the ones that slip, precisely because they can't be knocked out while you're already in the editor. Worth noticing which of your open items are human-in-the-loop and scheduling those differently from the ones you can type your way through.
 
-**Lesson**: distinguish "verify the present" from "rehearse the future" when writing a pre-ship checklist, and don't let a green run on the former convince you you've covered the latter. Steps 1–6 here verify the shipped schema works. Step 7 rehearses the *process* for changing it. Marking the whole checklist "done" after only the first kind is how a team ends up confident and still shipping a migration `fatalError` two releases later.
+**Lesson**: distinguish "verify the present" from "rehearse the future" when writing a pre-ship checklist, and don't let a green run on the former convince you you've covered the latter. Steps 1–6 here verify the shipped schema works. Step 7 rehearses the *process* for changing it. Marking the whole checklist "done" after only the first kind is how a team ends up confident and still shipping a migration `fatalError` two releases later — and I demonstrated the exact mistake in the first draft of this entry, on a checklist whose own numbering makes the split obvious. "Everything survived" is a statement about an outcome, not about coverage; when someone reports a checklist result, confirm *which items* before writing it down as done.
+
+**Lesson**: a manual step that must be repeated on every future change is a manual step with a shelf life. Steps 1–6 are a genuine one-time pre-ship gate — run once, ship, done. Step 7 is different in kind: it only has value if it runs again every time the model layer moves, which makes it a terrible fit for a human checklist and a natural fit for a test. When triaging a checklist, sort by "how many times will this need to run?" — the once-only items are fine to leave manual, and the forever items should be converted to code before they're relied on.
