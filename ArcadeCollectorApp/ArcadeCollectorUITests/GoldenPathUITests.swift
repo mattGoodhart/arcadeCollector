@@ -13,6 +13,13 @@ import XCTest
 /// exists (`romSetName == "dkong"`) and both `GameRow` and the ownership toggle
 /// carry stable accessibility identifiers (`game-row-dkong`, `pcb-toggle`) that
 /// don't depend on the row being visible in the accessibility tree.
+///
+/// **Runs against whatever data is already on the device.** There is no store
+/// reset here, so the My Collection tab contains however many games the device's
+/// owner actually owns, and the list is sorted by title. Every membership check
+/// below therefore has to *scan* — a `List` only puts visible rows in the
+/// accessibility tree, so "not found" and "not currently on screen" are
+/// indistinguishable from a single query. See `scanForGameRow(_:)`.
 final class GoldenPathUITests: XCTestCase {
 
     private static let romSetName = "dkong"
@@ -20,8 +27,26 @@ final class GoldenPathUITests: XCTestCase {
     private static let gameRowIdentifier = "game-row-\(romSetName)"
     private static let pcbToggleIdentifier = "pcb-toggle"
 
+    @MainActor
     override func setUpWithError() throws {
         continueAfterFailure = false
+
+        // Pin portrait. The app itself is now portrait-only
+        // (`INFOPLIST_KEY_UISupportedInterfaceOrientations`), so this is
+        // belt-and-suspenders rather than the thing holding the test up — but
+        // it's worth keeping, because it states the requirement locally and
+        // still normalizes the device before the first tap.
+        //
+        // It mattered a great deal before the app was locked: this suite runs
+        // on a physical device, so the starting orientation was simply however
+        // the phone happened to be lying, and every geometric assumption here
+        // is portrait-shaped (`findPCBToggle` compares the toggle's frame
+        // against the tab bar's; the list scans need swipes to actually
+        // advance the content). In landscape the collection view reported a
+        // rotated frame and swipes stopped scrolling — which is how this test
+        // passed standalone and failed in the full suite right after a test
+        // that left the device rotated.
+        XCUIDevice.shared.orientation = .portrait
     }
 
     @MainActor
@@ -54,14 +79,17 @@ final class GoldenPathUITests: XCTestCase {
         tapToggle(pcbToggle)
         XCTAssertTrue(waitForSwitch(pcbToggle, on: true), "Toggling 'Have the PCB' on didn't stick")
 
-        // Step 3: cross-tab observation — My Collection should now show Donkey
-        //         Kong without any search needed (it's the only owned game).
+        // Step 3: cross-tab observation — My Collection should now contain
+        //         Donkey Kong. The tab has no search field to narrow with and
+        //         the device may already own any number of games, so scan the
+        //         list instead of assuming the row is at the top.
         navigateBack(app)
         openTab(app, named: "My Collection")
-        let collectionRow = findGameRow(app)
-        XCTAssertTrue(collectionRow.waitForExistence(timeout: 5), "Donkey Kong missing from My Collection after marking owned")
+        XCTAssertTrue(scanForGameRow(app), "Donkey Kong missing from My Collection after marking owned")
 
         // Step 4: cleanup — flip back off so state doesn't leak into subsequent runs.
+        //         The scan left the row on screen and hittable.
+        let collectionRow = findGameRow(app)
         collectionRow.tap()
         waitForDetailToSettle(app)
         let cleanupToggle = findPCBToggle(app)
@@ -69,13 +97,79 @@ final class GoldenPathUITests: XCTestCase {
         tapToggle(cleanupToggle)
         XCTAssertTrue(waitForSwitch(cleanupToggle, on: false), "Cleanup toggle-off didn't stick")
 
-        // Step 5: confirm My Collection no longer lists Donkey Kong.
+        // Step 5: confirm My Collection no longer lists Donkey Kong. This also
+        //         has to scan: a single query would "pass" merely because the
+        //         list happened to be scrolled somewhere else, which is how
+        //         this assertion could go green while proving nothing.
         navigateBack(app)
-        let stillVisible = findGameRow(app).waitForExistence(timeout: 2)
-        XCTAssertFalse(stillVisible, "Donkey Kong still visible on My Collection after cleanup — ownership filter isn't reactive")
+        XCTAssertFalse(scanForGameRow(app), "Donkey Kong still on My Collection after cleanup — ownership filter isn't reactive")
     }
 
     // MARK: - Helpers
+
+    /// Whether Donkey Kong's row exists anywhere in the currently displayed
+    /// list, rewinding to the top and scrolling the whole way down to decide.
+    ///
+    /// This test used to assume Donkey Kong would be the *only* owned game and
+    /// therefore sitting at row 0. That holds on a clean simulator and is false
+    /// on any device whose owner actually uses the app: on a real iPhone with a
+    /// populated collection, the title-sorted list showed A through C and
+    /// `game-row-dkong` was simply below the fold — absent from the
+    /// accessibility tree because `List` is lazy, not because the app was
+    /// wrong. Scanning removes the assumption entirely.
+    ///
+    /// Ends the scan early when a swipe fails to change the topmost realized
+    /// row, which means the list has stopped moving and we've hit the bottom.
+    /// On success the row is left on screen and hittable so the caller can tap
+    /// it directly.
+    private func scanForGameRow(_ app: XCUIApplication, maxSwipes: Int = 40) -> Bool {
+        let scroller = app.collectionViews.firstMatch
+        guard scroller.waitForExistence(timeout: 5) else { return false }
+
+        rewindToTop(app, scroller: scroller, maxSwipes: maxSwipes)
+
+        var lastTopRow = ""
+        for _ in 0..<maxSwipes {
+            if isGameRowReady(app) { return true }
+            let topRow = topRealizedRowIdentifier(app)
+            if topRow == lastTopRow { break }
+            lastTopRow = topRow
+            scroller.swipeUp()
+        }
+        return isGameRowReady(app)
+    }
+
+    /// Scrolls back to the top so a scan always covers the full list. Returning
+    /// to My Collection from a detail view restores the previous scroll offset,
+    /// so "start from wherever we are" would silently skip rows above it.
+    private func rewindToTop(_ app: XCUIApplication, scroller: XCUIElement, maxSwipes: Int) {
+        var lastTopRow = ""
+        for _ in 0..<maxSwipes {
+            let topRow = topRealizedRowIdentifier(app)
+            if topRow == lastTopRow { return }
+            lastTopRow = topRow
+            scroller.swipeDown()
+        }
+    }
+
+    /// Requires `isHittable`, not just `exists`: a row straddling the viewport
+    /// edge enters the accessibility tree but can be evicted before the caller
+    /// taps it, which is the same trap `findPCBToggle` documents below.
+    private func isGameRowReady(_ app: XCUIApplication) -> Bool {
+        let row = findGameRow(app)
+        return row.exists && row.isHittable
+    }
+
+    /// Identifier of the topmost realized `game-row-*` button, or `""` if none.
+    /// Used purely as a "did the list actually move?" signal, so the exact
+    /// ordering guarantee doesn't matter — only that the value changes when the
+    /// content scrolls and stops changing at the end.
+    private func topRealizedRowIdentifier(_ app: XCUIApplication) -> String {
+        let predicate = NSPredicate(format: "identifier BEGINSWITH %@", "game-row-")
+        let rows = app.descendants(matching: .button).matching(predicate)
+        guard rows.count > 0 else { return "" }
+        return rows.element(boundBy: 0).identifier
+    }
 
     /// Queries by accessibility identifier across any element type. SwiftUI's
     /// `.accessibilityIdentifier(_:)` inside a `NavigationLink` may surface on

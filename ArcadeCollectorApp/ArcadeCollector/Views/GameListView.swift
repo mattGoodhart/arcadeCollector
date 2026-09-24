@@ -191,9 +191,40 @@ struct GameRow: View {
     let game: Game
     var isDarkRow = false
 
+    /// Decoded row icons, shared across all rows and all four list tabs.
+    ///
+    /// Without this, every body pass re-ran the asset lookup *and* a full
+    /// PNG decode for each visible row — and these lists re-evaluate on any
+    /// SwiftData save anywhere in the app, including a repair-log edit on
+    /// another tab. NSCache evicts under memory pressure.
+    private static let iconCache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.countLimit = 256
+        return cache
+    }()
+
+    /// ROM names with no bundled icon. Most of the 3,855 seeded games have
+    /// none, so the miss path is the common one and is worth short-circuiting
+    /// too — `NSDataAsset(name:)` is a catalog lookup, not free. Only touched
+    /// from `body`, so main-actor confinement is the synchronization.
+    @MainActor private static var iconMisses: Set<String> = []
+
+    @MainActor private static func icon(forROM romSetName: String) -> UIImage? {
+        if iconMisses.contains(romSetName) { return nil }
+        let key = romSetName as NSString
+        if let cached = iconCache.object(forKey: key) { return cached }
+
+        guard let image = NSDataAsset(name: "icons/\(romSetName)")
+            .flatMap({ UIImage(data: $0.data) }) else {
+            iconMisses.insert(romSetName)
+            return nil
+        }
+        iconCache.setObject(image, forKey: key)
+        return image
+    }
+
     private var iconImage: UIImage? {
-        NSDataAsset(name: "icons/\(game.romSetName)")
-            .flatMap { UIImage(data: $0.data) }
+        Self.icon(forROM: game.romSetName)
     }
 
     var body: some View {

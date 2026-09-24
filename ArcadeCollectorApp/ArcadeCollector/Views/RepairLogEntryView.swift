@@ -135,22 +135,31 @@ struct RepairLogEntryView: View {
     }
 
     private func updateGameTimestamp() {
-        guard let game = log.game else { return }
-        game.lastRepairLogDate = game.repairLogs
-            .max(by: { $0.date < $1.date })?.date
+        log.game?.refreshLastRepairLogDate()
     }
 
     // Notes are buffered in @State to keep TextEditor keystrokes off SwiftData.
     // Flushing must survive process termination between keystrokes and view exit:
     // debounced writes cover typing pauses, scenePhase writes cover backgrounding,
     // and onDisappear covers normal navigation.
-    private func flushNotes() {
+    //
+    // `persist` separates the two costs. Writing `log.notes` is cheap and is
+    // what bounds the data-loss window. `modelContext.save()` is the
+    // expensive half: it notifies every live `@Query` in the app, and
+    // `ContentView`'s `TabView` keeps an unbounded `@Query var games: [Game]`
+    // alive for every tab the user has visited. Saving on each typing pause
+    // therefore re-rendered all of them once per second, which is what made
+    // the editor feel unresponsive. Backgrounding and navigating away — the
+    // two moments that actually precede process death — still save.
+    private func flushNotes(persist: Bool = true) {
         notesFlushTask?.cancel()
         notesFlushTask = nil
         if log.notes != notesText {
             log.notes = notesText
         }
-        try? modelContext.save()
+        if persist {
+            try? modelContext.save()
+        }
     }
 
     private func scheduleDebouncedFlush() {
@@ -158,7 +167,7 @@ struct RepairLogEntryView: View {
         notesFlushTask = Task { @MainActor in
             try? await Task.sleep(for: .seconds(1))
             guard !Task.isCancelled else { return }
-            flushNotes()
+            flushNotes(persist: false)
         }
     }
 }

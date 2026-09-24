@@ -397,7 +397,7 @@ The legacy app had a "History" button that displayed a block of text from the `h
 
 - **I'd have a `DEVLOG.md` too, maybe.** `Journal.md` is for insight and learning. A separate append-only devlog for "what I worked on today" would give a nice paper trail without polluting the learning journal with dated task notes.
 
-- **I'd have started with a data migration plan.** The current design treats the port as a clean start — no user data carries over from the legacy app. If we ever want to import existing users' Core Data stores, the drift between the legacy and new schemas (especially the LED-int-to-enum and normalized artwork) becomes a migration script. That's fine, but it's a decision we made *implicitly* rather than intentionally. Worth revisiting before we ship.
+- ~~**I'd have started with a data migration plan.**~~ **Resolved 2026-09-22 — moot, no migration will ever be needed.** This entry used to call the clean-start design "a decision we made *implicitly* rather than intentionally" and flagged it as "worth revisiting before we ship." Revisited; there was nothing there. The legacy app was never released and never will be, so no Core Data store exists anywhere that could need importing. Two facts make the port structurally incapable of being a migration even if someone wanted one: the bundle IDs differ (`com.catboiz.arcadeCollector` vs `MattGoodhart.ArcadeCollector`), so the new app is a separate App Store listing rather than an update — and separate listings get separate sandbox containers, which iOS will not let the new app read across. Closed.
 
 - **I'd rely more on `#Preview` from day one.** The empty `ContentView` we have today has no meaningful preview because it queries `Game` from an in-memory store with zero rows. A `Preview` extension that inserts a few `Game` samples into the preview container would pay for itself the moment we start building detail screens.
 
@@ -933,7 +933,7 @@ Two tests: `userDataSurvivesContainerRestart` covers the "populated store round-
 
 **Cleanup detail**: SwiftData writes SQLite `-shm` and `-wal` sidecar files next to the main store file. The teardown `defer` block removes all three so temp directories don't accumulate leftover state across test runs.
 
-**Manual rehearsal checklist (before shipping v1.0):**
+**Manual rehearsal checklist (before shipping v1.0)** — **steps 1–6 executed on device 2026-09-23 and passed. Steps 7–8 are retired: superseded by `SchemaEvolutionTests` on 2026-09-23** (see the entry at the end of this journal).
 
 1. Delete the app from the simulator / device to guarantee a clean install.
 2. Fresh install the current build.
@@ -941,10 +941,10 @@ Two tests: `userDataSurvivesContainerRestart` covers the "populated store round-
 4. Toggle several games to `.owned`, set a few component statuses, add 2–3 repair logs with photos.
 5. Force-quit.
 6. Relaunch and verify all the state is still there. (This is what the automated test now covers, but doing it once on a device confirms it in reality.)
-7. **The real rehearsal**: add a new stored property to one of the `@Model` classes *with an inline default* (`var newField: String = ""` or similar). Rebuild and relaunch. Confirm the store migrates without a `fatalError`.
-8. Bonus: temporarily *drop* the inline default to see what the failure looks like — it should be caught in dev, never in Release.
+7. ~~**The real rehearsal**: add a new stored property to one of the `@Model` classes *with an inline default*. Rebuild and relaunch. Confirm the store migrates without a `fatalError`.~~ → **Automated.** `SchemaEvolutionTests.storeSurvivesAddingADefaultedProperty` writes an on-disk store under a `VersionedSchema` V1, reopens it under a V2 that adds a defaulted property, and asserts the row survives with the column backfilled.
+8. ~~Bonus: temporarily *drop* the inline default to see what the failure looks like.~~ → **Replaced, not automated.** That failure is a `fatalError` in `ModelContainer.init`, which is uncatchable in Swift and would abort the whole test process rather than report a failure. `SchemaEvolutionTests.newNonOptionalAttributesDeclareDefaults` catches the same mistake *statically* instead, by diffing the live schema's attribute metadata against a checked-in baseline — with a message instead of a crash.
 
-**Safety rule**: any new non-optional stored property added to a `@Model` class MUST have an inline default value. Enforcement is by review + this test suite. If the automated roundtrip breaks after a model change, the fix is to add an inline default to the new property, not to disable the test.
+**Safety rule**: any new non-optional stored property added to a `@Model` class MUST have an inline default value. **Enforcement is now automated** — `SchemaEvolutionTests` fails with the offending `Entity.attribute` named. Adding it to that test's `attributesWithoutDefaults` baseline to silence it is almost always the wrong fix; adding an inline default is the right one.
 
 **Lesson**: in-memory tests validate logic; on-disk tests validate persistence contracts. Every SwiftData app should have at least one on-disk roundtrip test in CI, even if it feels redundant with the in-memory suite — the failure mode it catches (schema migration bug) is not exercised by any other kind of test, and it's the one that ships broken apps.
 
@@ -1222,3 +1222,284 @@ Added a `showManualUnavailable` state flag that triggers an alert: "No manual is
 **Follow-up (same day):** review flagged that the `catch` block was also nil-ing `manualURL` — meaning any transient network failure (offline, timeout, 5xx) would permanently remove the Manual button until the artwork fetcher back-filled the URL again. Swapped a bad UX for a slightly-worse-but-persistent one. Dropped the `manualURL = nil` assignment from the `catch`; kept it on the non-PDF-data path where ADB has actually confirmed the URL isn't a real manual. Alert still fires either way, so the user gets feedback, but the button remains for retry on transient errors.
 
 **Lesson**: "no manual" and "couldn't check" are two different states. Persisting a diagnosis based on the second one is wrong — network availability is orthogonal to whether the resource exists. When your error handling calls `.nil` or otherwise commits state, ask: does *this specific error* prove the fact I'm committing? For an HTTP 404, yes. For a `URLError.timedOut`, no.
+
+### 2026-09-22 — The Ghost Game on the Repair Logs Tab
+
+Delete every repair log for a game and the game *still* sat there on the Repair Logs tab, smugly claiming to have repair history. Navigate in and the entry list was correctly empty. So the data was gone; something was lying about it.
+
+**The lie was a cache.** `Game.lastRepairLogDate: Date?` is a denormalized field — the only thing the Repair Logs tab filter consults (`GameListFilter.matchesEnumFilters` → `if game.lastRepairLogDate == nil { return false }`), and the same field `SummaryView.gamesInRepair` counts. The tab never looks at `game.repairLogs` at all, and for good reason: `matchesEnumFilters` runs in-memory across all 3,855 `@Query` rows, so faulting a to-many relationship per game would be a disaster. Cheap scalar column, one predicate-free pass. Good design — with one bill attached: **every mutation of `repairLogs` must keep the cache honest, or the list shows a game that isn't there.**
+
+The delete path didn't pay it:
+
+```swift
+for index in offsets {
+    modelContext.delete(sorted[index])
+}
+DispatchQueue.main.async {
+    game.lastRepairLogDate = game.repairLogs
+        .max(by: { $0.date < $1.date })?.date
+}
+```
+
+**Why it fails.** `modelContext.delete()` marks a model for deletion; it does not synchronously scrub it from the *inverse relationship array* it's sitting in. So `game.repairLogs` can still hand back the object we just killed, `.max()` finds its date, and the cache gets refreshed to a tombstone's timestamp. Non-nil. Game stays on the tab.
+
+The `DispatchQueue.main.async` is the tell. That hop is someone having *already noticed* the array was stale and hoping a run-loop turn would fix it — the load-bearing comment that never got written. It's a race with SwiftData's internal bookkeeping, and races that "mostly work" are worse than races that never work, because they ship.
+
+**The fix: derive the survivors, don't re-read them.**
+
+```swift
+let snapshot = sortedLogs
+let doomed = offsets.compactMap { snapshot.indices.contains($0) ? snapshot[$0] : nil }
+let doomedIDs = Set(doomed.map(\.persistentModelID))
+
+game.repairLogs.removeAll { doomedIDs.contains($0.persistentModelID) }
+for log in doomed { modelContext.delete(log) }
+
+refreshLastRepairLogDate(from: snapshot.filter { !doomedIDs.contains($0.persistentModelID) })
+try? modelContext.save()
+```
+
+Four changes, each pulling its weight:
+
+1. **Survivors computed by set subtraction on a pre-delete snapshot.** Nothing is read back out of SwiftData, so there is no window in which the answer depends on timing. The correct value is knowable synchronously from data we already hold — so know it synchronously.
+2. **Explicit `repairLogs.removeAll`** detaches the doomed entries from the relationship immediately, so the `ForEach` and the "No Repair Entries" overlay are right on this pass instead of whenever the context catches up.
+3. **Explicit `save()`** commits it. SwiftData's autosave is not a correctness guarantee you can hang a user-visible list off of (same lesson as the notes-flush work in August).
+4. **`refreshLastRepairLogDate(from:)`** now owns the invariant in one place, and `addEntry()` routes through it too. That drive-by also fixed a latent sibling bug: `addEntry` used to assign `lastRepairLogDate = entry.date` flat-out, so a back-dated entry would have *regressed* the "Last Entry" row in `GameDetailView`. New entries are always `.now` today, so nobody could hit it — but "correct only because of how the caller happens to behave" is a bug with a delayed fuse.
+
+The `indices.contains` guard on the offsets is belt-and-suspenders against a stale `IndexSet` from a mid-animation delete. `compactMap` over a bounds check beats a crash on `snapshot[$0]`.
+
+**Lesson**: a denormalized field is a cache, and a cache has exactly one hard requirement — *every* writer of the underlying truth must update it. Grep for the field the moment you add one and make sure the set of writers is small, named, and funneled through a single refresh helper. Here there were three writers (`addEntry`, `deleteLogs`, `RepairLogEntryView.updateGameTimestamp`) and two readers on completely different screens; the delete writer was wrong and the add writer was accidentally-right. That ratio is what denormalization costs, and it's why the refresh logic belongs in one function that every mutation calls rather than three hand-rolled `.max(by:)` expressions.
+
+**Lesson**: `modelContext.delete(child)` does not synchronously remove the child from its parent's to-many array. If you need post-delete state in the same turn of the run loop, compute it from a pre-delete snapshot minus what you're deleting — never by re-reading the relationship. Re-reading is the natural thing to write and it's wrong.
+
+**Lesson**: `DispatchQueue.main.async` inside a `@MainActor` view body handler is a code smell with a specific meaning — "I observed that this value wasn't ready yet, and I'm deferring instead of understanding why." It's the synchronization equivalent of a `sleep(1)` in a flaky test. When you find one, don't delete the hop and hope; find the state that wasn't settled and compute it a way that can't be unsettled. If the correct answer is derivable from data already in hand, no hop is needed at all.
+
+### 2026-09-22 — Five Live Queries and a Fifteen-Pass Summary
+
+Right after the repair-log delete fix: typing a few letters into a repair log's notes made the whole UI crawl. Which was maddening, because the August 14 entry *already* fixed slow notes typing — buffered `@State`, debounced flush, thumbnails hoisted into a subview with their own cache. All of that was still in place and still correct. The keystrokes weren't the problem this time. The **save** was.
+
+**The amplifier.** `ContentView` is a `TabView` with five tabs, and four of them are `GameListTab` while the fifth is `SummaryView`. Every single one holds an unbounded `@Query var games: [Game]` over all 3,855 rows. SwiftUI keeps a tab's view tree alive once you've visited it, so after a minute of normal use there are **five live unbounded queries** in the app, and any `modelContext.save()` anywhere invalidates all of them at once.
+
+`flushNotes()` called `try? modelContext.save()`, and the 1-second debounce called `flushNotes()`. So: type, pause for a second, and the app re-fetches 3,855 rows five times and re-evaluates five list bodies. While you're trying to type in a text editor.
+
+**The worst consumer, by a mile.** `SummaryView` had `ownedGames` as an uncached computed property — `games.filter { $0.ownership == .owned }`, a full 3,855-row pass every time it was *read*. Counting the reads in one body evaluation:
+
+- `collectionCountsSection` — `ownedGames`, `wantedGames`, `gamesInRepair` → 3 passes
+- `bulkArtworkSection` — `ownedGames.isEmpty` → 1
+- `boardConditionSection` — `ownedGames.isEmpty` → 1, then `gamesByCondition` (which itself reads `ownedGames` and runs 4 more filters over the owned subset), and **`gamesByCondition` was called three separate times**: once for `Chart`, once for `chartLegend`, once for `conditionAccessibilityValue`
+- `componentBreakdownSection` — `ownedGames.isEmpty` → 1, then `statusCounts` **five times**, each one iterating `ownedGames` from scratch → 5 more passes
+- `.onChange(of: ownedGames.count)` — the value expression is re-evaluated on every body pass → 1 more
+
+Roughly fifteen full passes over 3,855 games, twelve more over the owned subset, plus a Swift Charts pie relayout. Per save. On the main thread.
+
+**Fixes, in descending order of payoff.**
+
+1. **One pass, one struct.** A `Stats` value type with an `init(games:)` that walks the array exactly once and accumulates every count the screen needs — collection totals, the four condition buckets, and all five component histograms. `body` computes `let stats = Stats(games: games)` and threads it into the four sections, which became functions instead of computed properties. The per-game bucket predicates are copied verbatim, because the buckets aren't mutually exclusive by construction and I wanted zero semantic drift.
+
+   Verified rather than eyeballed: ran the old per-bucket `filter` expressions and the new single-pass `Stats` side by side over the full 4⁵ = 1,024-game cross product of component statuses, and all thirteen aggregates matched. Then re-ran with every game `.owned`, because the first sample happened to assign the all-`.untested` game to `.wanted` and left `untestedBoards` at 0 — a bucket that reports "match" while never being exercised is not actually tested. Second run: all five owned-only buckets matched with non-zero counts.
+
+2. **Push the repair-log filter into SQLite.** The Repair Logs tab was fetching all 3,855 games and then discarding all but a handful in `matchesEnumFilters`. But `lastRepairLogDate` is a plain `Date?` column — unlike the enum properties that `#Predicate` chokes on, this one is perfectly expressible. Confirmed empirically before committing to it (`!= nil` alone, and `&&`-ed with the title search) since the journal's own history with `#Predicate` is that it fails at macro expansion, schema validation, *or* runtime depending on the expression. Both forms worked. That tab's query now returns the handful of games with repair history instead of the whole table, which also shrinks the set of per-object observation dependencies the list body registers by the same factor. The in-memory `lastRepairLogDate == nil` check stays as the authority, because a pending delete isn't visible to SQL until the context saves.
+
+3. **Separate the write from the save.** `flushNotes(persist:)` now splits the two costs. The in-memory `log.notes = notesText` write is what bounds the data-loss window and it's nearly free; `save()` is what fans out to five queries. The debounce writes without saving; `scenePhase` leaving `.active` and `onDisappear` — the two moments that actually precede process death — still save. Crash-safety intact, per-second global re-render gone.
+
+4. **Cache the row icons.** `GameRow.iconImage` was an `NSDataAsset` lookup *plus* a full `UIImage(data:)` PNG decode, in a computed property read from `body`, for every visible row, on every re-evaluation. Exactly the bug the August 14 `PhotoThumbnail` entry diagnosed — just never applied to the list rows. Now an `NSCache` for hits plus a main-actor `Set<String>` for known misses, since most of the 3,855 seeded games have no bundled icon and the miss path is the common one.
+
+Confirmed responsive on-device after the four changes landed. No attempt was made to attribute the win between them — they were applied as one batch, and Instruments would be the way to apportion credit if it ever matters. The ranking above is by reasoning about cost, not by measurement.
+
+**Pre-existing failure, found in passing.** The full suite came back 64/65 with `GoldenPathUITests/testOwnershipRoundTripAcrossTabs` failing on "Donkey Kong missing from My Collection after marking owned." Stashed everything and ran that one test against clean `HEAD` — it fails there too, so not mine. I guessed in the moment that it smelled like the same denormalized-state-vs-observation family as the repair-log ghost. **That guess was wrong** — see the next entry. The app was fine; the test was making two assumptions about the world that weren't true.
+
+**Lesson**: `TabView` + `@Query` is a performance trap that scales with the number of tabs. Each visited tab keeps its query alive forever, so N tabs with unbounded queries means one save costs N re-fetches and N body evaluations. The fix isn't to fight SwiftUI's tab retention — it's to make each query as narrow as the tab actually needs (predicates pushed into SQLite, not in-memory filters over the whole table) and each body as cheap as possible. Count your live queries; that number is a multiplier on every write in the app.
+
+**Lesson**: a computed property that filters a collection is a function call, not a cached value, and SwiftUI bodies read them far more often than they look like they do. `ownedGames` reads like a stored subset; it was fifteen full table scans. The tell is any computed property whose body contains `filter`, `map`, `sorted`, or `reduce` being referenced more than once in a view — bind it to a `let` at the top of `body`, or hoist the whole aggregation into a value type computed once. The same applies doubly to `.onChange(of: expensiveThing)`: that expression is evaluated on *every* body pass, not just when it changes.
+
+**Lesson**: when re-fixing a performance problem you already fixed once, check whether the old fix is still correct before rewriting it. The August buffering work was doing its job perfectly — keystrokes never touched SwiftData. The regression was one layer out, in what `save()` costs when the app has grown from one live query to five. Perf fixes are scoped to the architecture at the time they're written; the architecture moved.
+
+**Lesson**: verify behavior-preserving refactors by running both implementations against a generated input space and diffing, not by reading the diff carefully. And then check the *coverage* of that input space — the first comparison run here reported thirteen matches, but one of the buckets was 0 on both sides because the sample never produced a qualifying game. Two identical zeros is not evidence.
+
+### 2026-09-22 — The Golden Path Test Was Testing the Test Machine
+
+`GoldenPathUITests/testOwnershipRoundTripAcrossTabs` had been failing on "Donkey Kong missing from My Collection after marking owned." I'd assumed an app bug in the same family as the morning's repair-log ghost. It was neither an app bug nor one bug — it was two environment assumptions, stacked, and the second one only showed up after fixing the first.
+
+**Getting the evidence instead of guessing.** The console log says almost nothing useful — it just shows the query retrying for five seconds. The thing that actually cracked it was exporting the failure attachments out of the `.xcresult`:
+
+```
+xcrun xcresulttool export attachments --path <bundle>.xcresult \
+  --test-id "GoldenPathUITests/testOwnershipRoundTripAcrossTabs()" \
+  --output-path /tmp/uitest-attach
+```
+
+That drops a `manifest.json` mapping opaque UUIDs to human names, including **"App UI hierarchy for ..."** — a full accessibility dump at the moment of failure. Worth knowing that this exists; it converts "the element wasn't found" into "here is literally everything that was on screen."
+
+**Assumption 1: Donkey Kong is the only owned game.** The dump showed My Collection working perfectly — `aerofgt`, `amerdart`, `area51mx`, `baddudes`, `battlera`, `bbh2sp`, `blockout`, `bloodbro`, `cabal`, `capbowl`, `captaven`. Alphabetical, correct, reactive. The tests run **on a physical iPhone against the owner's real collection**, and the test's own comment said "(it's the only owned game)." Donkey Kong is a D; the visible window was A through C. `List` is lazy, so a row below the fold isn't merely invisible — it isn't in the accessibility tree at all, and "not found" is indistinguishable from "not on screen" from a single query. Green on a clean simulator, red on any device anyone has actually used.
+
+Fixed by replacing the point query with a `scanForGameRow(_:)` that rewinds to the top and swipes through the list, ending early when a swipe fails to change the topmost realized row (i.e. we hit the bottom). The negative assertion in step 5 needed the same treatment for a subtler reason: `XCTAssertFalse(row.waitForExistence(...))` on a lazy list **passes whenever the list happens to be scrolled elsewhere**. It was green, and it was proving nothing. Now it scans the whole list before concluding absence — verified from the log that it really does 8 swipes and terminates via the end-detector rather than the swipe cap.
+
+**Assumption 2: the device is in portrait.** With the scan in place the test passed standalone — and still failed in the full suite. Same code, different result, which is the signature of environment rather than logic. Diffing the two logs: the passing run's collection view was `{{0,0},{393,852}}` and the failing one was `{{0,-0},{852,393}}`. **Landscape.** No test rotates anything; it's a *physical phone on a desk*, and its orientation is whatever it was left in. In landscape the swipes stopped advancing the content, so the end-of-list detector fired immediately and the scan concluded "absent" after eight no-op swipes.
+
+Fixed with one line in `setUpWithError`: `XCUIDevice.shared.orientation = .portrait`. Confirmed it's load-bearing rather than luck — in the now-passing suite run the log still shows other tests going Landscape Right, while this suite's collection view reports `{393, 852}`.
+
+Every geometric assumption in the file was already portrait-shaped and undeclared: `findPCBToggle` compares the toggle's frame against the tab bar's to avoid tapping through to the Repair Logs button, and the scan depends on swipes actually scrolling. The orientation was load-bearing all along; it just happened to be true until it wasn't.
+
+**Lesson**: a UI test that runs against a real device's real data is testing two things at once — your app, and your assumptions about the machine. Both assumptions here were written down *as comments* ("it's the only owned game") and both were false. When a UI test asserts on list membership, never assume position; scan. When it asserts on layout or gestures, pin the orientation explicitly in `setUp` rather than inheriting whatever the last test — or the last human to pick up the phone — left behind.
+
+**Lesson**: `XCTAssertFalse(element.waitForExistence(...))` against a lazy container is usually a fake assertion. Absence-of-element is only meaningful if you've established the element *would* have been realized had it existed. A negative test that can't fail is worse than no test, because it occupies the slot where a real one would go and reports green forever.
+
+**Lesson**: "passes alone, fails in the suite" is diagnostic information, not an annoyance to retry past. It means state or environment is leaking across tests, and the leak is nearly always the actual bug. Diff the two runs' logs — here the answer was sitting in a single geometry string, two numbers transposed.
+
+**Lesson**: when a UI test fails on "element not found," export the `.xcresult` attachments before theorizing. The accessibility hierarchy dump at failure time tells you what was on screen, which collapses the entire space of "is it the app, the query, the timing, or the data?" into one look. I spent the first several minutes of this bug reasoning about SwiftData observation for a screen that was, it turns out, rendering perfectly.
+
+### 2026-09-22 — Portrait-Only, Decided On Purpose This Time
+
+The landscape flake above surfaced something nobody had actually decided: the app shipped supporting **landscape left, landscape right, and portrait** on iPhone, and all four orientations on iPad. Not a design choice — just the Xcode template defaults, untouched since the project was created. Every screen was built and eyeballed in portrait; landscape was a completely untested configuration that any user could reach by tilting their phone.
+
+That's the worse failure mode of template defaults: they're not neutral, they're *commitments* you never made. The UI test tripped over it first, but a user rotating the device on the Summary screen would have found the same unexercised layout.
+
+Now explicit, at the target level so both Debug and Release inherit it:
+
+```
+INFOPLIST_KEY_UISupportedInterfaceOrientations      = UIInterfaceOrientationPortrait
+INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait
+                                                      UIInterfaceOrientationPortraitUpsideDown
+```
+
+(The iPad upside-down value arrived in a follow-up pass — see the asymmetry note at the end of this entry. The generic key has no `~ipad` suffix, so it's what governs the iPhone idiom once `_iPad` is set explicitly.)
+
+**Two decisions inside the decision**, both worth recording because the reasoning isn't recoverable from the diff:
+
+1. **iPad is locked too**, even though the target still ships for both idioms (`TARGETED_DEVICE_FAMILY = 1,2`). The consequence is documented in `UIViewController.supportedInterfaceOrientations`: *"You can opt out of multitasking by enabling Requires full screen **or by not declaring support for all possible orientations within the Info.plist file**."* So declaring portrait-only implicitly opts iPad out of multitasking and resizable windows — no separate `UIRequiresFullScreen` needed. Accepted deliberately: a collection-tracking app with a five-tab layout gains little from Split View, and the alternative was maintaining an iPad landscape layout nobody had designed.
+
+2. **No landscape exception for video.** The Short Play section has two player paths (YouTube in a `WKWebView` with `isElementFullscreenEnabled = true`, and `AVPlayer` for direct URLs), and fullscreen video is the one place a portrait lock genuinely costs the user something. Allowing it would mean an orientation-mask hook in an app delegate — or the iOS 26 `prefersInterfaceOrientationLocked` / `setNeedsUpdateOfPrefersInterfaceOrientationLocked()` pair — plus tracking "is a player currently fullscreen" across both video paths. Declined for v1: fullscreen video letterboxes into portrait width, which is worse but costs zero code and zero ongoing correctness burden. The APIs are noted here so the option is cheap to revisit if it ever bothers anyone in practice.
+
+**Verified in the product, not the project file.** `UpdateTargetBuildSetting` wrote both Debug and Release, but the build settings are only an input — what ships is the generated `Info.plist`. Confirmed with `plutil -p` against the freshly built `.app` that `UISupportedInterfaceOrientations` and `UISupportedInterfaceOrientations~ipad` both resolve to a single-element `[UIInterfaceOrientationPortrait]`.
+
+The `XCUIDevice.shared.orientation = .portrait` line in `GoldenPathUITests` stays, downgraded from load-bearing to belt-and-suspenders, with its comment rewritten to say so. It still normalizes the device before the first tap and states the requirement where a future reader of the test will see it.
+
+**The upside-down asymmetry, added in a follow-up pass.** The first cut declared plain `Portrait` for both idioms, with a note that Apple recommends enabling `portraitUpsideDown` for iPad. That note got acted on — briefly for *both* idioms, then corrected to iPad only, which is exactly what the docs prescribe:
+
+> All iPadOS devices support `portraitUpsideDown`. It's best practice to enable it for the iPad idiom. iOS devices without a Home button, such as iPhone 12, don't support this orientation. **You should disable it entirely for the iPhone idiom.**
+
+So the final shape is deliberately asymmetric: iPhone gets `Portrait`, iPad gets `Portrait + PortraitUpsideDown`. Adding it to iPhone wouldn't have *broken* anything — Face ID iPhones ignore the declaration outright, and it would only have taken effect on older home-button hardware — but "harmless on most devices" is a weaker reason than "the platform docs say don't," and the asymmetry costs nothing to express.
+
+Two mechanical details worth remembering, because both are easy to get backwards:
+
+- `UISupportedInterfaceOrientations` has no idiom suffix, so once `_iPad` is set explicitly the generic key is effectively *the iPhone setting*. There's also a `_iPhone` variant available if you'd rather be explicit on both sides; this project uses generic + `_iPad`, matching the Xcode template's own shape.
+- Going from one orientation to two does **not** re-enable iPad multitasking. The opt-out triggers on "fewer than all four," and 2 of 4 is still fewer than all four.
+
+**Lesson**: unexercised configurations are liabilities whether or not anyone has hit them yet. Supported orientations, supported device families, minimum deployment target, supported locales — every one of those is a promise the app makes to the OS, and the template picks defaults that are broader than most apps actually honor. Audit them once, deliberately, before shipping. "It's the default" is not a decision, and the bug it eventually causes will show up somewhere unrelated — here, as a UI test that passed alone and failed in a suite.
+
+**Lesson**: verify build-setting changes against the built artifact, not the `.pbxproj`. Settings are inputs to Info.plist generation, with idiom suffixes (`~ipad`, `~iphone`), `$(inherited)` chains, and per-configuration overrides in between. `plutil -p <built>.app/Info.plist` is the ground truth and takes five seconds. (It also caught that the stale simulator build still had the old four-orientation values — harmless, but exactly the kind of thing that makes you doubt a change that actually worked.)
+
+### 2026-09-22 — Regression Tests, And Catching Myself Writing Fake Ones
+
+The two bugs fixed earlier today both lived in `Game.lastRepairLogDate`, and the suite had **zero** assertions on that field — the only mention anywhere in the test target was a `RepairLog(...)` constructor inside the persistence roundtrip. Both bugs could silently come back. This pass closes that, and the process was more instructive than the result.
+
+**First, collapse the writers.** The invariant had three hand-rolled implementations: `addEntry` and `deleteLogs` in `RepairLogListView`, plus `updateGameTimestamp` in `RepairLogEntryView`. That's precisely the "three writers is a maintenance liability" shape the earlier entry complained about, still sitting there. Moved onto the model where it belongs:
+
+```swift
+extension Game {
+    func refreshLastRepairLogDate(excluding: Set<PersistentIdentifier> = []) {
+        lastRepairLogDate = repairLogs
+            .lazy
+            .filter { !excluding.contains($0.persistentModelID) }
+            .map(\.date)
+            .max()
+    }
+}
+```
+
+The `excluding:` parameter is the delete-path hazard encoded into the signature rather than left in a comment: `modelContext.delete()` doesn't synchronously scrub the model from its inverse relationship, so a recompute that re-reads `repairLogs` can resurrect a dead entry's date. All three call sites now route through this, and the default argument makes the non-delete paths read cleanly.
+
+**Then `SummaryStats` got a real home.** It had been left `fileprivate` inside `SummaryView.swift` purely so a throwaway verification snippet could reach it — honest debt, called out at the time. Now `Support/SummaryStats.swift`, `internal`, with the aggregation rules documented where they're implemented.
+
+**The part worth writing down.** With 26 new tests passing, I reverted the fix to check the regression tests actually fail. **Only 1 of 9 failed.**
+
+The delete tests were mirroring production exactly — detach via `repairLogs.removeAll`, delete, recompute. But the detach *already cleans the array*, so `excluding:` never had anything to do and the tests passed with or without it. They were pinning the happy path while appearing to pin the bug. Green, and worthless.
+
+The fix is a helper that deliberately **omits** the detach:
+
+```swift
+private static func deleteLeavingRelationshipStale(
+    _ logs: [RepairLog], from game: Game, in context: ModelContext
+) {
+    let doomed = Set(logs.map(\.persistentModelID))
+    for log in logs { context.delete(log) }
+    game.refreshLastRepairLogDate(excluding: doomed)
+}
+```
+
+That reproduces the configuration the bug actually occurred in. Re-running the mutation: **4 of 9 fail**, including `deletingOnlyEntryClearsDate` (the literal shipped bug) and `repairLogsFilterFollowsCache` (its user-visible symptom — the game stranded on the tab). One separate test, `fullDeletePathMatchesProduction`, keeps the production sequence with both defenses; it correctly *survives* the mutation, because `removeAll` is an independent second defense. Two defenses, two tests, each pinning one.
+
+Of the five that still pass under mutation, four are legitimately insensitive: three are non-delete paths, and `deletingOlderKeepsDate` genuinely can't distinguish — deleting an older entry leaves the maximum unchanged either way.
+
+**Test counts: 65 → 91.** `RepairLogDateTests` (9) and `SummaryStatsTests` (17), including a 1,024-case matrix asserting the four condition buckets never overlap, since the pie chart treats them as slices of one whole and nothing in the types enforces disjointness.
+
+**Lesson**: mutation-test your regression tests. Write the test, watch it pass, then *reintroduce the bug* and confirm it fails. A regression test that passes against the broken code is worse than no test — it occupies the slot where a real one would go and reports green forever. This is the third time in one day the same trap appeared (a vacuous `XCTAssertFalse` on a lazy list; two identical zeros in an aggregate comparison; now this), which suggests the failure mode isn't carelessness but a structural blind spot: **passing is the expected outcome, so nobody checks whether passing was achievable any other way.**
+
+**Lesson**: a regression test that mirrors production exactly can be the *wrong* test. Production here has two independent defenses — detach the relationship, and exclude the doomed IDs from the recompute — and a test that applies both can only tell you "the combination works." To pin each defense you have to write a test that removes the other one, which means deliberately writing a test that does *not* look like the real call site. Then add one that does, and label it as the integration check.
+
+**Lesson**: when a hazard can't be expressed in the type system, express it in the signature. `refreshLastRepairLogDate(excluding:)` forces every delete-path caller to confront the question "what am I deleting?" at the call site. The previous shape — a bare recompute plus a comment warning about stale relationships — put the burden on the caller remembering to read the comment. Parameters get read; comments get skipped.
+
+### 2026-09-23 — The Rehearsal Ran (Steps 1–6), And It Passed
+
+Steps 1–6 of the manual rehearsal checklist written on 2026-07-29 finally got executed on device: clean install, seed, populate ownership and component statuses and repair logs with photos, force-quit, relaunch, verify. Everything survived.
+
+Steps 7–8 — the schema-change rehearsal — were **not** run and remain open. Noting that explicitly because the first draft of this entry said "the checklist was executed, everything survived" and marked the whole thing done, which is precisely the conflation the second lesson below warns about. Caught within the hour and corrected; it would have read as full coverage to anyone skimming later.
+
+That's an anticlimactic result and it's the right one. The whole point of the checklist was that the single most expensive bug this project has hit — the 2026-07-09 `History` field `fatalError`, a non-optional `String` added to a `@Model` with no inline default — **only reproduces on a second launch**, when an existing store meets a new schema. Every in-memory test is blind to it by construction. `PersistenceMigrationTests` closed the automated half in July; this closes the "does it actually hold on real hardware" half.
+
+**Worth being precise about what a green rehearsal does and doesn't buy.** Steps 1–6 confirm the *current* schema round-trips on a real device. They do not make the next schema change safe — that's step 7 (add a stored property with an inline default, rebuild, relaunch, confirm no `fatalError`), which rehearses a *future* event rather than verifying the present one. The checklist stays in the journal for exactly that reason: it's not a one-time gate that's now satisfied and can be deleted, it's a procedure to re-run whenever the model layer changes.
+
+**Status of the v1.0 blocker list:**
+
+| Item | Outcome |
+|---|---|
+| Regression tests for the `lastRepairLogDate` bugs | Done — 65 → 91 tests, mutation-verified |
+| Manual persistence rehearsal, steps 1–6 | Done — passed on device |
+| Manual persistence rehearsal, steps 7–8 | **Open** — schema-change rehearsal not yet run |
+| Legacy Core Data migration plan | Moot — legacy app never shipped, never will |
+
+**On step 7 specifically.** It's the highest-value step and the one least suited to being a manual chore, because it has to be re-run on *every* future model change to be worth anything — and a manual step that needs re-running forever is a manual step that will be skipped. The better shape is a `VersionedSchema` pair in the test target: write an on-disk store under schema V1, reopen it under a V2 that adds a property, assert no `fatalError`. That turns "remember to rehearse" into a permanent CI guard against the entire bug class rather than a one-time confidence boost. Noted here as the intended follow-up.
+
+**Lesson**: a checklist nobody has run is a plan, not evidence. This one sat written-but-unexecuted for roughly two months while the surrounding work — accessibility passes, App Review prep, icon variants, performance fixes — all got done, because executing it required a physical device and a deliberate ten minutes rather than a code change. The failure mode isn't forgetting the checklist exists; it's that the items requiring a human in the loop are systematically the ones that slip, precisely because they can't be knocked out while you're already in the editor. Worth noticing which of your open items are human-in-the-loop and scheduling those differently from the ones you can type your way through.
+
+**Lesson**: distinguish "verify the present" from "rehearse the future" when writing a pre-ship checklist, and don't let a green run on the former convince you you've covered the latter. Steps 1–6 here verify the shipped schema works. Step 7 rehearses the *process* for changing it. Marking the whole checklist "done" after only the first kind is how a team ends up confident and still shipping a migration `fatalError` two releases later — and I demonstrated the exact mistake in the first draft of this entry, on a checklist whose own numbering makes the split obvious. "Everything survived" is a statement about an outcome, not about coverage; when someone reports a checklist result, confirm *which items* before writing it down as done.
+
+**Lesson**: a manual step that must be repeated on every future change is a manual step with a shelf life. Steps 1–6 are a genuine one-time pre-ship gate — run once, ship, done. Step 7 is different in kind: it only has value if it runs again every time the model layer moves, which makes it a terrible fit for a human checklist and a natural fit for a test. When triaging a checklist, sort by "how many times will this need to run?" — the once-only items are fine to leave manual, and the forever items should be converted to code before they're relied on.
+
+### 2026-09-23 — Retiring Checklist Step 7 By Turning It Into A Test
+
+Step 7 of the July rehearsal checklist — add a stored property, rebuild, relaunch, confirm no `fatalError` — had a shelf-life problem. It only has value if it runs on *every* future model change, and a manual step that must repeat forever is a manual step that gets skipped. It had already sat unrun for two months. So: convert it to code.
+
+**The design changed once I checked what SwiftData actually exposes.** The plan was a `VersionedSchema` pair: write a store under V1, reopen under V2, assert no crash. That works, and it's in the suite. But a quick reflection probe on `AppSchema.schema` showed something better was available:
+
+```
+Game.history       → defaultValue: Optional("")   ← the July fix, visible in metadata
+Game.romSetName    → defaultValue: nil
+Game.title         → defaultValue: nil
+... 36 attributes total with no default
+```
+
+`Schema.Entity.attributes` exposes `isOptional` and `defaultValue`, so **the safety rule is checkable statically against the real models** — no store, no migration, no crash. That's strictly better than a probe, because a probe tests Apple's framework while this tests *our* schema.
+
+**The naive version of that check is wrong, though.** "Assert no non-optional attribute lacks a default" fails immediately with 36 offenders. All 36 are safe: they're assigned in `init` and every one shipped as part of its entity from day one, so no store has ever existed without them and there's nothing to backfill. The rule isn't "all non-optional properties need defaults" — it's "**newly added** non-optional properties need defaults." Optionality plus default is not enough information; you also need to know what's new.
+
+So the check is a **delta against a checked-in baseline**: the 36 are spelled out as a `Set<String>` literal, and the test asserts the live set hasn't grown. A property added *with* a default doesn't appear and the test stays green. Added *without* one, and the test names it. Spelling the baseline out as a literal rather than computing it is deliberate — editing it is then a visible, reviewable act in a diff, which is exactly the gate you want around "I'm claiming this migration is safe." A second test catches the inverse drift: entries that no longer exist, so the baseline can't quietly start lying about what it protects.
+
+**Mutation-tested in both directions**, per the lesson from yesterday:
+
+| Mutation to `Game` | Result |
+|---|---|
+| `var probeField: String` (no default, set in `init`) | ❌ fails: `added → ["Game.probeField"]` |
+| `var probeField: String = ""` | ✅ passes |
+
+That second row matters as much as the first. A guard that fires on *any* model change would be noise that gets disabled within a month; this one fires only on the unsafe shape. Reverted after, and confirmed `Game.swift` was byte-identical to `HEAD` before committing — the probe touched a shipping model, so "I think I put it back" wasn't good enough.
+
+**Step 8 is deliberately not automated.** Watching the failure happen requires an uncatchable `fatalError` inside `ModelContainer.init`, which would abort the test process and take the rest of the suite with it. A test that can only signal by crashing the runner is worse than a static assertion that prints the offending attribute name. Recorded in the test file itself so nobody "helpfully" adds it later.
+
+**Test counts: 91 → 94.** Steps 7–8 struck from the manual checklist.
+
+**Lesson**: check what the framework exposes before designing around what you assume it exposes. The original plan (`VersionedSchema` probe) was sound and would have worked — and would also have been mostly testing Apple's migration machinery rather than this app's models. Five minutes of reflection on `Schema.Entity.attributes` surfaced `defaultValue`, which made a fundamentally stronger check possible. The habit worth keeping: before writing the test you planned, spend one snippet asking the system what it can already tell you.
+
+**Lesson**: when a static check's naive form is overwhelmed by pre-existing violations, the answer is usually a baseline delta rather than abandoning the check or mass-fixing the violations. 36 "offenders" that are all safe means the predicate is measuring the wrong thing — the signal isn't "lacks a default," it's "*newly* lacks a default." Pin the current set, assert it doesn't grow, and make growing it require an explicit edit. This generalizes well beyond schemas: lint baselines, snapshot tests, and error-budget checks all work on the same principle, and all of them fail when someone tries to apply the absolute version on a codebase with history.
+
+**Lesson**: a guard needs a positive control as much as a negative one. Confirming the schema check fails on a bad property only proves it's *sensitive*; confirming it passes on a good property proves it's *specific*. A sensitive-but-unspecific check fires on every model change, trains everyone to ignore it, and gets commented out. Both directions, every time.
