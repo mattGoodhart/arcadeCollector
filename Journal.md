@@ -933,7 +933,7 @@ Two tests: `userDataSurvivesContainerRestart` covers the "populated store round-
 
 **Cleanup detail**: SwiftData writes SQLite `-shm` and `-wal` sidecar files next to the main store file. The teardown `defer` block removes all three so temp directories don't accumulate leftover state across test runs.
 
-**Manual rehearsal checklist (before shipping v1.0)** — **steps 1–6 executed on device 2026-09-23 and passed; steps 7–8 (the schema-change rehearsal) still pending.** See the 2026-09-23 entry at the end of this journal.
+**Manual rehearsal checklist (before shipping v1.0)** — **steps 1–6 executed on device 2026-09-23 and passed. Steps 7–8 are retired: superseded by `SchemaEvolutionTests` on 2026-09-23** (see the entry at the end of this journal).
 
 1. Delete the app from the simulator / device to guarantee a clean install.
 2. Fresh install the current build.
@@ -941,10 +941,10 @@ Two tests: `userDataSurvivesContainerRestart` covers the "populated store round-
 4. Toggle several games to `.owned`, set a few component statuses, add 2–3 repair logs with photos.
 5. Force-quit.
 6. Relaunch and verify all the state is still there. (This is what the automated test now covers, but doing it once on a device confirms it in reality.)
-7. **The real rehearsal**: add a new stored property to one of the `@Model` classes *with an inline default* (`var newField: String = ""` or similar). Rebuild and relaunch. Confirm the store migrates without a `fatalError`.
-8. Bonus: temporarily *drop* the inline default to see what the failure looks like — it should be caught in dev, never in Release.
+7. ~~**The real rehearsal**: add a new stored property to one of the `@Model` classes *with an inline default*. Rebuild and relaunch. Confirm the store migrates without a `fatalError`.~~ → **Automated.** `SchemaEvolutionTests.storeSurvivesAddingADefaultedProperty` writes an on-disk store under a `VersionedSchema` V1, reopens it under a V2 that adds a defaulted property, and asserts the row survives with the column backfilled.
+8. ~~Bonus: temporarily *drop* the inline default to see what the failure looks like.~~ → **Replaced, not automated.** That failure is a `fatalError` in `ModelContainer.init`, which is uncatchable in Swift and would abort the whole test process rather than report a failure. `SchemaEvolutionTests.newNonOptionalAttributesDeclareDefaults` catches the same mistake *statically* instead, by diffing the live schema's attribute metadata against a checked-in baseline — with a message instead of a crash.
 
-**Safety rule**: any new non-optional stored property added to a `@Model` class MUST have an inline default value. Enforcement is by review + this test suite. If the automated roundtrip breaks after a model change, the fix is to add an inline default to the new property, not to disable the test.
+**Safety rule**: any new non-optional stored property added to a `@Model` class MUST have an inline default value. **Enforcement is now automated** — `SchemaEvolutionTests` fails with the offending `Entity.attribute` named. Adding it to that test's `attributesWithoutDefaults` baseline to silence it is almost always the wrong fix; adding an inline default is the right one.
 
 **Lesson**: in-memory tests validate logic; on-disk tests validate persistence contracts. Every SwiftData app should have at least one on-disk roundtrip test in CI, even if it feels redundant with the in-memory suite — the failure mode it catches (schema migration bug) is not exercised by any other kind of test, and it's the one that ships broken apps.
 
@@ -1465,3 +1465,41 @@ That's an anticlimactic result and it's the right one. The whole point of the ch
 **Lesson**: distinguish "verify the present" from "rehearse the future" when writing a pre-ship checklist, and don't let a green run on the former convince you you've covered the latter. Steps 1–6 here verify the shipped schema works. Step 7 rehearses the *process* for changing it. Marking the whole checklist "done" after only the first kind is how a team ends up confident and still shipping a migration `fatalError` two releases later — and I demonstrated the exact mistake in the first draft of this entry, on a checklist whose own numbering makes the split obvious. "Everything survived" is a statement about an outcome, not about coverage; when someone reports a checklist result, confirm *which items* before writing it down as done.
 
 **Lesson**: a manual step that must be repeated on every future change is a manual step with a shelf life. Steps 1–6 are a genuine one-time pre-ship gate — run once, ship, done. Step 7 is different in kind: it only has value if it runs again every time the model layer moves, which makes it a terrible fit for a human checklist and a natural fit for a test. When triaging a checklist, sort by "how many times will this need to run?" — the once-only items are fine to leave manual, and the forever items should be converted to code before they're relied on.
+
+### 2026-09-23 — Retiring Checklist Step 7 By Turning It Into A Test
+
+Step 7 of the July rehearsal checklist — add a stored property, rebuild, relaunch, confirm no `fatalError` — had a shelf-life problem. It only has value if it runs on *every* future model change, and a manual step that must repeat forever is a manual step that gets skipped. It had already sat unrun for two months. So: convert it to code.
+
+**The design changed once I checked what SwiftData actually exposes.** The plan was a `VersionedSchema` pair: write a store under V1, reopen under V2, assert no crash. That works, and it's in the suite. But a quick reflection probe on `AppSchema.schema` showed something better was available:
+
+```
+Game.history       → defaultValue: Optional("")   ← the July fix, visible in metadata
+Game.romSetName    → defaultValue: nil
+Game.title         → defaultValue: nil
+... 36 attributes total with no default
+```
+
+`Schema.Entity.attributes` exposes `isOptional` and `defaultValue`, so **the safety rule is checkable statically against the real models** — no store, no migration, no crash. That's strictly better than a probe, because a probe tests Apple's framework while this tests *our* schema.
+
+**The naive version of that check is wrong, though.** "Assert no non-optional attribute lacks a default" fails immediately with 36 offenders. All 36 are safe: they're assigned in `init` and every one shipped as part of its entity from day one, so no store has ever existed without them and there's nothing to backfill. The rule isn't "all non-optional properties need defaults" — it's "**newly added** non-optional properties need defaults." Optionality plus default is not enough information; you also need to know what's new.
+
+So the check is a **delta against a checked-in baseline**: the 36 are spelled out as a `Set<String>` literal, and the test asserts the live set hasn't grown. A property added *with* a default doesn't appear and the test stays green. Added *without* one, and the test names it. Spelling the baseline out as a literal rather than computing it is deliberate — editing it is then a visible, reviewable act in a diff, which is exactly the gate you want around "I'm claiming this migration is safe." A second test catches the inverse drift: entries that no longer exist, so the baseline can't quietly start lying about what it protects.
+
+**Mutation-tested in both directions**, per the lesson from yesterday:
+
+| Mutation to `Game` | Result |
+|---|---|
+| `var probeField: String` (no default, set in `init`) | ❌ fails: `added → ["Game.probeField"]` |
+| `var probeField: String = ""` | ✅ passes |
+
+That second row matters as much as the first. A guard that fires on *any* model change would be noise that gets disabled within a month; this one fires only on the unsafe shape. Reverted after, and confirmed `Game.swift` was byte-identical to `HEAD` before committing — the probe touched a shipping model, so "I think I put it back" wasn't good enough.
+
+**Step 8 is deliberately not automated.** Watching the failure happen requires an uncatchable `fatalError` inside `ModelContainer.init`, which would abort the test process and take the rest of the suite with it. A test that can only signal by crashing the runner is worse than a static assertion that prints the offending attribute name. Recorded in the test file itself so nobody "helpfully" adds it later.
+
+**Test counts: 91 → 94.** Steps 7–8 struck from the manual checklist.
+
+**Lesson**: check what the framework exposes before designing around what you assume it exposes. The original plan (`VersionedSchema` probe) was sound and would have worked — and would also have been mostly testing Apple's migration machinery rather than this app's models. Five minutes of reflection on `Schema.Entity.attributes` surfaced `defaultValue`, which made a fundamentally stronger check possible. The habit worth keeping: before writing the test you planned, spend one snippet asking the system what it can already tell you.
+
+**Lesson**: when a static check's naive form is overwhelmed by pre-existing violations, the answer is usually a baseline delta rather than abandoning the check or mass-fixing the violations. 36 "offenders" that are all safe means the predicate is measuring the wrong thing — the signal isn't "lacks a default," it's "*newly* lacks a default." Pin the current set, assert it doesn't grow, and make growing it require an explicit edit. This generalizes well beyond schemas: lint baselines, snapshot tests, and error-budget checks all work on the same principle, and all of them fail when someone tries to apply the absolute version on a codebase with history.
+
+**Lesson**: a guard needs a positive control as much as a negative one. Confirming the schema check fails on a bad property only proves it's *sensitive*; confirming it passes on a good property proves it's *specific*. A sensitive-but-unspecific check fires on every model change, trains everyone to ignore it, and gets commented out. Both directions, every time.
