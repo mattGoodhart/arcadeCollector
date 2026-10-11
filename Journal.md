@@ -1503,3 +1503,15 @@ That second row matters as much as the first. A guard that fires on *any* model 
 **Lesson**: when a static check's naive form is overwhelmed by pre-existing violations, the answer is usually a baseline delta rather than abandoning the check or mass-fixing the violations. 36 "offenders" that are all safe means the predicate is measuring the wrong thing — the signal isn't "lacks a default," it's "*newly* lacks a default." Pin the current set, assert it doesn't grow, and make growing it require an explicit edit. This generalizes well beyond schemas: lint baselines, snapshot tests, and error-budget checks all work on the same principle, and all of them fail when someone tries to apply the absolute version on a codebase with history.
 
 **Lesson**: a guard needs a positive control as much as a negative one. Confirming the schema check fails on a bad property only proves it's *sensitive*; confirming it passes on a good property proves it's *specific*. A sensitive-but-unspecific check fires on every model change, trains everyone to ignore it, and gets commented out. Both directions, every time.
+
+### 2026-10-11 — iPhone-Only For 1.0
+
+`TARGETED_DEVICE_FAMILY` goes from `1,2` to `1`. The built `Info.plist` now says `UIDeviceFamily = [1]`.
+
+The reasoning came out of TestFlight prep. Declaring iPad support isn't free: App Store Connect wants iPad screenshots, and App Review judges the iPad layout — of a five-tab, portrait-locked UI that was only ever designed and checked on an iPhone. Nobody had decided to ship for iPad. It was the same template default as the orientations a few weeks ago, still sitting there. Shipping iPhone-only for 1.0 takes that whole surface out of review, and iPad becomes a real decision for 1.1 instead of an accident in 1.0.
+
+**Kept on purpose:** `INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad` (portrait + upside-down) is still set. It's inert while the app is iPhone-only — an iPhone app on an iPad runs in the iPhone idiom, so the `~ipad` key never gets read. But that orientation call has already been made and documented, so bringing iPad back in 1.1 means flipping one setting, not rediscovering a decision.
+
+**The gotcha worth writing down:** "iPhone-only" doesn't mean "unavailable on iPad." iPad users can still install the app and run it in iPhone compatibility mode — letterboxed, iPhone layout. Separately, `SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD` and `SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD` are both `YES`, so the app will also show up for Apple silicon Macs and Vision Pro unless those are switched off in App Store Connect's availability settings. That's a 1.0 decision still to make, and it lives in App Store Connect, not in the project.
+
+**Lesson**: device family is one more of those promises the app makes to the OS (supported orientations, deployment target, locales are the others), and Xcode's template makes the widest promise by default. Every idiom you declare is an idiom App Review will test. Declare the ones you've actually designed for, and add the rest when you've done the work.

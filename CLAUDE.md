@@ -41,9 +41,15 @@ Clean-start SwiftData schema — not a port of the legacy Core Data model, thoug
 - **Repair log photos** are unbounded (`[RepairLogPhoto]`), not a fixed 3-slot triple.
 - All image blobs and PDFs use `@Attribute(.externalStorage)`.
 
+### iPhone-only (for 1.0)
+
+`TARGETED_DEVICE_FAMILY = 1` — the app ships **iPhone-only** for v1.0, so `UIDeviceFamily = [1]`. The five-tab portrait UI was designed and reviewed on iPhone only, and declaring iPad support would put iPad screenshots and iPad layout in front of App Review. iPad is a candidate for 1.1; re-enabling it is setting this back to `1,2`.
+
+Note that "iPhone-only" is not "unavailable on iPad": iPad users can still install iPhone apps and run them in iPhone compatibility mode (iPhone idiom, which is why the `~ipad` orientation key is inert). Separately, `SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD` and `SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD` are `YES`, which makes the app available on Apple silicon Macs and Vision Pro — those two can be turned off in App Store Connect's availability settings if they're not wanted for 1.0.
+
 ### Portrait-only
 
-The app is **portrait-only, no landscape on either idiom**. This is a deliberate decision, not a leftover default. Don't build landscape layouts, and don't assume a landscape configuration is reachable.
+The app is **portrait-only, no landscape on either idiom**. The iPad orientation setting below is inert while the app is iPhone-only, but it's kept so the decision is already made if iPad comes back in 1.1. This is a deliberate decision, not a leftover default. Don't build landscape layouts, and don't assume a landscape configuration is reachable.
 
 | Build setting | Value |
 |---|---|
