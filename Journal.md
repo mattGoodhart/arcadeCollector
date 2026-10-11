@@ -1515,3 +1515,36 @@ The reasoning came out of TestFlight prep. Declaring iPad support isn't free: Ap
 **The gotcha worth writing down:** "iPhone-only" doesn't mean "unavailable on iPad." iPad users can still install the app and run it in iPhone compatibility mode — letterboxed, iPhone layout. Separately, `SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD` and `SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD` are both `YES`, so the app will also show up for Apple silicon Macs and Vision Pro unless those are switched off in App Store Connect's availability settings. That's a 1.0 decision still to make, and it lives in App Store Connect, not in the project.
 
 **Lesson**: device family is one more of those promises the app makes to the OS (supported orientations, deployment target, locales are the others), and Xcode's template makes the widest promise by default. Every idiom you declare is an idiom App Review will test. Declare the ones you've actually designed for, and add the rest when you've done the work.
+
+### 2026-10-11 — The Test That Ate My Donkey Kong (And The Bug It Was Hiding)
+
+What started as "verify Xcode's recommended-settings upgrade" turned into a real data-loss bug, found by way of a UI test that was quietly vandalizing the owner's collection.
+
+**Act 1: the test had a branch it had never run.** `testOwnershipRoundTripAcrossTabs` begins with "if Donkey Kong is already owned, turn it off first." On this device Donkey Kong had always started unowned, so that branch had never executed. Today it was owned. The reset tap worked, the next tap missed, and the test failed.
+
+The first diagnosis was wrong. The UI hierarchy at failure showed the toggle scrolled out of view, and I blamed the owned-only sections disappearing. The owner pointed out they'd touched the phone to keep it awake, and that fit the evidence better: the list was scrolled near the *top*, which a shrinking section *below* the toggle can't cause. Corrected. Re-finding the toggle after the reset tap stayed in as a cheap precaution, not as the fix.
+
+**Act 2: the test was mutating real data and couldn't put it back.** Whatever the second tap did, the first one had already turned off the owner's real Donkey Kong, and the test's cleanup only ever forces ownership *off*. So it now records the starting state and restores it in a teardown block (which runs even when an assertion aborts the test partway), with no assertions inside, so a cleanup hiccup can't fail a passing run.
+
+**Act 3: the restore didn't stick, and that was the real bug.** Run 1 took the reset branch and its teardown tapped the toggle back on. Run 2 started *unowned*. The teardown's tap is the last thing before the test runner kills the app, and `GameDetailView`'s ownership toggle, wanted heart, and component-status pickers had **no explicit save at all**. They relied entirely on SwiftData autosave, which hadn't fired yet when the process died.
+
+This journal already knew that lesson. The August notes-buffer entry says autosave "is not scene-aware — you have to force the save yourself before the OS can kill the process." It got applied to repair-log notes and nowhere else.
+
+**Proved before fixing.** A new permanent test, `testOwnershipSurvivesImmediateTermination`, flips ownership, calls `app.terminate()` the instant the switch reports the change, relaunches, and checks the value. It then flips it back and repeats, so it leaves the real collection as it found it, and the second round-trip doubles as proof the restore persisted.
+
+| | Result |
+|---|---|
+| Before the fix | ❌ `Ownership set to owned didn't survive the app being killed` |
+| After `persist()` | ✅ both directions survive (3 launches, 2 kills ~3s after each tap) |
+
+**The fix** is a `persist()` call after the heart and the PCB toggle, plus a `saving(_:)` binding wrapper around the five status pickers. One save per discrete tap is cheap. The September performance problem came from saving on *continuous* input (a save every typing pause, fanned out to five live `@Query`s), not from a save per toggle.
+
+**Still on autosave, noted for later:** `RepairLogListView.addEntry` doesn't save, and `RepairLogEntryView`'s date and photo edits only save on disappear and on backgrounding. Both have the same failure if the app dies with that screen open. They're smaller windows, but the same bug class.
+
+**Lesson**: "autosave" means "saves eventually," not "saves before the process dies." Any write the user would be upset to lose (a toggle, a picker, an added row) gets an explicit save at the moment it happens. Autosave is a safety net, not the plan. If a lesson is written down for one call site, grep for every other call site with the same shape before closing the entry.
+
+**Lesson**: a UI test that runs against someone's real data has to restore that data, unconditionally, in a teardown block. "Clean up at the end of the happy path" leaves the data mangled every time the test fails, which is exactly when you won't be paying attention to it.
+
+**Lesson**: when someone offers a mundane explanation for a failure ("I touched the screen"), check it against the evidence before defending your own theory. Here it fit better than mine did, and taking it seriously is what moved attention to the restore, and the restore is where the real bug was.
+
+**Lesson**: never discard the result of your own check, even in code that must not assert. `_ = waitForSwitch(...)` let a failed restore pass silently. Logging the outcome costs one line.

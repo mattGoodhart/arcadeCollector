@@ -58,6 +58,7 @@ struct GameDetailView: View {
                     Button {
                         let isWanted = game.ownership == .wanted
                         game.ownership = isWanted ? .none : .wanted
+                        persist()
                     } label: {
                         Image(systemName: game.ownership == .wanted ? "heart.fill" : "heart")
                     }
@@ -418,7 +419,7 @@ struct GameDetailView: View {
         Section {
             Toggle("Have the PCB", isOn: Binding(
                 get: { game.ownership == .owned },
-                set: { game.ownership = $0 ? .owned : .none }
+                set: { game.ownership = $0 ? .owned : .none; persist() }
             ))
             .accessibilityIdentifier("pcb-toggle")
         }
@@ -426,12 +427,36 @@ struct GameDetailView: View {
 
     private var componentStatusSection: some View {
         Section("Component Status") {
-            StatusPickerRow(label: "Boot",          selection: $game.bootStatus)
-            StatusPickerRow(label: "Audio",         selection: $game.audioStatus)
-            StatusPickerRow(label: "Video",         selection: $game.videoStatus)
-            StatusPickerRow(label: "Controls",      selection: $game.controlsStatus)
-            StatusPickerRow(label: "Extended Play", selection: $game.extendedPlayStatus)
+            StatusPickerRow(label: "Boot",          selection: saving($game.bootStatus))
+            StatusPickerRow(label: "Audio",         selection: saving($game.audioStatus))
+            StatusPickerRow(label: "Video",         selection: saving($game.videoStatus))
+            StatusPickerRow(label: "Controls",      selection: saving($game.controlsStatus))
+            StatusPickerRow(label: "Extended Play", selection: saving($game.extendedPlayStatus))
         }
+    }
+
+    // MARK: - Persistence
+
+    /// Commits the user's edit to disk immediately.
+    ///
+    /// These edits used to rely on SwiftData autosave, whose timing the app
+    /// doesn't control. If the process died before autosave ran — a crash, a
+    /// jetsam kill — the change was simply gone, and
+    /// `GoldenPathUITests.testOwnershipSurvivesImmediateTermination` proved
+    /// it: toggle on, kill, relaunch, toggle off again. One explicit save per
+    /// discrete tap is cheap; the performance trap in this app is saving on
+    /// *continuous* input (see the notes buffer in `RepairLogEntryView`),
+    /// not on a toggle or picker.
+    private func persist() {
+        try? modelContext.save()
+    }
+
+    /// Wraps a model binding so every write is followed by `persist()`.
+    private func saving<Value>(_ binding: Binding<Value>) -> Binding<Value> {
+        Binding(
+            get: { binding.wrappedValue },
+            set: { binding.wrappedValue = $0; persist() }
+        )
     }
 
     private var repairLogSection: some View {
