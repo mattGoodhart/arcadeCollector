@@ -70,11 +70,28 @@ final class GoldenPathUITests: XCTestCase {
         //         manual) above the toggle — wait for it to settle so we
         //         don't find the toggle then lose it to a re-render.
         waitForDetailToSettle(app)
-        let pcbToggle = findPCBToggle(app)
+        var pcbToggle = findPCBToggle(app)
         XCTAssertTrue(pcbToggle.waitForExistence(timeout: 5), "PCB toggle not reachable after scrolling detail view")
-        if isSwitchOn(pcbToggle) {
+
+        // This runs against the device owner's real collection, so whatever
+        // ownership Donkey Kong had going in is user data. Put it back on the
+        // way out — as a teardown block, so it happens even when an assertion
+        // aborts the test partway. (A failed run on 2026-10-11 left the
+        // owner's Donkey Kong unowned before this existed.)
+        let startedOwned = isSwitchOn(pcbToggle)
+        addTeardownBlock { @MainActor [self] in
+            self.restoreOwnership(app, owned: startedOwned)
+        }
+
+        if startedOwned {
             tapToggle(pcbToggle)
             XCTAssertTrue(waitForSwitch(pcbToggle, on: false), "Failed to reset PCB toggle to off before test body")
+            // Turning ownership off removes the owned-only sections (Component
+            // Status, Repair Log) from the detail list, which shifts it and can
+            // scroll the toggle out of the accessibility tree. Re-locate it
+            // before the next tap rather than tapping a stale position.
+            pcbToggle = findPCBToggle(app)
+            XCTAssertTrue(pcbToggle.waitForExistence(timeout: 5), "PCB toggle not reachable after resetting it to off")
         }
         tapToggle(pcbToggle)
         XCTAssertTrue(waitForSwitch(pcbToggle, on: true), "Toggling 'Have the PCB' on didn't stick")
@@ -87,8 +104,10 @@ final class GoldenPathUITests: XCTestCase {
         openTab(app, named: "My Collection")
         XCTAssertTrue(scanForGameRow(app), "Donkey Kong missing from My Collection after marking owned")
 
-        // Step 4: cleanup — flip back off so state doesn't leak into subsequent runs.
-        //         The scan left the row on screen and hittable.
+        // Step 4: flip back off, which is half of what's under test (the row has
+        //         to disappear again). The teardown block restores whatever
+        //         ownership the device started with. The scan left the row on
+        //         screen and hittable.
         let collectionRow = findGameRow(app)
         collectionRow.tap()
         waitForDetailToSettle(app)
@@ -105,7 +124,102 @@ final class GoldenPathUITests: XCTestCase {
         XCTAssertFalse(scanForGameRow(app), "Donkey Kong still on My Collection after cleanup — ownership filter isn't reactive")
     }
 
+    /// An ownership change must be on disk the moment the user makes it.
+    ///
+    /// The toggle used to rely entirely on SwiftData autosave, whose timing
+    /// the app doesn't control. Kill the process before autosave runs — a
+    /// crash, a jetsam kill, or here the test runner — and the change is
+    /// gone. That surfaced on 2026-10-11 as a teardown "restore" that tapped
+    /// the toggle on and then found it off again on the next launch.
+    ///
+    /// Flips Donkey Kong's ownership, kills the app immediately, relaunches,
+    /// and checks the new value survived. Then flips it back and does the same
+    /// again, so the device's real collection ends up exactly as it started —
+    /// and that second round-trip is itself the proof the restore persisted.
+    @MainActor
+    func testOwnershipSurvivesImmediateTermination() throws {
+        let app = XCUIApplication()
+        app.launch()
+        // One navigation per launch: the All Games search text persists for
+        // the life of the process, so re-running the search in the same
+        // launch would type into a field that already says "donkey".
+        var toggle = openDonkeyKongToggle(app)
+        let startedOwned = isSwitchOn(toggle)
+
+        for target in [!startedOwned, startedOwned] {
+            tapToggle(toggle)
+            XCTAssertTrue(waitForSwitch(toggle, on: target), "Toggle didn't reach \(target ? "on" : "off") before termination")
+
+            // No navigation, no delay: terminate the instant the UI reports
+            // the change, which is the window autosave can't be trusted with.
+            app.terminate()
+            app.launch()
+
+            toggle = openDonkeyKongToggle(app)
+            XCTAssertEqual(
+                isSwitchOn(toggle), target,
+                "Ownership set to \(target ? "owned" : "not owned") didn't survive the app being killed — the change was never saved"
+            )
+        }
+    }
+
     // MARK: - Helpers
+
+    /// Fresh-launch path to Donkey Kong's "Have the PCB" toggle: All Games →
+    /// search → row → detail → scroll the toggle into a tappable position.
+    private func openDonkeyKongToggle(_ app: XCUIApplication) -> XCUIElement {
+        XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 30), "Tab bar never appeared")
+        openTab(app, named: "All Games")
+        searchForTestGame(app)
+        let row = findGameRow(app)
+        XCTAssertTrue(row.waitForExistence(timeout: 15), "Donkey Kong row not visible after searching")
+        row.tap()
+        waitForDetailToSettle(app)
+        let toggle = findPCBToggle(app)
+        XCTAssertTrue(toggle.waitForExistence(timeout: 5), "PCB toggle not reachable")
+        return toggle
+    }
+
+    /// Best-effort: drive Donkey Kong's ownership back to `owned`, from
+    /// wherever the test left the app.
+    ///
+    /// Runs as a teardown block, so it deliberately contains no assertions —
+    /// an assertion here would turn a successful run into a failure because
+    /// cleanup hiccuped. If any step can't find what it needs, it gives up
+    /// quietly rather than tapping blindly at someone's real collection.
+    private func restoreOwnership(_ app: XCUIApplication, owned: Bool) {
+        let allGames = app.tabBars.buttons["All Games"]
+        guard allGames.waitForExistence(timeout: 5) else { return }
+        // First tap switches to the tab; tapping the selected tab again pops
+        // its NavigationStack back to the list.
+        allGames.tap()
+        allGames.tap()
+
+        // The All Games search text from step 1 persists, so the row is
+        // normally still on screen. If it isn't, don't guess — bail.
+        let row = findGameRow(app)
+        guard row.waitForExistence(timeout: 5) else { return }
+        row.tap()
+
+        waitForDetailToSettle(app)
+        let toggle = findPCBToggle(app)
+        guard toggle.exists, toggle.isHittable else { return }
+        if isSwitchOn(toggle) != owned {
+            tapToggle(toggle)
+            // Not asserted (see above), but never silently discarded either:
+            // an unreported missed tap is how a failed restore once went
+            // unnoticed until the next run started in the wrong state.
+            let stuck = waitForSwitch(toggle, on: owned)
+            print("[GoldenPathUITests] restoreOwnership(owned: \(owned)) — switch \(stuck ? "reached" : "DID NOT reach") requested state")
+        }
+        navigateBackIfPossible(app)
+    }
+
+    /// `navigateBack` without the assertion, for use from teardown.
+    private func navigateBackIfPossible(_ app: XCUIApplication) {
+        let back = app.navigationBars.buttons.firstMatch
+        if back.waitForExistence(timeout: 3) { back.tap() }
+    }
 
     /// Whether Donkey Kong's row exists anywhere in the currently displayed
     /// list, rewinding to the top and scrolling the whole way down to decide.
